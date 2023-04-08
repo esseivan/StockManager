@@ -32,10 +32,11 @@
             this.button2 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
             this.fdlviewParts = new BrightIdeasSoftware.FastDataListView();
+            this.olvcSelect = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvcMPN = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcMAN = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcDesc = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcCat = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvcMPN = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcLocation = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcStock = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcLowStock = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
@@ -43,7 +44,7 @@
             this.olvcSupplier = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcSPN = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.button4 = new System.Windows.Forms.Button();
-            this.olvcSelect = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.button5 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.fdlviewParts)).BeginInit();
             this.SuspendLayout();
             // 
@@ -135,6 +136,16 @@
             this.fdlviewParts.View = System.Windows.Forms.View.Details;
             this.fdlviewParts.VirtualMode = true;
             // 
+            // olvcSelect
+            // 
+            this.olvcSelect.Text = "Select";
+            this.olvcSelect.Width = 30;
+            // 
+            // olvcMPN
+            // 
+            this.olvcMPN.Text = "Manufacturer PN";
+            this.olvcMPN.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
             // olvcMAN
             // 
             this.olvcMAN.Text = "Manufacturer";
@@ -149,11 +160,6 @@
             // 
             this.olvcCat.Text = "Category";
             this.olvcCat.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // olvcMPN
-            // 
-            this.olvcMPN.Text = "Manufacturer PN";
-            this.olvcMPN.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // olvcLocation
             // 
@@ -201,16 +207,22 @@
             this.button4.UseVisualStyleBackColor = true;
             this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
-            // olvcSelect
+            // button5
             // 
-            this.olvcSelect.Text = "Select";
-            this.olvcSelect.Width = 30;
+            this.button5.Location = new System.Drawing.Point(713, 12);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(75, 23);
+            this.button5.TabIndex = 8;
+            this.button5.Text = "Import";
+            this.button5.UseVisualStyleBackColor = true;
+            this.button5.Click += new System.EventHandler(this.button5_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.button5);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.fdlviewParts);
             this.Controls.Add(this.button3);
@@ -241,6 +253,7 @@
         private BrightIdeasSoftware.OLVColumn olvcSPN;
         private System.Windows.Forms.Button button4;
         private BrightIdeasSoftware.OLVColumn olvcSelect;
+        private System.Windows.Forms.Button button5;
     }
 }
 

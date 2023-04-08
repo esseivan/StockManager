@@ -91,5 +91,27 @@ namespace StockManagerDB
             }
             DisplayParts();
         }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog ofd = new OpenFileDialog()
+            {
+                Filter = "All files|*.*",
+            };
+            if (ofd.ShowDialog() == DialogResult.OK)
+            {
+                ExcelManager em = new ExcelManager(ofd.FileName);
+                List<PartClass> p = em.GetParts();
+
+                if ((null == p) || (0 == p.Count))
+                {
+                    LoggerClass.Write("No part found");
+                    return;
+                }
+
+                // Add all
+                p.ForEach((x) => dbw.AddPart(x));
+            }
+        }
     }
 }
