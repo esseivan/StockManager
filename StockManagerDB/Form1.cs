@@ -130,7 +130,8 @@ namespace StockManagerDB
         {
         }
 
-        private void importFromExcelToolStripMenuItem_Click(object sender, EventArgs e)
+        
+        private void ImportFromExcel()
         {
             if (!IsDBOpen)
             {
@@ -161,7 +162,12 @@ namespace StockManagerDB
             }
         }
 
-        private void newDatabaseToolStripMenuItem_Click(object sender, EventArgs e)
+        private void importFromExcelToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ImportFromExcel();
+        }
+
+        private void CreateNewDatabase()
         {
             SaveFileDialog fsd = new SaveFileDialog()
             {
@@ -181,8 +187,12 @@ namespace StockManagerDB
             }
         }
 
+        private void newDatabaseToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CreateNewDatabase();
+        }
 
-        private void openDatabaseToolStripMenuItem_Click(object sender, EventArgs e)
+        private void OpenDatabase()
         {
             OpenFileDialog ofd = new OpenFileDialog()
             {
@@ -194,6 +204,11 @@ namespace StockManagerDB
                 dbw = new DBWrapper(filepath);
                 dbw.LoadDatabase();
             }
+        }
+
+        private void openDatabaseToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenDatabase();
         }
     }
 }
