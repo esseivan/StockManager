@@ -352,5 +352,26 @@ namespace StockManagerDB
         {
             DeleteCheckedParts();
         }
+
+        private void listviewParts_CellEditFinished(object sender, CellEditEventArgs e)
+        {
+            PartClass part = e.RowObject as PartClass;
+            PartClass.Parameter editedParameter = (PartClass.Parameter)(e.Column.Index);
+            string newValue = e.NewValue.ToString();
+            if (editedParameter == PartClass.Parameter.UNDEFINED)
+            {
+                throw new InvalidOperationException("Unable to edit 'undefined'");
+            }
+            else if (editedParameter == PartClass.Parameter.MPN)
+            {
+                dbw.RenamePart(part.MPN, newValue);
+            }
+            else
+            {
+                // Apply manually the new value
+                part.Parameters[editedParameter] = newValue;
+                dbw.UpdatePart(part);
+            }
+        }
     }
 }

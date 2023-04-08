@@ -122,10 +122,10 @@ namespace StockManagerDB
         public enum Parameter
         {
             UNDEFINED,
+            MPN,
             Manufacturer,
             Description,
             Category,
-            MPN,
             Location,
             Stock,
             LowStock,
