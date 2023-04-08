@@ -211,7 +211,7 @@ namespace StockManagerDB
         }
 
         /// <summary>
-        /// Convert string header to parameter type
+        /// Convert string header to parameter type. Used to import from excel, where the value is the header name
         /// </summary>
         /// <param name="value">The string to be converted</param>
         /// <returns>The Paramter type equivalent of the value</returns>

@@ -16,6 +16,7 @@ namespace StockManagerDB
         const string Filename = "myDB.sqlite";
         DBWrapper dbw = new DBWrapper(Filename);
         private FastDataListView partLV;
+        ExcelManager em = new ExcelManager(@"C:\Workspace\01_Programming\StockManagerExcelBased\Import.xlsx");
 
         List<PartClass> parts => dbw.PartsList;
 
