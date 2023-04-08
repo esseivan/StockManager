@@ -13,10 +13,30 @@ namespace StockManagerDB
     {
         private readonly string filename;
         private Dictionary<string, PartClass> remoteParts = new Dictionary<string, PartClass>();
+        private Dictionary<string, PartClass> localParts = new Dictionary<string, PartClass>();
+
+
+        public Dictionary<string, PartClass> Parts => localParts;
+        public List<PartClass> PartsList => localParts.Values.ToList();
 
         public DBWrapper(string filename)
         {
             this.filename = filename;
+        }
+
+        /// <summary>
+        /// Synchronise parts with actual remote ones
+        /// </summary>
+        /// <returns></returns>
+        public Dictionary<string, PartClass> CloneParts(Dictionary<string, PartClass> parts)
+        {
+            Dictionary<string, PartClass> output = new Dictionary<string, PartClass>();
+            foreach (var item in parts)
+            {
+                output.Add(item.Key, item.Value.Clone() as PartClass);
+            }
+
+            return output;
         }
 
         /// <summary>
@@ -45,6 +65,8 @@ namespace StockManagerDB
                 connection.Close();
             }
 
+            remoteParts = new Dictionary<string, PartClass>();
+            localParts = new Dictionary<string, PartClass>();
             // Create dummy part
             if (createTemplatePart)
             {
@@ -67,7 +89,7 @@ namespace StockManagerDB
         /// Load the parts from the database
         /// </summary>
         /// <returns></returns>
-        public List<PartClass> LoadDatabase()
+        public Dictionary<string, PartClass> LoadDatabase()
         {
             // Create a connection to the database
             using (SQLiteConnection connection = new SQLiteConnection($"Data Source={filename};Version=3;"))
@@ -84,15 +106,27 @@ namespace StockManagerDB
                 List<PartClass> newParts = PartClass.CreateFromDB(dataTable);
 
                 remoteParts = new Dictionary<string, PartClass>();
+                localParts = new Dictionary<string, PartClass>();
                 foreach (PartClass part in newParts)
                 {
-                    remoteParts.Add(part.MPN, part.Clone());
+                    remoteParts.Add(part.MPN, part);
+                    localParts.Add(part.MPN, part.Clone() as PartClass);
                 }
 
                 dataAdapter.Dispose();
                 connection.Close();
-                return newParts;
             }
+
+            return localParts;
+        }
+
+        /// <summary>
+        /// Load the parts from the database
+        /// </summary>
+        /// <returns></returns>
+        public List<PartClass> LoadDatabaseList()
+        {
+            return LoadDatabase().Values.ToList();
         }
 
         /// <summary>
@@ -153,7 +187,7 @@ namespace StockManagerDB
             }
 
             // Save to remote buffer
-            remoteParts[updatedPart.MPN] = updatedPart.Clone();
+            remoteParts[updatedPart.MPN] = updatedPart.Clone() as PartClass;
 
             return true;
         }
@@ -188,6 +222,7 @@ namespace StockManagerDB
             }
 
             remoteParts.Remove(partMPN);
+            localParts.Remove(partMPN);
 
             return true;
         }
@@ -212,8 +247,7 @@ namespace StockManagerDB
         {
             if (remoteParts.ContainsKey(part.MPN))
             {
-                // Old MPN not found
-                throw new InvalidOperationException("New MPN already existing in remote parts");
+                return false;
             }
 
             // Create a connection to the database
@@ -241,6 +275,7 @@ namespace StockManagerDB
                 connection.Close();
             }
             remoteParts.Add(part.MPN, part);
+            localParts.Add(part.MPN, part.Clone() as PartClass);
 
             return true;
         }

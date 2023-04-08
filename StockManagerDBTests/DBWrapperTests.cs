@@ -31,7 +31,7 @@ namespace StockManagerDB.Tests
         }
 
         [TestMethod()]
-        public void LoadDatabaseTest()
+        public void LoadDatabaseListTest()
         {
             string filename = "myDB2.sqlite";
             if (File.Exists(filename))
@@ -42,7 +42,7 @@ namespace StockManagerDB.Tests
             dbw.CreateDatabase(createTemplatePart: true);
             Assert.IsTrue(File.Exists(filename));
 
-            var parts = dbw.LoadDatabase();
+            var parts = dbw.LoadDatabaseList();
 
             Assert.IsNotNull(parts);
             Assert.AreEqual(1, parts.Count);
@@ -66,7 +66,7 @@ namespace StockManagerDB.Tests
                 dbw.CreateDatabase(createTemplatePart: true);
                 Assert.IsTrue(File.Exists(filename));
 
-                var parts = dbw.LoadDatabase();
+                var parts = dbw.LoadDatabaseList();
 
                 Assert.IsNotNull(parts);
                 Assert.AreEqual(1, parts.Count);
@@ -80,7 +80,7 @@ namespace StockManagerDB.Tests
 
             using (DBWrapper dbw = new DBWrapper(filename))
             {
-                var parts = dbw.LoadDatabase();
+                var parts = dbw.LoadDatabaseList();
 
                 Assert.IsNotNull(parts);
                 Assert.AreEqual(1, parts.Count);
@@ -109,7 +109,7 @@ namespace StockManagerDB.Tests
                 dbw.CreateDatabase(createTemplatePart: true);
                 Assert.IsTrue(File.Exists(filename));
 
-                var parts = dbw.LoadDatabase();
+                var parts = dbw.LoadDatabaseList();
 
                 Assert.IsNotNull(parts);
                 Assert.AreEqual(1, parts.Count);
@@ -126,7 +126,7 @@ namespace StockManagerDB.Tests
 
             using (DBWrapper dbw = new DBWrapper(filename))
             {
-                var parts = dbw.LoadDatabase();
+                var parts = dbw.LoadDatabaseList();
 
                 Assert.IsNotNull(parts);
                 Assert.AreEqual(1, parts.Count);
@@ -154,7 +154,7 @@ namespace StockManagerDB.Tests
                 dbw.CreateDatabase(createTemplatePart: true);
                 Assert.IsTrue(File.Exists(filename));
 
-                var parts = dbw.LoadDatabase();
+                var parts = dbw.LoadDatabaseList();
 
                 Assert.IsNotNull(parts);
                 Assert.AreEqual(1, parts.Count);
@@ -166,7 +166,7 @@ namespace StockManagerDB.Tests
 
             using (DBWrapper dbw = new DBWrapper(filename))
             {
-                var parts = dbw.LoadDatabase();
+                var parts = dbw.LoadDatabaseList();
 
                 Assert.IsNotNull(parts);
                 Assert.AreEqual(1, parts.Count);
@@ -196,7 +196,7 @@ namespace StockManagerDB.Tests
                 dbw.CreateDatabase(createTemplatePart: false);
                 Assert.IsTrue(File.Exists(filename));
 
-                var parts = dbw.LoadDatabase();
+                var parts = dbw.LoadDatabaseList();
 
                 Assert.IsNotNull(parts);
                 Assert.AreEqual(0, parts.Count);
@@ -206,7 +206,7 @@ namespace StockManagerDB.Tests
 
             using (DBWrapper dbw = new DBWrapper(filename))
             {
-                var parts = dbw.LoadDatabase();
+                var parts = dbw.LoadDatabaseList();
 
                 Assert.IsNotNull(parts);
                 Assert.AreEqual(1, parts.Count);
@@ -231,7 +231,7 @@ namespace StockManagerDB.Tests
                 dbw.CreateDatabase(createTemplatePart: true);
                 Assert.IsTrue(File.Exists(filename));
 
-                var parts = dbw.LoadDatabase();
+                var parts = dbw.LoadDatabaseList();
 
                 Assert.IsNotNull(parts);
                 Assert.AreEqual(1, parts.Count);
@@ -242,7 +242,7 @@ namespace StockManagerDB.Tests
 
             using (DBWrapper dbw = new DBWrapper(filename))
             {
-                var parts = dbw.LoadDatabase();
+                var parts = dbw.LoadDatabaseList();
 
                 Assert.IsNotNull(parts);
                 Assert.AreEqual(0, parts.Count);
@@ -265,7 +265,7 @@ namespace StockManagerDB.Tests
                 dbw.CreateDatabase(createTemplatePart: true);
                 Assert.IsTrue(File.Exists(filename));
 
-                var parts = dbw.LoadDatabase();
+                var parts = dbw.LoadDatabaseList();
 
                 Assert.IsNotNull(parts);
                 Assert.AreEqual(1, parts.Count);
@@ -276,7 +276,7 @@ namespace StockManagerDB.Tests
 
             using (DBWrapper dbw = new DBWrapper(filename))
             {
-                var parts = dbw.LoadDatabase();
+                var parts = dbw.LoadDatabaseList();
 
                 Assert.IsNotNull(parts);
                 Assert.AreEqual(0, parts.Count);
