@@ -51,8 +51,12 @@
             this.txtboxFilter = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.btnDeleteChecked = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
+            this.btnCheckAll = new System.Windows.Forms.Button();
+            this.btnUncheckAll = new System.Windows.Forms.Button();
+            this.actionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.onlyAffectCheckedPartsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.makeOrderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.fdlviewParts)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -96,14 +100,14 @@
             this.fdlviewParts.DataSource = null;
             this.fdlviewParts.EmptyListMsg = "(Empty)";
             this.fdlviewParts.HideSelection = false;
-            this.fdlviewParts.Location = new System.Drawing.Point(11, 97);
+            this.fdlviewParts.Location = new System.Drawing.Point(218, 189);
             this.fdlviewParts.Margin = new System.Windows.Forms.Padding(2);
             this.fdlviewParts.Name = "fdlviewParts";
             this.fdlviewParts.SelectColumnsOnRightClickBehaviour = BrightIdeasSoftware.ObjectListView.ColumnSelectBehaviour.Submenu;
             this.fdlviewParts.ShowCommandMenuOnRightClick = true;
             this.fdlviewParts.ShowGroups = false;
             this.fdlviewParts.ShowImagesOnSubItems = true;
-            this.fdlviewParts.Size = new System.Drawing.Size(778, 342);
+            this.fdlviewParts.Size = new System.Drawing.Size(449, 279);
             this.fdlviewParts.SortGroupItemsByPrimaryColumn = false;
             this.fdlviewParts.TabIndex = 6;
             this.fdlviewParts.TintSortColumn = true;
@@ -182,10 +186,11 @@
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
-            this.databaseToolStripMenuItem});
+            this.databaseToolStripMenuItem,
+            this.actionsToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(800, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(728, 24);
             this.menuStrip1.TabIndex = 9;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -232,7 +237,7 @@
             this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox3.Controls.Add(this.cbboxFilterType);
             this.groupBox3.Controls.Add(this.txtboxFilter);
-            this.groupBox3.Location = new System.Drawing.Point(575, 27);
+            this.groupBox3.Location = new System.Drawing.Point(503, 27);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(214, 44);
             this.groupBox3.TabIndex = 36;
@@ -265,9 +270,9 @@
             // 
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.Controls.Add(this.btnDeleteChecked);
-            this.groupBox1.Controls.Add(this.button2);
-            this.groupBox1.Controls.Add(this.button3);
-            this.groupBox1.Location = new System.Drawing.Point(284, 27);
+            this.groupBox1.Controls.Add(this.btnCheckAll);
+            this.groupBox1.Controls.Add(this.btnUncheckAll);
+            this.groupBox1.Location = new System.Drawing.Point(212, 27);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(285, 44);
             this.groupBox1.TabIndex = 39;
@@ -285,29 +290,60 @@
             this.btnDeleteChecked.UseVisualStyleBackColor = true;
             this.btnDeleteChecked.Click += new System.EventHandler(this.btnDeleteChecked_Click);
             // 
-            // button2
+            // btnCheckAll
             // 
-            this.button2.Location = new System.Drawing.Point(204, 16);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
-            this.button2.TabIndex = 37;
-            this.button2.Text = "Select All";
-            this.button2.UseVisualStyleBackColor = true;
+            this.btnCheckAll.Location = new System.Drawing.Point(204, 16);
+            this.btnCheckAll.Name = "btnCheckAll";
+            this.btnCheckAll.Size = new System.Drawing.Size(75, 23);
+            this.btnCheckAll.TabIndex = 37;
+            this.btnCheckAll.Text = "Check All";
+            this.btnCheckAll.UseVisualStyleBackColor = true;
+            this.btnCheckAll.Click += new System.EventHandler(this.btnCheckAll_Click);
             // 
-            // button3
+            // btnUncheckAll
             // 
-            this.button3.Location = new System.Drawing.Point(123, 15);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(75, 23);
-            this.button3.TabIndex = 37;
-            this.button3.Text = "Deselect All";
-            this.button3.UseVisualStyleBackColor = true;
+            this.btnUncheckAll.Location = new System.Drawing.Point(123, 15);
+            this.btnUncheckAll.Name = "btnUncheckAll";
+            this.btnUncheckAll.Size = new System.Drawing.Size(75, 23);
+            this.btnUncheckAll.TabIndex = 37;
+            this.btnUncheckAll.Text = "Uncheck All";
+            this.btnUncheckAll.UseVisualStyleBackColor = true;
+            this.btnUncheckAll.Click += new System.EventHandler(this.btnUncheckAll_Click);
+            // 
+            // actionsToolStripMenuItem
+            // 
+            this.actionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.onlyAffectCheckedPartsToolStripMenuItem,
+            this.toolStripSeparator1,
+            this.makeOrderToolStripMenuItem});
+            this.actionsToolStripMenuItem.Name = "actionsToolStripMenuItem";
+            this.actionsToolStripMenuItem.Size = new System.Drawing.Size(59, 20);
+            this.actionsToolStripMenuItem.Text = "Actions";
+            // 
+            // onlyAffectCheckedPartsToolStripMenuItem
+            // 
+            this.onlyAffectCheckedPartsToolStripMenuItem.CheckOnClick = true;
+            this.onlyAffectCheckedPartsToolStripMenuItem.Name = "onlyAffectCheckedPartsToolStripMenuItem";
+            this.onlyAffectCheckedPartsToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
+            this.onlyAffectCheckedPartsToolStripMenuItem.Text = "Only affect checked parts";
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(205, 6);
+            // 
+            // makeOrderToolStripMenuItem
+            // 
+            this.makeOrderToolStripMenuItem.Name = "makeOrderToolStripMenuItem";
+            this.makeOrderToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
+            this.makeOrderToolStripMenuItem.Text = "Make Order";
+            this.makeOrderToolStripMenuItem.Click += new System.EventHandler(this.makeOrderToolStripMenuItem_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(728, 509);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.fdlviewParts);
@@ -351,8 +387,12 @@
         private System.Windows.Forms.TextBox txtboxFilter;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Button btnDeleteChecked;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Button btnCheckAll;
+        private System.Windows.Forms.Button btnUncheckAll;
+        private System.Windows.Forms.ToolStripMenuItem actionsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem onlyAffectCheckedPartsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripMenuItem makeOrderToolStripMenuItem;
     }
 }
 

@@ -111,11 +111,15 @@ namespace StockManagerDB
             return parts;
         }
 
+        /// <summary>
+        /// Return parts that will be validation for the action
+        /// </summary>
+        /// <returns></returns>
         private List<PartClass> GetPartForProcess()
         {
-            //if (checkBox2.Checked)
+            if (onlyAffectCheckedPartsToolStripMenuItem.Checked)
                 return GetCheckedParts();
-            //return GetAll();
+            return GetAll();
         }
 
         #endregion
@@ -276,6 +280,27 @@ namespace StockManagerDB
         private void btnDeleteChecked_Click(object sender, EventArgs e)
         {
             DeleteCheckedParts();
+        }
+
+        private void btnUncheckAll_Click(object sender, EventArgs e)
+        {
+            partLV.UncheckAll();
+            partLV.Focus();
+        }
+
+        private void btnCheckAll_Click(object sender, EventArgs e)
+        {
+            partLV.CheckAll();
+            partLV.Focus();
+        }
+
+        private void makeOrderToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            List<PartClass> parts = GetPartForProcess();
+            // Select parts with current stock lower than lowStock limit
+            var selected = parts.Where((part) => (part.Stock < part.LowStock));
+
+            Console.WriteLine(selected.Count() + " parts to order");
         }
     }
 }
