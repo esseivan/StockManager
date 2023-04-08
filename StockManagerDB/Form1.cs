@@ -9,7 +9,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.Button;
 
 namespace StockManagerDB
 {
@@ -58,23 +57,42 @@ namespace StockManagerDB
         {
             InitializeComponent();
             LoggerClass.Init();
+            LoggerClass.Write("Idle");
 
             partLV = listviewParts;
             InitListView(partLV);
+            partLV.CellEditActivation = ObjectListView.CellEditActivateMode.DoubleClick;
+            partLV.CellEditUseWholeCell = true;
             InitListView(listviewChecked);
 
             cbboxFilterType.SelectedIndex = 2;
 
-            LoggerClass.Write("Idle");
+            UpdateCountLabel();
         }
 
         #region Display
+
+        private void UpdateCountLabel()
+        {
+            if (dbw == null)
+            {
+                labelCount.Text = "No database open...";
+            }
+            else
+            {
+                labelCount.Text = $"{partLV.FilteredObjects.Cast<object>().Count()}/{parts.Count}";
+            }
+        }
 
         private void UpdateDisplay()
         {
             partLV.DataSource = parts;
             partLV.AutoResizeColumns();
             partLV.Focus();
+
+            UpdateCountLabel();
+
+            UpdateCheckedListview();
         }
 
         private void Dbw_OnListModified(object sender, EventArgs e)
@@ -91,8 +109,6 @@ namespace StockManagerDB
             listview.View = View.Details;
             listview.GridLines = true;
             listview.FullRowSelect = true;
-            listview.CellEditActivation = ObjectListView.CellEditActivateMode.DoubleClick;
-            listview.CellEditUseWholeCell = true;
 
             // Setup columns
             olvcMPN.AspectGetter = delegate (object x) { return ((PartClass)x).MPN; };
@@ -177,7 +193,9 @@ namespace StockManagerDB
 
         private void importFromExcelToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            Cursor = Cursors.WaitCursor;
             ImportFromExcel();
+            Cursor = Cursors.Default;
         }
 
         /// <summary>
@@ -266,11 +284,13 @@ namespace StockManagerDB
         private void txtboxFilter_TextChanged(object sender, EventArgs e)
         {
             Filter(((TextBox)sender).Text, this.cbboxFilterType.SelectedIndex);
+            UpdateCountLabel();
         }
 
         private void cbboxFilterType_SelectedIndexChanged(object sender, EventArgs e)
         {
             Filter(txtboxFilter.Text, this.cbboxFilterType.SelectedIndex);
+            UpdateCountLabel();
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -372,6 +392,8 @@ namespace StockManagerDB
                 part.Parameters[editedParameter] = newValue;
                 dbw.UpdatePart(part);
             }
+
+            UpdateCheckedListview();
         }
     }
 }
