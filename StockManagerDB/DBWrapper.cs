@@ -12,7 +12,7 @@ namespace StockManagerDB
     public class DBWrapper : IDisposable
     {
         private readonly string filename;
-        private Dictionary<string, PartClass> remoteParts = null;
+        private Dictionary<string, PartClass> remoteParts = new Dictionary<string, PartClass>();
 
         public DBWrapper(string filename)
         {
@@ -42,41 +42,31 @@ namespace StockManagerDB
                     command.ExecuteNonQuery();
                 }
 
-                // Create dummy part
-                if (createTemplatePart)
-                {
-                    PartClass part = new PartClass()
-                    {
-                        MPN = "Template",
-                        Description = "Template part",
-                        Stock = 0,
-                        Price = 0,
-                        Category = "Template catergory",
-                        Location = "Undefined",
-                    };
-                    using (SQLiteCommand command = new SQLiteCommand("INSERT INTO StockParts (mpn, manufacturer, description, category, storage, stock, low_stock, price, supplier, spn)\r\nVALUES (@MPN, @Manufacturer, @Description, @Category, @Storage, @Stock, @LowStock, @Price, @Supplier, @SPN);"
-                        , connection))
-                    {
-                        command.Parameters.AddWithValue("@MPN", part.MPN);
-                        command.Parameters.AddWithValue("@Manufacturer", part.Manufacturer);
-                        command.Parameters.AddWithValue("@Description", part.Description);
-                        command.Parameters.AddWithValue("@Category", part.Category);
-                        command.Parameters.AddWithValue("@Storage", part.Location);
-                        command.Parameters.AddWithValue("@Stock", part.Stock);
-                        command.Parameters.AddWithValue("@LowStock", part.LowStock);
-                        command.Parameters.AddWithValue("@Price", part.Price);
-                        command.Parameters.AddWithValue("@Supplier", part.Supplier);
-                        command.Parameters.AddWithValue("@SPN", part.SPN);
-
-                        command.ExecuteNonQuery();
-                    }
-                }
                 connection.Close();
+            }
+
+            // Create dummy part
+            if (createTemplatePart)
+            {
+                PartClass part = new PartClass()
+                {
+                    MPN = "Template",
+                    Description = "Template part",
+                    Stock = 0,
+                    Price = 0,
+                    Category = "Template catergory",
+                    Location = "Undefined",
+                };
+                AddPart(part);
             }
 
             return true;
         }
 
+        /// <summary>
+        /// Load the parts from the database
+        /// </summary>
+        /// <returns></returns>
         public List<PartClass> LoadDatabase()
         {
             // Create a connection to the database
@@ -117,6 +107,7 @@ namespace StockManagerDB
             {
                 // Part not found in remote DB. Add new instead
 
+                throw new InvalidOperationException("MPN not found in remote parts");
                 return false;
             }
 
@@ -135,7 +126,7 @@ namespace StockManagerDB
                 }
             }
 
-            if(changes.Count == 0)
+            if (changes.Count == 0)
             {
                 // No change made
                 return false;
@@ -156,8 +147,6 @@ namespace StockManagerDB
                         , connection))
                 {
                     command.ExecuteNonQuery();
-
-                    command.Dispose();
                 }
 
                 connection.Close();
@@ -170,14 +159,119 @@ namespace StockManagerDB
         }
 
         /// <summary>
-        /// Define a new ID for the part.
+        /// Remove the specified part from the database
+        /// </summary>
+        /// <param name="part"></param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        public bool RemovePart(string partMPN)
+        {
+            if (!remoteParts.ContainsKey(partMPN))
+            {
+                // Part not found in remote DB. Add new instead
+
+                throw new InvalidOperationException("MPN not found in remote parts");
+                return false;
+            }
+
+            using (SQLiteConnection connection = new SQLiteConnection($"Data Source={filename};Version=3;"))
+            {
+                connection.Open();
+
+                using (SQLiteCommand command = new SQLiteCommand($"DELETE FROM StockParts WHERE mpn='{partMPN}';"
+                        , connection))
+                {
+                    command.ExecuteNonQuery();
+                }
+
+                connection.Close();
+            }
+
+            remoteParts.Remove(partMPN);
+
+            return true;
+        }
+
+        /// <summary>
+        /// Remove the specified part from the database
+        /// </summary>
+        /// <param name="part"></param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        public bool RemovePart(PartClass part)
+        {
+            return RemovePart(part.MPN);
+        }
+
+        /// <summary>
+        /// Add a part to the database
+        /// </summary>
+        /// <param name="part"></param>
+        /// <returns></returns>
+        public bool AddPart(PartClass part)
+        {
+            if (remoteParts.ContainsKey(part.MPN))
+            {
+                // Old MPN not found
+                throw new InvalidOperationException("New MPN already existing in remote parts");
+            }
+
+            // Create a connection to the database
+            using (SQLiteConnection connection = new SQLiteConnection($"Data Source={filename};Version=3;"))
+            {
+                connection.Open();
+
+                // Insert part
+                using (SQLiteCommand command = new SQLiteCommand("INSERT INTO StockParts (mpn, manufacturer, description, category, storage, stock, low_stock, price, supplier, spn)\r\nVALUES (@MPN, @Manufacturer, @Description, @Category, @Storage, @Stock, @LowStock, @Price, @Supplier, @SPN);"
+                    , connection))
+                {
+                    command.Parameters.AddWithValue("@MPN", part.MPN);
+                    command.Parameters.AddWithValue("@Manufacturer", part.Manufacturer);
+                    command.Parameters.AddWithValue("@Description", part.Description);
+                    command.Parameters.AddWithValue("@Category", part.Category);
+                    command.Parameters.AddWithValue("@Storage", part.Location);
+                    command.Parameters.AddWithValue("@Stock", part.Stock);
+                    command.Parameters.AddWithValue("@LowStock", part.LowStock);
+                    command.Parameters.AddWithValue("@Price", part.Price);
+                    command.Parameters.AddWithValue("@Supplier", part.Supplier);
+                    command.Parameters.AddWithValue("@SPN", part.SPN);
+
+                    command.ExecuteNonQuery();
+                }
+                connection.Close();
+            }
+            remoteParts.Add(part.MPN, part);
+
+            return true;
+        }
+
+        /// <summary>
+        /// Define a new ID (MPN) for the part.
         /// </summary>
         /// <param name="newPart">The new PartClass part</param>
         /// <param name="oldMPN">The MPN of the old version of the part</param>
         /// <returns>True if success. False if failed</returns>
-        public bool RenamePart(PartClass newPart, string oldMPN)
+        public bool RenamePart(string oldMPN, string newMPN)
         {
+            if (!remoteParts.ContainsKey(oldMPN))
+            {
+                // Old MPN not found
+                throw new InvalidOperationException("Old MPN not found in remote parts");
+            }
+            if (remoteParts.ContainsKey(newMPN))
+            {
+                // Old MPN not found
+                throw new InvalidOperationException("New MPN already existing in remote parts");
+            }
 
+            PartClass part = remoteParts[oldMPN];
+            part.MPN = newMPN;
+
+            // Remove from DB
+            RemovePart(oldMPN);
+
+            // Add new
+            AddPart(part);
 
             return true;
         }

@@ -139,5 +139,151 @@ namespace StockManagerDB.Tests
             File.Delete(filename);
             Assert.IsTrue(!File.Exists(filename));
         }
+
+        [TestMethod()]
+        public void RenamePartTest()
+        {
+            string filename = "myDB5.sqlite";
+            if (File.Exists(filename))
+                File.Delete(filename);
+            Assert.IsTrue(!File.Exists(filename));
+
+            string lastMPN;
+            using (DBWrapper dbw = new DBWrapper(filename))
+            {
+                dbw.CreateDatabase(createTemplatePart: true);
+                Assert.IsTrue(File.Exists(filename));
+
+                var parts = dbw.LoadDatabase();
+
+                Assert.IsNotNull(parts);
+                Assert.AreEqual(1, parts.Count);
+                Assert.AreEqual("Template", parts[0].MPN);
+
+                lastMPN = "CustomPart";
+                dbw.RenamePart(parts[0].MPN, lastMPN);
+            }
+
+            using (DBWrapper dbw = new DBWrapper(filename))
+            {
+                var parts = dbw.LoadDatabase();
+
+                Assert.IsNotNull(parts);
+                Assert.AreEqual(1, parts.Count);
+                Assert.AreEqual(lastMPN, parts[0].MPN);
+            }
+
+            File.Delete(filename);
+            Assert.IsTrue(!File.Exists(filename));
+        }
+
+        [TestMethod()]
+        public void AddPartTest()
+        {
+            string filename = "myDB6.sqlite";
+            if (File.Exists(filename))
+                File.Delete(filename);
+            Assert.IsTrue(!File.Exists(filename));
+
+            PartClass myNewPart = new PartClass()
+            {
+                MPN = "MyCustomPart1",
+                Stock = 17.77f,
+            };
+
+            using (DBWrapper dbw = new DBWrapper(filename))
+            {
+                dbw.CreateDatabase(createTemplatePart: false);
+                Assert.IsTrue(File.Exists(filename));
+
+                var parts = dbw.LoadDatabase();
+
+                Assert.IsNotNull(parts);
+                Assert.AreEqual(0, parts.Count);
+
+                dbw.AddPart(myNewPart);
+            }
+
+            using (DBWrapper dbw = new DBWrapper(filename))
+            {
+                var parts = dbw.LoadDatabase();
+
+                Assert.IsNotNull(parts);
+                Assert.AreEqual(1, parts.Count);
+                Assert.AreEqual(myNewPart.MPN, parts[0].MPN);
+                Assert.AreEqual(myNewPart.Stock, parts[0].Stock);
+            }
+
+            File.Delete(filename);
+            Assert.IsTrue(!File.Exists(filename));
+        }
+
+        [TestMethod()]
+        public void RemovePartTest()
+        {
+            string filename = "myDB7.sqlite";
+            if (File.Exists(filename))
+                File.Delete(filename);
+            Assert.IsTrue(!File.Exists(filename));
+
+            using (DBWrapper dbw = new DBWrapper(filename))
+            {
+                dbw.CreateDatabase(createTemplatePart: true);
+                Assert.IsTrue(File.Exists(filename));
+
+                var parts = dbw.LoadDatabase();
+
+                Assert.IsNotNull(parts);
+                Assert.AreEqual(1, parts.Count);
+                Assert.AreEqual("Template", parts[0].MPN);
+
+                dbw.RemovePart(parts[0].MPN);
+            }
+
+            using (DBWrapper dbw = new DBWrapper(filename))
+            {
+                var parts = dbw.LoadDatabase();
+
+                Assert.IsNotNull(parts);
+                Assert.AreEqual(0, parts.Count);
+            }
+
+            File.Delete(filename);
+            Assert.IsTrue(!File.Exists(filename));
+        }
+
+        [TestMethod()]
+        public void RemovePartTest2()
+        {
+            string filename = "myDB7.sqlite";
+            if (File.Exists(filename))
+                File.Delete(filename);
+            Assert.IsTrue(!File.Exists(filename));
+
+            using (DBWrapper dbw = new DBWrapper(filename))
+            {
+                dbw.CreateDatabase(createTemplatePart: true);
+                Assert.IsTrue(File.Exists(filename));
+
+                var parts = dbw.LoadDatabase();
+
+                Assert.IsNotNull(parts);
+                Assert.AreEqual(1, parts.Count);
+                Assert.AreEqual("Template", parts[0].MPN);
+
+                dbw.RemovePart(parts[0]);
+            }
+
+            using (DBWrapper dbw = new DBWrapper(filename))
+            {
+                var parts = dbw.LoadDatabase();
+
+                Assert.IsNotNull(parts);
+                Assert.AreEqual(0, parts.Count);
+            }
+
+            File.Delete(filename);
+            Assert.IsTrue(!File.Exists(filename));
+        }
     }
 }
