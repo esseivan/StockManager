@@ -49,13 +49,19 @@ namespace StockManagerDB
         /// </summary>
         private bool IsDBOpen => (null != dbw);
 
+        /// <summary>
+        /// Update CheckListView when checkItemChanged
+        /// </summary>
+        private bool UpdateOnCheck = true;
+
         public Form1()
         {
             InitializeComponent();
             LoggerClass.Init();
 
-            partLV = fdlviewParts;
+            partLV = listviewParts;
             InitListView(partLV);
+            InitListView(listviewChecked);
 
             cbboxFilterType.SelectedIndex = 2;
 
@@ -99,6 +105,17 @@ namespace StockManagerDB
             olvcPrice.AspectGetter = delegate (object x) { return ((PartClass)x).Price; };
             olvcSupplier.AspectGetter = delegate (object x) { return ((PartClass)x).Supplier; };
             olvcSPN.AspectGetter = delegate (object x) { return ((PartClass)x).SPN; };
+
+            olvcMPN2.AspectGetter = delegate (object x) { return ((PartClass)x).MPN; };
+            olvcMAN2.AspectGetter = delegate (object x) { return ((PartClass)x).Manufacturer; };
+            olvcDesc2.AspectGetter = delegate (object x) { return ((PartClass)x).Description; };
+            olvcCat2.AspectGetter = delegate (object x) { return ((PartClass)x).Category; };
+            olvcLocation2.AspectGetter = delegate (object x) { return ((PartClass)x).Location; };
+            olvcStock2.AspectGetter = delegate (object x) { return ((PartClass)x).Stock; };
+            olvcLowStock2.AspectGetter = delegate (object x) { return ((PartClass)x).LowStock; };
+            olvcPrice2.AspectGetter = delegate (object x) { return ((PartClass)x).Price; };
+            olvcSupplier2.AspectGetter = delegate (object x) { return ((PartClass)x).Supplier; };
+            olvcSPN2.AspectGetter = delegate (object x) { return ((PartClass)x).SPN; };
         }
 
         private List<PartClass> GetCheckedParts()
@@ -277,30 +294,63 @@ namespace StockManagerDB
             dbw.RemovePartRange(checkedParts.Select((part) => part.MPN));
         }
 
-        private void btnDeleteChecked_Click(object sender, EventArgs e)
-        {
-            DeleteCheckedParts();
-        }
+        #region Actions
 
-        private void btnUncheckAll_Click(object sender, EventArgs e)
-        {
-            partLV.UncheckAll();
-            partLV.Focus();
-        }
-
-        private void btnCheckAll_Click(object sender, EventArgs e)
-        {
-            partLV.CheckAll();
-            partLV.Focus();
-        }
-
-        private void makeOrderToolStripMenuItem_Click(object sender, EventArgs e)
+        private void MakeOrder()
         {
             List<PartClass> parts = GetPartForProcess();
             // Select parts with current stock lower than lowStock limit
             var selected = parts.Where((part) => (part.Stock < part.LowStock));
 
             Console.WriteLine(selected.Count() + " parts to order");
+        }
+
+        #endregion
+
+        private void makeOrderToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MakeOrder();
+        }
+
+        private void UpdateCheckedListview()
+        {
+            if (!UpdateOnCheck)
+                return;
+
+            List<PartClass> checkedParts = GetCheckedParts();
+            listviewChecked.DataSource = checkedParts;
+        }
+
+        private void listviewParts_ItemChecked(object sender, ItemCheckedEventArgs e)
+        {
+            UpdateCheckedListview();
+        }
+
+        private void checkAllInViewToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            UpdateOnCheck = false;
+            //partLV.CheckAll();
+            partLV.CheckObjects(partLV.FilteredObjects);
+            partLV.Focus();
+            UpdateOnCheck = true;
+            UpdateCheckedListview();
+        }
+
+        private void uncheckAllInViewToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            partLV.CheckObjects(partLV.FilteredObjects);
+
+            UpdateOnCheck = false;
+            //partLV.UncheckAll();
+            partLV.UncheckObjects(partLV.FilteredObjects);
+            partLV.Focus();
+            UpdateOnCheck = true;
+            UpdateCheckedListview();
+        }
+
+        private void DELETECheckedToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DeleteCheckedParts();
         }
     }
 }
