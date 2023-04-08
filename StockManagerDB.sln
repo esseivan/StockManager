@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32804.467
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockManagerDB", "StockManagerDB\StockManagerDB.csproj", "{C84CCFAA-21D9-4EC3-8A22-A9EC86BBB255}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockManagerDBTests", "StockManagerDBTests\StockManagerDBTests.csproj", "{7F7DAE1C-FE18-40F4-8D24-38ABDF4745FF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C84CCFAA-21D9-4EC3-8A22-A9EC86BBB255}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C84CCFAA-21D9-4EC3-8A22-A9EC86BBB255}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C84CCFAA-21D9-4EC3-8A22-A9EC86BBB255}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C84CCFAA-21D9-4EC3-8A22-A9EC86BBB255}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7F7DAE1C-FE18-40F4-8D24-38ABDF4745FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F7DAE1C-FE18-40F4-8D24-38ABDF4745FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F7DAE1C-FE18-40F4-8D24-38ABDF4745FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F7DAE1C-FE18-40F4-8D24-38ABDF4745FF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {AC037583-32B7-4F75-9B66-ACB102CA78EC}
+	EndGlobalSection
+EndGlobal
