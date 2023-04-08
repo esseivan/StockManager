@@ -28,9 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
             this.fdlviewParts = new BrightIdeasSoftware.FastDataListView();
             this.olvcSelect = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcMPN = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
@@ -43,46 +40,24 @@
             this.olvcPrice = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcSupplier = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcSPN = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.button4 = new System.Windows.Forms.Button();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newDatabaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openDatabaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.databaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importFromExcelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.cbboxFilterType = new System.Windows.Forms.ComboBox();
+            this.txtboxFilter = new System.Windows.Forms.TextBox();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.btnDeleteChecked = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
+            this.button3 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.fdlviewParts)).BeginInit();
             this.menuStrip1.SuspendLayout();
+            this.groupBox3.SuspendLayout();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(93, 27);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "Create new";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
-            // button2
-            // 
-            this.button2.Location = new System.Drawing.Point(174, 27);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
-            this.button2.TabIndex = 0;
-            this.button2.Text = "Load";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
-            // 
-            // button3
-            // 
-            this.button3.Location = new System.Drawing.Point(255, 27);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(75, 23);
-            this.button3.TabIndex = 0;
-            this.button3.Text = "Edit part";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
             // fdlviewParts
             // 
@@ -121,14 +96,14 @@
             this.fdlviewParts.DataSource = null;
             this.fdlviewParts.EmptyListMsg = "(Empty)";
             this.fdlviewParts.HideSelection = false;
-            this.fdlviewParts.Location = new System.Drawing.Point(11, 125);
+            this.fdlviewParts.Location = new System.Drawing.Point(11, 97);
             this.fdlviewParts.Margin = new System.Windows.Forms.Padding(2);
             this.fdlviewParts.Name = "fdlviewParts";
             this.fdlviewParts.SelectColumnsOnRightClickBehaviour = BrightIdeasSoftware.ObjectListView.ColumnSelectBehaviour.Submenu;
             this.fdlviewParts.ShowCommandMenuOnRightClick = true;
             this.fdlviewParts.ShowGroups = false;
             this.fdlviewParts.ShowImagesOnSubItems = true;
-            this.fdlviewParts.Size = new System.Drawing.Size(778, 314);
+            this.fdlviewParts.Size = new System.Drawing.Size(778, 342);
             this.fdlviewParts.SortGroupItemsByPrimaryColumn = false;
             this.fdlviewParts.TabIndex = 6;
             this.fdlviewParts.TintSortColumn = true;
@@ -203,16 +178,6 @@
             this.olvcSPN.Text = "SPN";
             this.olvcSPN.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
-            // button4
-            // 
-            this.button4.Location = new System.Drawing.Point(12, 27);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(75, 23);
-            this.button4.TabIndex = 7;
-            this.button4.Text = "Test";
-            this.button4.UseVisualStyleBackColor = true;
-            this.button4.Click += new System.EventHandler(this.button4_Click);
-            // 
             // menuStrip1
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -258,37 +223,111 @@
             // importFromExcelToolStripMenuItem
             // 
             this.importFromExcelToolStripMenuItem.Name = "importFromExcelToolStripMenuItem";
-            this.importFromExcelToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.importFromExcelToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
             this.importFromExcelToolStripMenuItem.Text = "Import from Excel";
             this.importFromExcelToolStripMenuItem.Click += new System.EventHandler(this.importFromExcelToolStripMenuItem_Click);
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox3.Controls.Add(this.cbboxFilterType);
+            this.groupBox3.Controls.Add(this.txtboxFilter);
+            this.groupBox3.Location = new System.Drawing.Point(575, 27);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(214, 44);
+            this.groupBox3.TabIndex = 36;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Filter";
+            // 
+            // cbboxFilterType
+            // 
+            this.cbboxFilterType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbboxFilterType.FormattingEnabled = true;
+            this.cbboxFilterType.Items.AddRange(new object[] {
+            "Any text",
+            "Prefix",
+            "Regex"});
+            this.cbboxFilterType.Location = new System.Drawing.Point(114, 18);
+            this.cbboxFilterType.Name = "cbboxFilterType";
+            this.cbboxFilterType.Size = new System.Drawing.Size(94, 21);
+            this.cbboxFilterType.TabIndex = 1;
+            this.cbboxFilterType.SelectedIndexChanged += new System.EventHandler(this.cbboxFilterType_SelectedIndexChanged);
+            // 
+            // txtboxFilter
+            // 
+            this.txtboxFilter.Location = new System.Drawing.Point(7, 18);
+            this.txtboxFilter.Name = "txtboxFilter";
+            this.txtboxFilter.Size = new System.Drawing.Size(100, 20);
+            this.txtboxFilter.TabIndex = 0;
+            this.txtboxFilter.TextChanged += new System.EventHandler(this.txtboxFilter_TextChanged);
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Controls.Add(this.btnDeleteChecked);
+            this.groupBox1.Controls.Add(this.button2);
+            this.groupBox1.Controls.Add(this.button3);
+            this.groupBox1.Location = new System.Drawing.Point(284, 27);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(285, 44);
+            this.groupBox1.TabIndex = 39;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Controls";
+            // 
+            // btnDeleteChecked
+            // 
+            this.btnDeleteChecked.Location = new System.Drawing.Point(6, 15);
+            this.btnDeleteChecked.Margin = new System.Windows.Forms.Padding(3, 3, 9, 3);
+            this.btnDeleteChecked.Name = "btnDeleteChecked";
+            this.btnDeleteChecked.Size = new System.Drawing.Size(105, 23);
+            this.btnDeleteChecked.TabIndex = 37;
+            this.btnDeleteChecked.Text = "Delete checked";
+            this.btnDeleteChecked.UseVisualStyleBackColor = true;
+            this.btnDeleteChecked.Click += new System.EventHandler(this.btnDeleteChecked_Click);
+            // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(204, 16);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(75, 23);
+            this.button2.TabIndex = 37;
+            this.button2.Text = "Select All";
+            this.button2.UseVisualStyleBackColor = true;
+            // 
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(123, 15);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(75, 23);
+            this.button3.TabIndex = 37;
+            this.button3.Text = "Deselect All";
+            this.button3.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.button4);
+            this.Controls.Add(this.groupBox1);
+            this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.fdlviewParts);
-            this.Controls.Add(this.button3);
-            this.Controls.Add(this.button2);
-            this.Controls.Add(this.button1);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
             this.Text = "Form1";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             ((System.ComponentModel.ISupportInitialize)(this.fdlviewParts)).EndInit();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
+            this.groupBox1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
 
         #endregion
-
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button3;
         private BrightIdeasSoftware.FastDataListView fdlviewParts;
         private BrightIdeasSoftware.OLVColumn olvcMAN;
         private BrightIdeasSoftware.OLVColumn olvcDesc;
@@ -300,7 +339,6 @@
         private BrightIdeasSoftware.OLVColumn olvcPrice;
         private BrightIdeasSoftware.OLVColumn olvcSupplier;
         private BrightIdeasSoftware.OLVColumn olvcSPN;
-        private System.Windows.Forms.Button button4;
         private BrightIdeasSoftware.OLVColumn olvcSelect;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
@@ -308,6 +346,13 @@
         private System.Windows.Forms.ToolStripMenuItem openDatabaseToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem databaseToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem importFromExcelToolStripMenuItem;
+        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.ComboBox cbboxFilterType;
+        private System.Windows.Forms.TextBox txtboxFilter;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.Button btnDeleteChecked;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button button3;
     }
 }
 

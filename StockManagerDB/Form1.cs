@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Button;
 
 namespace StockManagerDB
 {
@@ -18,6 +19,7 @@ namespace StockManagerDB
         /// filepath to the database
         /// </summary>
         private string filepath = string.Empty;
+
         /// <summary>
         /// Manage the database
         /// </summary>
@@ -31,15 +33,15 @@ namespace StockManagerDB
             }
         }
         private DBWrapper _dbw = null;
+
         /// <summary>
         /// The listview where the parts are displayed
         /// </summary>
         private readonly FastDataListView partLV;
 
-
-        const string Filename = "myDB.sqlite";
-        ExcelManager em = new ExcelManager(@"C:\Workspace\01_Programming\StockManagerExcelBased\Import.xlsx");
-
+        /// <summary>
+        /// List of parts in the database
+        /// </summary>
         public List<PartClass> parts => dbw.PartsList;
 
         /// <summary>
@@ -50,9 +52,14 @@ namespace StockManagerDB
         public Form1()
         {
             InitializeComponent();
+            LoggerClass.Init();
 
             partLV = fdlviewParts;
             InitListView(partLV);
+
+            cbboxFilterType.SelectedIndex = 2;
+
+            LoggerClass.Write("Idle");
         }
 
         #region Display
@@ -61,6 +68,7 @@ namespace StockManagerDB
         {
             partLV.DataSource = parts;
             partLV.AutoResizeColumns();
+            partLV.Focus();
         }
 
         private void Dbw_OnListModified(object sender, EventArgs e)
@@ -69,25 +77,6 @@ namespace StockManagerDB
         }
 
         #endregion
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            dbw.CreateDatabase(true, true);
-        }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-            dbw.LoadDatabaseList();
-            parts.ForEach((x) => Console.WriteLine(x.ToString()));
-
-        }
-
-        private void button3_Click(object sender, EventArgs e)
-        {
-            parts[0].Stock += 0.02f;
-
-            dbw.UpdatePart(parts[0]);
-        }
 
         #region ListView management
 
@@ -112,25 +101,28 @@ namespace StockManagerDB
             olvcSPN.AspectGetter = delegate (object x) { return ((PartClass)x).SPN; };
         }
 
+        private List<PartClass> GetCheckedParts()
+        {
+            return partLV.CheckedObjectsEnumerable.Cast<PartClass>().ToList();
+        }
+
+        private List<PartClass> GetAll()
+        {
+            return parts;
+        }
+
+        private List<PartClass> GetPartForProcess()
+        {
+            //if (checkBox2.Checked)
+                return GetCheckedParts();
+            //return GetAll();
+        }
+
         #endregion
 
-        private void button4_Click(object sender, EventArgs e)
-        {
-            dbw.CreateDatabase();
-            dbw.LoadDatabaseList();
-            PartClass newPart = new PartClass() { MPN = "T1", Stock = 2, Location = "D003" };
-            bool res = dbw.AddPart(newPart);
-            if (!res)
-            {
-                Console.WriteLine("Unable to add part, already existing : " + newPart.ToString());
-            }
-        }
-
-        private void button5_Click(object sender, EventArgs e)
-        {
-        }
-
-        
+        /// <summary>
+        /// Import parts from excel file into the database
+        /// </summary>
         private void ImportFromExcel()
         {
             if (!IsDBOpen)
@@ -167,6 +159,9 @@ namespace StockManagerDB
             ImportFromExcel();
         }
 
+        /// <summary>
+        /// Create a new empty database
+        /// </summary>
         private void CreateNewDatabase()
         {
             SaveFileDialog fsd = new SaveFileDialog()
@@ -192,6 +187,9 @@ namespace StockManagerDB
             CreateNewDatabase();
         }
 
+        /// <summary>
+        /// Open the specified database
+        /// </summary>
         private void OpenDatabase()
         {
             OpenFileDialog ofd = new OpenFileDialog()
@@ -209,6 +207,75 @@ namespace StockManagerDB
         private void openDatabaseToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenDatabase();
+        }
+
+        /// <summary>
+        /// Filter a text in the part list
+        /// </summary>
+        /// <param name="txt">Text to filter</param>
+        /// <param name="matchKind">Type of filter</param>
+        public void Filter(string txt, int matchKind)
+        {
+            ObjectListView olv = partLV;
+            TextMatchFilter filter = null;
+            if (!string.IsNullOrEmpty(txt))
+            {
+                switch (matchKind)
+                {
+                    case 0:
+                    default:
+                        filter = TextMatchFilter.Contains(olv, txt);
+                        break;
+                    case 1:
+                        filter = TextMatchFilter.Prefix(olv, txt);
+                        break;
+                    case 2:
+                        filter = TextMatchFilter.Regex(olv, txt);
+                        break;
+                }
+            }
+
+            // Text highlighting requires at least a default renderer
+            if (olv.DefaultRenderer == null)
+                olv.DefaultRenderer = new HighlightTextRenderer(filter);
+
+            olv.AdditionalFilter = filter;
+        }
+
+        private void txtboxFilter_TextChanged(object sender, EventArgs e)
+        {
+            Filter(((TextBox)sender).Text, this.cbboxFilterType.SelectedIndex);
+        }
+
+        private void cbboxFilterType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Filter(txtboxFilter.Text, this.cbboxFilterType.SelectedIndex);
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            LoggerClass.Write("Closing... Stopping logger", "Info");
+            LoggerClass.logger.Dispose();
+        }
+
+        /// <summary>
+        /// Delete the checked parts
+        /// </summary>
+        private void DeleteCheckedParts()
+        {
+            var checkedParts = GetCheckedParts();
+
+            if (MessageBox.Show($"Please confirm the deletion of '{checkedParts.Count}' parts. This cannot be undone !\nContinue ?", "Warning", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning) != DialogResult.Yes)
+            {
+                return;
+            }
+
+            dbw.RemovePartRange(checkedParts.Select((part) => part.MPN));
+        }
+
+        private void btnDeleteChecked_Click(object sender, EventArgs e)
+        {
+            DeleteCheckedParts();
         }
     }
 }

@@ -236,6 +236,48 @@ namespace StockManagerDB
             return true;
         }
 
+
+        /// <summary>
+        /// Remove the parts specified from the database
+        /// </summary>
+        /// <param name="part"></param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        public bool RemovePartRange(IEnumerable<string> MPN_List)
+        {
+            using (SQLiteConnection connection = new SQLiteConnection($"Data Source={filename};Version=3;"))
+            {
+                connection.Open();
+
+                foreach (string partMPN in MPN_List)
+                {
+                    if (!remoteParts.ContainsKey(partMPN))
+                    {
+                        // Part not found in remote DB. Add new instead
+                        LoggerClass.Write($"Unable to delete part '{partMPN}' because it was not present in the list...");
+                        continue;
+                    }
+
+                    using (SQLiteCommand command = new SQLiteCommand($"DELETE FROM StockParts WHERE mpn='{partMPN}';"
+                            , connection))
+                    {
+                        command.ExecuteNonQuery();
+                    }
+                }
+
+                connection.Close();
+            }
+
+            foreach (string partMPN in MPN_List)
+            {
+                remoteParts.Remove(partMPN);
+                localParts.Remove(partMPN);
+            }
+            OnListModified?.Invoke(this, EventArgs.Empty);
+
+            return true;
+        }
+
         /// <summary>
         /// Remove the specified part from the database
         /// </summary>

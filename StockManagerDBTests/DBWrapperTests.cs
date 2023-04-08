@@ -285,5 +285,123 @@ namespace StockManagerDB.Tests
             File.Delete(filename);
             Assert.IsTrue(!File.Exists(filename));
         }
+
+        [TestMethod()]
+        public void AddPartRangeTest()
+        {
+            string filename = "myDB8.sqlite";
+            if (File.Exists(filename))
+                File.Delete(filename);
+            Assert.IsTrue(!File.Exists(filename));
+
+            using (DBWrapper dbw = new DBWrapper(filename))
+            {
+                dbw.CreateDatabase(createTemplatePart: false);
+                Assert.IsTrue(File.Exists(filename));
+
+                var parts = dbw.LoadDatabaseList();
+
+                Assert.IsNotNull(parts);
+                Assert.AreEqual(0, parts.Count);
+
+                PartClass p1 = new PartClass()
+                {
+                    MPN = "Hello world",
+                    Description = "The cake is a lie",
+                    Stock = 666,
+                };
+                PartClass p2 = new PartClass()
+                {
+                    MPN = "Test2",
+                    Description = "Description here",
+                    Stock = -1,
+                };
+                List<PartClass> newparts = new List<PartClass>();
+                newparts.Add(p1); newparts.Add(p2);
+                dbw.AddPartRange(newparts);
+            }
+
+            using (DBWrapper dbw = new DBWrapper(filename))
+            {
+                var parts = dbw.LoadDatabaseList();
+
+                Assert.IsNotNull(parts);
+                Assert.AreEqual(2, parts.Count);
+                Assert.AreEqual("Hello world", parts[0].MPN);
+                Assert.AreEqual(666, parts[0].Stock);
+                Assert.AreEqual(-1, parts[1].Stock);
+            }
+
+            File.Delete(filename);
+            Assert.IsTrue(!File.Exists(filename));
+        }
+
+        [TestMethod()]
+        public void RemovePartRangeTest()
+        {
+            string filename = "myDB9.sqlite";
+            if (File.Exists(filename))
+                File.Delete(filename);
+            Assert.IsTrue(!File.Exists(filename));
+
+            using (DBWrapper dbw = new DBWrapper(filename))
+            {
+                dbw.CreateDatabase(createTemplatePart: true);
+                Assert.IsTrue(File.Exists(filename));
+
+                var parts = dbw.LoadDatabaseList();
+
+                Assert.IsNotNull(parts);
+                Assert.AreEqual(1, parts.Count);
+                Assert.AreEqual("Template", parts[0].MPN);
+
+                PartClass p1 = new PartClass()
+                {
+                    MPN = "Hello world",
+                    Description = "The cake is a lie",
+                    Stock = 666,
+                };
+                PartClass p2 = new PartClass()
+                {
+                    MPN = "Test2",
+                    Description = "Description here",
+                    Stock = -1,
+                };
+                List<PartClass> newparts = new List<PartClass>();
+                newparts.Add(p1); newparts.Add(p2);
+                dbw.AddPartRange(newparts);
+            }
+
+            using (DBWrapper dbw = new DBWrapper(filename))
+            {
+                var parts = dbw.LoadDatabaseList();
+
+                Assert.IsNotNull(parts);
+                Assert.AreEqual(3, parts.Count);
+                Assert.AreEqual("Template", parts[0].MPN);
+                Assert.AreEqual("Hello world", parts[1].MPN);
+                Assert.AreEqual(666, parts[1].Stock);
+                Assert.AreEqual(-1, parts[2].Stock);
+
+                string[] removeRange = new string[]
+                {
+                    parts[0].MPN,
+                    parts[2].MPN,
+                };
+                dbw.RemovePartRange(removeRange);
+            }
+
+            using (DBWrapper dbw = new DBWrapper(filename))
+            {
+                var parts = dbw.LoadDatabaseList();
+
+                Assert.IsNotNull(parts);
+                Assert.AreEqual(1, parts.Count);
+                Assert.AreEqual("Hello world", parts[0].MPN);
+            }
+
+            File.Delete(filename);
+            Assert.IsTrue(!File.Exists(filename));
+        }
     }
 }
