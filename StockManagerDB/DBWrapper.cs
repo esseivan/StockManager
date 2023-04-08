@@ -9,14 +9,34 @@ using System.Threading.Tasks;
 
 namespace StockManagerDB
 {
-    public class DBWrapper
+    public class DBWrapper : IDisposable
     {
         private readonly string filename;
-        private Dictionary<string, PartClass> remoteParts = null;
+        private Dictionary<string, PartClass> remoteParts = new Dictionary<string, PartClass>();
+        private Dictionary<string, PartClass> localParts = new Dictionary<string, PartClass>();
+
+
+        public Dictionary<string, PartClass> Parts => localParts;
+        public List<PartClass> PartsList => localParts.Values.ToList();
 
         public DBWrapper(string filename)
         {
             this.filename = filename;
+        }
+
+        /// <summary>
+        /// Synchronise parts with actual remote ones
+        /// </summary>
+        /// <returns></returns>
+        public Dictionary<string, PartClass> CloneParts(Dictionary<string, PartClass> parts)
+        {
+            Dictionary<string, PartClass> output = new Dictionary<string, PartClass>();
+            foreach (var item in parts)
+            {
+                output.Add(item.Key, item.Value.Clone() as PartClass);
+            }
+
+            return output;
         }
 
         /// <summary>
@@ -42,41 +62,34 @@ namespace StockManagerDB
                     command.ExecuteNonQuery();
                 }
 
-                // Create dummy part
-                if (createTemplatePart)
-                {
-                    PartClass part = new PartClass()
-                    {
-                        MPN = "Template",
-                        Description = "Template part",
-                        Stock = 0,
-                        Price = 0,
-                        Category = "Template catergory",
-                        Location = "Undefined",
-                    };
-                    using (SQLiteCommand command = new SQLiteCommand("INSERT INTO StockParts (mpn, manufacturer, description, category, storage, stock, low_stock, price, supplier, spn)\r\nVALUES (@MPN, @Manufacturer, @Description, @Category, @Storage, @Stock, @LowStock, @Price, @Supplier, @SPN);"
-                        , connection))
-                    {
-                        command.Parameters.AddWithValue("@MPN", part.MPN);
-                        command.Parameters.AddWithValue("@Manufacturer", part.Manufacturer);
-                        command.Parameters.AddWithValue("@Description", part.Description);
-                        command.Parameters.AddWithValue("@Category", part.Category);
-                        command.Parameters.AddWithValue("@Storage", part.Location);
-                        command.Parameters.AddWithValue("@Stock", part.Stock);
-                        command.Parameters.AddWithValue("@LowStock", part.LowStock);
-                        command.Parameters.AddWithValue("@Price", part.Price);
-                        command.Parameters.AddWithValue("@Supplier", part.Supplier);
-                        command.Parameters.AddWithValue("@SPN", part.SPN);
+                connection.Close();
+            }
 
-                        command.ExecuteNonQuery();
-                    }
-                }
+            remoteParts = new Dictionary<string, PartClass>();
+            localParts = new Dictionary<string, PartClass>();
+            // Create dummy part
+            if (createTemplatePart)
+            {
+                PartClass part = new PartClass()
+                {
+                    MPN = "Template",
+                    Description = "Template part",
+                    Stock = 0,
+                    Price = 0,
+                    Category = "Template catergory",
+                    Location = "Undefined",
+                };
+                AddPart(part);
             }
 
             return true;
         }
 
-        public List<PartClass> LoadDatabase()
+        /// <summary>
+        /// Load the parts from the database
+        /// </summary>
+        /// <returns></returns>
+        public Dictionary<string, PartClass> LoadDatabase()
         {
             // Create a connection to the database
             using (SQLiteConnection connection = new SQLiteConnection($"Data Source={filename};Version=3;"))
@@ -93,13 +106,27 @@ namespace StockManagerDB
                 List<PartClass> newParts = PartClass.CreateFromDB(dataTable);
 
                 remoteParts = new Dictionary<string, PartClass>();
+                localParts = new Dictionary<string, PartClass>();
                 foreach (PartClass part in newParts)
                 {
-                    remoteParts.Add(part.MPN, part.Clone());
+                    remoteParts.Add(part.MPN, part);
+                    localParts.Add(part.MPN, part.Clone() as PartClass);
                 }
 
-                return newParts;
+                dataAdapter.Dispose();
+                connection.Close();
             }
+
+            return localParts;
+        }
+
+        /// <summary>
+        /// Load the parts from the database
+        /// </summary>
+        /// <returns></returns>
+        public List<PartClass> LoadDatabaseList()
+        {
+            return LoadDatabase().Values.ToList();
         }
 
         /// <summary>
@@ -114,6 +141,7 @@ namespace StockManagerDB
             {
                 // Part not found in remote DB. Add new instead
 
+                throw new InvalidOperationException("MPN not found in remote parts");
                 return false;
             }
 
@@ -132,7 +160,7 @@ namespace StockManagerDB
                 }
             }
 
-            if(changes.Count == 0)
+            if (changes.Count == 0)
             {
                 // No change made
                 return false;
@@ -154,25 +182,138 @@ namespace StockManagerDB
                 {
                     command.ExecuteNonQuery();
                 }
+
+                connection.Close();
             }
 
             // Save to remote buffer
-            remoteParts[updatedPart.MPN] = updatedPart.Clone();
+            remoteParts[updatedPart.MPN] = updatedPart.Clone() as PartClass;
 
             return true;
         }
 
         /// <summary>
-        /// Define a new ID for the part.
+        /// Remove the specified part from the database
+        /// </summary>
+        /// <param name="part"></param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        public bool RemovePart(string partMPN)
+        {
+            if (!remoteParts.ContainsKey(partMPN))
+            {
+                // Part not found in remote DB. Add new instead
+
+                throw new InvalidOperationException("MPN not found in remote parts");
+                return false;
+            }
+
+            using (SQLiteConnection connection = new SQLiteConnection($"Data Source={filename};Version=3;"))
+            {
+                connection.Open();
+
+                using (SQLiteCommand command = new SQLiteCommand($"DELETE FROM StockParts WHERE mpn='{partMPN}';"
+                        , connection))
+                {
+                    command.ExecuteNonQuery();
+                }
+
+                connection.Close();
+            }
+
+            remoteParts.Remove(partMPN);
+            localParts.Remove(partMPN);
+
+            return true;
+        }
+
+        /// <summary>
+        /// Remove the specified part from the database
+        /// </summary>
+        /// <param name="part"></param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        public bool RemovePart(PartClass part)
+        {
+            return RemovePart(part.MPN);
+        }
+
+        /// <summary>
+        /// Add a part to the database
+        /// </summary>
+        /// <param name="part"></param>
+        /// <returns></returns>
+        public bool AddPart(PartClass part)
+        {
+            if (remoteParts.ContainsKey(part.MPN))
+            {
+                return false;
+            }
+
+            // Create a connection to the database
+            using (SQLiteConnection connection = new SQLiteConnection($"Data Source={filename};Version=3;"))
+            {
+                connection.Open();
+
+                // Insert part
+                using (SQLiteCommand command = new SQLiteCommand("INSERT INTO StockParts (mpn, manufacturer, description, category, storage, stock, low_stock, price, supplier, spn)\r\nVALUES (@MPN, @Manufacturer, @Description, @Category, @Storage, @Stock, @LowStock, @Price, @Supplier, @SPN);"
+                    , connection))
+                {
+                    command.Parameters.AddWithValue("@MPN", part.MPN);
+                    command.Parameters.AddWithValue("@Manufacturer", part.Manufacturer);
+                    command.Parameters.AddWithValue("@Description", part.Description);
+                    command.Parameters.AddWithValue("@Category", part.Category);
+                    command.Parameters.AddWithValue("@Storage", part.Location);
+                    command.Parameters.AddWithValue("@Stock", part.Stock);
+                    command.Parameters.AddWithValue("@LowStock", part.LowStock);
+                    command.Parameters.AddWithValue("@Price", part.Price);
+                    command.Parameters.AddWithValue("@Supplier", part.Supplier);
+                    command.Parameters.AddWithValue("@SPN", part.SPN);
+
+                    command.ExecuteNonQuery();
+                }
+                connection.Close();
+            }
+            remoteParts.Add(part.MPN, part);
+            localParts.Add(part.MPN, part.Clone() as PartClass);
+
+            return true;
+        }
+
+        /// <summary>
+        /// Define a new ID (MPN) for the part.
         /// </summary>
         /// <param name="newPart">The new PartClass part</param>
         /// <param name="oldMPN">The MPN of the old version of the part</param>
         /// <returns>True if success. False if failed</returns>
-        public bool RenamePart(PartClass newPart, string oldMPN)
+        public bool RenamePart(string oldMPN, string newMPN)
         {
+            if (!remoteParts.ContainsKey(oldMPN))
+            {
+                // Old MPN not found
+                throw new InvalidOperationException("Old MPN not found in remote parts");
+            }
+            if (remoteParts.ContainsKey(newMPN))
+            {
+                // Old MPN not found
+                throw new InvalidOperationException("New MPN already existing in remote parts");
+            }
 
+            PartClass part = remoteParts[oldMPN];
+            part.MPN = newMPN;
+
+            // Remove from DB
+            RemovePart(oldMPN);
+
+            // Add new
+            AddPart(part);
 
             return true;
+        }
+
+        public void Dispose()
+        {
+
         }
     }
 }

@@ -8,7 +8,7 @@ namespace StockManagerDB
     /// <summary>
     /// Define a single part.
     /// </summary>
-    public class PartClass
+    public class PartClass : ICloneable
     {
         /// <summary>
         /// Manufacturer
@@ -251,7 +251,7 @@ namespace StockManagerDB
             return $"MPN:{MPN}; Stock:{Stock}; Location:{Location}";
         }
 
-        public PartClass Clone()
+        public object Clone()
         {
             PartClass newPart = new PartClass();
 
