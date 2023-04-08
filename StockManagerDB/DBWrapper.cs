@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace StockManagerDB
 {
-    public class DBWrapper
+    public class DBWrapper : IDisposable
     {
         private readonly string filename;
         private Dictionary<string, PartClass> remoteParts = null;
@@ -71,6 +71,7 @@ namespace StockManagerDB
                         command.ExecuteNonQuery();
                     }
                 }
+                connection.Close();
             }
 
             return true;
@@ -98,6 +99,8 @@ namespace StockManagerDB
                     remoteParts.Add(part.MPN, part.Clone());
                 }
 
+                dataAdapter.Dispose();
+                connection.Close();
                 return newParts;
             }
         }
@@ -153,7 +156,11 @@ namespace StockManagerDB
                         , connection))
                 {
                     command.ExecuteNonQuery();
+
+                    command.Dispose();
                 }
+
+                connection.Close();
             }
 
             // Save to remote buffer
@@ -173,6 +180,11 @@ namespace StockManagerDB
 
 
             return true;
+        }
+
+        public void Dispose()
+        {
+
         }
     }
 }
