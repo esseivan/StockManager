@@ -15,6 +15,7 @@ namespace StockManagerDB
         private Dictionary<string, PartClass> remoteParts = new Dictionary<string, PartClass>();
         private Dictionary<string, PartClass> localParts = new Dictionary<string, PartClass>();
 
+        public event EventHandler<EventArgs> OnListModified;
 
         public Dictionary<string, PartClass> Parts => localParts;
         public List<PartClass> PartsList => localParts.Values.ToList();
@@ -67,6 +68,7 @@ namespace StockManagerDB
 
             remoteParts = new Dictionary<string, PartClass>();
             localParts = new Dictionary<string, PartClass>();
+
             // Create dummy part
             if (createTemplatePart)
             {
@@ -80,6 +82,10 @@ namespace StockManagerDB
                     Location = "Undefined",
                 };
                 AddPart(part);
+            }
+            else
+            {
+                OnListModified?.Invoke(this, EventArgs.Empty);
             }
 
             return true;
@@ -107,12 +113,14 @@ namespace StockManagerDB
 
                 remoteParts = new Dictionary<string, PartClass>();
                 localParts = new Dictionary<string, PartClass>();
+
                 foreach (PartClass part in newParts)
                 {
                     remoteParts.Add(part.MPN, part);
                     localParts.Add(part.MPN, part.Clone() as PartClass);
                 }
 
+                OnListModified?.Invoke(this, EventArgs.Empty);
                 dataAdapter.Dispose();
                 connection.Close();
             }
@@ -223,6 +231,7 @@ namespace StockManagerDB
 
             remoteParts.Remove(partMPN);
             localParts.Remove(partMPN);
+            OnListModified?.Invoke(this, EventArgs.Empty);
 
             return true;
         }
@@ -276,8 +285,63 @@ namespace StockManagerDB
             }
             remoteParts.Add(part.MPN, part);
             localParts.Add(part.MPN, part.Clone() as PartClass);
+            OnListModified?.Invoke(this, EventArgs.Empty);
 
             return true;
+        }
+
+        /// <summary>
+        /// Add a list of part. Only call the OnListModified event once
+        /// </summary>
+        /// <param name="parts"></param>
+        /// <returns>List of added parts. Compare to check which were not added</returns>
+        public List<PartClass> AddPartRange(IEnumerable<PartClass> parts)
+        {
+            List<PartClass> addedParts = new List<PartClass>();
+            // Create a connection to the database
+            using (SQLiteConnection connection = new SQLiteConnection($"Data Source={filename};Version=3;"))
+            {
+                connection.Open();
+
+                foreach (PartClass part in parts)
+                {
+                    // Part already exists
+                    if (remoteParts.ContainsKey(part.MPN))
+                    {
+                        continue;
+                    }
+                    addedParts.Add(part);
+
+                    // Insert part
+                    using (SQLiteCommand command = new SQLiteCommand("INSERT INTO StockParts (mpn, manufacturer, description, category, storage, stock, low_stock, price, supplier, spn)\r\nVALUES (@MPN, @Manufacturer, @Description, @Category, @Storage, @Stock, @LowStock, @Price, @Supplier, @SPN);"
+                        , connection))
+                    {
+                        command.Parameters.AddWithValue("@MPN", part.MPN);
+                        command.Parameters.AddWithValue("@Manufacturer", part.Manufacturer);
+                        command.Parameters.AddWithValue("@Description", part.Description);
+                        command.Parameters.AddWithValue("@Category", part.Category);
+                        command.Parameters.AddWithValue("@Storage", part.Location);
+                        command.Parameters.AddWithValue("@Stock", part.Stock);
+                        command.Parameters.AddWithValue("@LowStock", part.LowStock);
+                        command.Parameters.AddWithValue("@Price", part.Price);
+                        command.Parameters.AddWithValue("@Supplier", part.Supplier);
+                        command.Parameters.AddWithValue("@SPN", part.SPN);
+
+                        command.ExecuteNonQuery();
+                    }
+                }
+
+                connection.Close();
+            }
+
+            addedParts.ForEach((part) =>
+            {
+                remoteParts.Add(part.MPN, part);
+                localParts.Add(part.MPN, part.Clone() as PartClass);
+            });
+            OnListModified?.Invoke(this, EventArgs.Empty);
+
+            return addedParts;
         }
 
         /// <summary>
