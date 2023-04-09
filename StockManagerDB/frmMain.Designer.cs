@@ -43,6 +43,7 @@
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.makeOrderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.addToProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.selectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.checkAllInViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.uncheckAllInViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -78,7 +79,10 @@
             this.olvcSPN2 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.labelCount = new System.Windows.Forms.ToolStripStatusLabel();
-            this.addToProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.btnAddPart = new System.Windows.Forms.Button();
+            this.btnDuplicatePart = new System.Windows.Forms.Button();
+            this.btnDeletePart = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             this.groupBox3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -88,6 +92,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.listviewParts)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.listviewChecked)).BeginInit();
             this.statusStrip1.SuspendLayout();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -214,6 +219,13 @@
             this.toolStripSeparator2.Name = "toolStripSeparator2";
             this.toolStripSeparator2.Size = new System.Drawing.Size(205, 6);
             // 
+            // addToProjectToolStripMenuItem
+            // 
+            this.addToProjectToolStripMenuItem.Name = "addToProjectToolStripMenuItem";
+            this.addToProjectToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
+            this.addToProjectToolStripMenuItem.Text = "Add to project...";
+            this.addToProjectToolStripMenuItem.Click += new System.EventHandler(this.addToProjectToolStripMenuItem_Click);
+            // 
             // selectionToolStripMenuItem
             // 
             this.selectionToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -269,7 +281,7 @@
             this.groupBox3.Controls.Add(this.txtboxFilter);
             this.groupBox3.Location = new System.Drawing.Point(503, 27);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(214, 44);
+            this.groupBox3.Size = new System.Drawing.Size(214, 48);
             this.groupBox3.TabIndex = 36;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Filter";
@@ -561,17 +573,54 @@
             this.labelCount.Name = "labelCount";
             this.labelCount.Size = new System.Drawing.Size(0, 17);
             // 
-            // addToProjectToolStripMenuItem
+            // groupBox1
             // 
-            this.addToProjectToolStripMenuItem.Name = "addToProjectToolStripMenuItem";
-            this.addToProjectToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
-            this.addToProjectToolStripMenuItem.Text = "Add to project...";
+            this.groupBox1.Controls.Add(this.btnDeletePart);
+            this.groupBox1.Controls.Add(this.btnDuplicatePart);
+            this.groupBox1.Controls.Add(this.btnAddPart);
+            this.groupBox1.Location = new System.Drawing.Point(6, 27);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(491, 48);
+            this.groupBox1.TabIndex = 42;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Parts (on selection only)";
+            // 
+            // btnAddPart
+            // 
+            this.btnAddPart.Location = new System.Drawing.Point(6, 19);
+            this.btnAddPart.Name = "btnAddPart";
+            this.btnAddPart.Size = new System.Drawing.Size(75, 23);
+            this.btnAddPart.TabIndex = 0;
+            this.btnAddPart.Text = "Add";
+            this.btnAddPart.UseVisualStyleBackColor = true;
+            this.btnAddPart.Click += new System.EventHandler(this.btnAddPart_Click);
+            // 
+            // btnDuplicatePart
+            // 
+            this.btnDuplicatePart.Location = new System.Drawing.Point(87, 19);
+            this.btnDuplicatePart.Name = "btnDuplicatePart";
+            this.btnDuplicatePart.Size = new System.Drawing.Size(75, 23);
+            this.btnDuplicatePart.TabIndex = 0;
+            this.btnDuplicatePart.Text = "Duplicate";
+            this.btnDuplicatePart.UseVisualStyleBackColor = true;
+            this.btnDuplicatePart.Click += new System.EventHandler(this.btnDuplicatePart_Click);
+            // 
+            // btnDeletePart
+            // 
+            this.btnDeletePart.Location = new System.Drawing.Point(168, 19);
+            this.btnDeletePart.Name = "btnDeletePart";
+            this.btnDeletePart.Size = new System.Drawing.Size(75, 23);
+            this.btnDeletePart.TabIndex = 0;
+            this.btnDeletePart.Text = "Delete";
+            this.btnDeletePart.UseVisualStyleBackColor = true;
+            this.btnDeletePart.Click += new System.EventHandler(this.btnDeletePart_Click);
             // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(728, 509);
+            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.groupBox3);
@@ -592,6 +641,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.listviewChecked)).EndInit();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
+            this.groupBox1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -649,6 +699,10 @@
         private System.Windows.Forms.ToolStripMenuItem importOrderFromDigikeyToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem projectsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addToProjectToolStripMenuItem;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.Button btnAddPart;
+        private System.Windows.Forms.Button btnDeletePart;
+        private System.Windows.Forms.Button btnDuplicatePart;
     }
 }
 

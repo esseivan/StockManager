@@ -45,7 +45,7 @@ namespace StockManagerDB
         /// <summary>
         /// List of parts in the database
         /// </summary>
-        public List<PartClass> parts => DBWrapper.PartsList ?? new List<PartClass>();
+        public List<PartClass> Parts => myList.Data.Parts;
 
         /// <summary>
         /// Indicate if a DB is open
@@ -125,7 +125,7 @@ namespace StockManagerDB
             }
             else
             {
-                labelCount.Text = $"{partLV.FilteredObjects.Cast<object>().Count()}/{parts.Count}";
+                labelCount.Text = $"{partLV.FilteredObjects.Cast<object>().Count()}/{Parts.Count}";
             }
         }
 
@@ -137,7 +137,7 @@ namespace StockManagerDB
                 return;
             }
 
-            partLV.DataSource = myList.Data.Parts;
+            partLV.DataSource = Parts;
             //partLV.DataSource = parts;
             if (resize)
             {
@@ -196,7 +196,7 @@ namespace StockManagerDB
 
         private List<PartClass> GetAll()
         {
-            return parts;
+            return Parts;
         }
 
         /// <summary>
@@ -245,7 +245,7 @@ namespace StockManagerDB
 
                 // Add all
                 Cursor = Cursors.WaitCursor;
-                myList.Data.Parts.AddRange(p);
+                Parts.AddRange(p);
                 myList.Save();
                 //dbw.AddPartRange(p);
                 Cursor = Cursors.Default;
@@ -433,8 +433,6 @@ namespace StockManagerDB
 
         private void uncheckAllInViewToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            partLV.CheckObjects(partLV.FilteredObjects);
-
             UpdateOnCheck = false;
             //partLV.UncheckAll();
             partLV.UncheckObjects(partLV.FilteredObjects);
@@ -497,6 +495,29 @@ namespace StockManagerDB
             if (projectForm == null)
                 return;
             projectForm.Show();
+        }
+
+        private void btnAddPart_Click(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void btnDuplicatePart_Click(object sender, EventArgs e)
+        {
+
+            throw new NotImplementedException();
+        }
+
+        private void btnDeletePart_Click(object sender, EventArgs e)
+        {
+
+            throw new NotImplementedException();
+        }
+
+        private void addToProjectToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+            throw new NotImplementedException();
         }
     }
 }
