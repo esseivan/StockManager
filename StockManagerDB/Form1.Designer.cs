@@ -73,6 +73,9 @@
             this.olvcSPN2 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.labelCount = new System.Windows.Forms.ToolStripStatusLabel();
+            this.closeDatabaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+            this.quitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.groupBox3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -101,7 +104,10 @@
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.newDatabaseToolStripMenuItem,
-            this.openDatabaseToolStripMenuItem});
+            this.openDatabaseToolStripMenuItem,
+            this.closeDatabaseToolStripMenuItem,
+            this.toolStripSeparator4,
+            this.quitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
@@ -109,14 +115,16 @@
             // newDatabaseToolStripMenuItem
             // 
             this.newDatabaseToolStripMenuItem.Name = "newDatabaseToolStripMenuItem";
-            this.newDatabaseToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+            this.newDatabaseToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
+            this.newDatabaseToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
             this.newDatabaseToolStripMenuItem.Text = "New database";
             this.newDatabaseToolStripMenuItem.Click += new System.EventHandler(this.newDatabaseToolStripMenuItem_Click);
             // 
             // openDatabaseToolStripMenuItem
             // 
             this.openDatabaseToolStripMenuItem.Name = "openDatabaseToolStripMenuItem";
-            this.openDatabaseToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+            this.openDatabaseToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
+            this.openDatabaseToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
             this.openDatabaseToolStripMenuItem.Text = "Open database";
             this.openDatabaseToolStripMenuItem.Click += new System.EventHandler(this.openDatabaseToolStripMenuItem_Click);
             // 
@@ -131,7 +139,9 @@
             // importFromExcelToolStripMenuItem
             // 
             this.importFromExcelToolStripMenuItem.Name = "importFromExcelToolStripMenuItem";
-            this.importFromExcelToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
+            this.importFromExcelToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            | System.Windows.Forms.Keys.O)));
+            this.importFromExcelToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
             this.importFromExcelToolStripMenuItem.Text = "Import from Excel";
             this.importFromExcelToolStripMenuItem.Click += new System.EventHandler(this.importFromExcelToolStripMenuItem_Click);
             // 
@@ -184,14 +194,18 @@
             // checkAllInViewToolStripMenuItem
             // 
             this.checkAllInViewToolStripMenuItem.Name = "checkAllInViewToolStripMenuItem";
-            this.checkAllInViewToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+            this.checkAllInViewToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            | System.Windows.Forms.Keys.A)));
+            this.checkAllInViewToolStripMenuItem.Size = new System.Drawing.Size(249, 22);
             this.checkAllInViewToolStripMenuItem.Text = "Check all in view";
             this.checkAllInViewToolStripMenuItem.Click += new System.EventHandler(this.checkAllInViewToolStripMenuItem_Click);
             // 
             // uncheckAllInViewToolStripMenuItem
             // 
             this.uncheckAllInViewToolStripMenuItem.Name = "uncheckAllInViewToolStripMenuItem";
-            this.uncheckAllInViewToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+            this.uncheckAllInViewToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            | System.Windows.Forms.Keys.D)));
+            this.uncheckAllInViewToolStripMenuItem.Size = new System.Drawing.Size(249, 22);
             this.uncheckAllInViewToolStripMenuItem.Text = "Uncheck all in view";
             this.uncheckAllInViewToolStripMenuItem.Click += new System.EventHandler(this.uncheckAllInViewToolStripMenuItem_Click);
             // 
@@ -506,6 +520,27 @@
             this.labelCount.Name = "labelCount";
             this.labelCount.Size = new System.Drawing.Size(0, 17);
             // 
+            // closeDatabaseToolStripMenuItem
+            // 
+            this.closeDatabaseToolStripMenuItem.Name = "closeDatabaseToolStripMenuItem";
+            this.closeDatabaseToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.W)));
+            this.closeDatabaseToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
+            this.closeDatabaseToolStripMenuItem.Text = "Close database";
+            this.closeDatabaseToolStripMenuItem.Click += new System.EventHandler(this.closeDatabaseToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator4
+            // 
+            this.toolStripSeparator4.Name = "toolStripSeparator4";
+            this.toolStripSeparator4.Size = new System.Drawing.Size(177, 6);
+            // 
+            // quitToolStripMenuItem
+            // 
+            this.quitToolStripMenuItem.Name = "quitToolStripMenuItem";
+            this.quitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Q)));
+            this.quitToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
+            this.quitToolStripMenuItem.Text = "Quit";
+            this.quitToolStripMenuItem.Click += new System.EventHandler(this.quitToolStripMenuItem_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -517,7 +552,7 @@
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "Stock Manager";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
@@ -582,6 +617,9 @@
         private System.Windows.Forms.ToolStripMenuItem dELETECheckedToolStripMenuItem;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel labelCount;
+        private System.Windows.Forms.ToolStripMenuItem closeDatabaseToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
+        private System.Windows.Forms.ToolStripMenuItem quitToolStripMenuItem;
     }
 }
 

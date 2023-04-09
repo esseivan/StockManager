@@ -28,7 +28,8 @@ namespace StockManagerDB
             set
             {
                 _dbw = value;
-                _dbw.OnListModified += Dbw_OnListModified;
+                if (_dbw != null)
+                    _dbw.OnListModified += Dbw_OnListModified;
             }
         }
         private DBWrapper _dbw = null;
@@ -41,7 +42,7 @@ namespace StockManagerDB
         /// <summary>
         /// List of parts in the database
         /// </summary>
-        public List<PartClass> parts => dbw.PartsList;
+        public List<PartClass> parts => dbw?.PartsList ?? new List<PartClass>();
 
         /// <summary>
         /// Indicate if a DB is open
@@ -174,8 +175,10 @@ namespace StockManagerDB
             };
             if (ofd.ShowDialog() == DialogResult.OK)
             {
+                Cursor = Cursors.WaitCursor;
                 ExcelManager em = new ExcelManager(ofd.FileName);
                 List<PartClass> p = em.GetParts();
+                Cursor = Cursors.Default;
 
                 if ((null == p) || (0 == p.Count))
                 {
@@ -187,15 +190,15 @@ namespace StockManagerDB
                     return;
 
                 // Add all
+                Cursor = Cursors.WaitCursor;
                 dbw.AddPartRange(p);
+                Cursor = Cursors.Default;
             }
         }
 
         private void importFromExcelToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Cursor = Cursors.WaitCursor;
             ImportFromExcel();
-            Cursor = Cursors.Default;
         }
 
         /// <summary>
@@ -218,12 +221,21 @@ namespace StockManagerDB
                 filepath = fsd.FileName;
                 dbw = new DBWrapper(filepath);
                 dbw.CreateDatabase(true);
+                SetTitle();
             }
         }
 
         private void newDatabaseToolStripMenuItem_Click(object sender, EventArgs e)
         {
             CreateNewDatabase();
+        }
+
+        private void SetTitle()
+        {
+            if (string.IsNullOrEmpty(filepath))
+                this.Text = "Stock Manager";
+            else
+                this.Text = $"Stock Manager - {Path.GetFileName(filepath)}";
         }
 
         /// <summary>
@@ -240,6 +252,7 @@ namespace StockManagerDB
                 filepath = ofd.FileName;
                 dbw = new DBWrapper(filepath);
                 dbw.LoadDatabase();
+                SetTitle();
             }
         }
 
@@ -394,6 +407,23 @@ namespace StockManagerDB
             }
 
             UpdateCheckedListview();
+        }
+
+        private void CloseDatabase()
+        {
+            dbw = null;
+            UpdateDisplay();
+            SetTitle();
+        }
+
+        private void closeDatabaseToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CloseDatabase();
+        }
+
+        private void quitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Close();
         }
     }
 }
