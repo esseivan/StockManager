@@ -12,7 +12,7 @@ using System.Windows.Forms;
 
 namespace StockManagerDB
 {
-    public partial class Form1 : Form
+    public partial class frmMain : Form
     {
         /// <summary>
         /// filepath to the database
@@ -54,7 +54,7 @@ namespace StockManagerDB
         /// </summary>
         private bool UpdateOnCheck = true;
 
-        public Form1()
+        public frmMain()
         {
             InitializeComponent();
             LoggerClass.Init();
@@ -424,6 +424,16 @@ namespace StockManagerDB
         private void quitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        private void importOrderFromDigikeyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void projectsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
         }
     }
 }
