@@ -27,9 +27,9 @@ namespace StockManagerDB
             get => _dbw;
             set
             {
-                _dbw = value;
-                if (_dbw != null)
-                    _dbw.OnListModified += Dbw_OnListModified;
+                // Close project form
+                projectForm = null;
+                _dbw = value; 
             }
         }
         private DBWrapper _dbw = null;
@@ -42,7 +42,7 @@ namespace StockManagerDB
         /// <summary>
         /// List of parts in the database
         /// </summary>
-        public List<PartClass> parts => dbw?.PartsList ?? new List<PartClass>();
+        public List<PartClass> parts => DBWrapper.PartsList ?? new List<PartClass>();
 
         /// <summary>
         /// Indicate if a DB is open
@@ -54,11 +54,45 @@ namespace StockManagerDB
         /// </summary>
         private bool UpdateOnCheck = true;
 
+        private frmProjects _projectForm = null;
+        private frmProjects projectForm
+        {
+            get
+            {
+                if (IsDBOpen)
+                {
+                    if (_projectForm == null)
+                    {
+                        _projectForm = new frmProjects(filepath);
+                    }
+                }
+                else
+                {
+                    if (_projectForm != null)
+                    {
+                        _projectForm.Close();
+                        _projectForm = null;
+                    }
+                }
+                return _projectForm;
+            }
+            set
+            {
+                if (_projectForm != null)
+                {
+                    _projectForm.Close();
+                }
+                _projectForm = value;
+            }
+        }
+
         public frmMain()
         {
             InitializeComponent();
             LoggerClass.Init();
             LoggerClass.Write("Idle");
+
+            DBWrapper.OnListModified += Dbw_OnListModified;
 
             partLV = listviewParts;
             InitListView(partLV);
@@ -433,7 +467,9 @@ namespace StockManagerDB
 
         private void projectsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            if (projectForm == null)
+                return;
+            projectForm.Show();
         }
     }
 }

@@ -11,6 +11,14 @@ namespace StockManagerDB
     public class PartClass : ICloneable
     {
         /// <summary>
+        /// Manufacturer Product Number. Unique and is used as identifier
+        /// </summary>
+        public string MPN
+        {
+            get => Parameters.TryGetValue(Parameter.MPN, out string value) ? value : string.Empty;
+            set => Parameters[Parameter.MPN] = value;
+        }
+        /// <summary>
         /// Manufacturer
         /// </summary>
         public string Manufacturer
@@ -33,14 +41,6 @@ namespace StockManagerDB
         {
             get => Parameters.TryGetValue(Parameter.Category, out string value) ? value : string.Empty;
             set => Parameters[Parameter.Category] = value;
-        }
-        /// <summary>
-        /// Manufacturer Product Number. Unique and is used as identifier
-        /// </summary>
-        public string MPN
-        {
-            get => Parameters.TryGetValue(Parameter.MPN, out string value) ? value : string.Empty;
-            set => Parameters[Parameter.MPN] = value;
         }
         /// <summary>
         /// Part location
@@ -191,6 +191,7 @@ namespace StockManagerDB
 
             return parts;
         }
+
         /// <summary>
         /// Create a PartClass variable from a DataRow imported from a sql database
         /// </summary>

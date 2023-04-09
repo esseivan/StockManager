@@ -12,13 +12,13 @@ namespace StockManagerDB
     public class DBWrapper : IDisposable
     {
         private readonly string filename;
-        private Dictionary<string, PartClass> remoteParts = new Dictionary<string, PartClass>();
-        private Dictionary<string, PartClass> localParts = new Dictionary<string, PartClass>();
+        private static Dictionary<string, PartClass> remoteParts = new Dictionary<string, PartClass>();
+        private static Dictionary<string, PartClass> localParts = new Dictionary<string, PartClass>();
 
-        public event EventHandler<EventArgs> OnListModified;
+        public static event EventHandler<EventArgs> OnListModified;
 
-        public Dictionary<string, PartClass> Parts => localParts;
-        public List<PartClass> PartsList => localParts.Values.ToList();
+        public static Dictionary<string, PartClass> Parts => localParts;
+        public static List<PartClass> PartsList => localParts.Values.ToList();
 
         public DBWrapper(string filename)
         {
@@ -58,6 +58,13 @@ namespace StockManagerDB
                 connection.Open();
                 // Create a new table called "StockParts"
                 using (SQLiteCommand command = new SQLiteCommand("CREATE TABLE StockParts ( mpn VARCHAR(255) PRIMARY KEY, manufacturer VARCHAR(255), description VARCHAR(255), category VARCHAR(255), storage VARCHAR(255), stock FLOAT, low_stock FLOAT, price FLOAT, supplier VARCHAR(255), spn VARCHAR(255));"
+                    , connection))
+                {
+                    command.ExecuteNonQuery();
+                }
+
+                // Create a new table called "ComponentProjectLink"
+                using (SQLiteCommand command = new SQLiteCommand("CREATE TABLE ComponentProjectLink ( parent VARCHAR(255), mpn VARCHAR(255), quantity FLOAT, reference VARCHAR(255));"
                     , connection))
                 {
                     command.ExecuteNonQuery();
@@ -120,11 +127,11 @@ namespace StockManagerDB
                     localParts.Add(part.MPN, part.Clone() as PartClass);
                 }
 
-                OnListModified?.Invoke(this, EventArgs.Empty);
                 dataAdapter.Dispose();
                 connection.Close();
             }
 
+            OnListModified?.Invoke(this, EventArgs.Empty);
             return localParts;
         }
 
@@ -235,7 +242,6 @@ namespace StockManagerDB
 
             return true;
         }
-
 
         /// <summary>
         /// Remove the parts specified from the database

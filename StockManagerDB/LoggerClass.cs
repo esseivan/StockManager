@@ -1,6 +1,7 @@
 ﻿using ESNLib.Tools;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,6 +21,9 @@ namespace StockManagerDB
         {
             if (!logger.Enable())
                 throw new InvalidOperationException("Unable to start logger");
+#if DEBUG
+            Process.Start(logger.FileOutputPath);
+#endif
         }
 
         public static bool Write(string data)

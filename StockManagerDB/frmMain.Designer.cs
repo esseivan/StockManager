@@ -37,6 +37,7 @@
             this.quitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.databaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importFromExcelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.importOrderFromDigikeyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.actionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.onlyAffectCheckedPartsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
@@ -47,6 +48,7 @@
             this.uncheckAllInViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.dELETECheckedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.projectsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.cbboxFilterType = new System.Windows.Forms.ComboBox();
             this.txtboxFilter = new System.Windows.Forms.TextBox();
@@ -76,8 +78,7 @@
             this.olvcSPN2 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.labelCount = new System.Windows.Forms.ToolStripStatusLabel();
-            this.projectsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.importOrderFromDigikeyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.addToProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.groupBox3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -170,13 +171,21 @@
             this.importFromExcelToolStripMenuItem.Text = "Import from Excel";
             this.importFromExcelToolStripMenuItem.Click += new System.EventHandler(this.importFromExcelToolStripMenuItem_Click);
             // 
+            // importOrderFromDigikeyToolStripMenuItem
+            // 
+            this.importOrderFromDigikeyToolStripMenuItem.Name = "importOrderFromDigikeyToolStripMenuItem";
+            this.importOrderFromDigikeyToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
+            this.importOrderFromDigikeyToolStripMenuItem.Text = "Import order from Digikey";
+            this.importOrderFromDigikeyToolStripMenuItem.Click += new System.EventHandler(this.importOrderFromDigikeyToolStripMenuItem_Click);
+            // 
             // actionsToolStripMenuItem
             // 
             this.actionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.onlyAffectCheckedPartsToolStripMenuItem,
             this.toolStripSeparator1,
             this.makeOrderToolStripMenuItem,
-            this.toolStripSeparator2});
+            this.toolStripSeparator2,
+            this.addToProjectToolStripMenuItem});
             this.actionsToolStripMenuItem.Name = "actionsToolStripMenuItem";
             this.actionsToolStripMenuItem.Size = new System.Drawing.Size(59, 20);
             this.actionsToolStripMenuItem.Text = "Actions";
@@ -245,6 +254,13 @@
             this.dELETECheckedToolStripMenuItem.Size = new System.Drawing.Size(249, 22);
             this.dELETECheckedToolStripMenuItem.Text = "DELETE ALL CHECKED";
             this.dELETECheckedToolStripMenuItem.Click += new System.EventHandler(this.DELETECheckedToolStripMenuItem_Click);
+            // 
+            // projectsToolStripMenuItem
+            // 
+            this.projectsToolStripMenuItem.Name = "projectsToolStripMenuItem";
+            this.projectsToolStripMenuItem.Size = new System.Drawing.Size(93, 20);
+            this.projectsToolStripMenuItem.Text = "Open Projects";
+            this.projectsToolStripMenuItem.Click += new System.EventHandler(this.projectsToolStripMenuItem_Click);
             // 
             // groupBox3
             // 
@@ -545,21 +561,13 @@
             this.labelCount.Name = "labelCount";
             this.labelCount.Size = new System.Drawing.Size(0, 17);
             // 
-            // projectsToolStripMenuItem
+            // addToProjectToolStripMenuItem
             // 
-            this.projectsToolStripMenuItem.Name = "projectsToolStripMenuItem";
-            this.projectsToolStripMenuItem.Size = new System.Drawing.Size(93, 20);
-            this.projectsToolStripMenuItem.Text = "Open Projects";
-            this.projectsToolStripMenuItem.Click += new System.EventHandler(this.projectsToolStripMenuItem_Click);
+            this.addToProjectToolStripMenuItem.Name = "addToProjectToolStripMenuItem";
+            this.addToProjectToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
+            this.addToProjectToolStripMenuItem.Text = "Add to project...";
             // 
-            // importOrderFromDigikeyToolStripMenuItem
-            // 
-            this.importOrderFromDigikeyToolStripMenuItem.Name = "importOrderFromDigikeyToolStripMenuItem";
-            this.importOrderFromDigikeyToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
-            this.importOrderFromDigikeyToolStripMenuItem.Text = "Import order from Digikey";
-            this.importOrderFromDigikeyToolStripMenuItem.Click += new System.EventHandler(this.importOrderFromDigikeyToolStripMenuItem_Click);
-            // 
-            // Form1
+            // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -569,7 +577,7 @@
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
-            this.Name = "Form1";
+            this.Name = "frmMain";
             this.Text = "Stock Manager";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.menuStrip1.ResumeLayout(false);
@@ -640,6 +648,7 @@
         private System.Windows.Forms.ToolStripMenuItem quitToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem importOrderFromDigikeyToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem projectsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem addToProjectToolStripMenuItem;
     }
 }
 
