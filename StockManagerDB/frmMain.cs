@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.SQLite;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -29,10 +30,12 @@ namespace StockManagerDB
             {
                 // Close project form
                 projectForm = null;
-                _dbw = value; 
+                _dbw = value;
             }
         }
         private DBWrapper _dbw = null;
+
+        private ListManager myList;
 
         /// <summary>
         /// The listview where the parts are displayed
@@ -47,7 +50,7 @@ namespace StockManagerDB
         /// <summary>
         /// Indicate if a DB is open
         /// </summary>
-        private bool IsDBOpen => (null != dbw);
+        private bool IsDBOpen => (null != myList);
 
         /// <summary>
         /// Update CheckListView when checkItemChanged
@@ -126,10 +129,20 @@ namespace StockManagerDB
             }
         }
 
-        private void UpdateDisplay()
+        private void UpdateDisplay(bool resize = false)
         {
-            partLV.DataSource = parts;
-            //partLV.AutoResizeColumns();
+            if (!IsDBOpen)
+            {
+                partLV.DataSource = new List<PartClass>();
+                return;
+            }
+
+            partLV.DataSource = myList.Data.Parts;
+            //partLV.DataSource = parts;
+            if (resize)
+            {
+                partLV.AutoResizeColumns();
+            }
             partLV.Focus();
 
             UpdateCountLabel();
@@ -232,8 +245,11 @@ namespace StockManagerDB
 
                 // Add all
                 Cursor = Cursors.WaitCursor;
-                dbw.AddPartRange(p);
+                myList.Data.Parts.AddRange(p);
+                myList.Save();
+                //dbw.AddPartRange(p);
                 Cursor = Cursors.Default;
+                UpdateDisplay();
             }
         }
 
@@ -249,7 +265,7 @@ namespace StockManagerDB
         {
             SaveFileDialog fsd = new SaveFileDialog()
             {
-                Filter = "sqlite|*.sqlite|All files|*.*",
+                Filter = "StockManager File|*.smf|All files|*.*",
             };
             if (fsd.ShowDialog() == DialogResult.OK)
             {
@@ -260,9 +276,12 @@ namespace StockManagerDB
                 }
 
                 filepath = fsd.FileName;
-                dbw = new DBWrapper(filepath);
-                dbw.CreateDatabase(true);
+                myList = ListManager.CreateNew(filepath, true);
+
+                //dbw = new DBWrapper(filepath);
+                //dbw.CreateDatabase(true);
                 SetTitle();
+                UpdateDisplay(true);
             }
         }
 
@@ -286,14 +305,16 @@ namespace StockManagerDB
         {
             OpenFileDialog ofd = new OpenFileDialog()
             {
-                Filter = "sqlite|*.sqlite|All files|*.*",
+                Filter = "StockManager File|*.smf|All files|*.*",
             };
             if (ofd.ShowDialog() == DialogResult.OK)
             {
                 filepath = ofd.FileName;
-                dbw = new DBWrapper(filepath);
-                dbw.LoadDatabase();
+                myList = new ListManager(filepath);
+                //dbw = new DBWrapper(filepath);
+                //dbw.LoadDatabase();
                 SetTitle();
+                UpdateDisplay(true);
             }
         }
 
@@ -436,23 +457,22 @@ namespace StockManagerDB
             {
                 throw new InvalidOperationException("Unable to edit 'undefined'");
             }
-            else if (editedParameter == PartClass.Parameter.MPN)
-            {
-                dbw.RenamePart(part.MPN, newValue);
-            }
             else
             {
                 // Apply manually the new value
                 part.Parameters[editedParameter] = newValue;
-                dbw.UpdatePart(part);
+                myList.Save();
+                //dbw.UpdatePart(part);
             }
 
+            UpdateDisplay();
             UpdateCheckedListview();
         }
 
         private void CloseDatabase()
         {
-            dbw = null;
+            //dbw = null;
+            myList = null;
             UpdateDisplay();
             SetTitle();
         }

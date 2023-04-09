@@ -29,6 +29,7 @@ namespace StockManagerDB
         {
             this.filepath = filepath;
             Load();
+            Save();
         }
 
         public void Load()
