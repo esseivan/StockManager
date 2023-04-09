@@ -24,6 +24,17 @@ namespace StockManagerDB
             this.filename = filename;
         }
 
+        public void RemoveEmptyProjects()
+        {
+            var toDelete = localComponents.Where((x) => x.Value.Count == 0).ToArray();
+
+            foreach (var item in toDelete)
+            {
+                remoteComponents.Remove(item.Key);
+                localComponents.Remove(item.Key);
+            }
+        }
+
         /// <summary>
         /// Add to the remoteComponents list
         /// </summary>
@@ -50,11 +61,19 @@ namespace StockManagerDB
             localComponents[component.Parent].Add(component.Clone() as ComponentClass);
         }
 
+        private void RemoveComponentsFromLists(ComponentClass component)
+        {
+            // Remove using MPN... This is not unique so warning !!
+#warning Not unique deletion
+            remoteComponents[component.Parent].RemoveAll((c) => c.MPN.Equals(component.MPN));
+            localComponents[component.Parent].RemoveAll((c) => c.MPN.Equals(component.MPN));
+        }
+
         /// <summary>
         /// Synchronise parts with actual remote ones
         /// </summary>
         /// <returns></returns>
-        public Dictionary<string, List<ComponentClass>> CloneParts(Dictionary<string, List<ComponentClass>> components)
+        public Dictionary<string, List<ComponentClass>> CloneComponentList(Dictionary<string, List<ComponentClass>> components)
         {
             Dictionary<string, List<ComponentClass>> output = new Dictionary<string, List<ComponentClass>>();
             foreach (var item in components)
@@ -117,7 +136,7 @@ namespace StockManagerDB
             {
                 Parent = projectName,
                 MPN = "Template",
-                Quantity = "0",
+                Quantity = 0,
                 Reference = "R1"
             };
 
@@ -146,7 +165,23 @@ namespace StockManagerDB
         }
 
         /// <summary>
-        /// Create a new project
+        /// Duplicate a existing project
+        /// </summary>
+        /// <param name="projectName"></param>
+        public void DeleteProject(string projectName)
+        {
+            // Get component list
+            List<ComponentClass> componentsToBeDeleted = remoteComponents[projectName];
+
+            if (componentsToBeDeleted.Count == 0)
+                throw new InvalidOperationException("No component to delete...");
+
+            // Remove them all
+            RemoveComponentRangeParent(projectName, componentsToBeDeleted);
+        }
+
+        /// <summary>
+        /// Duplicate a existing project
         /// </summary>
         /// <param name="projectName"></param>
         public void DuplicateProject(string projectName, string referenceProjectName)
@@ -165,7 +200,7 @@ namespace StockManagerDB
         /// Add a list of components. Only call the OnListModified event once
         /// </summary>
         /// <param name="components"></param>
-        /// <returns>List of added parts. Compare to check which were not added</returns>
+        /// <returns>List of added components. Compare to check which were not added</returns>
         public List<ComponentClass> AddComponentsRange(IEnumerable<ComponentClass> components)
         {
             List<ComponentClass> addedParts = new List<ComponentClass>();
@@ -177,10 +212,6 @@ namespace StockManagerDB
                 foreach (ComponentClass component in components)
                 {
                     // Part already exists
-                    if (remoteComponents.ContainsKey(component.MPN))
-                    {
-                        continue;
-                    }
                     addedParts.Add(component);
 
                     // Insert part
@@ -235,6 +266,133 @@ namespace StockManagerDB
             LoadComponents();
         }
 
+        /// <summary>
+        /// Remove the specified component from the database
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        public bool RemoveComponent(string componentParent, string componentMPN)
+        {
+            using (SQLiteConnection connection = new SQLiteConnection($"Data Source={filename};Version=3;"))
+            {
+                connection.Open();
 
+                using (SQLiteCommand command = new SQLiteCommand($"DELETE FROM ComponentProjectLink WHERE parent='{componentParent}' AND mpn='{componentMPN}';"
+                        , connection))
+                {
+                    command.ExecuteNonQuery();
+                }
+
+                connection.Close();
+            }
+
+            ComponentClass component = remoteComponents[componentParent].Where((comp) => componentMPN.Equals(comp.MPN)).First();
+            remoteComponents[componentParent].Remove(component);
+            localComponents[componentParent].Remove(component);
+            OnListModified?.Invoke(this, EventArgs.Empty);
+
+            return true;
+        }
+
+        /// <summary>
+        /// Remove the specified component from the database
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        public bool RemoveComponentRangeParent(string parent, IEnumerable<ComponentClass> components)
+        {
+            components = components.Where((comp) => comp.Parent.Equals(parent)).ToArray();
+
+            using (SQLiteConnection connection = new SQLiteConnection($"Data Source={filename};Version=3;"))
+            {
+                connection.Open();
+
+                foreach (ComponentClass comp in components)
+                {
+#warning Not unique deletion
+                    using (SQLiteCommand command = new SQLiteCommand($"DELETE FROM ComponentProjectLink WHERE parent='{comp.Parent}' AND mpn='{comp.MPN}';"
+                        , connection))
+                    {
+                        command.ExecuteNonQuery();
+                    }
+                }
+
+                connection.Close();
+            }
+
+            foreach (ComponentClass component in components)
+            {
+                RemoveComponentsFromLists(component);
+            }
+            OnListModified?.Invoke(this, EventArgs.Empty);
+
+            return true;
+        }
+
+        /// <summary>
+        /// Remove the specified component from the database
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        public bool RemoveComponent(ComponentClass component)
+        {
+            using (SQLiteConnection connection = new SQLiteConnection($"Data Source={filename};Version=3;"))
+            {
+                connection.Open();
+
+                using (SQLiteCommand command = new SQLiteCommand($"DELETE FROM ComponentProjectLink WHERE parent='{component.Parent}' AND mpn='{component.MPN}';"
+                        , connection))
+                {
+                    command.ExecuteNonQuery();
+                }
+
+                connection.Close();
+            }
+
+            remoteComponents[component.Parent].Remove(component);
+            localComponents[component.Parent].Remove(component);
+            OnListModified?.Invoke(this, EventArgs.Empty);
+
+            return true;
+        }
+
+        public bool AddComponent(ComponentClass component)
+        {
+            // Create a connection to the database
+            using (SQLiteConnection connection = new SQLiteConnection($"Data Source={filename};Version=3;"))
+            {
+                connection.Open();
+
+                // Insert part
+                using (SQLiteCommand command = new SQLiteCommand("INSERT INTO ComponentProjectLink (parent, mpn, quantity, reference)\r\nVALUES (@Parent, @MPN, @Quantity, @Reference);"
+                , connection))
+                {
+                    command.Parameters.AddWithValue("@Parent", component.Parent);
+                    command.Parameters.AddWithValue("@MPN", component.MPN);
+                    command.Parameters.AddWithValue("@Quantity", component.Quantity);
+                    command.Parameters.AddWithValue("@Reference", component.Reference);
+
+                    command.ExecuteNonQuery();
+                }
+                connection.Close();
+            }
+            AddComponentToRemoteList(component);
+            AddComponentToLocalList(component);
+            OnListModified?.Invoke(this, EventArgs.Empty);
+
+            return true;
+        }
+
+        /// <summary>
+        /// Apply changes to a part to the database
+        /// </summary>
+        /// <param name="updatedPart">The updated PartClass part</param>
+        /// <returns>True if success. False if failed</returns>
+        public bool UpdateComponent(ComponentClass updatedComponent, ComponentClass oldComponent)
+        {
+            // There isn't really a update component. We delete the old one and create a new one
+            RemoveComponent(oldComponent);
+            return AddComponent(updatedComponent);
+        }
     }
 }

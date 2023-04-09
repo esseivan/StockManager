@@ -28,7 +28,12 @@ namespace StockManagerDB
         /// <summary>
         /// Quantity of this component used
         /// </summary>
-        public string Quantity
+        public float Quantity
+        {
+            get => float.TryParse(QuantityStr, out float valuefloat) ? valuefloat : 0;
+            set => Parameters[Parameter.Quantity] = value.ToString();
+        }
+        public string QuantityStr
         {
             get => Parameters.TryGetValue(Parameter.Quantity, out string value) ? value : string.Empty;
             set => Parameters[Parameter.Quantity] = value;

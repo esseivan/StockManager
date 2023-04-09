@@ -67,9 +67,12 @@ namespace StockManagerDB
         private void PopulateLists()
         {
             string textPrevious = comboBox1.Text;
+            dbpw.RemoveEmptyProjects();
             projects = dbpw.Components.Keys.ToList();
             comboBox1.DataSource = projects;
             comboBox1.Text = textPrevious;
+
+            UpdateComponentList();
         }
 
         private void Dbpw_OnListModified(object sender, EventArgs e)
@@ -79,7 +82,7 @@ namespace StockManagerDB
 
         private void CreateNewProject()
         {
-            Dialog.ShowDialogResult result = Dialog.ShowDialog("Enter the name for the project", Title: "Enter name", Input: true, Btn1: Dialog.ButtonType.OK, Btn2: Dialog.ButtonType.Cancel);
+            Dialog.ShowDialogResult result = Dialog.ShowDialog("Enter the name for the project", Title: "Enter name", Input: true, DefaultInput: "Project", Btn1: Dialog.ButtonType.OK, Btn2: Dialog.ButtonType.Cancel);
             if (result.DialogResult != Dialog.DialogResult.OK)
             {
                 return;
@@ -123,10 +126,17 @@ namespace StockManagerDB
             return comboBox1.SelectedItem.ToString();
         }
 
-        private void listviewProjects_SelectedIndexChanged(object sender, EventArgs e)
+        private void DeleteProject()
         {
+            string project = GetSelectedProjectName();
+            if (project == null)
+            {
+                return;
+            }
 
+            dbpw.DeleteProject(project);
         }
+
         private void quitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.Close();
@@ -149,24 +159,125 @@ namespace StockManagerDB
 
         private void DELETESelectedProjectToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            DeleteProject();
         }
 
-        private void UpdateComponentList(string selectedProject)
+        private void UpdateComponentList()
         {
+            string selectedProject = GetSelectedProjectName();
+
+            if (selectedProject == null)
+            {
+                compLV.DataSource = new List<ComponentClass>();
+                return;
+            }
+
             compLV.DataSource = dbpw.Components[selectedProject];
-            compLV.AutoResizeColumns();
+            //compLV.AutoResizeColumns();
             compLV.Focus();
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            string selectedProject = GetSelectedProjectName();
+            UpdateComponentList();
+        }
 
-            if (selectedProject == null)
+        private void listviewComponents_CellEditFinished(object sender, CellEditEventArgs e)
+        {
+            ComponentClass oldComponent = e.RowObject as ComponentClass;
+
+            ComponentClass.Parameter editedParameter = (ComponentClass.Parameter)(e.Column.Index + 1);
+            ComponentClass newComponent = oldComponent.Clone() as ComponentClass;
+            string newValue = e.NewValue.ToString();
+            newComponent.Parameters[editedParameter] = newValue;
+
+            if (editedParameter == ComponentClass.Parameter.UNDEFINED)
+            {
+                throw new InvalidOperationException("Unable to edit 'undefined'");
+            }
+            else
+            {
+                // Apply manually the new value
+                dbpw.UpdateComponent(newComponent, oldComponent);
+            }
+
+            UpdateComponentList();
+        }
+
+        private void btnAddComponent_Click(object sender, EventArgs e)
+        {
+            string project = GetSelectedProjectName();
+            if (project == null)
                 return;
 
-            UpdateComponentList(selectedProject);
+            ComponentClass newComponent = new ComponentClass()
+            {
+                Parent = project,
+                MPN = "NA",
+                Quantity = 0,
+                Reference = "NA"
+            };
+            dbpw.AddComponent(newComponent);
+        }
+
+        private void btnDuplicate_Click(object sender, EventArgs e)
+        {
+            if (compLV.SelectedIndex == -1)
+                return;
+
+            string project = GetSelectedProjectName();
+            if (project == null)
+                return;
+
+            // Get selected component
+            ComponentClass component = compLV.SelectedObject as ComponentClass;
+
+            int selectedIndexBefore = compLV.SelectedIndex;
+            dbpw.AddComponent(component);
+            compLV.SelectedIndex = selectedIndexBefore;
+        }
+
+        private void btnDelete_Click(object sender, EventArgs e)
+        {
+            if (compLV.SelectedIndex == -1)
+                return;
+
+            string project = GetSelectedProjectName();
+            if (project == null)
+                return;
+
+            // Get selected component
+            ComponentClass component = compLV.SelectedObject as ComponentClass;
+
+            int selectedIndexBefore = compLV.SelectedIndex;
+            dbpw.RemoveComponent(component);
+            if (selectedIndexBefore >= compLV.Items.Count)
+                selectedIndexBefore--;
+            compLV.SelectedIndex = selectedIndexBefore;
+        }
+
+        private void duplicateAllCheckedToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string project = GetSelectedProjectName();
+            if (project == null)
+                return;
+
+            // Get all checked
+            var objects = compLV.CheckedObjectsEnumerable.Cast<ComponentClass>();
+
+            dbpw.AddComponentsRange(objects);
+        }
+
+        private void DELETEAllCheckedToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string project = GetSelectedProjectName();
+            if (project == null)
+                return;
+
+            // Get all checked
+            var objects = compLV.CheckedObjectsEnumerable.Cast<ComponentClass>();
+
+            dbpw.RemoveComponentRangeParent(project, objects);
         }
     }
 }

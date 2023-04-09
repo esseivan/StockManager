@@ -64,6 +64,7 @@ namespace StockManagerDB
                     if (_projectForm == null)
                     {
                         _projectForm = new frmProjects(filepath);
+                        _projectForm.FormClosed += _projectForm_FormClosed;
                     }
                 }
                 else
@@ -84,6 +85,12 @@ namespace StockManagerDB
                 }
                 _projectForm = value;
             }
+        }
+
+        private void _projectForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            this.BringToFront();
+            _projectForm = null;
         }
 
         public frmMain()
@@ -122,7 +129,7 @@ namespace StockManagerDB
         private void UpdateDisplay()
         {
             partLV.DataSource = parts;
-            partLV.AutoResizeColumns();
+            //partLV.AutoResizeColumns();
             partLV.Focus();
 
             UpdateCountLabel();

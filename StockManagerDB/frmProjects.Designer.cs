@@ -37,10 +37,15 @@
             this.renameSelectedProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.duplicateSelectedProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dELETESelectedProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.componentsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.duplicateAllCheckedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.dELETEAllCheckedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.label1 = new System.Windows.Forms.Label();
             this.listviewComponents = new BrightIdeasSoftware.FastDataListView();
             this.olvcSelect = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcMPN = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvcQuantity = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvcReference = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcMAN = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcDesc = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcCat = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
@@ -51,8 +56,9 @@
             this.olvcSupplier = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcSPN = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.olvcQuantity = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvcReference = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.btnAddComponent = new System.Windows.Forms.Button();
+            this.btnDuplicate = new System.Windows.Forms.Button();
+            this.btnDelete = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.listviewComponents)).BeginInit();
             this.SuspendLayout();
@@ -69,7 +75,8 @@
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
-            this.projectToolStripMenuItem});
+            this.projectToolStripMenuItem,
+            this.componentsToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(800, 24);
@@ -129,6 +136,29 @@
             this.dELETESelectedProjectToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
             this.dELETESelectedProjectToolStripMenuItem.Text = "DELETE selected project";
             this.dELETESelectedProjectToolStripMenuItem.Click += new System.EventHandler(this.DELETESelectedProjectToolStripMenuItem_Click);
+            // 
+            // componentsToolStripMenuItem
+            // 
+            this.componentsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.duplicateAllCheckedToolStripMenuItem,
+            this.dELETEAllCheckedToolStripMenuItem});
+            this.componentsToolStripMenuItem.Name = "componentsToolStripMenuItem";
+            this.componentsToolStripMenuItem.Size = new System.Drawing.Size(88, 20);
+            this.componentsToolStripMenuItem.Text = "Components";
+            // 
+            // duplicateAllCheckedToolStripMenuItem
+            // 
+            this.duplicateAllCheckedToolStripMenuItem.Name = "duplicateAllCheckedToolStripMenuItem";
+            this.duplicateAllCheckedToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
+            this.duplicateAllCheckedToolStripMenuItem.Text = "Duplicate all checked";
+            this.duplicateAllCheckedToolStripMenuItem.Click += new System.EventHandler(this.duplicateAllCheckedToolStripMenuItem_Click);
+            // 
+            // dELETEAllCheckedToolStripMenuItem
+            // 
+            this.dELETEAllCheckedToolStripMenuItem.Name = "dELETEAllCheckedToolStripMenuItem";
+            this.dELETEAllCheckedToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
+            this.dELETEAllCheckedToolStripMenuItem.Text = "DELETE all checked";
+            this.dELETEAllCheckedToolStripMenuItem.Click += new System.EventHandler(this.DELETEAllCheckedToolStripMenuItem_Click);
             // 
             // label1
             // 
@@ -197,6 +227,7 @@
             this.listviewComponents.UseTranslucentHotItem = true;
             this.listviewComponents.View = System.Windows.Forms.View.Details;
             this.listviewComponents.VirtualMode = true;
+            this.listviewComponents.CellEditFinished += new BrightIdeasSoftware.CellEditEventHandler(this.listviewComponents_CellEditFinished);
             // 
             // olvcSelect
             // 
@@ -207,6 +238,14 @@
             // 
             this.olvcMPN.Text = "Manufacturer PN";
             this.olvcMPN.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // olvcQuantity
+            // 
+            this.olvcQuantity.Text = "Quantity";
+            // 
+            // olvcReference
+            // 
+            this.olvcReference.Text = "Reference";
             // 
             // olvcMAN
             // 
@@ -269,19 +308,44 @@
             this.comboBox1.TabIndex = 8;
             this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
             // 
-            // olvcQuantity
+            // btnAddComponent
             // 
-            this.olvcQuantity.Text = "Quantity";
+            this.btnAddComponent.Location = new System.Drawing.Point(166, 66);
+            this.btnAddComponent.Name = "btnAddComponent";
+            this.btnAddComponent.Size = new System.Drawing.Size(75, 23);
+            this.btnAddComponent.TabIndex = 9;
+            this.btnAddComponent.Text = "Add";
+            this.btnAddComponent.UseVisualStyleBackColor = true;
+            this.btnAddComponent.Click += new System.EventHandler(this.btnAddComponent_Click);
             // 
-            // olvcReference
+            // btnDuplicate
             // 
-            this.olvcReference.Text = "Reference";
+            this.btnDuplicate.Location = new System.Drawing.Point(247, 66);
+            this.btnDuplicate.Name = "btnDuplicate";
+            this.btnDuplicate.Size = new System.Drawing.Size(75, 23);
+            this.btnDuplicate.TabIndex = 9;
+            this.btnDuplicate.Text = "Duplicate";
+            this.btnDuplicate.UseVisualStyleBackColor = true;
+            this.btnDuplicate.Click += new System.EventHandler(this.btnDuplicate_Click);
+            // 
+            // btnDelete
+            // 
+            this.btnDelete.Location = new System.Drawing.Point(328, 66);
+            this.btnDelete.Name = "btnDelete";
+            this.btnDelete.Size = new System.Drawing.Size(75, 23);
+            this.btnDelete.TabIndex = 9;
+            this.btnDelete.Text = "Delete";
+            this.btnDelete.UseVisualStyleBackColor = true;
+            this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
             // 
             // frmProjects
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.btnDelete);
+            this.Controls.Add(this.btnDuplicate);
+            this.Controls.Add(this.btnAddComponent);
             this.Controls.Add(this.comboBox1);
             this.Controls.Add(this.listviewComponents);
             this.Controls.Add(this.label1);
@@ -324,5 +388,11 @@
         private System.Windows.Forms.ToolStripMenuItem dELETESelectedProjectToolStripMenuItem;
         private BrightIdeasSoftware.OLVColumn olvcQuantity;
         private BrightIdeasSoftware.OLVColumn olvcReference;
+        private System.Windows.Forms.Button btnAddComponent;
+        private System.Windows.Forms.Button btnDuplicate;
+        private System.Windows.Forms.ToolStripMenuItem componentsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem duplicateAllCheckedToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem dELETEAllCheckedToolStripMenuItem;
+        private System.Windows.Forms.Button btnDelete;
     }
 }
