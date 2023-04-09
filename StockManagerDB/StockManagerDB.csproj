@@ -102,6 +102,7 @@
     <Compile Include="frmProjects.Designer.cs">
       <DependentUpon>frmProjects.cs</DependentUpon>
     </Compile>
+    <Compile Include="ListManager.cs" />
     <Compile Include="LoggerClass.cs" />
     <Compile Include="PartClass.cs" />
     <Compile Include="Program.cs" />
