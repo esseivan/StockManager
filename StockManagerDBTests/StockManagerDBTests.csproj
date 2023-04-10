@@ -58,7 +58,6 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
-    <Compile Include="DBWrapperTests.cs" />
     <Compile Include="ListManagerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

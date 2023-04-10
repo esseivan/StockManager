@@ -7,6 +7,7 @@ using System.Data.SQLite;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -21,20 +22,8 @@ namespace StockManagerDB
         private string filepath = string.Empty;
 
         /// <summary>
-        /// Manage the database
+        /// Manage the lists
         /// </summary>
-        private DBWrapper dbw
-        {
-            get => _dbw;
-            set
-            {
-                // Close project form
-                projectForm = null;
-                _dbw = value;
-            }
-        }
-        private DBWrapper _dbw = null;
-
         private ListManager myList;
 
         /// <summary>
@@ -102,7 +91,8 @@ namespace StockManagerDB
             LoggerClass.Init();
             LoggerClass.Write("Idle");
 
-            DBWrapper.OnListModified += Dbw_OnListModified;
+#warning What to do with that ?
+            //DBWrapper.OnListModified += Dbw_OnListModified;
 
             partLV = listviewParts;
             InitListView(partLV);
@@ -119,7 +109,7 @@ namespace StockManagerDB
 
         private void UpdateCountLabel()
         {
-            if (dbw == null)
+            if (myList == null)
             {
                 labelCount.Text = "No database open...";
             }
@@ -148,11 +138,6 @@ namespace StockManagerDB
             UpdateCountLabel();
 
             UpdateCheckedListview();
-        }
-
-        private void Dbw_OnListModified(object sender, EventArgs e)
-        {
-            UpdateDisplay();
         }
 
         #endregion
@@ -277,12 +262,19 @@ namespace StockManagerDB
 
                 filepath = fsd.FileName;
                 myList = ListManager.CreateNew(filepath, true);
+                myList.OnPartsListModified += MyList_OnPartsListModified;
 
                 //dbw = new DBWrapper(filepath);
                 //dbw.CreateDatabase(true);
                 SetTitle();
                 UpdateDisplay(true);
             }
+        }
+
+        private void MyList_OnPartsListModified(object sender, EventArgs e)
+        {
+            myList.Save();
+            UpdateDisplay();
         }
 
         private void newDatabaseToolStripMenuItem_Click(object sender, EventArgs e)
@@ -292,10 +284,10 @@ namespace StockManagerDB
 
         private void SetTitle()
         {
-            if (string.IsNullOrEmpty(filepath))
-                this.Text = "Stock Manager";
-            else
+            if (IsDBOpen)
                 this.Text = $"Stock Manager - {Path.GetFileName(filepath)}";
+            else
+                this.Text = "Stock Manager";
         }
 
         /// <summary>
@@ -311,6 +303,7 @@ namespace StockManagerDB
             {
                 filepath = ofd.FileName;
                 myList = new ListManager(filepath);
+                myList.OnPartsListModified += MyList_OnPartsListModified;
                 //dbw = new DBWrapper(filepath);
                 //dbw.LoadDatabase();
                 SetTitle();
@@ -386,7 +379,8 @@ namespace StockManagerDB
                 return;
             }
 
-            dbw.RemovePartRange(checkedParts.Select((part) => part.MPN));
+            myList.Data.Parts.RemoveRange(checkedParts);
+            myList.Save();
         }
 
         #region Actions
@@ -497,21 +491,49 @@ namespace StockManagerDB
             projectForm.Show();
         }
 
+        private void AddEmptyPart()
+        {
+            var result = ESNLib.Controls.Dialog.ShowDialog("Enter the MPN (Manufacturer Product Number) for the part...", Title: "Enter input", Input: true, Btn2: ESNLib.Controls.Dialog.ButtonType.Cancel);
+
+            if (result.DialogResult != ESNLib.Controls.Dialog.DialogResult.OK)
+            {
+                return;
+            }
+
+            PartClass pc = new PartClass()
+            {
+                MPN = result.UserInput,
+            };
+            myList.Data.Parts.Add(pc);
+        }
+
         private void btnAddPart_Click(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            AddEmptyPart();
+        }
+
+        private void DuplicateSelectedPart()
+        {
+            // Get selected part, not checked
+            PartClass pc = partLV.SelectedObject as PartClass;
+            if (pc == null)
+                return;
+
+            var result = ESNLib.Controls.Dialog.ShowDialog("Enter the new MPN (Manufacturer Product Number) for the part...", Title: "Enter input", Input: true, Btn2: ESNLib.Controls.Dialog.ButtonType.Cancel);
+
+            if (result.DialogResult != ESNLib.Controls.Dialog.DialogResult.OK)
+            {
+                return;
+            }
+
+            pc = pc.Clone() as PartClass;
+            pc.MPN = result.UserInput;
+            myList.Data.Parts.Add(pc);
         }
 
         private void btnDuplicatePart_Click(object sender, EventArgs e)
         {
-
-            throw new NotImplementedException();
-        }
-
-        private void btnDeletePart_Click(object sender, EventArgs e)
-        {
-
-            throw new NotImplementedException();
+            DuplicateSelectedPart();
         }
 
         private void addToProjectToolStripMenuItem_Click(object sender, EventArgs e)

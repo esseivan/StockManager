@@ -13,16 +13,33 @@ namespace StockManagerDB
     public class ListManager : IDisposable
     {
         private readonly string filepath;
-        private SaveList list = new SaveList();
+        private SaveList list;
+
+        public event EventHandler<EventArgs> OnPartsListModified;
+        public event EventHandler<EventArgs> OnComponentsListModified;
 
         public SaveList Data
         {
             get
             {
                 if (list == null)
+                {
                     list = new SaveList();
+                    list.Parts.OnListModified += Parts_OnListModified;
+                    list.Components.OnListModified += Components_OnListModified;
+                }
                 return list;
             }
+        }
+
+        private void Components_OnListModified(object sender, EventArgs e)
+        {
+            OnComponentsListModified?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void Parts_OnListModified(object sender, EventArgs e)
+        {
+            OnPartsListModified?.Invoke(this, EventArgs.Empty);
         }
 
         public ListManager(string filepath)
@@ -35,6 +52,8 @@ namespace StockManagerDB
         public void Load()
         {
             ESNLib.Tools.SettingsManager.LoadFrom(filepath, out list);
+            list.Parts.OnListModified += Parts_OnListModified;
+            list.Components.OnListModified += Components_OnListModified;
         }
 
         public void Save()
@@ -97,12 +116,12 @@ namespace StockManagerDB
             /// <summary>
             /// Parts
             /// </summary>
-            public List<PartClass> Parts
+            public ListPlus<PartClass> Parts
             {
                 get
                 {
                     if (_parts == null)
-                        _parts = new List<PartClass>();
+                        _parts = new ListPlus<PartClass>();
                     return _parts;
                 }
                 set
@@ -110,16 +129,16 @@ namespace StockManagerDB
                     _parts = value;
                 }
             }
-            private List<PartClass> _parts;
+            private ListPlus<PartClass> _parts;
             /// <summary>
             /// Parts used by projects
             /// </summary>
-            public List<ComponentClass> Components
+            public ListPlus<ComponentClass> Components
             {
                 get
                 {
                     if (_components == null)
-                        _components = new List<ComponentClass>();
+                        _components = new ListPlus<ComponentClass>();
                     return _components;
                 }
                 set
@@ -127,7 +146,7 @@ namespace StockManagerDB
                     _components = value;
                 }
             }
-            private List<ComponentClass> _components;
+            private ListPlus<ComponentClass> _components;
 
             public void Clear()
             {
