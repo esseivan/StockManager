@@ -52,6 +52,7 @@
             this.cbboxFilterType = new System.Windows.Forms.ComboBox();
             this.txtboxFilter = new System.Windows.Forms.TextBox();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.label2 = new System.Windows.Forms.Label();
             this.listviewParts = new BrightIdeasSoftware.FastDataListView();
             this.olvcSelect = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcMPN = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
@@ -64,6 +65,7 @@
             this.olvcPrice = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcSupplier = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcSPN = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.label1 = new System.Windows.Forms.Label();
             this.listviewChecked = new BrightIdeasSoftware.FastDataListView();
             this.olvcMPN2 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcMAN2 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
@@ -80,8 +82,7 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.btnDuplicatePart = new System.Windows.Forms.Button();
             this.btnAddPart = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
+            this.filterHighlightRenderer = new BrightIdeasSoftware.HighlightTextRenderer();
             this.menuStrip1.SuspendLayout();
             this.groupBox3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -317,6 +318,15 @@
             this.splitContainer1.SplitterDistance = 288;
             this.splitContainer1.TabIndex = 40;
             // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(6, 3);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(44, 13);
+            this.label2.TabIndex = 8;
+            this.label2.Text = "All parts";
+            // 
             // listviewParts
             // 
             this.listviewParts.AllColumns.Add(this.olvcSelect);
@@ -336,7 +346,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.listviewParts.AutoGenerateColumns = false;
-            this.listviewParts.CellEditUseWholeCell = false;
+            this.listviewParts.CellEditActivation = BrightIdeasSoftware.ObjectListView.CellEditActivateMode.DoubleClick;
             this.listviewParts.CheckBoxes = true;
             this.listviewParts.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.olvcSelect,
@@ -353,6 +363,8 @@
             this.listviewParts.Cursor = System.Windows.Forms.Cursors.Default;
             this.listviewParts.DataSource = null;
             this.listviewParts.EmptyListMsg = "(Empty)";
+            this.listviewParts.FullRowSelect = true;
+            this.listviewParts.GridLines = true;
             this.listviewParts.HideSelection = false;
             this.listviewParts.Location = new System.Drawing.Point(3, 18);
             this.listviewParts.Margin = new System.Windows.Forms.Padding(2);
@@ -438,6 +450,15 @@
             this.olvcSPN.Text = "SPN";
             this.olvcSPN.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(6, 3);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(76, 13);
+            this.label1.TabIndex = 8;
+            this.label1.Text = "Checked parts";
+            // 
             // listviewChecked
             // 
             this.listviewChecked.AllColumns.Add(this.olvcMPN2);
@@ -471,6 +492,8 @@
             this.listviewChecked.Cursor = System.Windows.Forms.Cursors.Default;
             this.listviewChecked.DataSource = null;
             this.listviewChecked.EmptyListMsg = "(Empty)";
+            this.listviewChecked.FullRowSelect = true;
+            this.listviewChecked.GridLines = true;
             this.listviewChecked.HideSelection = false;
             this.listviewChecked.Location = new System.Drawing.Point(3, 18);
             this.listviewChecked.Margin = new System.Windows.Forms.Padding(2);
@@ -595,24 +618,6 @@
             this.btnAddPart.UseVisualStyleBackColor = true;
             this.btnAddPart.Click += new System.EventHandler(this.btnAddPart_Click);
             // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 3);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(76, 13);
-            this.label1.TabIndex = 8;
-            this.label1.Text = "Checked parts";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(6, 3);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(44, 13);
-            this.label2.TabIndex = 8;
-            this.label2.Text = "All parts";
-            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -702,6 +707,7 @@
         private System.Windows.Forms.Button btnDuplicatePart;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
+        private BrightIdeasSoftware.HighlightTextRenderer filterHighlightRenderer;
     }
 }
 

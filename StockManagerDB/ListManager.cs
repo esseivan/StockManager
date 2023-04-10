@@ -15,8 +15,8 @@ namespace StockManagerDB
         private readonly string filepath;
         private SaveList list;
 
-        public event EventHandler<EventArgs> OnPartsListModified;
-        public event EventHandler<EventArgs> OnComponentsListModified;
+        public static event EventHandler<EventArgs> OnPartsListModified;
+        public static event EventHandler<EventArgs> OnComponentsListModified;
 
         public SaveList Data
         {
