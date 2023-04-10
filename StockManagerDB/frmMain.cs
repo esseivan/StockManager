@@ -83,7 +83,6 @@ namespace StockManagerDB
 
         #endregion
 
-
         public frmMain()
         {
             InitializeComponent();
@@ -411,7 +410,6 @@ namespace StockManagerDB
         }
         #endregion
 
-
         #region PartManagement
 
         /// <summary>
@@ -590,7 +588,6 @@ namespace StockManagerDB
         {
             this.Close();
         }
-
         private void importOrderFromDigikeyToolStripMenuItem_Click(object sender, EventArgs e)
         {
             // TODO
@@ -616,7 +613,12 @@ namespace StockManagerDB
         {
             DuplicateSelectedPart();
         }
+        private void button1_Click(object sender, EventArgs e)
+        {
+            DeleteCheckedParts();
+        }
 
         #endregion
+
     }
 }
