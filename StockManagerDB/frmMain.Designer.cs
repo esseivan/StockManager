@@ -49,7 +49,11 @@
             this.cbboxFilterType = new System.Windows.Forms.ComboBox();
             this.txtboxFilter = new System.Windows.Forms.TextBox();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.btnDuplicatePart = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
+            this.btnAddPart = new System.Windows.Forms.Button();
             this.listviewParts = new BrightIdeasSoftware.FastDataListView();
             this.olvcSelect = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcMPN = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
@@ -62,6 +66,7 @@
             this.olvcPrice = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcSupplier = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcSPN = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.btnDeleteChecked = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.listviewChecked = new BrightIdeasSoftware.FastDataListView();
             this.olvcMPN2 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
@@ -76,12 +81,7 @@
             this.olvcSPN2 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.labelCount = new System.Windows.Forms.ToolStripStatusLabel();
-            this.btnDuplicatePart = new System.Windows.Forms.Button();
-            this.btnAddPart = new System.Windows.Forms.Button();
             this.filterHighlightRenderer = new BrightIdeasSoftware.HighlightTextRenderer();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -292,7 +292,7 @@
             // 
             // splitContainer1.Panel2
             // 
-            this.splitContainer1.Panel2.Controls.Add(this.button1);
+            this.splitContainer1.Panel2.Controls.Add(this.btnDeleteChecked);
             this.splitContainer1.Panel2.Controls.Add(this.label1);
             this.splitContainer1.Panel2.Controls.Add(this.listviewChecked);
             this.splitContainer1.Panel2.Padding = new System.Windows.Forms.Padding(3);
@@ -300,6 +300,36 @@
             this.splitContainer1.Size = new System.Drawing.Size(866, 466);
             this.splitContainer1.SplitterDistance = 274;
             this.splitContainer1.TabIndex = 40;
+            // 
+            // label4
+            // 
+            this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(625, 9);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(29, 13);
+            this.label4.TabIndex = 10;
+            this.label4.Text = "Filter";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(6, 22);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(102, 13);
+            this.label3.TabIndex = 9;
+            this.label3.Text = "Actions on selection";
+            // 
+            // btnDuplicatePart
+            // 
+            this.btnDuplicatePart.Enabled = false;
+            this.btnDuplicatePart.Location = new System.Drawing.Point(87, 38);
+            this.btnDuplicatePart.Name = "btnDuplicatePart";
+            this.btnDuplicatePart.Size = new System.Drawing.Size(75, 23);
+            this.btnDuplicatePart.TabIndex = 0;
+            this.btnDuplicatePart.Text = "Duplicate";
+            this.btnDuplicatePart.UseVisualStyleBackColor = true;
+            this.btnDuplicatePart.Click += new System.EventHandler(this.btnDuplicatePart_Click);
             // 
             // label2
             // 
@@ -310,6 +340,16 @@
             this.label2.Size = new System.Drawing.Size(53, 13);
             this.label2.TabIndex = 8;
             this.label2.Text = "All parts";
+            // 
+            // btnAddPart
+            // 
+            this.btnAddPart.Location = new System.Drawing.Point(6, 38);
+            this.btnAddPart.Name = "btnAddPart";
+            this.btnAddPart.Size = new System.Drawing.Size(75, 23);
+            this.btnAddPart.TabIndex = 0;
+            this.btnAddPart.Text = "Add";
+            this.btnAddPart.UseVisualStyleBackColor = true;
+            this.btnAddPart.Click += new System.EventHandler(this.btnAddPart_Click);
             // 
             // listviewParts
             // 
@@ -373,6 +413,7 @@
             this.listviewParts.VirtualMode = true;
             this.listviewParts.CellEditFinished += new BrightIdeasSoftware.CellEditEventHandler(this.listviewParts_CellEditFinished);
             this.listviewParts.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.listviewParts_ItemChecked);
+            this.listviewParts.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listviewParts_KeyDown);
             // 
             // olvcSelect
             // 
@@ -435,6 +476,17 @@
             this.olvcSPN.Text = "SPN";
             this.olvcSPN.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
+            // btnDeleteChecked
+            // 
+            this.btnDeleteChecked.Enabled = false;
+            this.btnDeleteChecked.Location = new System.Drawing.Point(6, 19);
+            this.btnDeleteChecked.Name = "btnDeleteChecked";
+            this.btnDeleteChecked.Size = new System.Drawing.Size(90, 23);
+            this.btnDeleteChecked.TabIndex = 9;
+            this.btnDeleteChecked.Text = "DELETE ALL";
+            this.btnDeleteChecked.UseVisualStyleBackColor = true;
+            this.btnDeleteChecked.Click += new System.EventHandler(this.btnDeleteChecked_Click);
+            // 
             // label1
             // 
             this.label1.AutoSize = true;
@@ -478,7 +530,6 @@
             this.listviewChecked.Cursor = System.Windows.Forms.Cursors.Default;
             this.listviewChecked.DataSource = null;
             this.listviewChecked.EmptyListMsg = "(Empty)";
-            this.listviewChecked.Enabled = false;
             this.listviewChecked.FullRowSelect = true;
             this.listviewChecked.GridLines = true;
             this.listviewChecked.HideSelection = false;
@@ -574,55 +625,6 @@
             this.labelCount.Name = "labelCount";
             this.labelCount.Size = new System.Drawing.Size(0, 17);
             // 
-            // btnDuplicatePart
-            // 
-            this.btnDuplicatePart.Location = new System.Drawing.Point(87, 38);
-            this.btnDuplicatePart.Name = "btnDuplicatePart";
-            this.btnDuplicatePart.Size = new System.Drawing.Size(75, 23);
-            this.btnDuplicatePart.TabIndex = 0;
-            this.btnDuplicatePart.Text = "Duplicate";
-            this.btnDuplicatePart.UseVisualStyleBackColor = true;
-            this.btnDuplicatePart.Click += new System.EventHandler(this.btnDuplicatePart_Click);
-            // 
-            // btnAddPart
-            // 
-            this.btnAddPart.Location = new System.Drawing.Point(6, 38);
-            this.btnAddPart.Name = "btnAddPart";
-            this.btnAddPart.Size = new System.Drawing.Size(75, 23);
-            this.btnAddPart.TabIndex = 0;
-            this.btnAddPart.Text = "Add";
-            this.btnAddPart.UseVisualStyleBackColor = true;
-            this.btnAddPart.Click += new System.EventHandler(this.btnAddPart_Click);
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(6, 22);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(102, 13);
-            this.label3.TabIndex = 9;
-            this.label3.Text = "Actions on selection";
-            // 
-            // label4
-            // 
-            this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(625, 9);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(29, 13);
-            this.label4.TabIndex = 10;
-            this.label4.Text = "Filter";
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(6, 19);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(90, 23);
-            this.button1.TabIndex = 9;
-            this.button1.Text = "DELETE ALL";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -707,7 +709,7 @@
         private BrightIdeasSoftware.HighlightTextRenderer filterHighlightRenderer;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button btnDeleteChecked;
     }
 }
 

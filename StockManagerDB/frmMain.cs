@@ -43,7 +43,22 @@ namespace StockManagerDB
         /// <summary>
         /// Update CheckListView when checkItemChanged
         /// </summary>
-        private bool UpdateOnCheck = true;
+        private bool UpdateOnCheck
+        {
+            get
+            {
+                return _updateOnCheck;
+            }
+            set
+            {
+                _updateOnCheck = value;
+                if (_updateOnCheck)
+                {
+                    UpdateCheckedListview();
+                }
+            }
+        }
+        private bool _updateOnCheck = true;
 
         private frmProjects _projectForm = null;
         /// <summary>
@@ -94,6 +109,7 @@ namespace StockManagerDB
             // Setup listviews
             ListViewSetColumns();
             listviewParts.DefaultRenderer = filterHighlightRenderer;
+            listviewParts.AllowCheckWithSpace = false;
 
             // Set default filter type
             cbboxFilterType.SelectedIndex = 2;
@@ -157,6 +173,9 @@ namespace StockManagerDB
 
             // Main list view : all parts
             listviewParts.DataSource = Parts;
+
+            btnDuplicatePart.Enabled = (listviewParts.Items.Count != 0);
+
             // Resize columns if required
             if (resizeColumns)
             {
@@ -184,6 +203,8 @@ namespace StockManagerDB
 
             // Set the content to only the checked parts
             listviewChecked.DataSource = GetCheckedParts();
+
+            btnDeleteChecked.Enabled = (listviewChecked.Items.Count != 0);
         }
 
         /// <summary>
@@ -467,7 +488,7 @@ namespace StockManagerDB
             PartClass pc = listviewParts.SelectedObject as PartClass;
             if (pc == null)
                 return;
-            
+
             // Ask the user for the new MPN
             var result = Dialog.ShowDialog("Enter the new MPN (Manufacturer Product Number) for the part...", Title: "Enter input", Input: true, Btn2: Dialog.ButtonType.Cancel);
 
@@ -563,8 +584,6 @@ namespace StockManagerDB
             listviewParts.CheckObjects(listviewParts.FilteredObjects);
             listviewParts.Focus();
             UpdateOnCheck = true;
-
-            UpdateCheckedListview();
         }
         private void uncheckAllInViewToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -573,8 +592,6 @@ namespace StockManagerDB
             listviewParts.UncheckObjects(listviewParts.FilteredObjects);
             listviewParts.Focus();
             UpdateOnCheck = true;
-
-            UpdateCheckedListview();
         }
         private void DELETECheckedToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -613,12 +630,36 @@ namespace StockManagerDB
         {
             DuplicateSelectedPart();
         }
-        private void button1_Click(object sender, EventArgs e)
+        private void btnDeleteChecked_Click(object sender, EventArgs e)
         {
             DeleteCheckedParts();
         }
 
         #endregion
 
+        private void ToggleCheckSelection()
+        {
+            bool state = listviewParts.IsChecked(listviewParts.SelectedObjects[0]);
+            state = !state;
+
+            UpdateOnCheck = false;
+            if (state)
+            {
+                listviewParts.CheckObjects(listviewParts.SelectedObjects);
+            }
+            else
+            {
+                listviewParts.UncheckObjects(listviewParts.SelectedObjects);
+            }
+            UpdateOnCheck = true;
+        }
+
+        private void listviewParts_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Space)
+            {
+                ToggleCheckSelection();
+            }
+        }
     }
 }
