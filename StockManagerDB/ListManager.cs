@@ -18,6 +18,8 @@ namespace StockManagerDB
         public static event EventHandler<EventArgs> OnPartsListModified;
         public static event EventHandler<EventArgs> OnComponentsListModified;
 
+        public static ListManager Instance { get; private set; }
+
         public SaveList Data
         {
             get
@@ -47,6 +49,7 @@ namespace StockManagerDB
             this.filepath = filepath;
             Load();
             Save();
+            Instance = this;
         }
 
         public void Load()
@@ -58,7 +61,7 @@ namespace StockManagerDB
 
         public void Save()
         {
-            ESNLib.Tools.SettingsManager.SaveTo(filepath, list, backup: true, indent: false);
+            ESNLib.Tools.SettingsManager.SaveTo(filepath, list, backup: true, indent: true);
         }
 
         public static string GetDefaultPath(string name, string folder = null)
@@ -105,7 +108,7 @@ namespace StockManagerDB
 
         public void Dispose()
         {
-
+            Instance = null;
         }
 
         /// <summary>

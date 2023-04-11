@@ -184,10 +184,11 @@
             this.listviewComponents.AllColumns.Add(this.olvcPrice);
             this.listviewComponents.AllColumns.Add(this.olvcSupplier);
             this.listviewComponents.AllColumns.Add(this.olvcSPN);
+            this.listviewComponents.AllowCheckWithSpace = true;
             this.listviewComponents.AllowColumnReorder = true;
             this.listviewComponents.AlternateRowBackColor = System.Drawing.Color.LightBlue;
             this.listviewComponents.AutoGenerateColumns = false;
-            this.listviewComponents.CellEditUseWholeCell = false;
+            this.listviewComponents.CellEditActivation = BrightIdeasSoftware.ObjectListView.CellEditActivateMode.DoubleClick;
             this.listviewComponents.CheckBoxes = true;
             this.listviewComponents.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.olvcSelect,
@@ -206,6 +207,8 @@
             this.listviewComponents.Cursor = System.Windows.Forms.Cursors.Default;
             this.listviewComponents.DataSource = null;
             this.listviewComponents.EmptyListMsg = "(Empty)";
+            this.listviewComponents.FullRowSelect = true;
+            this.listviewComponents.GridLines = true;
             this.listviewComponents.HideSelection = false;
             this.listviewComponents.Location = new System.Drawing.Point(166, 94);
             this.listviewComponents.Margin = new System.Windows.Forms.Padding(2);

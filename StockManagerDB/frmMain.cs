@@ -72,7 +72,7 @@ namespace StockManagerDB
                 {
                     if (_projectForm == null)
                     {
-                        _projectForm = new frmProjects(filepath);
+                        _projectForm = new frmProjects(myList);
                         _projectForm.FormClosed += _projectForm_FormClosed;
                     }
                 }
@@ -613,6 +613,12 @@ namespace StockManagerDB
 
         private void projectsToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (!IsFileLoaded)
+            {
+                LoggerClass.Write("Unable to open projects, no file loaded...", Logger.LogLevels.Error);
+                return;
+            }
+
             // Open projects form
             projectForm.Show();
         }

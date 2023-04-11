@@ -1,5 +1,6 @@
 ﻿using BrightIdeasSoftware;
 using ESNLib.Controls;
+using Microsoft.Vbe.Interop;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -14,39 +15,39 @@ namespace StockManagerDB
 {
     public partial class frmProjects : Form
     {
-        private readonly DBProjectsWrapper dbpw;
-        private readonly string Filepath;
+        private List<string> projects = new List<string>();
 
-        private List<string> projects;
+        private readonly ListManager myList;
+        private List<PartClass> Parts => myList.Data.Parts;
+        private ListPlus<ComponentClass> Components => myList.Data.Components;
 
-        /// <summary>
-        /// The listview where the parts are displayed
-        /// </summary>
-        private readonly FastDataListView compLV;
-
-        public frmProjects(string filepath)
+        public frmProjects(ListManager listmanager)
         {
+            this.myList = listmanager;
+
             InitializeComponent();
 
-            compLV = listviewComponents;
-            InitListView(compLV);
-            compLV.CellEditActivation = ObjectListView.CellEditActivateMode.DoubleClick;
-            compLV.CellEditUseWholeCell = true;
+            ListViewSetColumns();
 
-            this.Filepath = filepath;
-            dbpw = new DBProjectsWrapper(Filepath);
-            dbpw.OnListModified += Dbpw_OnListModified;
-            dbpw.LoadComponents();
+            ListManager.OnPartsListModified += ListManager_OnPartsListModified;
+            ListManager.OnComponentsListModified += ListManager_OnComponentsListModified;
+        }
+
+        private void ListManager_OnComponentsListModified(object sender, EventArgs e)
+        {
+            myList.Save();
+            PopulateLists();
+        }
+
+        private void ListManager_OnPartsListModified(object sender, EventArgs e)
+        {
+            PopulateLists();
         }
 
         #region ListView Init
 
-        private void InitListView(FastDataListView listview)
+        private void ListViewSetColumns()
         {
-            listview.View = View.Details;
-            listview.GridLines = true;
-            listview.FullRowSelect = true;
-
             // Setup columns
             olvcMPN.AspectGetter = delegate (object x) { return ((ComponentClass)x).MPN; };
             olvcQuantity.AspectGetter = delegate (object x) { return ((ComponentClass)x).Quantity; };
@@ -67,18 +68,32 @@ namespace StockManagerDB
         private void PopulateLists()
         {
             string textPrevious = comboBox1.Text;
-            dbpw.RemoveEmptyProjects();
-            projects = dbpw.Components.Keys.ToList();
+            List<string> allParents = Components.Select((comp) => comp.Parent).ToList();
+            // Remove duplicates
+            projects.Clear();
+            allParents.ForEach((parent) =>
+            {
+                if (!projects.Contains(parent))
+                    projects.Add(parent);
+            });
+
             comboBox1.DataSource = projects;
             comboBox1.Text = textPrevious;
 
             UpdateComponentList();
         }
 
-        private void Dbpw_OnListModified(object sender, EventArgs e)
+        /// <summary>
+        /// Get the components for the specified project parent
+        /// </summary>
+        /// <param name="parent">The project</param>
+        /// <returns></returns>
+        private List<ComponentClass> GetComponents(string parent)
         {
-            PopulateLists();
+            List<ComponentClass> selectedComponents = Components.Where((comp) => comp.Parent.Equals(parent)).ToList();
+            return selectedComponents;
         }
+
 
         private void CreateNewProject()
         {
@@ -88,7 +103,16 @@ namespace StockManagerDB
                 return;
             }
 
-            dbpw.CreateProject(result.UserInput);
+            // Add dummy component
+            ComponentClass dummy = new ComponentClass()
+            {
+                Parent = result.UserInput,
+                MPN = "Template",
+                Quantity = 0,
+                Reference = "R1"
+            };
+
+            Components.Add(dummy);
         }
 
         private void RenameProject(string currentName)
@@ -102,7 +126,8 @@ namespace StockManagerDB
                 return;
             }
 
-            dbpw.RenameProject(currentName, result.UserInput);
+            List<ComponentClass> projectComponents = GetComponents(currentName);
+            projectComponents.ForEach((comp) => comp.Parent = result.UserInput);
         }
 
         private void DuplicateProject(string currentName)
@@ -116,7 +141,13 @@ namespace StockManagerDB
                 return;
             }
 
-            dbpw.DuplicateProject(result.UserInput, currentName);
+            List<ComponentClass> projectComponents = GetComponents(currentName);
+            // Clone them all
+            List<ComponentClass> newComponents = projectComponents.Select((comp) => comp.Clone() as ComponentClass).ToList();
+            // Apply new parent
+            newComponents.ForEach((comp) => comp.Parent = result.UserInput);
+            // Add to list
+            Components.AddRange(newComponents);
         }
 
         private string GetSelectedProjectName()
@@ -134,7 +165,8 @@ namespace StockManagerDB
                 return;
             }
 
-            dbpw.DeleteProject(project);
+            List<ComponentClass> projectComponents = GetComponents(project);
+            Components.RemoveRange(projectComponents);
         }
 
         private void quitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -168,18 +200,24 @@ namespace StockManagerDB
 
             if (selectedProject == null)
             {
-                compLV.DataSource = new List<ComponentClass>();
+                listviewComponents.DataSource = new List<ComponentClass>();
                 return;
             }
 
-            compLV.DataSource = dbpw.Components[selectedProject];
-            //compLV.AutoResizeColumns();
-            compLV.Focus();
+            listviewComponents.DataSource = GetComponents(selectedProject);
+            //listviewComponents.AutoResizeColumns();
+            listviewComponents.Focus();
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             UpdateComponentList();
+        }
+
+        private void UpdateComponent(ComponentClass oldComponent, ComponentClass newComponent)
+        {
+            DeleteComponent(oldComponent);
+            AddComponent(newComponent);
         }
 
         private void listviewComponents_CellEditFinished(object sender, CellEditEventArgs e)
@@ -198,10 +236,15 @@ namespace StockManagerDB
             else
             {
                 // Apply manually the new value
-                dbpw.UpdateComponent(newComponent, oldComponent);
+                UpdateComponent(oldComponent, newComponent);
             }
 
             UpdateComponentList();
+        }
+
+        private void AddComponent(ComponentClass component)
+        {
+            Components.Add(component);
         }
 
         private void btnAddComponent_Click(object sender, EventArgs e)
@@ -217,12 +260,13 @@ namespace StockManagerDB
                 Quantity = 0,
                 Reference = "NA"
             };
-            dbpw.AddComponent(newComponent);
+
+            AddComponent(newComponent);
         }
 
         private void btnDuplicate_Click(object sender, EventArgs e)
         {
-            if (compLV.SelectedIndex == -1)
+            if (listviewComponents.SelectedIndex == -1)
                 return;
 
             string project = GetSelectedProjectName();
@@ -230,16 +274,28 @@ namespace StockManagerDB
                 return;
 
             // Get selected component
-            ComponentClass component = compLV.SelectedObject as ComponentClass;
+            ComponentClass component = listviewComponents.SelectedObject as ComponentClass;
 
-            int selectedIndexBefore = compLV.SelectedIndex;
-            dbpw.AddComponent(component);
-            compLV.SelectedIndex = selectedIndexBefore;
+            int selectedIndexBefore = listviewComponents.SelectedIndex;
+            AddComponent(component.Clone() as ComponentClass);
+            listviewComponents.SelectedIndex = selectedIndexBefore;
+        }
+
+        private void DeleteComponent(ComponentClass component)
+        {
+            // Remove old component from list and add new 
+            if (!Components.Contains(component))
+            {
+                LoggerClass.Write("Unable to delete component. Not found", ESNLib.Tools.Logger.LogLevels.Error);
+                return;
+            }
+
+            Components.Remove(component);
         }
 
         private void btnDelete_Click(object sender, EventArgs e)
         {
-            if (compLV.SelectedIndex == -1)
+            if (listviewComponents.SelectedIndex == -1)
                 return;
 
             string project = GetSelectedProjectName();
@@ -247,13 +303,13 @@ namespace StockManagerDB
                 return;
 
             // Get selected component
-            ComponentClass component = compLV.SelectedObject as ComponentClass;
+            ComponentClass component = listviewComponents.SelectedObject as ComponentClass;
 
-            int selectedIndexBefore = compLV.SelectedIndex;
-            dbpw.RemoveComponent(component);
-            if (selectedIndexBefore >= compLV.Items.Count)
+            int selectedIndexBefore = listviewComponents.SelectedIndex;
+            DeleteComponent(component);
+            if (selectedIndexBefore >= listviewComponents.Items.Count)
                 selectedIndexBefore--;
-            compLV.SelectedIndex = selectedIndexBefore;
+            listviewComponents.SelectedIndex = selectedIndexBefore;
         }
 
         private void duplicateAllCheckedToolStripMenuItem_Click(object sender, EventArgs e)
@@ -263,9 +319,19 @@ namespace StockManagerDB
                 return;
 
             // Get all checked
-            var objects = compLV.CheckedObjectsEnumerable.Cast<ComponentClass>();
+            List<ComponentClass> objects = listviewComponents.CheckedObjectsEnumerable.Cast<ComponentClass>().ToList();
+            IEnumerable<ComponentClass> newComponents = objects.Select((comp) => comp.Clone() as ComponentClass);
 
-            dbpw.AddComponentsRange(objects);
+            Components.AddRange(newComponents);
+        }
+
+        private void RemoveComponentsFromParent(string parent, IEnumerable<ComponentClass> components)
+        {
+            List<ComponentClass> projectComponents = GetComponents(parent);
+
+            IEnumerable<ComponentClass> selectedComponents = projectComponents.Intersect(components);
+
+            Components.RemoveRange(selectedComponents);
         }
 
         private void DELETEAllCheckedToolStripMenuItem_Click(object sender, EventArgs e)
@@ -275,9 +341,9 @@ namespace StockManagerDB
                 return;
 
             // Get all checked
-            var objects = compLV.CheckedObjectsEnumerable.Cast<ComponentClass>();
+            var objects = listviewComponents.CheckedObjectsEnumerable.Cast<ComponentClass>();
 
-            dbpw.RemoveComponentRangeParent(project, objects);
+            RemoveComponentsFromParent(project, objects);
         }
     }
 }

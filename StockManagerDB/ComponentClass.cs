@@ -11,6 +11,34 @@ namespace StockManagerDB
     public class ComponentClass : ICloneable
     {
         /// <summary>
+        /// Count the IDs, the number of created components
+        /// </summary>
+        private static int ID_Counter = 1;
+
+        public static ListManager ListManagerPointer = null;
+
+        /// <summary>
+        /// ID of the component
+        /// </summary>
+        [JsonIgnore]
+        public int ID
+        {
+            get => int.TryParse(QuantityStr, out int valueInt) ? valueInt : 0;
+            set
+            {
+                Parameters[Parameter.ID] = value.ToString();
+                // If ID > ID_Counter, save that as the ID_Counter
+                if (value > ID_Counter)
+                    ID_Counter = value;
+            }
+        }
+        public string IDStr
+        {
+            get => Parameters.TryGetValue(Parameter.ID, out string value) ? value : string.Empty;
+            set => Parameters[Parameter.ID] = value;
+        }
+
+        /// <summary>
         /// Parent project name
         /// </summary>
         public string Parent
@@ -57,14 +85,13 @@ namespace StockManagerDB
         {
             get
             {
-                if (DBWrapper.Parts.ContainsKey(MPN))
-                {
-                    return DBWrapper.Parts[MPN];
-                }
-                else
-                {
+                if (ListManagerPointer == null)
                     return null;
-                }
+
+                var list = ListManagerPointer.Data.Parts.Where((part) => part.MPN.Equals(MPN));
+                if (list.Count() > 0)
+                    return list.First();
+                return null;
             }
         }
 
@@ -79,6 +106,7 @@ namespace StockManagerDB
         public enum Parameter
         {
             UNDEFINED,
+            ID,
             Parent,
             MPN,
             Quantity,
@@ -86,50 +114,11 @@ namespace StockManagerDB
         }
 
         /// <summary>
-        /// Make a link between database column index and PartClass parameter
+        /// Create a new component
         /// </summary>
-        public static Dictionary<int, Parameter> DatabaseLink = new Dictionary<int, Parameter>()
+        public ComponentClass()
         {
-            {0, Parameter.Parent    },
-            {1, Parameter.MPN       },
-            {2, Parameter.Quantity  },
-            {3, Parameter.Reference },
-        };
-
-        /// <summary>
-        /// Make a link between a parameter and the database column name
-        /// </summary>
-        public static Dictionary<Parameter, string> DatabaseLinkStr = new Dictionary<Parameter, string>()
-        {
-            { Parameter.Parent      , "parent"      },
-            { Parameter.MPN         , "mpn"         },
-            { Parameter.Quantity    , "quantity"    },
-            { Parameter.Reference   , "reference"   },
-        };
-
-
-        /// <summary>
-        /// Create a PartClass List from a DataTable table imported from a sql database
-        /// </summary>
-        /// <param name="table"></param>
-        /// <returns></returns>
-        public static List<ComponentClass> CreateFromDB(DataTable table)
-        {
-            int nCol = table.Columns.Count;
-            List<ComponentClass> components = new List<ComponentClass>();
-
-            foreach (DataRow row in table.Rows)
-            {
-                ComponentClass component = new ComponentClass();
-                // skip first value (id)
-                for (int i = 0; i < nCol; i++)
-                {
-                    component.Parameters[DatabaseLink[i]] = row[i].ToString();
-                }
-                components.Add(component);
-            }
-
-            return components;
+            this.ID = ID_Counter++;
         }
 
         public object Clone()
