@@ -55,12 +55,17 @@ namespace StockManagerDB
         public void Load()
         {
             ESNLib.Tools.SettingsManager.LoadFrom(filepath, out list);
+
             list.Parts.OnListModified += Parts_OnListModified;
             list.Components.OnListModified += Components_OnListModified;
         }
 
         public void Save()
         {
+            // Sort both lists
+            list.Parts.Sort(new SaveList.CompareByMPN());
+            list.Components.Sort(new SaveList.CompareByID());
+
             ESNLib.Tools.SettingsManager.SaveTo(filepath, list, backup: true, indent: true);
         }
 
@@ -155,6 +160,22 @@ namespace StockManagerDB
             {
                 Parts.Clear();
                 Components.Clear();
+            }
+
+            public class CompareByMPN : IComparer<PartClass>
+            {
+                public int Compare(PartClass x, PartClass y)
+                {
+                    return x.MPN.CompareTo(y.MPN);
+                }
+            }
+
+            public class CompareByID : IComparer<ComponentClass>
+            {
+                public int Compare(ComponentClass x, ComponentClass y)
+                {
+                    return x.ID.CompareTo(y.ID);
+                }
             }
         }
 

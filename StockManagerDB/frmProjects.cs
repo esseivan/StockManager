@@ -15,15 +15,15 @@ namespace StockManagerDB
 {
     public partial class frmProjects : Form
     {
-        private List<string> projects = new List<string>();
+        private readonly List<string> projects = new List<string>();
 
         private readonly ListManager myList;
-        private List<PartClass> Parts => myList.Data.Parts;
         private ListPlus<ComponentClass> Components => myList.Data.Components;
 
         public frmProjects(ListManager listmanager)
         {
             this.myList = listmanager;
+            ComponentClass.ListManagerPointer = myList;
 
             InitializeComponent();
 
@@ -31,7 +31,10 @@ namespace StockManagerDB
 
             ListManager.OnPartsListModified += ListManager_OnPartsListModified;
             ListManager.OnComponentsListModified += ListManager_OnComponentsListModified;
+
+            PopulateLists();
         }
+        #region ListView Init
 
         private void ListManager_OnComponentsListModified(object sender, EventArgs e)
         {
@@ -43,8 +46,6 @@ namespace StockManagerDB
         {
             PopulateLists();
         }
-
-        #region ListView Init
 
         private void ListViewSetColumns()
         {
@@ -65,6 +66,148 @@ namespace StockManagerDB
 
         #endregion
 
+        private void UpdateComponentList()
+        {
+            string selectedProject = GetSelectedProjectName();
+
+            if (selectedProject == null)
+            {
+                listviewComponents.DataSource = new List<ComponentClass>();
+                return;
+            }
+
+            listviewComponents.DataSource = GetComponents(selectedProject);
+            //listviewComponents.AutoResizeColumns();
+            listviewComponents.Focus();
+        }
+
+        private void UpdateComponent(ComponentClass oldComponent, ComponentClass newComponent)
+        {
+            DeleteComponent(oldComponent);
+            AddComponent(newComponent);
+        }
+
+        private void AddComponent(ComponentClass component)
+        {
+            Components.Add(component);
+        }
+
+        private void CreateNewComponent()
+        {
+
+            string project = GetSelectedProjectName();
+            if (project == null)
+                return;
+
+            ComponentClass newComponent = new ComponentClass()
+            {
+                Parent = project,
+                MPN = "NA",
+                Quantity = 0,
+                Reference = "NA"
+            };
+
+            AddComponent(newComponent);
+        }
+
+        private void DeleteSelectedComponent()
+        {
+            if (listviewComponents.SelectedIndex == -1)
+                return;
+
+            string project = GetSelectedProjectName();
+            if (project == null)
+                return;
+
+            // Get selected component
+            ComponentClass component = listviewComponents.SelectedObject as ComponentClass;
+
+            int selectedIndexBefore = listviewComponents.SelectedIndex;
+            DeleteComponent(component);
+            if (selectedIndexBefore >= listviewComponents.Items.Count)
+                selectedIndexBefore--;
+            listviewComponents.SelectedIndex = selectedIndexBefore;
+        }
+        private void DuplicateAllCheckedComponents()
+        {
+            string project = GetSelectedProjectName();
+            if (project == null)
+                return;
+
+            // Get all checked
+            List<ComponentClass> objects = listviewComponents.CheckedObjectsEnumerable.Cast<ComponentClass>().ToList();
+            IEnumerable<ComponentClass> newComponents = objects.Select((comp) => comp.Clone() as ComponentClass);
+
+            Components.AddRange(newComponents);
+        }
+        private void RemoveComponentsFromParent(string parent, IEnumerable<ComponentClass> components)
+        {
+            List<ComponentClass> projectComponents = GetComponents(parent);
+
+            IEnumerable<ComponentClass> selectedComponents = projectComponents.Intersect(components);
+
+            Components.RemoveRange(selectedComponents);
+        }
+        private void DeleteAllCheckedComponents()
+        {
+            string project = GetSelectedProjectName();
+            if (project == null)
+                return;
+
+            // Get all checked
+            var objects = listviewComponents.CheckedObjectsEnumerable.Cast<ComponentClass>();
+
+            RemoveComponentsFromParent(project, objects);
+        }
+        private void DeleteComponent(ComponentClass component)
+        {
+            // Remove old component from list and add new 
+            if (!Components.Contains(component))
+            {
+                LoggerClass.Write("Unable to delete component. Not found", ESNLib.Tools.Logger.LogLevels.Error);
+                return;
+            }
+
+            Components.Remove(component);
+        }
+        private void DuplicateSelectedComponent()
+        {
+            if (listviewComponents.SelectedIndex == -1)
+                return;
+
+            string project = GetSelectedProjectName();
+            if (project == null)
+                return;
+
+            // Get selected component
+            ComponentClass component = listviewComponents.SelectedObject as ComponentClass;
+
+            int selectedIndexBefore = listviewComponents.SelectedIndex;
+            AddComponent(component.Clone() as ComponentClass);
+            listviewComponents.SelectedIndex = selectedIndexBefore;
+        }
+
+        private void ApplyEdit(CellEditEventArgs e)
+        {
+            ComponentClass oldComponent = e.RowObject as ComponentClass;
+
+            ComponentClass.Parameter editedParameter = (e.Column.Index + ComponentClass.Parameter.MPN - 1);
+            ComponentClass newComponent = oldComponent.Clone() as ComponentClass;
+            string newValue = e.NewValue.ToString();
+            newComponent.Parameters[editedParameter] = newValue;
+
+            if (editedParameter == ComponentClass.Parameter.UNDEFINED)
+            {
+                throw new InvalidOperationException("Unable to edit 'undefined'");
+            }
+            else
+            {
+                // Apply manually the new value
+                UpdateComponent(oldComponent, newComponent);
+            }
+
+            UpdateComponentList();
+        }
         private void PopulateLists()
         {
             string textPrevious = comboBox1.Text;
@@ -77,6 +220,7 @@ namespace StockManagerDB
                     projects.Add(parent);
             });
 
+            comboBox1.DataSource = null;
             comboBox1.DataSource = projects;
             comboBox1.Text = textPrevious;
 
@@ -169,181 +313,57 @@ namespace StockManagerDB
             Components.RemoveRange(projectComponents);
         }
 
+        #region Misc Events
+
         private void quitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.Close();
         }
-
         private void newProjectToolStripMenuItem_Click(object sender, EventArgs e)
         {
             CreateNewProject();
         }
-
         private void renameSelectedProjectToolStripMenuItem_Click(object sender, EventArgs e)
         {
             RenameProject(GetSelectedProjectName());
         }
-
         private void duplicateSelectedProjectToolStripMenuItem_Click(object sender, EventArgs e)
         {
             DuplicateProject(GetSelectedProjectName());
         }
-
         private void DELETESelectedProjectToolStripMenuItem_Click(object sender, EventArgs e)
         {
             DeleteProject();
         }
-
-        private void UpdateComponentList()
-        {
-            string selectedProject = GetSelectedProjectName();
-
-            if (selectedProject == null)
-            {
-                listviewComponents.DataSource = new List<ComponentClass>();
-                return;
-            }
-
-            listviewComponents.DataSource = GetComponents(selectedProject);
-            //listviewComponents.AutoResizeColumns();
-            listviewComponents.Focus();
-        }
-
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             UpdateComponentList();
         }
-
-        private void UpdateComponent(ComponentClass oldComponent, ComponentClass newComponent)
-        {
-            DeleteComponent(oldComponent);
-            AddComponent(newComponent);
-        }
-
         private void listviewComponents_CellEditFinished(object sender, CellEditEventArgs e)
         {
-            ComponentClass oldComponent = e.RowObject as ComponentClass;
-
-            ComponentClass.Parameter editedParameter = (ComponentClass.Parameter)(e.Column.Index + 1);
-            ComponentClass newComponent = oldComponent.Clone() as ComponentClass;
-            string newValue = e.NewValue.ToString();
-            newComponent.Parameters[editedParameter] = newValue;
-
-            if (editedParameter == ComponentClass.Parameter.UNDEFINED)
-            {
-                throw new InvalidOperationException("Unable to edit 'undefined'");
-            }
-            else
-            {
-                // Apply manually the new value
-                UpdateComponent(oldComponent, newComponent);
-            }
-
-            UpdateComponentList();
+            ApplyEdit(e);
         }
-
-        private void AddComponent(ComponentClass component)
-        {
-            Components.Add(component);
-        }
-
         private void btnAddComponent_Click(object sender, EventArgs e)
         {
-            string project = GetSelectedProjectName();
-            if (project == null)
-                return;
-
-            ComponentClass newComponent = new ComponentClass()
-            {
-                Parent = project,
-                MPN = "NA",
-                Quantity = 0,
-                Reference = "NA"
-            };
-
-            AddComponent(newComponent);
+            CreateNewComponent();
         }
-
         private void btnDuplicate_Click(object sender, EventArgs e)
         {
-            if (listviewComponents.SelectedIndex == -1)
-                return;
-
-            string project = GetSelectedProjectName();
-            if (project == null)
-                return;
-
-            // Get selected component
-            ComponentClass component = listviewComponents.SelectedObject as ComponentClass;
-
-            int selectedIndexBefore = listviewComponents.SelectedIndex;
-            AddComponent(component.Clone() as ComponentClass);
-            listviewComponents.SelectedIndex = selectedIndexBefore;
+            DuplicateSelectedComponent();
         }
-
-        private void DeleteComponent(ComponentClass component)
-        {
-            // Remove old component from list and add new 
-            if (!Components.Contains(component))
-            {
-                LoggerClass.Write("Unable to delete component. Not found", ESNLib.Tools.Logger.LogLevels.Error);
-                return;
-            }
-
-            Components.Remove(component);
-        }
-
         private void btnDelete_Click(object sender, EventArgs e)
         {
-            if (listviewComponents.SelectedIndex == -1)
-                return;
-
-            string project = GetSelectedProjectName();
-            if (project == null)
-                return;
-
-            // Get selected component
-            ComponentClass component = listviewComponents.SelectedObject as ComponentClass;
-
-            int selectedIndexBefore = listviewComponents.SelectedIndex;
-            DeleteComponent(component);
-            if (selectedIndexBefore >= listviewComponents.Items.Count)
-                selectedIndexBefore--;
-            listviewComponents.SelectedIndex = selectedIndexBefore;
+            DeleteSelectedComponent();
         }
-
         private void duplicateAllCheckedToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            string project = GetSelectedProjectName();
-            if (project == null)
-                return;
-
-            // Get all checked
-            List<ComponentClass> objects = listviewComponents.CheckedObjectsEnumerable.Cast<ComponentClass>().ToList();
-            IEnumerable<ComponentClass> newComponents = objects.Select((comp) => comp.Clone() as ComponentClass);
-
-            Components.AddRange(newComponents);
+            DuplicateAllCheckedComponents();
         }
-
-        private void RemoveComponentsFromParent(string parent, IEnumerable<ComponentClass> components)
-        {
-            List<ComponentClass> projectComponents = GetComponents(parent);
-
-            IEnumerable<ComponentClass> selectedComponents = projectComponents.Intersect(components);
-
-            Components.RemoveRange(selectedComponents);
-        }
-
         private void DELETEAllCheckedToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            string project = GetSelectedProjectName();
-            if (project == null)
-                return;
-
-            // Get all checked
-            var objects = listviewComponents.CheckedObjectsEnumerable.Cast<ComponentClass>();
-
-            RemoveComponentsFromParent(project, objects);
+            DeleteAllCheckedComponents();
         }
+
+        #endregion
     }
 }

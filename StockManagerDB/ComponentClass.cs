@@ -23,7 +23,7 @@ namespace StockManagerDB
         [JsonIgnore]
         public int ID
         {
-            get => int.TryParse(QuantityStr, out int valueInt) ? valueInt : 0;
+            get => int.TryParse(IDStr, out int valueInt) ? valueInt : 0;
             set
             {
                 Parameters[Parameter.ID] = value.ToString();
@@ -127,6 +127,10 @@ namespace StockManagerDB
 
             foreach (KeyValuePair<Parameter, string> item in this.Parameters)
             {
+                // Do not clone ID
+                if (item.Key == Parameter.ID || item.Key == Parameter.UNDEFINED)
+                    continue;
+
                 newPart.Parameters.Add(item.Key, item.Value);
             }
 
