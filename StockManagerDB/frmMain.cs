@@ -72,7 +72,7 @@ namespace StockManagerDB
                 {
                     if (_projectForm == null)
                     {
-                        _projectForm = new frmProjects(filepath);
+                        _projectForm = new frmProjects(myList);
                         _projectForm.FormClosed += _projectForm_FormClosed;
                     }
                 }
@@ -163,9 +163,11 @@ namespace StockManagerDB
         /// <param name="resizeColumns">Resize the columns of the main listview</param>
         private void UpdateListviews(bool resizeColumns = false)
         {
+            LoggerClass.Write($"Updating part listview..", Logger.LogLevels.Trace);
             // If not file loaded, set them to be empty
             if (!IsFileLoaded)
             {
+                LoggerClass.Write($"No file loaded. Aborting...", Logger.LogLevels.Trace);
                 listviewParts.DataSource = new List<PartClass>();
                 listviewChecked.DataSource = new List<PartClass>();
                 return;
@@ -179,6 +181,7 @@ namespace StockManagerDB
             // Resize columns if required
             if (resizeColumns)
             {
+                LoggerClass.Write($"Resizing columns...", Logger.LogLevels.Trace);
                 listviewParts.AutoResizeColumns();
             }
             // Set focus to main listview
@@ -187,6 +190,7 @@ namespace StockManagerDB
             UpdateNumberLabel();
             // Update the checked listview
             UpdateCheckedListview();
+            LoggerClass.Write($"Updating part listview finished", Logger.LogLevels.Trace);
         }
 
         /// <summary>
@@ -325,6 +329,26 @@ namespace StockManagerDB
             return GetAll();
         }
 
+        /// <summary>
+        /// 'hack' to check selected rows but call the CheckedChanged event only once
+        /// </summary>
+        private void ToggleCheckSelection()
+        {
+            bool state = listviewParts.IsChecked(listviewParts.SelectedObjects[0]);
+            state = !state;
+
+            UpdateOnCheck = false;
+            if (state)
+            {
+                listviewParts.CheckObjects(listviewParts.SelectedObjects);
+            }
+            else
+            {
+                listviewParts.UncheckObjects(listviewParts.SelectedObjects);
+            }
+            UpdateOnCheck = true;
+        }
+
         #endregion
 
         #region File management
@@ -334,9 +358,11 @@ namespace StockManagerDB
         /// </summary>
         private void ImportFromExcel()
         {
+            LoggerClass.Write($"Importing Excel file...", Logger.LogLevels.Debug);
             // A file must be loaded prior to importing.
             if (!IsFileLoaded)
             {
+                LoggerClass.Write("Unable to load Excel file when no Data file is loaded", Logger.LogLevels.Debug);
                 MessageBox.Show("No file loaded ! Open or create a new one", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
@@ -348,6 +374,7 @@ namespace StockManagerDB
             };
             if (ofd.ShowDialog() == DialogResult.OK)
             {
+                LoggerClass.Write($"File selected for Excel import : {ofd.FileName}", Logger.LogLevels.Debug);
                 // Extract the parts. This is a hardcoded way
                 Cursor = Cursors.WaitCursor;
                 ExcelManager em = new ExcelManager(ofd.FileName);
@@ -356,18 +383,21 @@ namespace StockManagerDB
 
                 if ((null == p) || (0 == p.Count))
                 {
-                    LoggerClass.Write("No part found");
+                    LoggerClass.Write("No part found in that file");
                     return;
                 }
 
                 // Confirmation
+                LoggerClass.Write($"{p.Count} part(s) found in that file", Logger.LogLevels.Debug);
                 if (MessageBox.Show($"Please confirm the additions of '{p.Count}' parts to the current databse. This cannot be undone\nContinue ?", "Warning", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning) != DialogResult.Yes)
                     return;
 
+                LoggerClass.Write($"Import confirmed. Processing...", Logger.LogLevels.Debug);
                 // Add the parts to the list
                 Cursor = Cursors.WaitCursor;
                 Parts.AddRange(p);
                 Cursor = Cursors.Default;
+                LoggerClass.Write($"Import finished", Logger.LogLevels.Debug);
             }
         }
 
@@ -376,19 +406,23 @@ namespace StockManagerDB
         /// </summary>
         private void CreateNewFile()
         {
+            LoggerClass.Write($"Creating new data file", Logger.LogLevels.Debug);
             SaveFileDialog fsd = new SaveFileDialog()
             {
                 Filter = "StockManager File|*.smf|All files|*.*",
             };
             if (fsd.ShowDialog() == DialogResult.OK)
             {
+                LoggerClass.Write($"Filepath selected is : {fsd.FileName}", Logger.LogLevels.Debug);
                 // Never overwrite files. Ask the user to manually delete the file...
                 if (File.Exists(fsd.FileName))
                 {
+                    LoggerClass.Write($"This file already exists. Aborting...", Logger.LogLevels.Debug);
                     MessageBox.Show("This file already exists.\nPlease select another one or manually delete that file...", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
+                LoggerClass.Write($"Creating data file at that path", Logger.LogLevels.Debug);
                 // Save path
                 filepath = fsd.FileName;
                 // Create new empty file (with template part)
@@ -396,6 +430,7 @@ namespace StockManagerDB
                 SetTitle();
                 // Update listviews content + resize columns
                 UpdateListviews(true);
+                LoggerClass.Write($"Creation finished", Logger.LogLevels.Debug);
             }
         }
 
@@ -404,19 +439,23 @@ namespace StockManagerDB
         /// </summary>
         private void OpenFile()
         {
+            LoggerClass.Write($"Openning data file...", Logger.LogLevels.Debug);
             OpenFileDialog ofd = new OpenFileDialog()
             {
                 Filter = "StockManager File|*.smf|All files|*.*",
             };
             if (ofd.ShowDialog() == DialogResult.OK)
             {
+                LoggerClass.Write($"File selected : {ofd.FileName}", Logger.LogLevels.Debug);
                 // Save path
                 filepath = ofd.FileName;
                 // Load the file
+                LoggerClass.Write($"Openning that file...", Logger.LogLevels.Debug);
                 myList = new ListManager(filepath);
                 SetTitle();
                 // Update listviews content + resize columns
                 UpdateListviews(true);
+                LoggerClass.Write($"Open finished", Logger.LogLevels.Debug);
             }
         }
 
@@ -425,6 +464,7 @@ namespace StockManagerDB
         /// </summary>
         private void CloseFile()
         {
+            LoggerClass.Write($"Closing file : {filepath}", Logger.LogLevels.Debug);
             myList = null;
             SetTitle();
             UpdateListviews();
@@ -438,14 +478,17 @@ namespace StockManagerDB
         /// </summary>
         private void AddEmptyPart()
         {
+            LoggerClass.Write($"Creating a new empty part...", Logger.LogLevels.Debug);
             // Ask the user for the MPN
             Dialog.ShowDialogResult result = Dialog.ShowDialog("Enter the MPN (Manufacturer Product Number) for the part...", Title: "Enter input", Input: true, Btn2: Dialog.ButtonType.Cancel);
 
             if (result.DialogResult != Dialog.DialogResult.OK)
             {
+                LoggerClass.Write($"Operation cancelled. Aborting...", Logger.LogLevels.Debug);
                 return;
             }
 
+            LoggerClass.Write($"Adding a new part with MPN={result.UserInput}...", Logger.LogLevels.Debug);
             // Create empty part with the specified MPN
             PartClass pc = new PartClass()
             {
@@ -454,6 +497,7 @@ namespace StockManagerDB
 
             // Add to list
             Parts.Add(pc);
+            LoggerClass.Write($"Part added", Logger.LogLevels.Debug);
         }
 
         /// <summary>
@@ -461,22 +505,27 @@ namespace StockManagerDB
         /// </summary>
         private void DeleteCheckedParts()
         {
+            LoggerClass.Write($"Deletion of checked parts...", Logger.LogLevels.Debug);
             var checkedParts = GetCheckedParts();
 
             // If none checked, abort
             if (0 == checkedParts.Count)
             {
+                LoggerClass.Write($"No parts checked. Aborting...", Logger.LogLevels.Debug);
                 return;
             }
 
             // Ask confirmation
             if (MessageBox.Show($"Please confirm the deletion of '{checkedParts.Count}' parts. This cannot be undone !\nContinue ?", "Warning", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning) != DialogResult.Yes)
             {
+                LoggerClass.Write($"Confirmation denied", Logger.LogLevels.Debug);
                 return;
             }
 
+            LoggerClass.Write($"Deletion of {checkedParts.Count} part(s)...", Logger.LogLevels.Debug);
             // Remove them from the list
             Parts.RemoveRange(checkedParts);
+            LoggerClass.Write($"Deletion finished", Logger.LogLevels.Debug);
         }
 
         /// <summary>
@@ -484,25 +533,32 @@ namespace StockManagerDB
         /// </summary>
         private void DuplicateSelectedPart()
         {
+            LoggerClass.Write($"Duplicating selected part...", Logger.LogLevels.Debug);
             // Get selected part
             PartClass pc = listviewParts.SelectedObject as PartClass;
             if (pc == null)
+            {
+                LoggerClass.Write($"No selected part. Aborting...", Logger.LogLevels.Debug);
                 return;
+            }
 
             // Ask the user for the new MPN
             var result = Dialog.ShowDialog("Enter the new MPN (Manufacturer Product Number) for the part...", Title: "Enter input", Input: true, Btn2: Dialog.ButtonType.Cancel);
 
             if (result.DialogResult != Dialog.DialogResult.OK)
             {
+                LoggerClass.Write($"Operation cancelled. Aborting...", Logger.LogLevels.Debug);
                 return;
             }
 
+            LoggerClass.Write($"Cloning the part...", Logger.LogLevels.Debug);
             // Clone the part and apply the new MPN
             pc = pc.Clone() as PartClass;
             pc.MPN = result.UserInput;
 
             // Add to the list
             Parts.Add(pc);
+            LoggerClass.Write($"Cloning finished", Logger.LogLevels.Debug);
         }
 
         /// <summary>
@@ -519,6 +575,7 @@ namespace StockManagerDB
             PartClass.Parameter editedParameter = (PartClass.Parameter)(e.Column.Index);
             string newValue = e.NewValue.ToString();
 
+            LoggerClass.Write($"Cell with MPN={part.MPN} edited : Parameter={editedParameter}, Newvalue={newValue}", Logger.LogLevels.Debug);
             if (editedParameter == PartClass.Parameter.UNDEFINED)
             {
                 throw new InvalidOperationException("Unable to edit 'undefined'");
@@ -540,11 +597,13 @@ namespace StockManagerDB
         /// </summary>
         private void MakeOrder()
         {
+            LoggerClass.Write($"Making automated order...", Logger.LogLevels.Debug);
             List<PartClass> parts = GetPartForProcess();
             // Select parts with current stock lower than lowStock limit
             IEnumerable<PartClass> selected = parts.Where((part) => (part.Stock < part.LowStock));
 
             // TODO : Actually make order
+            LoggerClass.Write($"{selected.Count()} part(s) found for automatic order", Logger.LogLevels.Debug);
             Console.WriteLine(selected.Count() + " parts to order");
         }
 
@@ -613,8 +672,16 @@ namespace StockManagerDB
 
         private void projectsToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            LoggerClass.Write($"Openning project window...", Logger.LogLevels.Debug);
+            if (!IsFileLoaded)
+            {
+                LoggerClass.Write("Unable to open projects, no file loaded...", Logger.LogLevels.Error);
+                return;
+            }
+
             // Open projects form
             projectForm.Show();
+            projectForm.BringToFront();
         }
         private void _projectForm_FormClosed(object sender, FormClosedEventArgs e)
         {
@@ -634,32 +701,15 @@ namespace StockManagerDB
         {
             DeleteCheckedParts();
         }
-
-        #endregion
-
-        private void ToggleCheckSelection()
-        {
-            bool state = listviewParts.IsChecked(listviewParts.SelectedObjects[0]);
-            state = !state;
-
-            UpdateOnCheck = false;
-            if (state)
-            {
-                listviewParts.CheckObjects(listviewParts.SelectedObjects);
-            }
-            else
-            {
-                listviewParts.UncheckObjects(listviewParts.SelectedObjects);
-            }
-            UpdateOnCheck = true;
-        }
-
         private void listviewParts_KeyDown(object sender, KeyEventArgs e)
         {
+            // 'hack' to check selected rows but call the CheckedChanged event only once
             if (e.KeyCode == Keys.Space)
             {
                 ToggleCheckSelection();
             }
         }
+
+        #endregion
     }
 }

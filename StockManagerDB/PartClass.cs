@@ -139,83 +139,6 @@ namespace StockManagerDB
         }
 
         /// <summary>
-        /// Make a link between database column index and PartClass parameter
-        /// </summary>
-        public static Dictionary<int, Parameter> DatabaseLink = new Dictionary<int, Parameter>()
-        {
-            {0, Parameter.MPN         },
-            {1, Parameter.Manufacturer},
-            {2, Parameter.Description },
-            {3, Parameter.Category    },
-            {4, Parameter.Location     },
-            {5, Parameter.Stock       },
-            {6, Parameter.LowStock    },
-            {7, Parameter.Price       },
-            {8, Parameter.Supplier    },
-            {9, Parameter.SPN         },
-        };
-
-        /// <summary>
-        /// Make a link between a parameter and the database column name
-        /// </summary>
-        public static Dictionary<Parameter, string> DatabaseLinkStr = new Dictionary<Parameter, string>()
-        {
-            { Parameter.MPN          , "mpn"          },
-            { Parameter.Manufacturer , "manufacturer" },
-            { Parameter.Description  , "description"  },
-            { Parameter.Category     , "category"     },
-            { Parameter.Location     , "storage"      },
-            { Parameter.Stock        , "stock"        },
-            { Parameter.LowStock     , "low_stock"    },
-            { Parameter.Price        , "price"        },
-            { Parameter.Supplier     , "supplier"     },
-            { Parameter.SPN          , "spn"          },
-        };
-
-        /// <summary>
-        /// Create a PartClass List from a DataTable table imported from a sql database
-        /// </summary>
-        /// <param name="table"></param>
-        /// <returns></returns>
-        public static List<PartClass> CreateFromDB(DataTable table)
-        {
-            int nCol = table.Columns.Count;
-            List<PartClass> parts = new List<PartClass>();
-
-            foreach (DataRow row in table.Rows)
-            {
-                PartClass part = new PartClass();
-                // skip first value (id)
-                for (int i = 0; i < nCol; i++)
-                {
-                    part.Parameters[DatabaseLink[i]] = row[i].ToString();
-                }
-                parts.Add(part);
-            }
-
-            return parts;
-        }
-
-        /// <summary>
-        /// Create a PartClass variable from a DataRow imported from a sql database
-        /// </summary>
-        /// <param name="row"></param>
-        /// <param name="nCol"></param>
-        /// <returns></returns>
-        public static PartClass CreateFromDB(DataRow row, int nCol)
-        {
-            PartClass part = new PartClass();
-
-            // skip first value (id)
-            for (int i = 0; i < nCol; i++)
-            {
-                part.Parameters[DatabaseLink[i]] = row[i].ToString();
-            }
-
-            return part;
-        }
-
-        /// <summary>
         /// Convert string header to parameter type. Used to import from excel, where the value is the header name
         /// </summary>
         /// <param name="value">The string to be converted</param>
@@ -240,16 +163,6 @@ namespace StockManagerDB
             }
         }
 
-        /// <summary>
-        /// Class to compare the price of two PartClasses
-        /// </summary>
-        public class ComparePrice : IComparer<PartClass>
-        {
-            public int Compare(PartClass x, PartClass y)
-            {
-                return x.Price.CompareTo(y.Price);
-            }
-        }
 
         public override string ToString()
         {
@@ -266,6 +179,25 @@ namespace StockManagerDB
             }
 
             return newPart;
+        }
+
+        /// <summary>
+        /// Class to compare the price of two PartClasses
+        /// </summary>
+        public class ComparePrice : IComparer<PartClass>
+        {
+            public int Compare(PartClass x, PartClass y)
+            {
+                return x.Price.CompareTo(y.Price);
+            }
+        }
+
+        public class CompareMPN : IComparer<PartClass>
+        {
+            public int Compare(PartClass x, PartClass y)
+            {
+                return x.MPN.CompareTo(y.MPN);
+            }
         }
     }
 }

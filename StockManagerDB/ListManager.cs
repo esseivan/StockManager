@@ -18,6 +18,8 @@ namespace StockManagerDB
         public static event EventHandler<EventArgs> OnPartsListModified;
         public static event EventHandler<EventArgs> OnComponentsListModified;
 
+        public static ListManager Instance { get; private set; }
+
         public SaveList Data
         {
             get
@@ -47,18 +49,24 @@ namespace StockManagerDB
             this.filepath = filepath;
             Load();
             Save();
+            Instance = this;
         }
 
         public void Load()
         {
             ESNLib.Tools.SettingsManager.LoadFrom(filepath, out list);
+
             list.Parts.OnListModified += Parts_OnListModified;
             list.Components.OnListModified += Components_OnListModified;
         }
 
         public void Save()
         {
-            ESNLib.Tools.SettingsManager.SaveTo(filepath, list, backup: true, indent: false);
+            // Sort both lists
+            list.Parts.Sort(new PartClass.CompareMPN());
+            list.Components.Sort(new ComponentClass.CompareID());
+
+            ESNLib.Tools.SettingsManager.SaveTo(filepath, list, backup: true, indent: true);
         }
 
         public static string GetDefaultPath(string name, string folder = null)
@@ -105,7 +113,7 @@ namespace StockManagerDB
 
         public void Dispose()
         {
-
+            Instance = null;
         }
 
         /// <summary>
@@ -153,6 +161,8 @@ namespace StockManagerDB
                 Parts.Clear();
                 Components.Clear();
             }
+
+
         }
 
     }

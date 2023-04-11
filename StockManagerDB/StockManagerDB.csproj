@@ -86,8 +86,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ComponentClass.cs" />
-    <Compile Include="DBProjectsWrapper.cs" />
-    <Compile Include="DBWrapper.cs" />
     <Compile Include="ExcelManager.cs" />
     <Compile Include="ExcelWrapper.cs" />
     <Compile Include="frmMain.cs">
