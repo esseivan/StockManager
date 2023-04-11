@@ -1615,6 +1615,8 @@ namespace BrightIdeasSoftware {
         /// <param name="rowObject">The row object that is being displayed</param>
         /// <returns>An object, which is the aspect to be displayed</returns>
         public object GetValue(object rowObject) {
+            if (rowObject == null)
+                return null;
             if (this.AspectGetter == null)
                 return this.GetAspectByName(rowObject);
             else
