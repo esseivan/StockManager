@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace StockManagerDB
 {
+    [Obsolete("Obsolete")]
     public class DBWrapper : IDisposable
     {
         private readonly string filename;

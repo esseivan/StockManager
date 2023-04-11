@@ -639,11 +639,11 @@ namespace BrightIdeasSoftware
     /// <item><description>System.Windows.Forms (obviously)</description></item>
     /// </list>
     /// </remarks>
-    [Designer(typeof(BrightIdeasSoftware.Design.ObjectListViewDesigner))]   
+    [Designer(typeof(BrightIdeasSoftware.Design.ObjectListViewDesigner))]
     public partial class ObjectListView : ListView, ISupportInitialize {
-        
+
         #region Life and death
-        
+
         /// <summary>
         /// Create an ObjectListView
         /// </summary>
@@ -658,14 +658,14 @@ namespace BrightIdeasSoftware
             // Turn on owner draw so that we are responsible for our own fates (and isolated from bugs in the underlying ListView)
             this.OwnerDraw = true;
 
-// ReSharper disable DoNotCallOverridableMethodsInConstructor
+            // ReSharper disable DoNotCallOverridableMethodsInConstructor
             this.DoubleBuffered = true; // kill nasty flickers. hiss... me hates 'em
             this.ShowSortIndicators = true;
 
             // Setup the overlays that will be controlled by the IDE settings
             this.InitializeStandardOverlays();
             this.InitializeEmptyListMsgOverlay();
-// ReSharper restore DoNotCallOverridableMethodsInConstructor
+            // ReSharper restore DoNotCallOverridableMethodsInConstructor
         }
 
         /// <summary>
@@ -675,7 +675,7 @@ namespace BrightIdeasSoftware
         protected override void Dispose(bool disposing) {
             base.Dispose(disposing);
 
-            if (!disposing) 
+            if (!disposing)
                 return;
 
             foreach (GlassPanelForm glassPanel in this.glassPanels) {
@@ -758,7 +758,7 @@ namespace BrightIdeasSoftware
         static public string GroupTitleDefault {
             get { return ObjectListView.sGroupTitleDefault; }
             set { ObjectListView.sGroupTitleDefault = value ?? "{null}"; }
-        }static private string sGroupTitleDefault = "{null}";
+        } static private string sGroupTitleDefault = "{null}";
 
         /// <summary>
         /// Convert the given enumerable into an ArrayList as efficiently as possible
@@ -810,7 +810,7 @@ namespace BrightIdeasSoftware
                 return iCollection.Count;
 
             int i = 0;
-// ReSharper disable once UnusedVariable
+            // ReSharper disable once UnusedVariable
             foreach (object x in collection)
                 i++;
             return i;
@@ -859,8 +859,8 @@ namespace BrightIdeasSoftware
         /// <para>As with all cell padding, this setting only takes effect when the control is owner drawn.</para>
         /// </remarks>
         public static bool ShowCellPaddingBounds {
-            get { return sShowCellPaddingBounds;  }
-            set { sShowCellPaddingBounds = value;  }
+            get { return sShowCellPaddingBounds; }
+            set { sShowCellPaddingBounds = value; }
         }
         private static bool sShowCellPaddingBounds;
 
@@ -1080,7 +1080,7 @@ namespace BrightIdeasSoftware
                 cellEditTabChangesRows = value;
                 if (cellEditTabChangesRows) {
                     this.CellEditKeyEngine.SetKeyBehaviour(Keys.Tab, CellEditCharacterBehaviour.ChangeColumnRight, CellEditAtEdgeBehaviour.ChangeRow);
-                    this.CellEditKeyEngine.SetKeyBehaviour(Keys.Tab|Keys.Shift, CellEditCharacterBehaviour.ChangeColumnLeft, CellEditAtEdgeBehaviour.ChangeRow);
+                    this.CellEditKeyEngine.SetKeyBehaviour(Keys.Tab | Keys.Shift, CellEditCharacterBehaviour.ChangeColumnLeft, CellEditAtEdgeBehaviour.ChangeRow);
                 } else {
                     this.CellEditKeyEngine.SetKeyBehaviour(Keys.Tab, CellEditCharacterBehaviour.ChangeColumnRight, CellEditAtEdgeBehaviour.Wrap);
                     this.CellEditKeyEngine.SetKeyBehaviour(Keys.Tab | Keys.Shift, CellEditCharacterBehaviour.ChangeColumnLeft, CellEditAtEdgeBehaviour.Wrap);
@@ -1167,8 +1167,8 @@ namespace BrightIdeasSoftware
          Description("How will cell values be vertically aligned?"),
          DefaultValue(StringAlignment.Center)]
         public virtual StringAlignment CellVerticalAlignment {
-            get { return this.cellVerticalAlignment;  }
-            set { this.cellVerticalAlignment = value;  }
+            get { return this.cellVerticalAlignment; }
+            set { this.cellVerticalAlignment = value; }
         }
         private StringAlignment cellVerticalAlignment = StringAlignment.Center;
 
@@ -1310,6 +1310,13 @@ namespace BrightIdeasSoftware
                 return base.Columns;
             }
         }
+
+
+        /// <summary>
+        /// Does space press will toggle the check on the rows ?
+        /// </summary>
+        [Editor("BrightIdeasSoftware.Design.OLVColumnCollectionEditor", "System.Drawing.Design.UITypeEditor")]
+        public bool AllowCheckWithSpace { get; set; } = true;
 
         /// <summary>
         /// Get/set the list of columns that should be used when the list switches to tile view.
@@ -6199,9 +6206,13 @@ namespace BrightIdeasSoftware
         protected virtual bool HandleKeyDown(ref Message m) {
 
             // If this is a checkbox list, toggle the selected rows when the user presses Space
-            if (this.CheckBoxes && m.WParam.ToInt32() == (int)Keys.Space && this.SelectedIndices.Count > 0) {
-                this.ToggleSelectedRowCheckBoxes();
-                return true;
+            if (this.AllowCheckWithSpace)
+            {
+                if (this.CheckBoxes && m.WParam.ToInt32() == (int)Keys.Space && this.SelectedIndices.Count > 0)
+                {
+                    this.ToggleSelectedRowCheckBoxes();
+                    return true;
+                }
             }
 
             // Remember the scroll position so we can decide if the listview has scrolled in the

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
+using System.Text.Json.Serialization;
 
 namespace StockManagerDB
 {
@@ -53,6 +54,7 @@ namespace StockManagerDB
         /// <summary>
         /// Actual stock
         /// </summary>
+        [JsonIgnore]
         public float Stock
         {
             get => float.TryParse(StockStr, out float valuefloat) ? valuefloat : 0;
@@ -66,6 +68,7 @@ namespace StockManagerDB
         /// <summary>
         /// Low stock threshold
         /// </summary>
+        [JsonIgnore]
         public float LowStock
         {
             get => float.TryParse(LowStockStr, out float valuefloat) ? valuefloat : 0;
@@ -79,6 +82,7 @@ namespace StockManagerDB
         /// <summary>
         /// Average unit price
         /// </summary>
+        [JsonIgnore]
         public float Price
         {
             get => float.TryParse(PriceStr, out float valuefloat) ? valuefloat : 0;

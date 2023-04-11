@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace StockManagerDB
@@ -28,6 +29,7 @@ namespace StockManagerDB
         /// <summary>
         /// Quantity of this component used
         /// </summary>
+        [JsonIgnore]
         public float Quantity
         {
             get => float.TryParse(QuantityStr, out float valuefloat) ? valuefloat : 0;
@@ -50,6 +52,7 @@ namespace StockManagerDB
         /// <summary>
         /// Link to the corresponding part
         /// </summary>
+        [JsonIgnore]
         public PartClass PartLink
         {
             get
