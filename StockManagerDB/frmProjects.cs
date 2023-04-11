@@ -17,13 +17,12 @@ namespace StockManagerDB
     {
         private readonly List<string> projects = new List<string>();
 
-        private readonly ListManager myList;
-        private ListPlus<ComponentClass> Components => myList.Data.Components;
+        private readonly DataHolderSingleton data;
+        private ListPlus<ComponentClass> Components => null;
 
-        public frmProjects(ListManager listmanager)
+        public frmProjects()
         {
-            this.myList = listmanager;
-            ComponentClass.ListManagerPointer = myList;
+            ComponentClass.ListManagerPointer = null;
 
             InitializeComponent();
 
@@ -38,7 +37,7 @@ namespace StockManagerDB
 
         private void ListManager_OnComponentsListModified(object sender, EventArgs e)
         {
-            myList.Save();
+            data.Save();
             PopulateLists();
         }
 

@@ -343,6 +343,7 @@
             // 
             // btnAddPart
             // 
+            this.btnAddPart.Enabled = false;
             this.btnAddPart.Location = new System.Drawing.Point(6, 38);
             this.btnAddPart.Name = "btnAddPart";
             this.btnAddPart.Size = new System.Drawing.Size(75, 23);
@@ -364,6 +365,7 @@
             this.listviewParts.AllColumns.Add(this.olvcPrice);
             this.listviewParts.AllColumns.Add(this.olvcSupplier);
             this.listviewParts.AllColumns.Add(this.olvcSPN);
+            this.listviewParts.AllowCheckWithSpace = true;
             this.listviewParts.AllowColumnReorder = true;
             this.listviewParts.AlternateRowBackColor = System.Drawing.Color.LightBlue;
             this.listviewParts.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -509,6 +511,7 @@
             this.listviewChecked.AllColumns.Add(this.olvcPrice2);
             this.listviewChecked.AllColumns.Add(this.olvcSupplier2);
             this.listviewChecked.AllColumns.Add(this.olvcSPN2);
+            this.listviewChecked.AllowCheckWithSpace = true;
             this.listviewChecked.AllowColumnReorder = true;
             this.listviewChecked.AlternateRowBackColor = System.Drawing.Color.LightBlue;
             this.listviewChecked.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
