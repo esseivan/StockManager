@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace StockManagerDB
 {
+    /// <summary>
+    /// List with OnListModified event
+    /// </summary>
     public class ListPlus<T> : List<T>
     {
         public event EventHandler OnListModified;
@@ -75,7 +78,6 @@ namespace StockManagerDB
 
             OnListModified?.Invoke(this, EventArgs.Empty);
         }
-
 
         public new void InsertRange(int index, IEnumerable<T> collection)
         {

@@ -10,11 +10,14 @@ namespace StockManagerDB
 {
     internal class LoggerClass
     {
+        public const Logger.LogLevels MinLevelFilter = Logger.LogLevels.All;
+
         public static Logger logger = new Logger(Logger.GetDefaultLogPath("ESN", "StockManagerDB", "log"))
         {
             WriteMode = Logger.WriteModes.Write,
             FilenameMode = Logger.FilenamesModes.FileName_LastPrevious,
             PrefixMode = Logger.PrefixModes.RunTime,
+            LogLeveFilter = MinLevelFilter,
         };
 
         public static void Init()

@@ -136,5 +136,13 @@ namespace StockManagerDB
 
             return newPart;
         }
+
+        public class CompareID : IComparer<ComponentClass>
+        {
+            public int Compare(ComponentClass x, ComponentClass y)
+            {
+                return x.ID.CompareTo(y.ID);
+            }
+        }
     }
 }

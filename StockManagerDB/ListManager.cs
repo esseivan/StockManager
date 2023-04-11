@@ -63,8 +63,8 @@ namespace StockManagerDB
         public void Save()
         {
             // Sort both lists
-            list.Parts.Sort(new SaveList.CompareByMPN());
-            list.Components.Sort(new SaveList.CompareByID());
+            list.Parts.Sort(new PartClass.CompareMPN());
+            list.Components.Sort(new ComponentClass.CompareID());
 
             ESNLib.Tools.SettingsManager.SaveTo(filepath, list, backup: true, indent: true);
         }
@@ -162,21 +162,7 @@ namespace StockManagerDB
                 Components.Clear();
             }
 
-            public class CompareByMPN : IComparer<PartClass>
-            {
-                public int Compare(PartClass x, PartClass y)
-                {
-                    return x.MPN.CompareTo(y.MPN);
-                }
-            }
 
-            public class CompareByID : IComparer<ComponentClass>
-            {
-                public int Compare(ComponentClass x, ComponentClass y)
-                {
-                    return x.ID.CompareTo(y.ID);
-                }
-            }
         }
 
     }
