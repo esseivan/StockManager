@@ -59,6 +59,7 @@
             this.btnAddComponent = new System.Windows.Forms.Button();
             this.btnDuplicate = new System.Windows.Forms.Button();
             this.btnDelete = new System.Windows.Forms.Button();
+            this.olvcID = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.listviewComponents)).BeginInit();
             this.SuspendLayout();
@@ -163,15 +164,17 @@
             // label1
             // 
             this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.Location = new System.Drawing.Point(12, 78);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(45, 13);
+            this.label1.Size = new System.Drawing.Size(53, 13);
             this.label1.TabIndex = 3;
             this.label1.Text = "Projects";
             // 
             // listviewComponents
             // 
             this.listviewComponents.AllColumns.Add(this.olvcSelect);
+            this.listviewComponents.AllColumns.Add(this.olvcID);
             this.listviewComponents.AllColumns.Add(this.olvcMPN);
             this.listviewComponents.AllColumns.Add(this.olvcQuantity);
             this.listviewComponents.AllColumns.Add(this.olvcReference);
@@ -189,9 +192,11 @@
             this.listviewComponents.AlternateRowBackColor = System.Drawing.Color.LightBlue;
             this.listviewComponents.AutoGenerateColumns = false;
             this.listviewComponents.CellEditActivation = BrightIdeasSoftware.ObjectListView.CellEditActivateMode.DoubleClick;
+            this.listviewComponents.CellEditUseWholeCell = false;
             this.listviewComponents.CheckBoxes = true;
             this.listviewComponents.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.olvcSelect,
+            this.olvcID,
             this.olvcMPN,
             this.olvcQuantity,
             this.olvcReference,
@@ -341,6 +346,11 @@
             this.btnDelete.UseVisualStyleBackColor = true;
             this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
             // 
+            // olvcID
+            // 
+            this.olvcID.Text = "ID";
+            this.olvcID.Width = 26;
+            // 
             // frmProjects
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -397,5 +407,6 @@
         private System.Windows.Forms.ToolStripMenuItem duplicateAllCheckedToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem dELETEAllCheckedToolStripMenuItem;
         private System.Windows.Forms.Button btnDelete;
+        private BrightIdeasSoftware.OLVColumn olvcID;
     }
 }

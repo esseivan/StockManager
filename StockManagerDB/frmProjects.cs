@@ -50,6 +50,7 @@ namespace StockManagerDB
         private void ListViewSetColumns()
         {
             // Setup columns
+            olvcID.AspectGetter = delegate (object x) { return ((ComponentClass)x).ID; };
             olvcMPN.AspectGetter = delegate (object x) { return ((ComponentClass)x).MPN; };
             olvcQuantity.AspectGetter = delegate (object x) { return ((ComponentClass)x).Quantity; };
             olvcReference.AspectGetter = delegate (object x) { return ((ComponentClass)x).Reference; };
@@ -191,7 +192,7 @@ namespace StockManagerDB
         {
             ComponentClass oldComponent = e.RowObject as ComponentClass;
 
-            ComponentClass.Parameter editedParameter = (e.Column.Index + ComponentClass.Parameter.MPN - 1);
+            ComponentClass.Parameter editedParameter = (e.Column.Index + ComponentClass.Parameter.ID - 1);
             ComponentClass newComponent = oldComponent.Clone() as ComponentClass;
             string newValue = e.NewValue.ToString();
             newComponent.Parameters[editedParameter] = newValue;
@@ -199,6 +200,11 @@ namespace StockManagerDB
             if (editedParameter == ComponentClass.Parameter.UNDEFINED)
             {
                 throw new InvalidOperationException("Unable to edit 'undefined'");
+            }
+            else if (editedParameter == ComponentClass.Parameter.ID)
+            {
+                LoggerClass.Write($"Unable to edit ID field. Each component must have a unique ID...", ESNLib.Tools.Logger.LogLevels.Error);
+                return;
             }
             else
             {
