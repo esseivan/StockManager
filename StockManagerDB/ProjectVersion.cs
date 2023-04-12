@@ -19,7 +19,7 @@ namespace StockManagerDB
         /// <summary>
         /// List of material
         /// </summary>
-        public Dictionary<string, Material> BOM { get; set; } = new Dictionary<string, Material>();
+        public SortedDictionary<string, Material> BOM { get; set; } = new SortedDictionary<string, Material>();
 
         public override string ToString()
         {

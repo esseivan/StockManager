@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace StockManagerDB
 {
@@ -14,6 +16,14 @@ namespace StockManagerDB
         /// <summary>
         /// List of version identified by their unique VersionStr
         /// </summary>
-        public Dictionary<string, ProjectVersion> Versions { get; set; } = new Dictionary<string, ProjectVersion>();
+        public SortedDictionary<Version, ProjectVersion> Versions { get; set; } = new SortedDictionary<Version, ProjectVersion>();
+
+        public class CompareName : IComparer<Project>
+        {
+            public int Compare(Project x, Project y)
+            {
+                return x.Name.CompareTo(y.Name);
+            }
+        }
     }
 }

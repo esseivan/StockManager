@@ -115,7 +115,10 @@ namespace StockManagerDB
         public DataExportClass(Dictionary<string, Part> parts, Dictionary<string, Project> projects)
         {
             Parts = parts.Values.ToList();
+            Parts.Sort(new Part.CompareMPN());
+
             Projects = projects.Values.ToList();
+            Projects.Sort(new Project.CompareName());
         }
 
         public List<Part> Parts { get; set; }
