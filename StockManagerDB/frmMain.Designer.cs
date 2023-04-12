@@ -414,6 +414,7 @@
             this.listviewParts.View = System.Windows.Forms.View.Details;
             this.listviewParts.VirtualMode = true;
             this.listviewParts.CellEditFinished += new BrightIdeasSoftware.CellEditEventHandler(this.listviewParts_CellEditFinished);
+            this.listviewParts.CellRightClick += new System.EventHandler<BrightIdeasSoftware.CellRightClickEventArgs>(this.listviewParts_CellRightClick);
             this.listviewParts.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.listviewParts_ItemChecked);
             this.listviewParts.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listviewParts_KeyDown);
             // 

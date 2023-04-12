@@ -768,7 +768,20 @@ namespace StockManagerDB
                 ToggleCheckSelection();
             }
         }
+        private void listviewParts_CellRightClick(object sender, CellRightClickEventArgs e)
+        {
+            // When rightclicking a cell, copy the MPN of the corresponding row
+            Part selectedPart = e.Model as Part;
+
+            if (selectedPart == null)
+            {
+                return;
+            }
+
+            Clipboard.SetText(selectedPart.MPN);
+        }
 
         #endregion
+
     }
 }
