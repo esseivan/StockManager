@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using dhs = StockManagerDB.DataHolderSingleton;
 
 namespace StockManagerDB
 {
@@ -17,31 +18,29 @@ namespace StockManagerDB
     {
         private readonly List<string> projects = new List<string>();
 
-        private readonly DataHolderSingleton data;
         private ListPlus<ComponentClass> Components => null;
 
         public frmProjects()
         {
-            ComponentClass.ListManagerPointer = null;
-
             InitializeComponent();
 
             ListViewSetColumns();
 
-            ListManager.OnPartsListModified += ListManager_OnPartsListModified;
-            ListManager.OnComponentsListModified += ListManager_OnComponentsListModified;
+            dhs.OnPartListModified += Instance_OnPartListModified;
+            dhs.OnProjectsListModified += Instance_OnProjectsListModified;
 
             PopulateLists();
         }
+
         #region ListView Init
 
-        private void ListManager_OnComponentsListModified(object sender, EventArgs e)
+        private void Instance_OnProjectsListModified(object sender, EventArgs e)
         {
-            data.Save();
+            dhs.Instance.Save();
             PopulateLists();
         }
 
-        private void ListManager_OnPartsListModified(object sender, EventArgs e)
+        private void Instance_OnPartListModified(object sender, EventArgs e)
         {
             PopulateLists();
         }
@@ -49,7 +48,6 @@ namespace StockManagerDB
         private void ListViewSetColumns()
         {
             // Setup columns
-            olvcID.AspectGetter = delegate (object x) { return ((ComponentClass)x).ID; };
             olvcMPN.AspectGetter = delegate (object x) { return ((ComponentClass)x).MPN; };
             olvcQuantity.AspectGetter = delegate (object x) { return ((ComponentClass)x).Quantity; };
             olvcReference.AspectGetter = delegate (object x) { return ((ComponentClass)x).Reference; };
@@ -191,7 +189,7 @@ namespace StockManagerDB
         {
             ComponentClass oldComponent = e.RowObject as ComponentClass;
 
-            ComponentClass.Parameter editedParameter = (e.Column.Index + ComponentClass.Parameter.ID - 1);
+            ComponentClass.Parameter editedParameter = (e.Column.Index + ComponentClass.Parameter.MPN - 1);
             ComponentClass newComponent = oldComponent.Clone() as ComponentClass;
             string newValue = e.NewValue.ToString();
             newComponent.Parameters[editedParameter] = newValue;
@@ -199,11 +197,6 @@ namespace StockManagerDB
             if (editedParameter == ComponentClass.Parameter.UNDEFINED)
             {
                 throw new InvalidOperationException("Unable to edit 'undefined'");
-            }
-            else if (editedParameter == ComponentClass.Parameter.ID)
-            {
-                LoggerClass.Write($"Unable to edit ID field. Each component must have a unique ID...", ESNLib.Tools.Logger.LogLevels.Error);
-                return;
             }
             else
             {

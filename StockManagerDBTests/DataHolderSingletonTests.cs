@@ -63,5 +63,45 @@ namespace StockManagerDB.Tests
 
             Assert.IsNull(d);
         }
+
+        static int x1 = 0;
+        [TestMethod()]
+        public void InvokeOnPartListModifiedTest()
+        {
+            string f = GetFile(4);
+            dhs.LoadNew(f);
+            d.Load();
+
+            dhs.OnPartListModified += Dhs_OnPartListModified;
+            dhs.OnProjectsListModified += Dhs_OnProjectsListModified;
+
+            d.InvokeOnPartListModified(EventArgs.Empty);
+            d.InvokeOnProjectsListModified(EventArgs.Empty);
+
+            Assert.AreEqual(-1, x1);
+        }
+
+        private void Dhs_OnProjectsListModified(object sender, EventArgs e)
+        {
+            x1 -= 2;
+        }
+
+        private void Dhs_OnPartListModified(object sender, EventArgs e)
+        {
+            x1++;
+        }
+
+        [TestMethod()]
+        public void InvokeOnPartListModifiedTest_notDefined()
+        {
+            string f = GetFile(4);
+            dhs.LoadNew(f);
+            d.Load();
+
+            d.InvokeOnPartListModified(EventArgs.Empty);
+            d.InvokeOnProjectsListModified(EventArgs.Empty);
+
+            Assert.IsNotNull(d);
+        }
     }
 }

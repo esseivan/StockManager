@@ -11,34 +11,6 @@ namespace StockManagerDB
     public class ComponentClass : ICloneable
     {
         /// <summary>
-        /// Count the IDs, the number of created components
-        /// </summary>
-        private static int ID_Counter = 1;
-
-        public static ListManager ListManagerPointer = null;
-
-        /// <summary>
-        /// ID of the component
-        /// </summary>
-        [JsonIgnore]
-        public int ID
-        {
-            get => int.TryParse(IDStr, out int valueInt) ? valueInt : 0;
-            set
-            {
-                Parameters[Parameter.ID] = value.ToString();
-                // If ID > ID_Counter, save that as the ID_Counter
-                if (value > ID_Counter)
-                    ID_Counter = value;
-            }
-        }
-        public string IDStr
-        {
-            get => Parameters.TryGetValue(Parameter.ID, out string value) ? value : string.Empty;
-            set => Parameters[Parameter.ID] = value;
-        }
-
-        /// <summary>
         /// Parent project name
         /// </summary>
         public string Parent
@@ -81,17 +53,21 @@ namespace StockManagerDB
         /// Link to the corresponding part
         /// </summary>
         [JsonIgnore]
-        public PartClass PartLink
+        public Part PartLink
         {
             get
             {
-                if (ListManagerPointer == null)
+                if (DataHolderSingleton.Instance == null)
+                {
                     return null;
+                }
 
-                var list = ListManagerPointer.Data.Parts.Where((part) => part.MPN.Equals(MPN));
-                if (list.Count() > 0)
-                    return list.First();
-                return null;
+                if (!DataHolderSingleton.Instance.Parts.ContainsKey(MPN))
+                {
+                    return null;
+                }
+
+                return DataHolderSingleton.Instance.Parts[MPN];
             }
         }
 
@@ -106,7 +82,6 @@ namespace StockManagerDB
         public enum Parameter
         {
             UNDEFINED,
-            ID,
             Parent,
             MPN,
             Quantity,
@@ -118,7 +93,7 @@ namespace StockManagerDB
         /// </summary>
         public ComponentClass()
         {
-            this.ID = ID_Counter++;
+
         }
 
         public object Clone()
@@ -128,7 +103,7 @@ namespace StockManagerDB
             foreach (KeyValuePair<Parameter, string> item in this.Parameters)
             {
                 // Do not clone ID
-                if (item.Key == Parameter.ID || item.Key == Parameter.UNDEFINED)
+                if (item.Key == Parameter.UNDEFINED)
                     continue;
 
                 newPart.Parameters.Add(item.Key, item.Value);
@@ -137,11 +112,11 @@ namespace StockManagerDB
             return newPart;
         }
 
-        public class CompareID : IComparer<ComponentClass>
+        public class CompareMPN : IComparer<ComponentClass>
         {
             public int Compare(ComponentClass x, ComponentClass y)
             {
-                return x.ID.CompareTo(y.ID);
+                return x.MPN.CompareTo(y.MPN);
             }
         }
     }

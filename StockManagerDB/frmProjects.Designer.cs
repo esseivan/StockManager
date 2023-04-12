@@ -59,7 +59,6 @@
             this.btnAddComponent = new System.Windows.Forms.Button();
             this.btnDuplicate = new System.Windows.Forms.Button();
             this.btnDelete = new System.Windows.Forms.Button();
-            this.olvcID = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.listviewComponents)).BeginInit();
             this.SuspendLayout();
@@ -174,7 +173,6 @@
             // listviewComponents
             // 
             this.listviewComponents.AllColumns.Add(this.olvcSelect);
-            this.listviewComponents.AllColumns.Add(this.olvcID);
             this.listviewComponents.AllColumns.Add(this.olvcMPN);
             this.listviewComponents.AllColumns.Add(this.olvcQuantity);
             this.listviewComponents.AllColumns.Add(this.olvcReference);
@@ -196,7 +194,6 @@
             this.listviewComponents.CheckBoxes = true;
             this.listviewComponents.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.olvcSelect,
-            this.olvcID,
             this.olvcMPN,
             this.olvcQuantity,
             this.olvcReference,
@@ -346,11 +343,6 @@
             this.btnDelete.UseVisualStyleBackColor = true;
             this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
             // 
-            // olvcID
-            // 
-            this.olvcID.Text = "ID";
-            this.olvcID.Width = 26;
-            // 
             // frmProjects
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -407,6 +399,5 @@
         private System.Windows.Forms.ToolStripMenuItem duplicateAllCheckedToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem dELETEAllCheckedToolStripMenuItem;
         private System.Windows.Forms.Button btnDelete;
-        private BrightIdeasSoftware.OLVColumn olvcID;
     }
 }

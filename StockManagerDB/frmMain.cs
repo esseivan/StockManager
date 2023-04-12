@@ -34,7 +34,7 @@ namespace StockManagerDB
         /// <summary>
         /// List of parts in the database
         /// </summary>
-        private SortedDictionary<string, Part> Parts => data.Parts;
+        private Dictionary<string, Part> Parts => data.Parts;
 
         /// <summary>
         /// Indicate if a file is loaded
@@ -105,8 +105,6 @@ namespace StockManagerDB
             LoggerClass.Init();
             LoggerClass.Write("Application started...", Logger.LogLevels.Info);
 
-            ListManager.OnPartsListModified += ListManager_OnPartsListModified;
-
             // Setup listviews
             ListViewSetColumns();
             listviewParts.DefaultRenderer = filterHighlightRenderer;
@@ -124,19 +122,9 @@ namespace StockManagerDB
         private void PartsHaveChanged()
         {
             // Save changes and update listview
+            dhs.Instance.InvokeOnPartListModified(EventArgs.Empty);
             data.Save();
             UpdateListviews();
-        }
-
-        /// <summary>
-        /// Called when the list is modified in any way
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ListManager_OnPartsListModified(object sender, EventArgs e)
-        {
-            data.Save(); // Save the changes
-            UpdateListviews(); // Update listviews contents
         }
 
         /// <summary>
@@ -632,16 +620,13 @@ namespace StockManagerDB
                     MessageBox.Show("Unable to edit the MPN to the specified value. Another part with this MPN already exists...", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
-                else
-                {
-                    // Change also the key :
-                    // Remove old part
-                    Parts.Remove(part.MPN);
-                    // Add new part
-                    // Apply the changes to the part
-                    part.Parameters[Part.Parameter.MPN] = newValue;
-                    Parts.Add(part.MPN, part);
-                }
+                // Change also the key :
+                // Remove old part
+                Parts.Remove(part.MPN);
+                // Add new part
+                // Apply the changes to the part
+                part.Parameters[Part.Parameter.MPN] = newValue;
+                Parts.Add(part.MPN, part);
             }
             else
             {
