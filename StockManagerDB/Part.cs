@@ -109,11 +109,6 @@ namespace StockManagerDB
         }
 
         /// <summary>
-        /// Index in the list
-        /// </summary>
-        public int ShowIndex = 0;
-
-        /// <summary>
         /// List of parameters
         /// </summary>
         public Dictionary<Parameter, string> Parameters = new Dictionary<Parameter, string>();

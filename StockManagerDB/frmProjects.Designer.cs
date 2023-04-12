@@ -32,16 +32,10 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.quitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.projectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.newProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.renameSelectedProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.duplicateSelectedProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.dELETESelectedProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.componentsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.duplicateAllCheckedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dELETEAllCheckedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.label1 = new System.Windows.Forms.Label();
-            this.listviewComponents = new BrightIdeasSoftware.FastDataListView();
+            this.listviewMaterials = new BrightIdeasSoftware.FastDataListView();
             this.olvcSelect = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcMPN = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcQuantity = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
@@ -55,19 +49,34 @@
             this.olvcPrice = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcSupplier = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcSPN = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.btnAddComponent = new System.Windows.Forms.Button();
-            this.btnDuplicate = new System.Windows.Forms.Button();
-            this.btnDelete = new System.Windows.Forms.Button();
+            this.comboboxProjects = new System.Windows.Forms.ComboBox();
+            this.comboboxVersions = new System.Windows.Forms.ComboBox();
+            this.btnMatDup = new System.Windows.Forms.Button();
+            this.btnMatDel = new System.Windows.Forms.Button();
+            this.btnMatAdd = new System.Windows.Forms.Button();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.btnProDup = new System.Windows.Forms.Button();
+            this.btnProRen = new System.Windows.Forms.Button();
+            this.btnProDel = new System.Windows.Forms.Button();
+            this.btnProAdd = new System.Windows.Forms.Button();
+            this.btnVerRen = new System.Windows.Forms.Button();
+            this.btnVerDup = new System.Windows.Forms.Button();
+            this.btnVerDel = new System.Windows.Forms.Button();
+            this.btnVerAdd = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.listviewComponents)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.listviewMaterials)).BeginInit();
+            this.groupBox1.SuspendLayout();
+            this.groupBox2.SuspendLayout();
+            this.groupBox3.SuspendLayout();
             this.SuspendLayout();
             // 
             // statusStrip1
             // 
-            this.statusStrip1.Location = new System.Drawing.Point(0, 428);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 466);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(800, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(809, 22);
             this.statusStrip1.TabIndex = 1;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -75,11 +84,10 @@
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
-            this.projectToolStripMenuItem,
             this.componentsToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(800, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(809, 24);
             this.menuStrip1.TabIndex = 2;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -97,45 +105,6 @@
             this.quitToolStripMenuItem.Size = new System.Drawing.Size(97, 22);
             this.quitToolStripMenuItem.Text = "Quit";
             this.quitToolStripMenuItem.Click += new System.EventHandler(this.quitToolStripMenuItem_Click);
-            // 
-            // projectToolStripMenuItem
-            // 
-            this.projectToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.newProjectToolStripMenuItem,
-            this.renameSelectedProjectToolStripMenuItem,
-            this.duplicateSelectedProjectToolStripMenuItem,
-            this.dELETESelectedProjectToolStripMenuItem});
-            this.projectToolStripMenuItem.Name = "projectToolStripMenuItem";
-            this.projectToolStripMenuItem.Size = new System.Drawing.Size(56, 20);
-            this.projectToolStripMenuItem.Text = "Project";
-            // 
-            // newProjectToolStripMenuItem
-            // 
-            this.newProjectToolStripMenuItem.Name = "newProjectToolStripMenuItem";
-            this.newProjectToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
-            this.newProjectToolStripMenuItem.Text = "New Project";
-            this.newProjectToolStripMenuItem.Click += new System.EventHandler(this.newProjectToolStripMenuItem_Click);
-            // 
-            // renameSelectedProjectToolStripMenuItem
-            // 
-            this.renameSelectedProjectToolStripMenuItem.Name = "renameSelectedProjectToolStripMenuItem";
-            this.renameSelectedProjectToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
-            this.renameSelectedProjectToolStripMenuItem.Text = "Rename selected project";
-            this.renameSelectedProjectToolStripMenuItem.Click += new System.EventHandler(this.renameSelectedProjectToolStripMenuItem_Click);
-            // 
-            // duplicateSelectedProjectToolStripMenuItem
-            // 
-            this.duplicateSelectedProjectToolStripMenuItem.Name = "duplicateSelectedProjectToolStripMenuItem";
-            this.duplicateSelectedProjectToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
-            this.duplicateSelectedProjectToolStripMenuItem.Text = "Duplicate selected project";
-            this.duplicateSelectedProjectToolStripMenuItem.Click += new System.EventHandler(this.duplicateSelectedProjectToolStripMenuItem_Click);
-            // 
-            // dELETESelectedProjectToolStripMenuItem
-            // 
-            this.dELETESelectedProjectToolStripMenuItem.Name = "dELETESelectedProjectToolStripMenuItem";
-            this.dELETESelectedProjectToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
-            this.dELETESelectedProjectToolStripMenuItem.Text = "DELETE selected project";
-            this.dELETESelectedProjectToolStripMenuItem.Click += new System.EventHandler(this.DELETESelectedProjectToolStripMenuItem_Click);
             // 
             // componentsToolStripMenuItem
             // 
@@ -160,39 +129,32 @@
             this.dELETEAllCheckedToolStripMenuItem.Text = "DELETE all checked";
             this.dELETEAllCheckedToolStripMenuItem.Click += new System.EventHandler(this.DELETEAllCheckedToolStripMenuItem_Click);
             // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(12, 78);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(53, 13);
-            this.label1.TabIndex = 3;
-            this.label1.Text = "Projects";
-            // 
             // listviewComponents
             // 
-            this.listviewComponents.AllColumns.Add(this.olvcSelect);
-            this.listviewComponents.AllColumns.Add(this.olvcMPN);
-            this.listviewComponents.AllColumns.Add(this.olvcQuantity);
-            this.listviewComponents.AllColumns.Add(this.olvcReference);
-            this.listviewComponents.AllColumns.Add(this.olvcMAN);
-            this.listviewComponents.AllColumns.Add(this.olvcDesc);
-            this.listviewComponents.AllColumns.Add(this.olvcCat);
-            this.listviewComponents.AllColumns.Add(this.olvcLocation);
-            this.listviewComponents.AllColumns.Add(this.olvcStock);
-            this.listviewComponents.AllColumns.Add(this.olvcLowStock);
-            this.listviewComponents.AllColumns.Add(this.olvcPrice);
-            this.listviewComponents.AllColumns.Add(this.olvcSupplier);
-            this.listviewComponents.AllColumns.Add(this.olvcSPN);
-            this.listviewComponents.AllowCheckWithSpace = true;
-            this.listviewComponents.AllowColumnReorder = true;
-            this.listviewComponents.AlternateRowBackColor = System.Drawing.Color.LightBlue;
-            this.listviewComponents.AutoGenerateColumns = false;
-            this.listviewComponents.CellEditActivation = BrightIdeasSoftware.ObjectListView.CellEditActivateMode.DoubleClick;
-            this.listviewComponents.CellEditUseWholeCell = false;
-            this.listviewComponents.CheckBoxes = true;
-            this.listviewComponents.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.listviewMaterials.AllColumns.Add(this.olvcSelect);
+            this.listviewMaterials.AllColumns.Add(this.olvcMPN);
+            this.listviewMaterials.AllColumns.Add(this.olvcQuantity);
+            this.listviewMaterials.AllColumns.Add(this.olvcReference);
+            this.listviewMaterials.AllColumns.Add(this.olvcMAN);
+            this.listviewMaterials.AllColumns.Add(this.olvcDesc);
+            this.listviewMaterials.AllColumns.Add(this.olvcCat);
+            this.listviewMaterials.AllColumns.Add(this.olvcLocation);
+            this.listviewMaterials.AllColumns.Add(this.olvcStock);
+            this.listviewMaterials.AllColumns.Add(this.olvcLowStock);
+            this.listviewMaterials.AllColumns.Add(this.olvcPrice);
+            this.listviewMaterials.AllColumns.Add(this.olvcSupplier);
+            this.listviewMaterials.AllColumns.Add(this.olvcSPN);
+            this.listviewMaterials.AllowCheckWithSpace = true;
+            this.listviewMaterials.AllowColumnReorder = true;
+            this.listviewMaterials.AlternateRowBackColor = System.Drawing.Color.LightBlue;
+            this.listviewMaterials.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.listviewMaterials.AutoGenerateColumns = false;
+            this.listviewMaterials.CellEditActivation = BrightIdeasSoftware.ObjectListView.CellEditActivateMode.DoubleClick;
+            this.listviewMaterials.CellEditUseWholeCell = false;
+            this.listviewMaterials.CheckBoxes = true;
+            this.listviewMaterials.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.olvcSelect,
             this.olvcMPN,
             this.olvcQuantity,
@@ -206,33 +168,33 @@
             this.olvcPrice,
             this.olvcSupplier,
             this.olvcSPN});
-            this.listviewComponents.Cursor = System.Windows.Forms.Cursors.Default;
-            this.listviewComponents.DataSource = null;
-            this.listviewComponents.EmptyListMsg = "(Empty)";
-            this.listviewComponents.FullRowSelect = true;
-            this.listviewComponents.GridLines = true;
-            this.listviewComponents.HideSelection = false;
-            this.listviewComponents.Location = new System.Drawing.Point(166, 94);
-            this.listviewComponents.Margin = new System.Windows.Forms.Padding(2);
-            this.listviewComponents.Name = "listviewComponents";
-            this.listviewComponents.SelectColumnsOnRightClickBehaviour = BrightIdeasSoftware.ObjectListView.ColumnSelectBehaviour.Submenu;
-            this.listviewComponents.ShowCommandMenuOnRightClick = true;
-            this.listviewComponents.ShowGroups = false;
-            this.listviewComponents.ShowImagesOnSubItems = true;
-            this.listviewComponents.Size = new System.Drawing.Size(623, 345);
-            this.listviewComponents.SortGroupItemsByPrimaryColumn = false;
-            this.listviewComponents.TabIndex = 7;
-            this.listviewComponents.TintSortColumn = true;
-            this.listviewComponents.UseAlternatingBackColors = true;
-            this.listviewComponents.UseCompatibleStateImageBehavior = false;
-            this.listviewComponents.UseFilterIndicator = true;
-            this.listviewComponents.UseFiltering = true;
-            this.listviewComponents.UseHotItem = true;
-            this.listviewComponents.UseHyperlinks = true;
-            this.listviewComponents.UseTranslucentHotItem = true;
-            this.listviewComponents.View = System.Windows.Forms.View.Details;
-            this.listviewComponents.VirtualMode = true;
-            this.listviewComponents.CellEditFinished += new BrightIdeasSoftware.CellEditEventHandler(this.listviewComponents_CellEditFinished);
+            this.listviewMaterials.Cursor = System.Windows.Forms.Cursors.Default;
+            this.listviewMaterials.DataSource = null;
+            this.listviewMaterials.EmptyListMsg = "(Empty)";
+            this.listviewMaterials.FullRowSelect = true;
+            this.listviewMaterials.GridLines = true;
+            this.listviewMaterials.HideSelection = false;
+            this.listviewMaterials.Location = new System.Drawing.Point(5, 47);
+            this.listviewMaterials.Margin = new System.Windows.Forms.Padding(2);
+            this.listviewMaterials.Name = "listviewComponents";
+            this.listviewMaterials.SelectColumnsOnRightClickBehaviour = BrightIdeasSoftware.ObjectListView.ColumnSelectBehaviour.Submenu;
+            this.listviewMaterials.ShowCommandMenuOnRightClick = true;
+            this.listviewMaterials.ShowGroups = false;
+            this.listviewMaterials.ShowImagesOnSubItems = true;
+            this.listviewMaterials.Size = new System.Drawing.Size(632, 384);
+            this.listviewMaterials.SortGroupItemsByPrimaryColumn = false;
+            this.listviewMaterials.TabIndex = 7;
+            this.listviewMaterials.TintSortColumn = true;
+            this.listviewMaterials.UseAlternatingBackColors = true;
+            this.listviewMaterials.UseCompatibleStateImageBehavior = false;
+            this.listviewMaterials.UseFilterIndicator = true;
+            this.listviewMaterials.UseFiltering = true;
+            this.listviewMaterials.UseHotItem = true;
+            this.listviewMaterials.UseHyperlinks = true;
+            this.listviewMaterials.UseTranslucentHotItem = true;
+            this.listviewMaterials.View = System.Windows.Forms.View.Details;
+            this.listviewMaterials.VirtualMode = true;
+            this.listviewMaterials.CellEditFinished += new BrightIdeasSoftware.CellEditEventHandler(this.listviewComponents_CellEditFinished);
             // 
             // olvcSelect
             // 
@@ -303,65 +265,232 @@
             this.olvcSPN.Text = "SPN";
             this.olvcSPN.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
-            // comboBox1
+            // comboboxProjects
             // 
-            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.Simple;
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(12, 94);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(149, 332);
-            this.comboBox1.TabIndex = 8;
-            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
+            this.comboboxProjects.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboboxProjects.DropDownStyle = System.Windows.Forms.ComboBoxStyle.Simple;
+            this.comboboxProjects.FormattingEnabled = true;
+            this.comboboxProjects.Location = new System.Drawing.Point(3, 19);
+            this.comboboxProjects.Name = "comboboxProjects";
+            this.comboboxProjects.Size = new System.Drawing.Size(153, 237);
+            this.comboboxProjects.TabIndex = 8;
+            this.comboboxProjects.SelectedIndexChanged += new System.EventHandler(this.comboboxProjects_SelectedIndexChanged);
             // 
-            // btnAddComponent
+            // comboboxVersions
             // 
-            this.btnAddComponent.Location = new System.Drawing.Point(166, 66);
-            this.btnAddComponent.Name = "btnAddComponent";
-            this.btnAddComponent.Size = new System.Drawing.Size(75, 23);
-            this.btnAddComponent.TabIndex = 9;
-            this.btnAddComponent.Text = "Add";
-            this.btnAddComponent.UseVisualStyleBackColor = true;
-            this.btnAddComponent.Click += new System.EventHandler(this.btnAddComponent_Click);
+            this.comboboxVersions.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboboxVersions.DropDownStyle = System.Windows.Forms.ComboBoxStyle.Simple;
+            this.comboboxVersions.FormattingEnabled = true;
+            this.comboboxVersions.Location = new System.Drawing.Point(3, 19);
+            this.comboboxVersions.Name = "comboboxVersions";
+            this.comboboxVersions.Size = new System.Drawing.Size(153, 98);
+            this.comboboxVersions.TabIndex = 8;
+            this.comboboxVersions.SelectedIndexChanged += new System.EventHandler(this.comboboxVersions_SelectedIndexChanged);
             // 
-            // btnDuplicate
+            // btnMatDup
             // 
-            this.btnDuplicate.Location = new System.Drawing.Point(247, 66);
-            this.btnDuplicate.Name = "btnDuplicate";
-            this.btnDuplicate.Size = new System.Drawing.Size(75, 23);
-            this.btnDuplicate.TabIndex = 9;
-            this.btnDuplicate.Text = "Duplicate";
-            this.btnDuplicate.UseVisualStyleBackColor = true;
-            this.btnDuplicate.Click += new System.EventHandler(this.btnDuplicate_Click);
+            this.btnMatDup.BackgroundImage = global::StockManagerDB.Properties.Resources.dup;
+            this.btnMatDup.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.btnMatDup.Location = new System.Drawing.Point(64, 19);
+            this.btnMatDup.Name = "btnMatDup";
+            this.btnMatDup.Size = new System.Drawing.Size(23, 23);
+            this.btnMatDup.TabIndex = 10;
+            this.btnMatDup.UseVisualStyleBackColor = true;
+            this.btnMatDup.Click += new System.EventHandler(this.btnMatDup_Click);
             // 
-            // btnDelete
+            // btnMatDel
             // 
-            this.btnDelete.Location = new System.Drawing.Point(328, 66);
-            this.btnDelete.Name = "btnDelete";
-            this.btnDelete.Size = new System.Drawing.Size(75, 23);
-            this.btnDelete.TabIndex = 9;
-            this.btnDelete.Text = "Delete";
-            this.btnDelete.UseVisualStyleBackColor = true;
-            this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
+            this.btnMatDel.BackgroundImage = global::StockManagerDB.Properties.Resources.del;
+            this.btnMatDel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.btnMatDel.Location = new System.Drawing.Point(35, 19);
+            this.btnMatDel.Name = "btnMatDel";
+            this.btnMatDel.Size = new System.Drawing.Size(23, 23);
+            this.btnMatDel.TabIndex = 10;
+            this.btnMatDel.UseVisualStyleBackColor = true;
+            this.btnMatDel.Click += new System.EventHandler(this.btnMatDel_Click);
+            // 
+            // btnMatAdd
+            // 
+            this.btnMatAdd.BackgroundImage = global::StockManagerDB.Properties.Resources.add;
+            this.btnMatAdd.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.btnMatAdd.Location = new System.Drawing.Point(6, 19);
+            this.btnMatAdd.Name = "btnMatAdd";
+            this.btnMatAdd.Size = new System.Drawing.Size(23, 23);
+            this.btnMatAdd.TabIndex = 10;
+            this.btnMatAdd.UseVisualStyleBackColor = true;
+            this.btnMatAdd.Click += new System.EventHandler(this.btnMatAdd_Click);
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.groupBox1.Controls.Add(this.btnProAdd);
+            this.groupBox1.Controls.Add(this.btnProDel);
+            this.groupBox1.Controls.Add(this.btnProDup);
+            this.groupBox1.Controls.Add(this.btnProRen);
+            this.groupBox1.Controls.Add(this.comboboxProjects);
+            this.groupBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBox1.Location = new System.Drawing.Point(2, 27);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(159, 283);
+            this.groupBox1.TabIndex = 11;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Projects";
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.groupBox2.Controls.Add(this.btnVerAdd);
+            this.groupBox2.Controls.Add(this.btnVerDel);
+            this.groupBox2.Controls.Add(this.comboboxVersions);
+            this.groupBox2.Controls.Add(this.btnVerDup);
+            this.groupBox2.Controls.Add(this.btnVerRen);
+            this.groupBox2.Location = new System.Drawing.Point(2, 314);
+            this.groupBox2.Margin = new System.Windows.Forms.Padding(3, 1, 3, 3);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(156, 149);
+            this.groupBox2.TabIndex = 12;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Versions";
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox3.Controls.Add(this.btnMatAdd);
+            this.groupBox3.Controls.Add(this.btnMatDel);
+            this.groupBox3.Controls.Add(this.listviewMaterials);
+            this.groupBox3.Controls.Add(this.btnMatDup);
+            this.groupBox3.Location = new System.Drawing.Point(167, 27);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(642, 436);
+            this.groupBox3.TabIndex = 13;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Bill Of Materials";
+            // 
+            // btnProDup
+            // 
+            this.btnProDup.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnProDup.BackgroundImage = global::StockManagerDB.Properties.Resources.dup;
+            this.btnProDup.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.btnProDup.Location = new System.Drawing.Point(64, 256);
+            this.btnProDup.Name = "btnProDup";
+            this.btnProDup.Size = new System.Drawing.Size(23, 23);
+            this.btnProDup.TabIndex = 10;
+            this.btnProDup.UseVisualStyleBackColor = true;
+            this.btnProDup.Click += new System.EventHandler(this.btnProDup_Click);
+            // 
+            // btnProRen
+            // 
+            this.btnProRen.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnProRen.BackgroundImage = global::StockManagerDB.Properties.Resources.ren;
+            this.btnProRen.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.btnProRen.Location = new System.Drawing.Point(93, 256);
+            this.btnProRen.Name = "btnProRen";
+            this.btnProRen.Size = new System.Drawing.Size(23, 23);
+            this.btnProRen.TabIndex = 10;
+            this.btnProRen.UseVisualStyleBackColor = true;
+            this.btnProRen.Click += new System.EventHandler(this.btnProRen_Click);
+            // 
+            // btnProDel
+            // 
+            this.btnProDel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnProDel.BackgroundImage = global::StockManagerDB.Properties.Resources.del;
+            this.btnProDel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.btnProDel.Location = new System.Drawing.Point(35, 256);
+            this.btnProDel.Name = "btnProDel";
+            this.btnProDel.Size = new System.Drawing.Size(23, 23);
+            this.btnProDel.TabIndex = 10;
+            this.btnProDel.UseVisualStyleBackColor = true;
+            this.btnProDel.Click += new System.EventHandler(this.btnProDel_Click);
+            // 
+            // btnProAdd
+            // 
+            this.btnProAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnProAdd.BackgroundImage = global::StockManagerDB.Properties.Resources.add;
+            this.btnProAdd.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.btnProAdd.Location = new System.Drawing.Point(6, 256);
+            this.btnProAdd.Margin = new System.Windows.Forms.Padding(3, 1, 3, 1);
+            this.btnProAdd.Name = "btnProAdd";
+            this.btnProAdd.Size = new System.Drawing.Size(23, 23);
+            this.btnProAdd.TabIndex = 10;
+            this.btnProAdd.UseVisualStyleBackColor = true;
+            this.btnProAdd.Click += new System.EventHandler(this.btnProAdd_Click);
+            // 
+            // btnVerRen
+            // 
+            this.btnVerRen.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnVerRen.BackgroundImage = global::StockManagerDB.Properties.Resources.ren;
+            this.btnVerRen.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.btnVerRen.Location = new System.Drawing.Point(93, 121);
+            this.btnVerRen.Name = "btnVerRen";
+            this.btnVerRen.Size = new System.Drawing.Size(23, 23);
+            this.btnVerRen.TabIndex = 10;
+            this.btnVerRen.UseVisualStyleBackColor = true;
+            this.btnVerRen.Click += new System.EventHandler(this.btnVerRen_Click);
+            // 
+            // btnVerDup
+            // 
+            this.btnVerDup.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnVerDup.BackgroundImage = global::StockManagerDB.Properties.Resources.dup;
+            this.btnVerDup.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.btnVerDup.Location = new System.Drawing.Point(64, 121);
+            this.btnVerDup.Name = "btnVerDup";
+            this.btnVerDup.Size = new System.Drawing.Size(23, 23);
+            this.btnVerDup.TabIndex = 10;
+            this.btnVerDup.UseVisualStyleBackColor = true;
+            this.btnVerDup.Click += new System.EventHandler(this.btnVerDup_Click);
+            // 
+            // btnVerDel
+            // 
+            this.btnVerDel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnVerDel.BackgroundImage = global::StockManagerDB.Properties.Resources.del;
+            this.btnVerDel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.btnVerDel.Location = new System.Drawing.Point(35, 121);
+            this.btnVerDel.Name = "btnVerDel";
+            this.btnVerDel.Size = new System.Drawing.Size(23, 23);
+            this.btnVerDel.TabIndex = 10;
+            this.btnVerDel.UseVisualStyleBackColor = true;
+            this.btnVerDel.Click += new System.EventHandler(this.btnVerDel_Click);
+            // 
+            // btnVerAdd
+            // 
+            this.btnVerAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnVerAdd.BackgroundImage = global::StockManagerDB.Properties.Resources.add;
+            this.btnVerAdd.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.btnVerAdd.Location = new System.Drawing.Point(6, 121);
+            this.btnVerAdd.Margin = new System.Windows.Forms.Padding(3, 1, 3, 1);
+            this.btnVerAdd.Name = "btnVerAdd";
+            this.btnVerAdd.Size = new System.Drawing.Size(23, 23);
+            this.btnVerAdd.TabIndex = 10;
+            this.btnVerAdd.UseVisualStyleBackColor = true;
+            this.btnVerAdd.Click += new System.EventHandler(this.btnVerAdd_Click);
             // 
             // frmProjects
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.btnDelete);
-            this.Controls.Add(this.btnDuplicate);
-            this.Controls.Add(this.btnAddComponent);
-            this.Controls.Add(this.comboBox1);
-            this.Controls.Add(this.listviewComponents);
-            this.Controls.Add(this.label1);
+            this.ClientSize = new System.Drawing.Size(809, 488);
+            this.Controls.Add(this.groupBox3);
+            this.Controls.Add(this.groupBox2);
+            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
+            this.MinimumSize = new System.Drawing.Size(400, 400);
             this.Name = "frmProjects";
             this.Text = "Projects";
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.listviewComponents)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.listviewMaterials)).EndInit();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox3.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -371,8 +500,7 @@
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
-        private System.Windows.Forms.Label label1;
-        private BrightIdeasSoftware.FastDataListView listviewComponents;
+        private BrightIdeasSoftware.FastDataListView listviewMaterials;
         private BrightIdeasSoftware.OLVColumn olvcSelect;
         private BrightIdeasSoftware.OLVColumn olvcMPN;
         private BrightIdeasSoftware.OLVColumn olvcMAN;
@@ -385,19 +513,26 @@
         private BrightIdeasSoftware.OLVColumn olvcSupplier;
         private BrightIdeasSoftware.OLVColumn olvcSPN;
         private System.Windows.Forms.ToolStripMenuItem quitToolStripMenuItem;
-        private System.Windows.Forms.ComboBox comboBox1;
-        private System.Windows.Forms.ToolStripMenuItem projectToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem newProjectToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem renameSelectedProjectToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem duplicateSelectedProjectToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem dELETESelectedProjectToolStripMenuItem;
+        private System.Windows.Forms.ComboBox comboboxProjects;
         private BrightIdeasSoftware.OLVColumn olvcQuantity;
         private BrightIdeasSoftware.OLVColumn olvcReference;
-        private System.Windows.Forms.Button btnAddComponent;
-        private System.Windows.Forms.Button btnDuplicate;
         private System.Windows.Forms.ToolStripMenuItem componentsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem duplicateAllCheckedToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem dELETEAllCheckedToolStripMenuItem;
-        private System.Windows.Forms.Button btnDelete;
+        private System.Windows.Forms.ComboBox comboboxVersions;
+        private System.Windows.Forms.Button btnMatAdd;
+        private System.Windows.Forms.Button btnMatDel;
+        private System.Windows.Forms.Button btnMatDup;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.Button btnProAdd;
+        private System.Windows.Forms.Button btnProDel;
+        private System.Windows.Forms.Button btnProDup;
+        private System.Windows.Forms.Button btnProRen;
+        private System.Windows.Forms.Button btnVerAdd;
+        private System.Windows.Forms.Button btnVerDel;
+        private System.Windows.Forms.Button btnVerDup;
+        private System.Windows.Forms.Button btnVerRen;
     }
 }
