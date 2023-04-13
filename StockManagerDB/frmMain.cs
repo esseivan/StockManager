@@ -830,6 +830,7 @@ namespace StockManagerDB
         private void btnCheckedPartDel_Click(object sender, EventArgs e)
         {
             DeleteCheckedParts();
+            listviewParts.Focus();
         }
 
         #endregion

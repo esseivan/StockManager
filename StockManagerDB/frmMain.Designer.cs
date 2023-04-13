@@ -53,10 +53,6 @@
             this.btnPartDup = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.btnCheckedPartDel = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
-            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.labelCount = new System.Windows.Forms.ToolStripStatusLabel();
             this.listviewParts = new BrightIdeasSoftware.FastDataListView();
             this.olvcSelect = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcMPN = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
@@ -69,6 +65,8 @@
             this.olvcPrice = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcSupplier = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcSPN = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.btnCheckedPartDel = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
             this.listviewChecked = new BrightIdeasSoftware.FastDataListView();
             this.olvcMPN2 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcMAN2 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
@@ -80,15 +78,17 @@
             this.olvcPrice2 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcSupplier2 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcSPN2 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.labelCount = new System.Windows.Forms.ToolStripStatusLabel();
             this.filterHighlightRenderer = new BrightIdeasSoftware.HighlightTextRenderer();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
-            this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.listviewParts)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.listviewChecked)).BeginInit();
+            this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -238,6 +238,7 @@
             // projectsToolStripMenuItem
             // 
             this.projectsToolStripMenuItem.Name = "projectsToolStripMenuItem";
+            this.projectsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
             this.projectsToolStripMenuItem.Size = new System.Drawing.Size(93, 20);
             this.projectsToolStripMenuItem.Text = "Open Projects";
             this.projectsToolStripMenuItem.Click += new System.EventHandler(this.projectsToolStripMenuItem_Click);
@@ -342,43 +343,6 @@
             this.label2.Size = new System.Drawing.Size(53, 13);
             this.label2.TabIndex = 8;
             this.label2.Text = "All parts";
-            // 
-            // btnCheckedPartDel
-            // 
-            this.btnCheckedPartDel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnCheckedPartDel.BackgroundImage = global::StockManagerDB.Properties.Resources.del;
-            this.btnCheckedPartDel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.btnCheckedPartDel.Location = new System.Drawing.Point(6, 19);
-            this.btnCheckedPartDel.Name = "btnCheckedPartDel";
-            this.btnCheckedPartDel.Size = new System.Drawing.Size(23, 23);
-            this.btnCheckedPartDel.TabIndex = 14;
-            this.btnCheckedPartDel.UseVisualStyleBackColor = true;
-            this.btnCheckedPartDel.Click += new System.EventHandler(this.btnCheckedPartDel_Click);
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(6, 3);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(89, 13);
-            this.label1.TabIndex = 8;
-            this.label1.Text = "Checked parts";
-            // 
-            // statusStrip1
-            // 
-            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.labelCount});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 496);
-            this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(866, 22);
-            this.statusStrip1.TabIndex = 41;
-            this.statusStrip1.Text = "statusStrip1";
-            // 
-            // labelCount
-            // 
-            this.labelCount.Name = "labelCount";
-            this.labelCount.Size = new System.Drawing.Size(0, 17);
             // 
             // listviewParts
             // 
@@ -509,6 +473,28 @@
             this.olvcSPN.Text = "SPN";
             this.olvcSPN.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
+            // btnCheckedPartDel
+            // 
+            this.btnCheckedPartDel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnCheckedPartDel.BackgroundImage = global::StockManagerDB.Properties.Resources.del;
+            this.btnCheckedPartDel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.btnCheckedPartDel.Location = new System.Drawing.Point(6, 19);
+            this.btnCheckedPartDel.Name = "btnCheckedPartDel";
+            this.btnCheckedPartDel.Size = new System.Drawing.Size(23, 23);
+            this.btnCheckedPartDel.TabIndex = 14;
+            this.btnCheckedPartDel.UseVisualStyleBackColor = true;
+            this.btnCheckedPartDel.Click += new System.EventHandler(this.btnCheckedPartDel_Click);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(6, 3);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(89, 13);
+            this.label1.TabIndex = 8;
+            this.label1.Text = "Checked parts";
+            // 
             // listviewChecked
             // 
             this.listviewChecked.AllColumns.Add(this.olvcMPN2);
@@ -623,6 +609,21 @@
             this.olvcSPN2.Text = "SPN";
             this.olvcSPN2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
+            // statusStrip1
+            // 
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.labelCount});
+            this.statusStrip1.Location = new System.Drawing.Point(0, 496);
+            this.statusStrip1.Name = "statusStrip1";
+            this.statusStrip1.Size = new System.Drawing.Size(866, 22);
+            this.statusStrip1.TabIndex = 41;
+            this.statusStrip1.Text = "statusStrip1";
+            // 
+            // labelCount
+            // 
+            this.labelCount.Name = "labelCount";
+            this.labelCount.Size = new System.Drawing.Size(0, 17);
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -644,10 +645,10 @@
             this.splitContainer1.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
-            this.statusStrip1.ResumeLayout(false);
-            this.statusStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.listviewParts)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.listviewChecked)).EndInit();
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 

@@ -251,9 +251,21 @@ namespace StockManagerDB
                 throw new InvalidOperationException("No project version selected");
             }
 
+            Dialog.ShowDialogResult result = Dialog.ShowDialog("Enter the new MPN for the material", Title: "Enter MPN", Input: true, Btn1: Dialog.ButtonType.OK, Btn2: Dialog.ButtonType.Cancel);
+            if (result.DialogResult != Dialog.DialogResult.OK)
+            {
+                return;
+            }
+
+            if (selectedProjectVersion.BOM.ContainsKey(result.UserInput))
+            {
+                MessageBox.Show("This MPN is already in the list...");
+                return;
+            }
+
             Material newMaterial = new Material()
             {
-                MPN = $"Undefined{newMaterialCounter++}",
+                MPN = result.UserInput,
                 Quantity = 0,
                 Reference = ""
             };
@@ -533,6 +545,9 @@ namespace StockManagerDB
 
         #region Version management
 
+        /// <summary>
+        /// Add a new version to the selected project
+        /// </summary>
         private void AddVersion()
         {
             string project = GetSelectedProjectName();
@@ -562,6 +577,11 @@ namespace StockManagerDB
             data.Projects[project].Versions.Add(pv.Version, pv);
 
             VersionsHaveChanged();
+        }
+
+        private void DeleteVersion()
+        {
+
         }
 
         #endregion
@@ -619,41 +639,49 @@ namespace StockManagerDB
         private void btnMatAdd_Click(object sender, EventArgs e)
         {
             CreateNewMaterial();
+            listviewMaterials.Focus();
         }
 
         private void btnMatDup_Click(object sender, EventArgs e)
         {
             DuplicateSelectedMaterials();
+            listviewMaterials.Focus();
         }
 
         private void btnMatDel_Click(object sender, EventArgs e)
         {
             DeleteSelectedMaterial();
+            listviewMaterials.Focus();
         }
 
         private void btnProAdd_Click(object sender, EventArgs e)
         {
             CreateNewProject();
+            comboboxProjects.Focus();
         }
 
         private void btnProDel_Click(object sender, EventArgs e)
         {
             DeleteSelectedProject();
+            comboboxProjects.Focus();
         }
 
         private void btnProDup_Click(object sender, EventArgs e)
         {
             DuplicateProject(GetSelectedProjectName());
+            comboboxProjects.Focus();
         }
 
         private void btnProRen_Click(object sender, EventArgs e)
         {
             RenameProject(GetSelectedProjectName());
+            comboboxProjects.Focus();
         }
 
         private void btnVerAdd_Click(object sender, EventArgs e)
         {
             AddVersion();
+            comboboxVersions.Focus();
         }
 
         private void btnVerDel_Click(object sender, EventArgs e)
