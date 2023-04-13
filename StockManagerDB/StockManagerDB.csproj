@@ -85,7 +85,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ComponentClass.cs" />
+    <Compile Include="DataHolderSingleton.cs" />
     <Compile Include="ExcelManager.cs" />
     <Compile Include="ExcelWrapper.cs" />
     <Compile Include="frmMain.cs">
@@ -100,11 +100,13 @@
     <Compile Include="frmProjects.Designer.cs">
       <DependentUpon>frmProjects.cs</DependentUpon>
     </Compile>
-    <Compile Include="ListManager.cs" />
     <Compile Include="ListPlus.cs" />
     <Compile Include="LoggerClass.cs" />
-    <Compile Include="PartClass.cs" />
+    <Compile Include="Material.cs" />
+    <Compile Include="Part.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="Project.cs" />
+    <Compile Include="ProjectVersion.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="frmMain.resx">
       <DependentUpon>frmMain.cs</DependentUpon>
@@ -120,10 +122,12 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="..\.editorconfig">
       <Link>.editorconfig</Link>
     </None>
+    <None Include="fig\add.png" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -172,6 +176,11 @@
       <Project>{18feda0c-d147-4286-b39a-01204808106a}</Project>
       <Name>ObjectListView2012</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="fig\del.png" />
+    <Content Include="fig\dup.png" />
+    <Content Include="fig\ren.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.117.0\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets" Condition="Exists('..\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.117.0\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets')" />
