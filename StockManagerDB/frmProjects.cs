@@ -654,8 +654,6 @@ namespace StockManagerDB
             ApplyEdit(e);
         }
 
-        #endregion
-
         private void btnMatAdd_Click(object sender, EventArgs e)
         {
             CreateNewMaterial();
@@ -721,5 +719,12 @@ namespace StockManagerDB
             RenameVersion();
             comboboxVersions.Focus();
         }
+
+        private void resizeColumnsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            listviewMaterials.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+        }
+
+        #endregion
     }
 }
