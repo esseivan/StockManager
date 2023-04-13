@@ -22,6 +22,8 @@ namespace StockManagerDB
 
         private ProjectVersion selectedProjectVersion = null;
 
+        private List<Material> BOM => selectedProjectVersion?.BOM;
+
         public frmProjects()
         {
             InitializeComponent();
@@ -132,13 +134,12 @@ namespace StockManagerDB
                 return;
             }
 
-            Material selMat = listviewMaterials.SelectedObject as Material;
-
-            listviewMaterials.DataSource = selectedProjectVersion.BOM.Values.ToList();
+            listviewMaterials.DataSource = null;
+            listviewMaterials.DataSource = BOM;
             //listviewComponents.AutoResizeColumns();
             listviewMaterials.Focus();
 
-            if ((selMat != null)
+            if ((listviewMaterials.SelectedObject is Material selMat)
             && (listviewMaterials.Objects.Cast<Material>().Contains(selMat)))
                 listviewMaterials.SelectedObject = selMat;
         }
@@ -198,12 +199,7 @@ namespace StockManagerDB
                 throw new InvalidOperationException("No project version selected");
             }
 
-            if (selectedProjectVersion.BOM.ContainsKey(material.MPN))
-            {
-                throw new InvalidOperationException("Material MPN already exists");
-            }
-
-            selectedProjectVersion.BOM.Add(material.MPN, material);
+            BOM.Add(material);
             MaterialsHaveChanged();
 
         }
@@ -219,13 +215,7 @@ namespace StockManagerDB
                 throw new InvalidOperationException("No project version selected");
             }
 
-            if (!selectedProjectVersion.BOM.ContainsKey(material.MPN))
-            {
-                LoggerClass.Write("Unable to delete component. Not found", ESNLib.Tools.Logger.LogLevels.Error);
-                throw new InvalidOperationException("Material MPN not found");
-            }
-
-            selectedProjectVersion.BOM.Remove(material.MPN);
+            BOM.Remove(material);
             MaterialsHaveChanged();
         }
 
@@ -240,7 +230,6 @@ namespace StockManagerDB
             AddMaterial(newMaterial);
         }
 
-        private static int newMaterialCounter = 0;
         /// <summary>
         /// Create a new <see cref="Material"/>
         /// </summary>
@@ -254,12 +243,6 @@ namespace StockManagerDB
             Dialog.ShowDialogResult result = Dialog.ShowDialog("Enter the new MPN for the material", Title: "Enter MPN", Input: true, Btn1: Dialog.ButtonType.OK, Btn2: Dialog.ButtonType.Cancel);
             if (result.DialogResult != Dialog.DialogResult.OK)
             {
-                return;
-            }
-
-            if (selectedProjectVersion.BOM.ContainsKey(result.UserInput))
-            {
-                MessageBox.Show("This MPN is already in the list...");
                 return;
             }
 
@@ -317,7 +300,7 @@ namespace StockManagerDB
             // Duplicate them
             List<Material> newComponents = checkedMaterials.Select((comp) => comp.Clone() as Material).ToList();
 
-            newComponents.ForEach((c) => selectedProjectVersion.BOM.Add(c.MPN, c));
+            newComponents.ForEach((c) => BOM.Add(c));
             MaterialsHaveChanged();
         }
 
@@ -337,12 +320,7 @@ namespace StockManagerDB
 
             foreach (Material item in checkedMaterials)
             {
-                if (!selectedProjectVersion.BOM.ContainsKey(item.MPN))
-                {
-                    throw new InvalidOperationException("Material MPN not found");
-                }
-
-                selectedProjectVersion.BOM.Remove(item.MPN);
+                BOM.Remove(item);
             }
             MaterialsHaveChanged();
         }
@@ -370,12 +348,6 @@ namespace StockManagerDB
             Dialog.ShowDialogResult result = Dialog.ShowDialog("Enter the new MPN for the project", Title: "Enter MPN", Input: true, DefaultInput: material.MPN, Btn1: Dialog.ButtonType.OK, Btn2: Dialog.ButtonType.Cancel);
             if (result.DialogResult != Dialog.DialogResult.OK)
             {
-                return;
-            }
-
-            if(selectedProjectVersion.BOM.ContainsKey(result.UserInput))
-            {
-                MessageBox.Show("This MPN is already present in the list...", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 

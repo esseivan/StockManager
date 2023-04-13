@@ -37,7 +37,7 @@ namespace StockManagerDB
         /// <summary>
         /// List of material
         /// </summary>
-        public SortedDictionary<string, Material> BOM { get; set; } = new SortedDictionary<string, Material>();
+        public List<Material> BOM { get; set; } = new List<Material>();
 
         public object Clone()
         {
@@ -47,9 +47,9 @@ namespace StockManagerDB
                 Version = Version,
             };
 
-            foreach (Material material in BOM.Values)
+            foreach (Material material in BOM)
             {
-                newVersion.BOM.Add(material.MPN, material.Clone() as Material);
+                newVersion.BOM.Add(material.Clone() as Material);
             }
 
             return newVersion;
@@ -57,7 +57,7 @@ namespace StockManagerDB
 
         public override string ToString()
         {
-            return $"Project '{Project}' - {Version} : {BOM.Count} materials";
+            return $"Project '{Project}' - v{Version} : {BOM.Count} items";
         }
     }
 }
