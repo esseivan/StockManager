@@ -833,6 +833,12 @@ namespace StockManagerDB
             listviewParts.Focus();
         }
 
+        private void resizeColumnsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            listviewParts.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+            listviewChecked.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+        }
+
         #endregion
 
     }

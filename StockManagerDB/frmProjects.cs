@@ -286,46 +286,6 @@ namespace StockManagerDB
         }
 
         /// <summary>
-        /// Duplicate all checked <see cref="Material"/>
-        /// </summary>
-        private void DuplicateAllCheckedMaterial()
-        {
-            if (selectedProjectVersion == null)
-            {
-                throw new InvalidOperationException("No project version selected");
-            }
-
-            // Get all checked
-            List<Material> checkedMaterials = listviewMaterials.CheckedObjectsEnumerable.Cast<Material>().ToList();
-            // Duplicate them
-            List<Material> newComponents = checkedMaterials.Select((comp) => comp.Clone() as Material).ToList();
-
-            newComponents.ForEach((c) => BOM.Add(c));
-            MaterialsHaveChanged();
-        }
-
-        /// <summary>
-        /// Remove all checked <see cref="Material"/>
-        /// </summary>
-        /// <exception cref="InvalidOperationException">MPN not found in list</exception>
-        private void DeleteAllCheckedMaterials()
-        {
-            if (selectedProjectVersion == null)
-            {
-                throw new InvalidOperationException("No project version selected");
-            }
-
-            // Get all checked
-            List<Material> checkedMaterials = listviewMaterials.CheckedObjectsEnumerable.Cast<Material>().ToList();
-
-            foreach (Material item in checkedMaterials)
-            {
-                BOM.Remove(item);
-            }
-            MaterialsHaveChanged();
-        }
-
-        /// <summary>
         /// Duplicate selected <see cref="Material"/>
         /// </summary>
         private void DuplicateSelectedMaterials()
@@ -540,6 +500,7 @@ namespace StockManagerDB
                 return;
             }
 
+            LoggerClass.Write("Adding version...");
             ProjectVersion pv = new ProjectVersion()
             {
                 Version = result.UserInput,
@@ -549,11 +510,127 @@ namespace StockManagerDB
             data.Projects[project].Versions.Add(pv.Version, pv);
 
             VersionsHaveChanged();
+            LoggerClass.Write("Version added");
         }
 
+        /// <summary>
+        /// Delete the selected version
+        /// </summary>
         private void DeleteVersion()
         {
+            string project = GetSelectedProjectName();
+            if (project == null)
+            {
+                return;
+            }
 
+            string version = GetSelectedVersion();
+
+            if (!data.Projects[project].Versions.ContainsKey(version))
+            {
+                throw new InvalidOperationException("Version not found in the project...");
+            }
+
+            LoggerClass.Write($"Deletion of {project} v{version} requested...");
+            // Ask confirmation
+            Dialog.DialogConfig dc = new Dialog.DialogConfig()
+            {
+                Message = $"Warning, this action cannot be undone !\nPlease confirm the deletion of the version :\n{project} - v{version}\nDo you really want to delete it ?",
+                Title = "Warning",
+                Icon = Dialog.DialogIcon.Warning,
+                Button1 = Dialog.ButtonType.Custom1,
+                Button2 = Dialog.ButtonType.Cancel,
+                CustomButton1Text = "DELETE"
+            };
+            Dialog.ShowDialogResult result = Dialog.ShowDialog(dc);
+            if (result.DialogResult != Dialog.DialogResult.Custom1)
+            {
+                LoggerClass.Write("Deletion cancelled by user...");
+                return;
+            }
+
+            LoggerClass.Write("Deleting...");
+            data.Projects[project].Versions.Remove(version);
+            VersionsHaveChanged();
+            LoggerClass.Write("Deletion finished");
+        }
+
+        /// <summary>
+        /// Duplicate the selected version
+        /// </summary>
+        private void DuplicateVersion()
+        {
+            string project = GetSelectedProjectName();
+            if (project == null)
+            {
+                return;
+            }
+
+            string version = GetSelectedVersion();
+            if (version == null)
+            {
+                return;
+            }
+
+            Dialog.ShowDialogResult result = Dialog.ShowDialog("Enter the new version", Title: "Enter new version", Input: true, DefaultInput: version, Btn1: Dialog.ButtonType.OK, Btn2: Dialog.ButtonType.Cancel);
+            if (result.DialogResult != Dialog.DialogResult.OK)
+            {
+                return;
+            }
+
+            if (data.Projects[project].Versions.ContainsKey(result.UserInput))
+            {
+                MessageBox.Show("This version already exists...", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            LoggerClass.Write("Duplicating version...");
+            ProjectVersion newVersion = selectedProjectVersion.Clone() as ProjectVersion;
+            newVersion.Version = result.UserInput;
+            data.Projects[project].Versions.Add(newVersion.Version, newVersion);
+            LoggerClass.Write("Version duplication finished");
+            VersionsHaveChanged();
+        }
+
+        private void RenameVersion()
+        {
+            string project = GetSelectedProjectName();
+            if (project == null)
+            {
+                return;
+            }
+
+            string version = GetSelectedVersion();
+            if (version == null)
+            {
+                return;
+            }
+
+            Dialog.ShowDialogResult result = Dialog.ShowDialog("Enter the new version", Title: "Enter new version", Input: true, DefaultInput: version, Btn1: Dialog.ButtonType.OK, Btn2: Dialog.ButtonType.Cancel);
+            if (result.DialogResult != Dialog.DialogResult.OK)
+            {
+                return;
+            }
+
+            // If unchanged
+            if (result.UserInput.Equals(version))
+            {
+                return;
+            }
+
+            if (data.Projects[project].Versions.ContainsKey(result.UserInput))
+            {
+                MessageBox.Show("This version already exists...", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            LoggerClass.Write("Renaming version...");
+            ProjectVersion selectedVersion = selectedProjectVersion;
+            data.Projects[project].Versions.Remove(version);
+            selectedVersion.Version = result.UserInput;
+            data.Projects[project].Versions.Add(selectedVersion.Version, selectedVersion);
+            LoggerClass.Write("Renaming finished");
+            VersionsHaveChanged();
         }
 
         #endregion
@@ -563,18 +640,6 @@ namespace StockManagerDB
         private void quitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.Close();
-        }
-        private void newProjectToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-        }
-        private void renameSelectedProjectToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-        }
-        private void duplicateSelectedProjectToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-        }
-        private void DELETESelectedProjectToolStripMenuItem_Click(object sender, EventArgs e)
-        {
         }
         private void comboboxProjects_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -587,23 +652,6 @@ namespace StockManagerDB
         private void listviewComponents_CellEditFinished(object sender, CellEditEventArgs e)
         {
             ApplyEdit(e);
-        }
-        private void btnAddComponent_Click(object sender, EventArgs e)
-        {
-        }
-        private void btnDuplicate_Click(object sender, EventArgs e)
-        {
-        }
-        private void btnDelete_Click(object sender, EventArgs e)
-        {
-        }
-        private void duplicateAllCheckedToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            DuplicateAllCheckedMaterial();
-        }
-        private void DELETEAllCheckedToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            DeleteAllCheckedMaterials();
         }
 
         #endregion
@@ -658,17 +706,20 @@ namespace StockManagerDB
 
         private void btnVerDel_Click(object sender, EventArgs e)
         {
-
+            DeleteVersion();
+            comboboxVersions.Focus();
         }
 
         private void btnVerDup_Click(object sender, EventArgs e)
         {
-
+            DuplicateVersion();
+            comboboxVersions.Focus();
         }
 
         private void btnVerRen_Click(object sender, EventArgs e)
         {
-
+            RenameVersion();
+            comboboxVersions.Focus();
         }
     }
 }

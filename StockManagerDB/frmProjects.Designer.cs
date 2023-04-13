@@ -32,9 +32,6 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.quitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.componentsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.duplicateAllCheckedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.dELETEAllCheckedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.listviewMaterials = new BrightIdeasSoftware.FastDataListView();
             this.olvcSelect = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcMPN = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
@@ -55,16 +52,16 @@
             this.btnMatDel = new System.Windows.Forms.Button();
             this.btnMatAdd = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.btnProAdd = new System.Windows.Forms.Button();
+            this.btnProDel = new System.Windows.Forms.Button();
             this.btnProDup = new System.Windows.Forms.Button();
             this.btnProRen = new System.Windows.Forms.Button();
-            this.btnProDel = new System.Windows.Forms.Button();
-            this.btnProAdd = new System.Windows.Forms.Button();
-            this.btnVerRen = new System.Windows.Forms.Button();
-            this.btnVerDup = new System.Windows.Forms.Button();
-            this.btnVerDel = new System.Windows.Forms.Button();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.btnVerAdd = new System.Windows.Forms.Button();
+            this.btnVerDel = new System.Windows.Forms.Button();
+            this.btnVerDup = new System.Windows.Forms.Button();
+            this.btnVerRen = new System.Windows.Forms.Button();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.listviewMaterials)).BeginInit();
             this.groupBox1.SuspendLayout();
@@ -83,8 +80,7 @@
             // menuStrip1
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fileToolStripMenuItem,
-            this.componentsToolStripMenuItem});
+            this.fileToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(809, 24);
@@ -102,34 +98,12 @@
             // quitToolStripMenuItem
             // 
             this.quitToolStripMenuItem.Name = "quitToolStripMenuItem";
-            this.quitToolStripMenuItem.Size = new System.Drawing.Size(97, 22);
+            this.quitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Q)));
+            this.quitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.quitToolStripMenuItem.Text = "Quit";
             this.quitToolStripMenuItem.Click += new System.EventHandler(this.quitToolStripMenuItem_Click);
             // 
-            // componentsToolStripMenuItem
-            // 
-            this.componentsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.duplicateAllCheckedToolStripMenuItem,
-            this.dELETEAllCheckedToolStripMenuItem});
-            this.componentsToolStripMenuItem.Name = "componentsToolStripMenuItem";
-            this.componentsToolStripMenuItem.Size = new System.Drawing.Size(88, 20);
-            this.componentsToolStripMenuItem.Text = "Components";
-            // 
-            // duplicateAllCheckedToolStripMenuItem
-            // 
-            this.duplicateAllCheckedToolStripMenuItem.Name = "duplicateAllCheckedToolStripMenuItem";
-            this.duplicateAllCheckedToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
-            this.duplicateAllCheckedToolStripMenuItem.Text = "Duplicate all checked";
-            this.duplicateAllCheckedToolStripMenuItem.Click += new System.EventHandler(this.duplicateAllCheckedToolStripMenuItem_Click);
-            // 
-            // dELETEAllCheckedToolStripMenuItem
-            // 
-            this.dELETEAllCheckedToolStripMenuItem.Name = "dELETEAllCheckedToolStripMenuItem";
-            this.dELETEAllCheckedToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
-            this.dELETEAllCheckedToolStripMenuItem.Text = "DELETE all checked";
-            this.dELETEAllCheckedToolStripMenuItem.Click += new System.EventHandler(this.DELETEAllCheckedToolStripMenuItem_Click);
-            // 
-            // listviewComponents
+            // listviewMaterials
             // 
             this.listviewMaterials.AllColumns.Add(this.olvcSelect);
             this.listviewMaterials.AllColumns.Add(this.olvcMPN);
@@ -176,7 +150,7 @@
             this.listviewMaterials.HideSelection = false;
             this.listviewMaterials.Location = new System.Drawing.Point(5, 47);
             this.listviewMaterials.Margin = new System.Windows.Forms.Padding(2);
-            this.listviewMaterials.Name = "listviewComponents";
+            this.listviewMaterials.Name = "listviewMaterials";
             this.listviewMaterials.SelectColumnsOnRightClickBehaviour = BrightIdeasSoftware.ObjectListView.ColumnSelectBehaviour.Submenu;
             this.listviewMaterials.ShowCommandMenuOnRightClick = true;
             this.listviewMaterials.ShowGroups = false;
@@ -341,37 +315,30 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Projects";
             // 
-            // groupBox2
+            // btnProAdd
             // 
-            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.groupBox2.Controls.Add(this.btnVerAdd);
-            this.groupBox2.Controls.Add(this.btnVerDel);
-            this.groupBox2.Controls.Add(this.comboboxVersions);
-            this.groupBox2.Controls.Add(this.btnVerDup);
-            this.groupBox2.Controls.Add(this.btnVerRen);
-            this.groupBox2.Location = new System.Drawing.Point(2, 314);
-            this.groupBox2.Margin = new System.Windows.Forms.Padding(3, 1, 3, 3);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(156, 149);
-            this.groupBox2.TabIndex = 12;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Versions";
+            this.btnProAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnProAdd.BackgroundImage = global::StockManagerDB.Properties.Resources.add;
+            this.btnProAdd.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.btnProAdd.Location = new System.Drawing.Point(6, 256);
+            this.btnProAdd.Margin = new System.Windows.Forms.Padding(3, 1, 3, 1);
+            this.btnProAdd.Name = "btnProAdd";
+            this.btnProAdd.Size = new System.Drawing.Size(23, 23);
+            this.btnProAdd.TabIndex = 10;
+            this.btnProAdd.UseVisualStyleBackColor = true;
+            this.btnProAdd.Click += new System.EventHandler(this.btnProAdd_Click);
             // 
-            // groupBox3
+            // btnProDel
             // 
-            this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox3.Controls.Add(this.btnMatAdd);
-            this.groupBox3.Controls.Add(this.btnMatDel);
-            this.groupBox3.Controls.Add(this.listviewMaterials);
-            this.groupBox3.Controls.Add(this.btnMatDup);
-            this.groupBox3.Location = new System.Drawing.Point(167, 27);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(642, 436);
-            this.groupBox3.TabIndex = 13;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Bill Of Materials";
+            this.btnProDel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnProDel.BackgroundImage = global::StockManagerDB.Properties.Resources.del;
+            this.btnProDel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.btnProDel.Location = new System.Drawing.Point(35, 256);
+            this.btnProDel.Name = "btnProDel";
+            this.btnProDel.Size = new System.Drawing.Size(23, 23);
+            this.btnProDel.TabIndex = 10;
+            this.btnProDel.UseVisualStyleBackColor = true;
+            this.btnProDel.Click += new System.EventHandler(this.btnProDel_Click);
             // 
             // btnProDup
             // 
@@ -397,66 +364,21 @@
             this.btnProRen.UseVisualStyleBackColor = true;
             this.btnProRen.Click += new System.EventHandler(this.btnProRen_Click);
             // 
-            // btnProDel
+            // groupBox2
             // 
-            this.btnProDel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnProDel.BackgroundImage = global::StockManagerDB.Properties.Resources.del;
-            this.btnProDel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.btnProDel.Location = new System.Drawing.Point(35, 256);
-            this.btnProDel.Name = "btnProDel";
-            this.btnProDel.Size = new System.Drawing.Size(23, 23);
-            this.btnProDel.TabIndex = 10;
-            this.btnProDel.UseVisualStyleBackColor = true;
-            this.btnProDel.Click += new System.EventHandler(this.btnProDel_Click);
-            // 
-            // btnProAdd
-            // 
-            this.btnProAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnProAdd.BackgroundImage = global::StockManagerDB.Properties.Resources.add;
-            this.btnProAdd.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.btnProAdd.Location = new System.Drawing.Point(6, 256);
-            this.btnProAdd.Margin = new System.Windows.Forms.Padding(3, 1, 3, 1);
-            this.btnProAdd.Name = "btnProAdd";
-            this.btnProAdd.Size = new System.Drawing.Size(23, 23);
-            this.btnProAdd.TabIndex = 10;
-            this.btnProAdd.UseVisualStyleBackColor = true;
-            this.btnProAdd.Click += new System.EventHandler(this.btnProAdd_Click);
-            // 
-            // btnVerRen
-            // 
-            this.btnVerRen.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnVerRen.BackgroundImage = global::StockManagerDB.Properties.Resources.ren;
-            this.btnVerRen.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.btnVerRen.Location = new System.Drawing.Point(93, 121);
-            this.btnVerRen.Name = "btnVerRen";
-            this.btnVerRen.Size = new System.Drawing.Size(23, 23);
-            this.btnVerRen.TabIndex = 10;
-            this.btnVerRen.UseVisualStyleBackColor = true;
-            this.btnVerRen.Click += new System.EventHandler(this.btnVerRen_Click);
-            // 
-            // btnVerDup
-            // 
-            this.btnVerDup.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnVerDup.BackgroundImage = global::StockManagerDB.Properties.Resources.dup;
-            this.btnVerDup.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.btnVerDup.Location = new System.Drawing.Point(64, 121);
-            this.btnVerDup.Name = "btnVerDup";
-            this.btnVerDup.Size = new System.Drawing.Size(23, 23);
-            this.btnVerDup.TabIndex = 10;
-            this.btnVerDup.UseVisualStyleBackColor = true;
-            this.btnVerDup.Click += new System.EventHandler(this.btnVerDup_Click);
-            // 
-            // btnVerDel
-            // 
-            this.btnVerDel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnVerDel.BackgroundImage = global::StockManagerDB.Properties.Resources.del;
-            this.btnVerDel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.btnVerDel.Location = new System.Drawing.Point(35, 121);
-            this.btnVerDel.Name = "btnVerDel";
-            this.btnVerDel.Size = new System.Drawing.Size(23, 23);
-            this.btnVerDel.TabIndex = 10;
-            this.btnVerDel.UseVisualStyleBackColor = true;
-            this.btnVerDel.Click += new System.EventHandler(this.btnVerDel_Click);
+            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.groupBox2.Controls.Add(this.btnVerAdd);
+            this.groupBox2.Controls.Add(this.btnVerDel);
+            this.groupBox2.Controls.Add(this.comboboxVersions);
+            this.groupBox2.Controls.Add(this.btnVerDup);
+            this.groupBox2.Controls.Add(this.btnVerRen);
+            this.groupBox2.Location = new System.Drawing.Point(2, 314);
+            this.groupBox2.Margin = new System.Windows.Forms.Padding(3, 1, 3, 3);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(156, 149);
+            this.groupBox2.TabIndex = 12;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Versions";
             // 
             // btnVerAdd
             // 
@@ -470,6 +392,58 @@
             this.btnVerAdd.TabIndex = 10;
             this.btnVerAdd.UseVisualStyleBackColor = true;
             this.btnVerAdd.Click += new System.EventHandler(this.btnVerAdd_Click);
+            // 
+            // btnVerDel
+            // 
+            this.btnVerDel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnVerDel.BackgroundImage = global::StockManagerDB.Properties.Resources.del;
+            this.btnVerDel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.btnVerDel.Location = new System.Drawing.Point(35, 121);
+            this.btnVerDel.Name = "btnVerDel";
+            this.btnVerDel.Size = new System.Drawing.Size(23, 23);
+            this.btnVerDel.TabIndex = 10;
+            this.btnVerDel.UseVisualStyleBackColor = true;
+            this.btnVerDel.Click += new System.EventHandler(this.btnVerDel_Click);
+            // 
+            // btnVerDup
+            // 
+            this.btnVerDup.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnVerDup.BackgroundImage = global::StockManagerDB.Properties.Resources.dup;
+            this.btnVerDup.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.btnVerDup.Location = new System.Drawing.Point(64, 121);
+            this.btnVerDup.Name = "btnVerDup";
+            this.btnVerDup.Size = new System.Drawing.Size(23, 23);
+            this.btnVerDup.TabIndex = 10;
+            this.btnVerDup.UseVisualStyleBackColor = true;
+            this.btnVerDup.Click += new System.EventHandler(this.btnVerDup_Click);
+            // 
+            // btnVerRen
+            // 
+            this.btnVerRen.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnVerRen.BackgroundImage = global::StockManagerDB.Properties.Resources.ren;
+            this.btnVerRen.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.btnVerRen.Location = new System.Drawing.Point(93, 121);
+            this.btnVerRen.Name = "btnVerRen";
+            this.btnVerRen.Size = new System.Drawing.Size(23, 23);
+            this.btnVerRen.TabIndex = 10;
+            this.btnVerRen.UseVisualStyleBackColor = true;
+            this.btnVerRen.Click += new System.EventHandler(this.btnVerRen_Click);
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox3.Controls.Add(this.btnMatAdd);
+            this.groupBox3.Controls.Add(this.btnMatDel);
+            this.groupBox3.Controls.Add(this.listviewMaterials);
+            this.groupBox3.Controls.Add(this.btnMatDup);
+            this.groupBox3.Location = new System.Drawing.Point(167, 27);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(642, 436);
+            this.groupBox3.TabIndex = 13;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Bill Of Materials";
             // 
             // frmProjects
             // 
@@ -516,9 +490,6 @@
         private System.Windows.Forms.ComboBox comboboxProjects;
         private BrightIdeasSoftware.OLVColumn olvcQuantity;
         private BrightIdeasSoftware.OLVColumn olvcReference;
-        private System.Windows.Forms.ToolStripMenuItem componentsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem duplicateAllCheckedToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem dELETEAllCheckedToolStripMenuItem;
         private System.Windows.Forms.ComboBox comboboxVersions;
         private System.Windows.Forms.Button btnMatAdd;
         private System.Windows.Forms.Button btnMatDel;
