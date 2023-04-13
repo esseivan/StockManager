@@ -90,7 +90,6 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
-    <Compile Include="ComponentClassTests.cs" />
     <Compile Include="DataHolderSingletonTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

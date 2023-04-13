@@ -85,7 +85,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ComponentClass.cs" />
     <Compile Include="DataHolderSingleton.cs" />
     <Compile Include="ExcelManager.cs" />
     <Compile Include="ExcelWrapper.cs" />
