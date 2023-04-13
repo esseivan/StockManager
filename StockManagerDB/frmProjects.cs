@@ -10,241 +10,362 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using dhs = StockManagerDB.DataHolderSingleton;
 
 namespace StockManagerDB
 {
     public partial class frmProjects : Form
     {
-        private readonly List<string> projects = new List<string>();
+        private dhs data => dhs.Instance;
 
-        private readonly ListManager myList;
-        private ListPlus<ComponentClass> Components => myList.Data.Components;
+        public SortedDictionary<string, Material> Components;
 
-        public frmProjects(ListManager listmanager)
+        private ProjectVersion selectedProjectVersion = null;
+
+        private List<Material> BOM => selectedProjectVersion?.BOM;
+
+        public frmProjects()
         {
-            this.myList = listmanager;
-            ComponentClass.ListManagerPointer = myList;
-
             InitializeComponent();
 
             ListViewSetColumns();
 
-            ListManager.OnPartsListModified += ListManager_OnPartsListModified;
-            ListManager.OnComponentsListModified += ListManager_OnComponentsListModified;
+            dhs.OnPartListModified += Dhs_OnListModified; ;
+            dhs.OnProjectsListModified += Dhs_OnListModified;
 
-            PopulateLists();
+            UpdateProjectList();
         }
+
         #region ListView Init
 
-        private void ListManager_OnComponentsListModified(object sender, EventArgs e)
+        private void ProjectsHaveChanged()
         {
-            myList.Save();
-            PopulateLists();
+            data.InvokeOnProjectsListModified(EventArgs.Empty);
+            UpdateProjectList();
         }
 
-        private void ListManager_OnPartsListModified(object sender, EventArgs e)
+        private void VersionsHaveChanged()
         {
-            PopulateLists();
+            data.InvokeOnProjectsListModified(EventArgs.Empty);
+            UpdateVersionList();
         }
 
+        private void MaterialsHaveChanged()
+        {
+            data.InvokeOnProjectsListModified(EventArgs.Empty);
+            UpdateMaterialList();
+        }
+
+        private void Dhs_OnListModified(object sender, EventArgs e)
+        {
+            data.Save();
+        }
+
+        /// <summary>
+        /// Initialisation of the listviews
+        /// </summary>
+        /// <param name="listview"></param>
         private void ListViewSetColumns()
         {
             // Setup columns
-            olvcID.AspectGetter = delegate (object x) { return ((ComponentClass)x).ID; };
-            olvcMPN.AspectGetter = delegate (object x) { return ((ComponentClass)x).MPN; };
-            olvcQuantity.AspectGetter = delegate (object x) { return ((ComponentClass)x).Quantity; };
-            olvcReference.AspectGetter = delegate (object x) { return ((ComponentClass)x).Reference; };
-            olvcMAN.AspectGetter = delegate (object x) { return ((ComponentClass)x).PartLink?.Manufacturer; };
-            olvcDesc.AspectGetter = delegate (object x) { return ((ComponentClass)x).PartLink?.Description; };
-            olvcCat.AspectGetter = delegate (object x) { return ((ComponentClass)x).PartLink?.Category; };
-            olvcLocation.AspectGetter = delegate (object x) { return ((ComponentClass)x).PartLink?.Location; };
-            olvcStock.AspectGetter = delegate (object x) { return ((ComponentClass)x).PartLink?.Stock; };
-            olvcLowStock.AspectGetter = delegate (object x) { return ((ComponentClass)x).PartLink?.LowStock; };
-            olvcPrice.AspectGetter = delegate (object x) { return ((ComponentClass)x).PartLink?.Price; };
-            olvcSupplier.AspectGetter = delegate (object x) { return ((ComponentClass)x).PartLink?.Supplier; };
-            olvcSPN.AspectGetter = delegate (object x) { return ((ComponentClass)x).PartLink?.SPN; };
+            olvcMPN.AspectGetter = delegate (object x) { return ((Material)x).MPN; };
+            olvcQuantity.AspectGetter = delegate (object x) { return ((Material)x).Quantity; };
+            olvcReference.AspectGetter = delegate (object x) { return ((Material)x).Reference; };
+            olvcMAN.AspectGetter = delegate (object x) { return ((Material)x).PartLink?.Manufacturer; };
+            olvcDesc.AspectGetter = delegate (object x) { return ((Material)x).PartLink?.Description; };
+            olvcCat.AspectGetter = delegate (object x) { return ((Material)x).PartLink?.Category; };
+            olvcLocation.AspectGetter = delegate (object x) { return ((Material)x).PartLink?.Location; };
+            olvcStock.AspectGetter = delegate (object x) { return ((Material)x).PartLink?.Stock; };
+            olvcLowStock.AspectGetter = delegate (object x) { return ((Material)x).PartLink?.LowStock; };
+            olvcPrice.AspectGetter = delegate (object x) { return ((Material)x).PartLink?.Price; };
+            olvcSupplier.AspectGetter = delegate (object x) { return ((Material)x).PartLink?.Supplier; };
+            olvcSPN.AspectGetter = delegate (object x) { return ((Material)x).PartLink?.SPN; };
         }
 
         #endregion
 
-        private void UpdateComponentList()
+        #region Project and Material display
+
+        /// <summary>
+        /// Update the list of projects
+        /// </summary>
+        private void UpdateProjectList()
         {
-            string selectedProject = GetSelectedProjectName();
+            string selProj = comboboxProjects.SelectedItem?.ToString() ?? null;
 
-            if (selectedProject == null)
-            {
-                listviewComponents.DataSource = new List<ComponentClass>();
-                return;
-            }
+            comboboxProjects.DataSource = data.Projects.Keys.ToList();
 
-            listviewComponents.DataSource = GetComponents(selectedProject);
-            //listviewComponents.AutoResizeColumns();
-            listviewComponents.Focus();
-        }
-
-        private void UpdateComponent(ComponentClass oldComponent, ComponentClass newComponent)
-        {
-            DeleteComponent(oldComponent);
-            AddComponent(newComponent);
-        }
-
-        private void AddComponent(ComponentClass component)
-        {
-            Components.Add(component);
-        }
-
-        private void CreateNewComponent()
-        {
-
-            string project = GetSelectedProjectName();
-            if (project == null)
-                return;
-
-            ComponentClass newComponent = new ComponentClass()
-            {
-                Parent = project,
-                MPN = "NA",
-                Quantity = 0,
-                Reference = "NA"
-            };
-
-            AddComponent(newComponent);
-        }
-
-        private void DeleteSelectedComponent()
-        {
-            if (listviewComponents.SelectedIndex == -1)
-                return;
-
-            string project = GetSelectedProjectName();
-            if (project == null)
-                return;
-
-            // Get selected component
-            ComponentClass component = listviewComponents.SelectedObject as ComponentClass;
-
-            int selectedIndexBefore = listviewComponents.SelectedIndex;
-            DeleteComponent(component);
-            if (selectedIndexBefore >= listviewComponents.Items.Count)
-                selectedIndexBefore--;
-            listviewComponents.SelectedIndex = selectedIndexBefore;
-        }
-        private void DuplicateAllCheckedComponents()
-        {
-            string project = GetSelectedProjectName();
-            if (project == null)
-                return;
-
-            // Get all checked
-            List<ComponentClass> objects = listviewComponents.CheckedObjectsEnumerable.Cast<ComponentClass>().ToList();
-            IEnumerable<ComponentClass> newComponents = objects.Select((comp) => comp.Clone() as ComponentClass);
-
-            Components.AddRange(newComponents);
-        }
-        private void RemoveComponentsFromParent(string parent, IEnumerable<ComponentClass> components)
-        {
-            List<ComponentClass> projectComponents = GetComponents(parent);
-
-            IEnumerable<ComponentClass> selectedComponents = projectComponents.Intersect(components);
-
-            Components.RemoveRange(selectedComponents);
-        }
-        private void DeleteAllCheckedComponents()
-        {
-            string project = GetSelectedProjectName();
-            if (project == null)
-                return;
-
-            // Get all checked
-            var objects = listviewComponents.CheckedObjectsEnumerable.Cast<ComponentClass>();
-
-            RemoveComponentsFromParent(project, objects);
-        }
-        private void DeleteComponent(ComponentClass component)
-        {
-            // Remove old component from list and add new 
-            if (!Components.Contains(component))
-            {
-                LoggerClass.Write("Unable to delete component. Not found", ESNLib.Tools.Logger.LogLevels.Error);
-                return;
-            }
-
-            Components.Remove(component);
-        }
-        private void DuplicateSelectedComponent()
-        {
-            if (listviewComponents.SelectedIndex == -1)
-                return;
-
-            string project = GetSelectedProjectName();
-            if (project == null)
-                return;
-
-            // Get selected component
-            ComponentClass component = listviewComponents.SelectedObject as ComponentClass;
-
-            int selectedIndexBefore = listviewComponents.SelectedIndex;
-            AddComponent(component.Clone() as ComponentClass);
-            listviewComponents.SelectedIndex = selectedIndexBefore;
-        }
-
-        private void ApplyEdit(CellEditEventArgs e)
-        {
-            ComponentClass oldComponent = e.RowObject as ComponentClass;
-
-            ComponentClass.Parameter editedParameter = (e.Column.Index + ComponentClass.Parameter.ID - 1);
-            ComponentClass newComponent = oldComponent.Clone() as ComponentClass;
-            string newValue = e.NewValue.ToString();
-            newComponent.Parameters[editedParameter] = newValue;
-
-            if (editedParameter == ComponentClass.Parameter.UNDEFINED)
-            {
-                throw new InvalidOperationException("Unable to edit 'undefined'");
-            }
-            else if (editedParameter == ComponentClass.Parameter.ID)
-            {
-                LoggerClass.Write($"Unable to edit ID field. Each component must have a unique ID...", ESNLib.Tools.Logger.LogLevels.Error);
-                return;
-            }
-            else
-            {
-                // Apply manually the new value
-                UpdateComponent(oldComponent, newComponent);
-            }
-
-            UpdateComponentList();
-        }
-        private void PopulateLists()
-        {
-            string textPrevious = comboBox1.Text;
-            List<string> allParents = Components.Select((comp) => comp.Parent).ToList();
-            // Remove duplicates
-            projects.Clear();
-            allParents.ForEach((parent) =>
-            {
-                if (!projects.Contains(parent))
-                    projects.Add(parent);
-            });
-
-            comboBox1.DataSource = null;
-            comboBox1.DataSource = projects;
-            comboBox1.Text = textPrevious;
-
-            UpdateComponentList();
+            if ((selProj != null)
+            && (comboboxProjects.Items.Contains(selProj)))
+                comboboxProjects.SelectedItem = selProj;
         }
 
         /// <summary>
-        /// Get the components for the specified project parent
+        /// Update the list of versions for the selected project
         /// </summary>
-        /// <param name="parent">The project</param>
-        /// <returns></returns>
-        private List<ComponentClass> GetComponents(string parent)
+        private void UpdateVersionList()
         {
-            List<ComponentClass> selectedComponents = Components.Where((comp) => comp.Parent.Equals(parent)).ToList();
-            return selectedComponents;
+            string project = GetSelectedProjectName();
+
+            if (project == null)
+            {
+                comboboxVersions.DataSource = null;
+                return;
+            }
+
+            string selVer = comboboxVersions.SelectedItem?.ToString() ?? null;
+
+            comboboxVersions.DataSource = data.Projects[project].Versions.Keys.ToList();
+
+            if ((selVer != null)
+            && (comboboxVersions.Items.Contains(selVer)))
+                comboboxVersions.SelectedItem = selVer;
         }
 
+        /// <summary>
+        /// Update the material list according to selected <see cref="ProjectVersion"/>
+        /// </summary>
+        private void UpdateMaterialList()
+        {
+            selectedProjectVersion = GetSelectedProjectVersion();
+            if (selectedProjectVersion == null)
+            {
+                listviewMaterials.DataSource = null;
+                return;
+            }
 
+            listviewMaterials.DataSource = null;
+            listviewMaterials.DataSource = BOM;
+            //listviewComponents.AutoResizeColumns();
+            listviewMaterials.Focus();
+
+            if ((listviewMaterials.SelectedObject is Material selMat)
+            && (listviewMaterials.Objects.Cast<Material>().Contains(selMat)))
+                listviewMaterials.SelectedObject = selMat;
+        }
+
+        /// <summary>
+        /// Get the currently selected project name
+        /// </summary>
+        /// <returns>Project name</returns>
+        private string GetSelectedProjectName()
+        {
+            if (comboboxProjects.SelectedIndex == -1)
+                return null;
+            return comboboxProjects.SelectedItem.ToString();
+        }
+
+        /// <summary>
+        /// Get the currently selected project name
+        /// </summary>
+        /// <returns>Project name</returns>
+        private string GetSelectedVersion()
+        {
+            if (comboboxVersions.SelectedIndex == -1)
+                return null;
+            return comboboxVersions.SelectedItem.ToString();
+        }
+
+        /// <summary>
+        /// Get the selected <see cref="ProjectVersion"/>
+        /// </summary>
+        /// <returns></returns>
+        public ProjectVersion GetSelectedProjectVersion()
+        {
+            string project = GetSelectedProjectName();
+            if (project == null)
+                return null;
+
+            string version = GetSelectedVersion();
+            if (version == null)
+                return null;
+
+            return data.Projects[project].Versions[version];
+        }
+
+        #endregion
+
+        #region Material management
+
+        /// <summary>
+        /// Add a new <see cref="Material"/>
+        /// </summary>
+        /// <param name="material"></param>
+        /// <exception cref="InvalidOperationException">No <see cref="ProjectVersion"/> selected</exception>
+        private void AddMaterial(Material material)
+        {
+            if (selectedProjectVersion == null)
+            {
+                throw new InvalidOperationException("No project version selected");
+            }
+
+            BOM.Add(material);
+            MaterialsHaveChanged();
+
+        }
+        /// <summary>
+        /// Delete the specified <see cref="Material"/>
+        /// </summary>
+        /// <param name="material"></param>
+        /// <exception cref="InvalidOperationException"></exception>
+        private void DeleteMaterial(Material material)
+        {
+            if (selectedProjectVersion == null)
+            {
+                throw new InvalidOperationException("No project version selected");
+            }
+
+            BOM.Remove(material);
+            MaterialsHaveChanged();
+        }
+
+        /// <summary>
+        /// Edit a <see cref="Material"/>
+        /// </summary>
+        /// <param name="oldMaterial"></param>
+        /// <param name="newMaterial"></param>
+        private void EditMaterial(Material oldMaterial, Material newMaterial)
+        {
+            DeleteMaterial(oldMaterial);
+            AddMaterial(newMaterial);
+        }
+
+        /// <summary>
+        /// Create a new <see cref="Material"/>
+        /// </summary>
+        private void CreateNewMaterial()
+        {
+            if (selectedProjectVersion == null)
+            {
+                throw new InvalidOperationException("No project version selected");
+            }
+
+            Dialog.ShowDialogResult result = Dialog.ShowDialog("Enter the new MPN for the material", Title: "Enter MPN", Input: true, Btn1: Dialog.ButtonType.OK, Btn2: Dialog.ButtonType.Cancel);
+            if (result.DialogResult != Dialog.DialogResult.OK)
+            {
+                return;
+            }
+
+            Material newMaterial = new Material()
+            {
+                MPN = result.UserInput,
+                Quantity = 0,
+                Reference = ""
+            };
+
+            AddMaterial(newMaterial);
+        }
+
+        /// <summary>
+        /// Duplicate the selected <see cref="Material"/>. Only one selection allowed
+        /// </summary>
+        private void DeleteSelectedMaterial()
+        {
+            // Only allow a single selection
+            if (listviewMaterials.SelectedIndex == -1)
+            {
+                return;
+            }
+
+            if (selectedProjectVersion == null)
+            {
+                throw new InvalidOperationException("No project version selected");
+            }
+
+            // Get selected component
+            Material material = listviewMaterials.SelectedObject as Material;
+
+            // Save selected index to restore
+            int selectedIndexBefore = listviewMaterials.SelectedIndex;
+
+            DeleteMaterial(material);
+
+            if (selectedIndexBefore >= listviewMaterials.Items.Count)
+                selectedIndexBefore--;
+            listviewMaterials.SelectedIndex = selectedIndexBefore;
+        }
+
+        /// <summary>
+        /// Duplicate selected <see cref="Material"/>
+        /// </summary>
+        private void DuplicateSelectedMaterials()
+        {
+            // Only allow a single selection
+            if (listviewMaterials.SelectedIndex == -1)
+            {
+                return;
+            }
+
+            if (selectedProjectVersion == null)
+            {
+                throw new InvalidOperationException("No project version selected");
+            }
+
+
+            // Get selected component
+            Material material = listviewMaterials.SelectedObject as Material;
+
+            Dialog.ShowDialogResult result = Dialog.ShowDialog("Enter the new MPN for the project", Title: "Enter MPN", Input: true, DefaultInput: material.MPN, Btn1: Dialog.ButtonType.OK, Btn2: Dialog.ButtonType.Cancel);
+            if (result.DialogResult != Dialog.DialogResult.OK)
+            {
+                return;
+            }
+
+            int selectedIndexBefore = listviewMaterials.SelectedIndex;
+
+            Material newMaterial = material.Clone() as Material;
+            newMaterial.MPN = result.UserInput;
+            AddMaterial(newMaterial);
+
+            listviewMaterials.SelectedIndex = selectedIndexBefore;
+        }
+
+        /// <summary>
+        /// Apply <see cref="CellEditEventArgs"/> event
+        /// </summary>
+        /// <param name="e"></param>
+        /// <exception cref="InvalidOperationException"></exception>
+        private void ApplyEdit(CellEditEventArgs e)
+        {
+            if (selectedProjectVersion == null)
+            {
+                throw new InvalidOperationException("No project version selected");
+            }
+
+            Material oldMaterial = e.RowObject as Material;
+
+            int editedColumn = e.Column.Index - 1;
+            string newValue = e.NewValue.ToString();
+
+            Material newMaterial = oldMaterial.Clone() as Material;
+
+            switch (editedColumn)
+            {
+                case 0: // mpn
+                    newMaterial.MPN = newValue;
+                    break;
+                case 1: // quantity
+                    newMaterial.QuantityStr = newValue;
+                    break;
+                case 2: // reference
+                    newMaterial.Reference = newValue;
+                    break;
+                default:
+                    LoggerClass.Write("Unable to edit this column", ESNLib.Tools.Logger.LogLevels.Error);
+                    break;
+            }
+
+            // Apply manually the new value
+            EditMaterial(oldMaterial, newMaterial);
+        }
+
+        #endregion
+
+        #region Project management
+
+        /// <summary>
+        /// Create new <see cref="Project"/>
+        /// </summary>
         private void CreateNewProject()
         {
             Dialog.ShowDialogResult result = Dialog.ShowDialog("Enter the name for the project", Title: "Enter name", Input: true, DefaultInput: "Project", Btn1: Dialog.ButtonType.OK, Btn2: Dialog.ButtonType.Cancel);
@@ -253,22 +374,31 @@ namespace StockManagerDB
                 return;
             }
 
-            // Add dummy component
-            ComponentClass dummy = new ComponentClass()
+            if (data.Projects.ContainsKey(result.UserInput))
             {
-                Parent = result.UserInput,
-                MPN = "Template",
-                Quantity = 0,
-                Reference = "R1"
-            };
+                LoggerClass.Write($"Project with name '{result.UserInput}' already existing...", ESNLib.Tools.Logger.LogLevels.Error);
+                MessageBox.Show($"Project with name '{result.UserInput}' already existing...", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
 
-            Components.Add(dummy);
+            Project p = new Project(result.UserInput);
+
+            data.Projects.Add(p.Name, p);
+
+            ProjectsHaveChanged();
         }
 
+        /// <summary>
+        /// Rename the <see cref="Project"/>
+        /// </summary>
+        /// <param name="currentName"></param>
         private void RenameProject(string currentName)
         {
-            if (currentName == null)
+            if (string.IsNullOrEmpty(currentName))
+            {
+                LoggerClass.Write("New name is empty", ESNLib.Tools.Logger.LogLevels.Error);
                 return;
+            }
 
             Dialog.ShowDialogResult result = Dialog.ShowDialog("Enter the new name for the project", Title: "Enter new name", Input: true, DefaultInput: currentName, Btn1: Dialog.ButtonType.OK, Btn2: Dialog.ButtonType.Cancel);
             if (result.DialogResult != Dialog.DialogResult.OK)
@@ -276,14 +406,34 @@ namespace StockManagerDB
                 return;
             }
 
-            List<ComponentClass> projectComponents = GetComponents(currentName);
-            projectComponents.ForEach((comp) => comp.Parent = result.UserInput);
+            string newName = result.UserInput;
+
+            if (data.Projects.ContainsKey(newName))
+            {
+                LoggerClass.Write($"Project with name '{result.UserInput}' already existing...", ESNLib.Tools.Logger.LogLevels.Error);
+                MessageBox.Show($"Project with name '{result.UserInput}' already existing...", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            Project p = data.Projects[currentName];
+            p.Name = newName;
+            data.Projects.Remove(currentName);
+            data.Projects.Add(p.Name, p);
+
+            ProjectsHaveChanged();
         }
 
+        /// <summary>
+        /// Duplicate the <see cref="Project"/>
+        /// </summary>
+        /// <param name="currentName"></param>
         private void DuplicateProject(string currentName)
         {
-            if (currentName == null)
+            if (string.IsNullOrEmpty(currentName))
+            {
+                LoggerClass.Write("New name is empty", ESNLib.Tools.Logger.LogLevels.Error);
                 return;
+            }
 
             Dialog.ShowDialogResult result = Dialog.ShowDialog("Enter the name for the duplicated project", Title: "Enter new name", Input: true, DefaultInput: currentName, Btn1: Dialog.ButtonType.OK, Btn2: Dialog.ButtonType.Cancel);
             if (result.DialogResult != Dialog.DialogResult.OK)
@@ -291,23 +441,26 @@ namespace StockManagerDB
                 return;
             }
 
-            List<ComponentClass> projectComponents = GetComponents(currentName);
-            // Clone them all
-            List<ComponentClass> newComponents = projectComponents.Select((comp) => comp.Clone() as ComponentClass).ToList();
-            // Apply new parent
-            newComponents.ForEach((comp) => comp.Parent = result.UserInput);
-            // Add to list
-            Components.AddRange(newComponents);
+            string newName = result.UserInput;
+
+            if (data.Projects.ContainsKey(newName))
+            {
+                LoggerClass.Write($"Project with name '{result.UserInput}' already existing...", ESNLib.Tools.Logger.LogLevels.Error);
+                MessageBox.Show($"Project with name '{result.UserInput}' already existing...", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            Project p = data.Projects[currentName].Clone() as Project;
+            p.Name = newName;
+            data.Projects.Add(p.Name, p);
+
+            ProjectsHaveChanged();
         }
 
-        private string GetSelectedProjectName()
-        {
-            if (comboBox1.SelectedIndex == -1)
-                return null;
-            return comboBox1.SelectedItem.ToString();
-        }
-
-        private void DeleteProject()
+        /// <summary>
+        /// Delete the <see cref="Project"/>
+        /// </summary>
+        private void DeleteSelectedProject()
         {
             string project = GetSelectedProjectName();
             if (project == null)
@@ -315,9 +468,172 @@ namespace StockManagerDB
                 return;
             }
 
-            List<ComponentClass> projectComponents = GetComponents(project);
-            Components.RemoveRange(projectComponents);
+            data.Projects.Remove(project);
+
+            ProjectsHaveChanged();
         }
+
+        #endregion
+
+        #region Version management
+
+        /// <summary>
+        /// Add a new version to the selected project
+        /// </summary>
+        private void AddVersion()
+        {
+            string project = GetSelectedProjectName();
+            if (project == null)
+            {
+                return;
+            }
+
+            Dialog.ShowDialogResult result = Dialog.ShowDialog("Enter the new version", Title: "Enter new version", Input: true, DefaultInput: new Version(1, 0, 0).ToString(), Btn1: Dialog.ButtonType.OK, Btn2: Dialog.ButtonType.Cancel);
+            if (result.DialogResult != Dialog.DialogResult.OK)
+            {
+                return;
+            }
+
+            if (data.Projects[project].Versions.ContainsKey(result.UserInput))
+            {
+                MessageBox.Show("This version already exists...", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            LoggerClass.Write("Adding version...");
+            ProjectVersion pv = new ProjectVersion()
+            {
+                Version = result.UserInput,
+                Project = project,
+            };
+
+            data.Projects[project].Versions.Add(pv.Version, pv);
+
+            VersionsHaveChanged();
+            LoggerClass.Write("Version added");
+        }
+
+        /// <summary>
+        /// Delete the selected version
+        /// </summary>
+        private void DeleteVersion()
+        {
+            string project = GetSelectedProjectName();
+            if (project == null)
+            {
+                return;
+            }
+
+            string version = GetSelectedVersion();
+
+            if (!data.Projects[project].Versions.ContainsKey(version))
+            {
+                throw new InvalidOperationException("Version not found in the project...");
+            }
+
+            LoggerClass.Write($"Deletion of {project} v{version} requested...");
+            // Ask confirmation
+            Dialog.DialogConfig dc = new Dialog.DialogConfig()
+            {
+                Message = $"Warning, this action cannot be undone !\nPlease confirm the deletion of the version :\n{project} - v{version}\nDo you really want to delete it ?",
+                Title = "Warning",
+                Icon = Dialog.DialogIcon.Warning,
+                Button1 = Dialog.ButtonType.Custom1,
+                Button2 = Dialog.ButtonType.Cancel,
+                CustomButton1Text = "DELETE"
+            };
+            Dialog.ShowDialogResult result = Dialog.ShowDialog(dc);
+            if (result.DialogResult != Dialog.DialogResult.Custom1)
+            {
+                LoggerClass.Write("Deletion cancelled by user...");
+                return;
+            }
+
+            LoggerClass.Write("Deleting...");
+            data.Projects[project].Versions.Remove(version);
+            VersionsHaveChanged();
+            LoggerClass.Write("Deletion finished");
+        }
+
+        /// <summary>
+        /// Duplicate the selected version
+        /// </summary>
+        private void DuplicateVersion()
+        {
+            string project = GetSelectedProjectName();
+            if (project == null)
+            {
+                return;
+            }
+
+            string version = GetSelectedVersion();
+            if (version == null)
+            {
+                return;
+            }
+
+            Dialog.ShowDialogResult result = Dialog.ShowDialog("Enter the new version", Title: "Enter new version", Input: true, DefaultInput: version, Btn1: Dialog.ButtonType.OK, Btn2: Dialog.ButtonType.Cancel);
+            if (result.DialogResult != Dialog.DialogResult.OK)
+            {
+                return;
+            }
+
+            if (data.Projects[project].Versions.ContainsKey(result.UserInput))
+            {
+                MessageBox.Show("This version already exists...", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            LoggerClass.Write("Duplicating version...");
+            ProjectVersion newVersion = selectedProjectVersion.Clone() as ProjectVersion;
+            newVersion.Version = result.UserInput;
+            data.Projects[project].Versions.Add(newVersion.Version, newVersion);
+            LoggerClass.Write("Version duplication finished");
+            VersionsHaveChanged();
+        }
+
+        private void RenameVersion()
+        {
+            string project = GetSelectedProjectName();
+            if (project == null)
+            {
+                return;
+            }
+
+            string version = GetSelectedVersion();
+            if (version == null)
+            {
+                return;
+            }
+
+            Dialog.ShowDialogResult result = Dialog.ShowDialog("Enter the new version", Title: "Enter new version", Input: true, DefaultInput: version, Btn1: Dialog.ButtonType.OK, Btn2: Dialog.ButtonType.Cancel);
+            if (result.DialogResult != Dialog.DialogResult.OK)
+            {
+                return;
+            }
+
+            // If unchanged
+            if (result.UserInput.Equals(version))
+            {
+                return;
+            }
+
+            if (data.Projects[project].Versions.ContainsKey(result.UserInput))
+            {
+                MessageBox.Show("This version already exists...", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            LoggerClass.Write("Renaming version...");
+            ProjectVersion selectedVersion = selectedProjectVersion;
+            data.Projects[project].Versions.Remove(version);
+            selectedVersion.Version = result.UserInput;
+            data.Projects[project].Versions.Add(selectedVersion.Version, selectedVersion);
+            LoggerClass.Write("Renaming finished");
+            VersionsHaveChanged();
+        }
+
+        #endregion
 
         #region Misc Events
 
@@ -325,49 +641,88 @@ namespace StockManagerDB
         {
             this.Close();
         }
-        private void newProjectToolStripMenuItem_Click(object sender, EventArgs e)
+        private void comboboxProjects_SelectedIndexChanged(object sender, EventArgs e)
         {
-            CreateNewProject();
+            UpdateVersionList();
         }
-        private void renameSelectedProjectToolStripMenuItem_Click(object sender, EventArgs e)
+        private void comboboxVersions_SelectedIndexChanged(object sender, EventArgs e)
         {
-            RenameProject(GetSelectedProjectName());
-        }
-        private void duplicateSelectedProjectToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            DuplicateProject(GetSelectedProjectName());
-        }
-        private void DELETESelectedProjectToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            DeleteProject();
-        }
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            UpdateComponentList();
+            UpdateMaterialList();
         }
         private void listviewComponents_CellEditFinished(object sender, CellEditEventArgs e)
         {
             ApplyEdit(e);
         }
-        private void btnAddComponent_Click(object sender, EventArgs e)
+
+        private void btnMatAdd_Click(object sender, EventArgs e)
         {
-            CreateNewComponent();
+            CreateNewMaterial();
+            listviewMaterials.Focus();
         }
-        private void btnDuplicate_Click(object sender, EventArgs e)
+
+        private void btnMatDup_Click(object sender, EventArgs e)
         {
-            DuplicateSelectedComponent();
+            DuplicateSelectedMaterials();
+            listviewMaterials.Focus();
         }
-        private void btnDelete_Click(object sender, EventArgs e)
+
+        private void btnMatDel_Click(object sender, EventArgs e)
         {
-            DeleteSelectedComponent();
+            DeleteSelectedMaterial();
+            listviewMaterials.Focus();
         }
-        private void duplicateAllCheckedToolStripMenuItem_Click(object sender, EventArgs e)
+
+        private void btnProAdd_Click(object sender, EventArgs e)
         {
-            DuplicateAllCheckedComponents();
+            CreateNewProject();
+            comboboxProjects.Focus();
         }
-        private void DELETEAllCheckedToolStripMenuItem_Click(object sender, EventArgs e)
+
+        private void btnProDel_Click(object sender, EventArgs e)
         {
-            DeleteAllCheckedComponents();
+            DeleteSelectedProject();
+            comboboxProjects.Focus();
+        }
+
+        private void btnProDup_Click(object sender, EventArgs e)
+        {
+            DuplicateProject(GetSelectedProjectName());
+            comboboxProjects.Focus();
+        }
+
+        private void btnProRen_Click(object sender, EventArgs e)
+        {
+            RenameProject(GetSelectedProjectName());
+            comboboxProjects.Focus();
+        }
+
+        private void btnVerAdd_Click(object sender, EventArgs e)
+        {
+            AddVersion();
+            comboboxVersions.Focus();
+        }
+
+        private void btnVerDel_Click(object sender, EventArgs e)
+        {
+            DeleteVersion();
+            comboboxVersions.Focus();
+        }
+
+        private void btnVerDup_Click(object sender, EventArgs e)
+        {
+            DuplicateVersion();
+            comboboxVersions.Focus();
+        }
+
+        private void btnVerRen_Click(object sender, EventArgs e)
+        {
+            RenameVersion();
+            comboboxVersions.Focus();
+        }
+
+        private void resizeColumnsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            listviewMaterials.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
         }
 
         #endregion

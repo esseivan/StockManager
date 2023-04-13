@@ -1,15 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Schema;
 
 namespace StockManagerDB
 {
     /// <summary>
-    /// Class to import PartClass parts from an excel worksheet
+    /// Class to import Part parts from an excel worksheet
     /// </summary>
-    internal class ExcelManager
+    internal class ExcelManager : IDisposable
     {
         /// <summary>
         /// Tool to read from excel
@@ -18,7 +20,7 @@ namespace StockManagerDB
         /// <summary>
         /// List of parts imported
         /// </summary>
-        internal List<PartClass> Parts = null;
+        internal List<Part> Parts = null;
 
         private readonly string File;
 
@@ -28,7 +30,7 @@ namespace StockManagerDB
         /// Retrieve the parts
         /// </summary>
         /// <returns></returns>
-        public List<PartClass> GetParts()
+        public List<Part> GetParts()
         {
             if (Parts == null)
             {
@@ -67,29 +69,29 @@ namespace StockManagerDB
             }
 
             // Generate new parts list
-            Parts = new List<PartClass>();
+            Parts = new List<Part>();
 
             // Get header row
             LoggerClass.Write("Headers found : ");
-            Dictionary<int, PartClass.Parameter> header = new Dictionary<int, PartClass.Parameter>();
+            Dictionary<int, Part.Parameter> header = new Dictionary<int, Part.Parameter>();
             for (int i = 0; i < output.GetLength(1); i += 1)
             {
                 string headerName = output[0, i];    // Get header name
                 LoggerClass.Write("\t" + headerName);
-                PartClass.Parameter headerParam = PartClass.GetParameter(headerName);   // Get corresponding parameter
+                Part.Parameter headerParam = Part.GetParameter(headerName);   // Get corresponding parameter
                 header[i] = headerParam;    // Add to the dictionary
             }
 
             // Get parts rows
             for (int i = 1; i < output.GetLength(0); i += 1)
             {
-                PartClass pc = new PartClass(); // Create one part per row
+                Part pc = new Part(); // Create one part per row
 
                 // Sweep through all columns
                 for (int j = 0; j < output.GetLength(1); j += 1)
                 {
-                    PartClass.Parameter currentParameter = header[j];   // Get current header parameter
-                    if (currentParameter != PartClass.Parameter.UNDEFINED)  // If other than undefined ...
+                    Part.Parameter currentParameter = header[j];   // Get current header parameter
+                    if (currentParameter != Part.Parameter.UNDEFINED)  // If other than undefined ...
                         pc.Parameters[currentParameter] = output[i, j]; // ... Add to the part
                 }
 
@@ -106,6 +108,12 @@ namespace StockManagerDB
             // Excel (workbook) closed
             // Call parent event
             OnClosing?.Invoke(Wb, ref Cancel);
+        }
+
+        public void Dispose()
+        {
+            if (reader != null)
+                reader.Dispose();
         }
     }
 }

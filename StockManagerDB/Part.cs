@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Data;
 using System.Text.Json.Serialization;
 
 namespace StockManagerDB
 {
     /// <summary>
-    /// Define a single part.
+    /// Define a part
     /// </summary>
-    public class PartClass : ICloneable
+    public class Part : ICloneable
     {
         /// <summary>
         /// Manufacturer Product Number. Unique and is used as identifier
@@ -111,11 +109,6 @@ namespace StockManagerDB
         }
 
         /// <summary>
-        /// Index in the list
-        /// </summary>
-        public int ShowIndex = 0;
-
-        /// <summary>
         /// List of parameters
         /// </summary>
         public Dictionary<Parameter, string> Parameters = new Dictionary<Parameter, string>();
@@ -163,7 +156,6 @@ namespace StockManagerDB
             }
         }
 
-
         public override string ToString()
         {
             return $"MPN:{MPN}; Stock:{Stock}; Location:{Location}";
@@ -171,7 +163,7 @@ namespace StockManagerDB
 
         public object Clone()
         {
-            PartClass newPart = new PartClass();
+            Part newPart = new Part();
 
             foreach (KeyValuePair<Parameter, string> item in this.Parameters)
             {
@@ -182,19 +174,19 @@ namespace StockManagerDB
         }
 
         /// <summary>
-        /// Class to compare the price of two PartClasses
+        /// Class to compare the price of two Parts
         /// </summary>
-        public class ComparePrice : IComparer<PartClass>
+        public class ComparePrice : IComparer<Part>
         {
-            public int Compare(PartClass x, PartClass y)
+            public int Compare(Part x, Part y)
             {
                 return x.Price.CompareTo(y.Price);
             }
         }
 
-        public class CompareMPN : IComparer<PartClass>
+        public class CompareMPN : IComparer<Part>
         {
-            public int Compare(PartClass x, PartClass y)
+            public int Compare(Part x, Part y)
             {
                 return x.MPN.CompareTo(y.MPN);
             }

@@ -9513,6 +9513,9 @@ namespace BrightIdeasSoftware
         public virtual void StartCellEdit(OLVListItem item, int subItemIndex) {
             OLVColumn column = this.GetColumn(subItemIndex);
             Control c = this.GetCellEditor(item, subItemIndex);
+
+            this.OnCellEditRequested(new CellEditEventArgs(column, c, Rectangle.Empty, item, subItemIndex));
+
             Rectangle cellBounds = this.CalculateCellBounds(item, subItemIndex);
             c.Bounds = this.CalculateCellEditorBounds(item, subItemIndex, c.PreferredSize);
 
