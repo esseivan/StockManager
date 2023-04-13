@@ -166,15 +166,15 @@ namespace StockManagerDB
                 LoggerClass.Write($"No file loaded. Aborting...", Logger.LogLevels.Trace);
                 listviewParts.DataSource = new List<Part>();
                 listviewChecked.DataSource = new List<Part>();
-                btnAddPart.Enabled = btnDuplicatePart.Enabled = false;
+                btnPartAdd.Enabled = btnPartDup.Enabled = false;
                 return;
             }
 
             // Main list view : all parts
             listviewParts.DataSource = Parts.Values.ToList();
 
-            btnDuplicatePart.Enabled = (listviewParts.Items.Count != 0);
-            btnAddPart.Enabled = IsFileLoaded;
+            btnPartDup.Enabled = (listviewParts.Items.Count != 0);
+            btnPartAdd.Enabled = IsFileLoaded;
 
             // Resize columns if required
             if (resizeColumns)
@@ -206,7 +206,7 @@ namespace StockManagerDB
             // Set the content to only the checked parts
             listviewChecked.DataSource = GetCheckedParts();
 
-            btnDeleteChecked.Enabled = (listviewChecked.Items.Count != 0);
+            btnCheckedPartDel.Enabled = (listviewChecked.Items.Count != 0);
         }
 
         /// <summary>
@@ -708,10 +708,6 @@ namespace StockManagerDB
             listviewParts.Focus();
             UpdateOnCheck = true;
         }
-        private void DELETECheckedToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            DeleteCheckedParts();
-        }
         private void closeDatabaseToolStripMenuItem_Click(object sender, EventArgs e)
         {
             CloseFile();
@@ -745,21 +741,6 @@ namespace StockManagerDB
             this.BringToFront();
             _projectForm = null;
         }
-        private void btnAddPart_Click(object sender, EventArgs e)
-        {
-            AddEmptyPart();
-            listviewParts.Focus();
-        }
-        private void btnDuplicatePart_Click(object sender, EventArgs e)
-        {
-            DuplicateSelectedPart();
-            listviewParts.Focus();
-        }
-        private void btnDeleteChecked_Click(object sender, EventArgs e)
-        {
-            DeleteCheckedParts();
-            listviewParts.Focus();
-        }
         private void listviewParts_KeyDown(object sender, KeyEventArgs e)
         {
             // 'hack' to check selected rows but call the CheckedChanged event only once
@@ -780,8 +761,23 @@ namespace StockManagerDB
 
             Clipboard.SetText(selectedPart.MPN);
         }
+        private void btnPartAdd_Click(object sender, EventArgs e)
+        {
+            AddEmptyPart();
+            listviewParts.Focus();
+        }
+
+        private void btnPartDup_Click(object sender, EventArgs e)
+        {
+            DuplicateSelectedPart();
+            listviewParts.Focus();
+        }
+
+        private void btnCheckedPartDel_Click(object sender, EventArgs e)
+        {
+            DeleteCheckedParts();
+        }
 
         #endregion
-
     }
 }
