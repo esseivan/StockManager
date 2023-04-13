@@ -557,8 +557,7 @@ namespace StockManagerDB
         {
             LoggerClass.Write($"Duplicating selected part...", Logger.LogLevels.Debug);
             // Get selected part
-            Part pc = listviewParts.SelectedObject as Part;
-            if (pc == null)
+            if (!(listviewParts.SelectedObject is Part pc))
             {
                 LoggerClass.Write($"No selected part. Aborting...", Logger.LogLevels.Debug);
                 return;
@@ -809,9 +808,7 @@ namespace StockManagerDB
         private void listviewParts_CellRightClick(object sender, CellRightClickEventArgs e)
         {
             // When rightclicking a cell, copy the MPN of the corresponding row
-            Part selectedPart = e.Model as Part;
-
-            if (selectedPart == null)
+            if (!(e.Model is Part selectedPart))
             {
                 return;
             }
