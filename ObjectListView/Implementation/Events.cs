@@ -186,6 +186,15 @@ namespace BrightIdeasSoftware
         public event CellEditEventHandler CellEditStarting;
 
         /// <summary>
+        /// Triggered when a cell is about to be edited. Called even before CellEditStarting
+        /// </summary>
+        /// <remarks>Set Cancel to true to prevent the cell being edited.
+        /// You can change the the Control to be something completely different.</remarks>
+        [Category("ObjectListView"),
+        Description("This event is triggered when cell edit is about to begin. Called even before CellEditStarting")]
+        public event CellEditEventHandler CellEditRequested;
+
+        /// <summary>
         /// Triggered when a cell editor needs to be validated
         /// </summary>
         /// <remarks>
@@ -733,6 +742,17 @@ namespace BrightIdeasSoftware
                 this.Scroll(this, e);
         }
 
+
+
+
+        /// <summary>
+        /// Tell the world when a cell is about to be edited.
+        /// </summary>
+        protected virtual void OnCellEditRequested(CellEditEventArgs e)
+        {
+            if (this.CellEditRequested != null)
+                this.CellEditRequested(this, e);
+        }
 
         /// <summary>
         /// Tell the world when a cell is about to be edited.

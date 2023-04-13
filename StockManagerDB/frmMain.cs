@@ -593,6 +593,55 @@ namespace StockManagerDB
         }
 
         /// <summary>
+        /// Custom event made to be called before determining the bounds
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void listviewParts_CellEditRequested(object sender, CellEditEventArgs e)
+        {
+            if (e.Column.Index == 0)
+            {
+                return;
+            }
+
+            e.ListViewItem.Focused = true;
+            Rectangle columnBounds = listviewParts.CalculateColumnVisibleBounds(listviewParts.Bounds, e.Column);
+            int maxX = listviewParts.Width - 21; // Scroll bar + edges : 21 offset
+            int rightSide = columnBounds.X + columnBounds.Width;
+            int leftSide = columnBounds.X;
+
+            int dx = 0;
+            if (leftSide < 0)
+            {
+                // Scroll left
+                dx = leftSide;
+            }
+            else if (rightSide > maxX)
+            {
+                // Scroll right
+                dx = rightSide - maxX;
+            }
+
+            if (dx != 0)
+            {
+                Console.WriteLine($"scroll dx={dx}");
+                listviewParts.PauseAnimations(true);
+                listviewParts.LowLevelScroll(dx, 0);
+                listviewParts.Invalidate();
+                listviewParts.PauseAnimations(false);
+            }
+        }
+
+        private void listviewParts_CellEditStarting(object sender, CellEditEventArgs e)
+        {
+            // Column index 0 is select checkboxes. Quit if this column is being edited
+            if (e.Column.Index == 0)
+            {
+                e.Cancel = true;
+            }
+        }
+
+        /// <summary>
         /// Called when a cell is edited
         /// </summary>
         /// <param name="sender"></param>
@@ -611,6 +660,14 @@ namespace StockManagerDB
             {
                 throw new InvalidOperationException("Unable to edit 'undefined'");
             }
+            // Verify that an actual change is made
+            if (part.Parameters[editedParameter].Equals(newValue))
+            {
+                // No changes
+                LoggerClass.Write("No change detected. Aborting...");
+                return;
+            }
+
             if (editedParameter == Part.Parameter.MPN)
             {
                 // Verify that the new MPN doesn't exist
@@ -779,5 +836,6 @@ namespace StockManagerDB
         }
 
         #endregion
+
     }
 }
