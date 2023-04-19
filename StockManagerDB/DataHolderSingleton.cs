@@ -184,6 +184,9 @@ namespace StockManagerDB
         public void Save()
         {
             SettingsManager.SaveTo(Filepath, new DataExportClass(Parts, Projects), backup: true, indent: true);
+
+            // Also save the history
+            DataHolderHistorySingleton.Instance.Save();
         }
 
         /// <summary>

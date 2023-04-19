@@ -65,7 +65,7 @@ namespace StockManagerDB
             // Sort before save
             PartHistory.Sort(new Part.CompareMPNThenVersion());
 
-            SettingsManager.SaveTo(Filepath, PartHistory, backup: true, indent: true);
+            SettingsManager.SaveTo(Filepath, PartHistory, backup: true, indent: false);
         }
 
         /// <summary>
@@ -103,7 +103,6 @@ namespace StockManagerDB
 
             // Add to history
             Instance.PartHistory.Add(part);
-            Instance.Save();
         }
 
         /// <summary>
@@ -123,7 +122,6 @@ namespace StockManagerDB
 
             // Add to history
             Instance.PartHistory.Add(oldPart);
-            Instance.Save();
         }
     }
 }
