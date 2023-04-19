@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newDatabaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -38,6 +39,7 @@
             this.databaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importFromExcelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importOrderFromDigikeyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.importOrderFromDigikeyFromClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.actionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.onlyAffectCheckedPartsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
@@ -46,6 +48,8 @@
             this.checkAllInViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.uncheckAllInViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.projectsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.resizeColumnsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cbboxFilterType = new System.Windows.Forms.ComboBox();
             this.txtboxFilter = new System.Windows.Forms.TextBox();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
@@ -80,9 +84,10 @@
             this.olvcSPN2 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.labelCount = new System.Windows.Forms.ToolStripStatusLabel();
+            this.labelStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.filterHighlightRenderer = new BrightIdeasSoftware.HighlightTextRenderer();
-            this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.resizeColumnsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.statusTimeoutTimer = new System.Windows.Forms.Timer(this.components);
+            this.openHistoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -101,7 +106,8 @@
             this.actionsToolStripMenuItem,
             this.selectionToolStripMenuItem,
             this.projectsToolStripMenuItem,
-            this.viewToolStripMenuItem});
+            this.viewToolStripMenuItem,
+            this.openHistoryToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(866, 24);
@@ -161,7 +167,8 @@
             // 
             this.databaseToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.importFromExcelToolStripMenuItem,
-            this.importOrderFromDigikeyToolStripMenuItem});
+            this.importOrderFromDigikeyToolStripMenuItem,
+            this.importOrderFromDigikeyFromClipboardToolStripMenuItem});
             this.databaseToolStripMenuItem.Name = "databaseToolStripMenuItem";
             this.databaseToolStripMenuItem.Size = new System.Drawing.Size(60, 20);
             this.databaseToolStripMenuItem.Text = "Imports";
@@ -171,16 +178,23 @@
             this.importFromExcelToolStripMenuItem.Name = "importFromExcelToolStripMenuItem";
             this.importFromExcelToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.O)));
-            this.importFromExcelToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
+            this.importFromExcelToolStripMenuItem.Size = new System.Drawing.Size(296, 22);
             this.importFromExcelToolStripMenuItem.Text = "Import from Excel";
             this.importFromExcelToolStripMenuItem.Click += new System.EventHandler(this.importFromExcelToolStripMenuItem_Click);
             // 
             // importOrderFromDigikeyToolStripMenuItem
             // 
             this.importOrderFromDigikeyToolStripMenuItem.Name = "importOrderFromDigikeyToolStripMenuItem";
-            this.importOrderFromDigikeyToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
+            this.importOrderFromDigikeyToolStripMenuItem.Size = new System.Drawing.Size(296, 22);
             this.importOrderFromDigikeyToolStripMenuItem.Text = "Import order from Digikey";
             this.importOrderFromDigikeyToolStripMenuItem.Click += new System.EventHandler(this.importOrderFromDigikeyToolStripMenuItem_Click);
+            // 
+            // importOrderFromDigikeyFromClipboardToolStripMenuItem
+            // 
+            this.importOrderFromDigikeyFromClipboardToolStripMenuItem.Name = "importOrderFromDigikeyFromClipboardToolStripMenuItem";
+            this.importOrderFromDigikeyFromClipboardToolStripMenuItem.Size = new System.Drawing.Size(296, 22);
+            this.importOrderFromDigikeyFromClipboardToolStripMenuItem.Text = "Import order from Digikey from Clipboard";
+            this.importOrderFromDigikeyFromClipboardToolStripMenuItem.Click += new System.EventHandler(this.importOrderFromDigikeyFromClipboardToolStripMenuItem_Click);
             // 
             // actionsToolStripMenuItem
             // 
@@ -245,6 +259,21 @@
             this.projectsToolStripMenuItem.Size = new System.Drawing.Size(93, 20);
             this.projectsToolStripMenuItem.Text = "Open Projects";
             this.projectsToolStripMenuItem.Click += new System.EventHandler(this.projectsToolStripMenuItem_Click);
+            // 
+            // viewToolStripMenuItem
+            // 
+            this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.resizeColumnsToolStripMenuItem});
+            this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
+            this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
+            this.viewToolStripMenuItem.Text = "View";
+            // 
+            // resizeColumnsToolStripMenuItem
+            // 
+            this.resizeColumnsToolStripMenuItem.Name = "resizeColumnsToolStripMenuItem";
+            this.resizeColumnsToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
+            this.resizeColumnsToolStripMenuItem.Text = "Resize columns";
+            this.resizeColumnsToolStripMenuItem.Click += new System.EventHandler(this.resizeColumnsToolStripMenuItem_Click);
             // 
             // cbboxFilterType
             // 
@@ -615,7 +644,8 @@
             // statusStrip1
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.labelCount});
+            this.labelCount,
+            this.labelStatus});
             this.statusStrip1.Location = new System.Drawing.Point(0, 496);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(866, 22);
@@ -625,22 +655,27 @@
             // labelCount
             // 
             this.labelCount.Name = "labelCount";
-            this.labelCount.Size = new System.Drawing.Size(0, 17);
+            this.labelCount.Size = new System.Drawing.Size(24, 17);
+            this.labelCount.Text = "0/0";
             // 
-            // viewToolStripMenuItem
+            // labelStatus
             // 
-            this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.resizeColumnsToolStripMenuItem});
-            this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
-            this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
-            this.viewToolStripMenuItem.Text = "View";
+            this.labelStatus.Name = "labelStatus";
+            this.labelStatus.Size = new System.Drawing.Size(66, 17);
+            this.labelStatus.Text = "statusLabel";
             // 
-            // resizeColumnsToolStripMenuItem
+            // statusTimeoutTimer
             // 
-            this.resizeColumnsToolStripMenuItem.Name = "resizeColumnsToolStripMenuItem";
-            this.resizeColumnsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.resizeColumnsToolStripMenuItem.Text = "Resize columns";
-            this.resizeColumnsToolStripMenuItem.Click += new System.EventHandler(this.resizeColumnsToolStripMenuItem_Click);
+            this.statusTimeoutTimer.Enabled = true;
+            this.statusTimeoutTimer.Interval = 2500;
+            this.statusTimeoutTimer.Tick += new System.EventHandler(this.statusTimeoutTimer_Tick);
+            // 
+            // openHistoryToolStripMenuItem
+            // 
+            this.openHistoryToolStripMenuItem.Name = "openHistoryToolStripMenuItem";
+            this.openHistoryToolStripMenuItem.Size = new System.Drawing.Size(89, 20);
+            this.openHistoryToolStripMenuItem.Text = "Open History";
+            this.openHistoryToolStripMenuItem.Click += new System.EventHandler(this.openHistoryToolStripMenuItem_Click);
             // 
             // frmMain
             // 
@@ -728,6 +763,10 @@
         private System.Windows.Forms.Button btnCheckedPartDel;
         private System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem resizeColumnsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem importOrderFromDigikeyFromClipboardToolStripMenuItem;
+        private System.Windows.Forms.Timer statusTimeoutTimer;
+        private System.Windows.Forms.ToolStripStatusLabel labelStatus;
+        private System.Windows.Forms.ToolStripMenuItem openHistoryToolStripMenuItem;
     }
 }
 

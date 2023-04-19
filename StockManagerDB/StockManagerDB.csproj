@@ -35,6 +35,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CsvHelper, Version=30.0.0.0, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">
+      <HintPath>..\packages\CsvHelper.30.0.1\lib\net47\CsvHelper.dll</HintPath>
+    </Reference>
     <Reference Include="ESNLib.Controls, Version=1.0.6.6, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESNLib.Controls.1.0.7.6\lib\net472\ESNLib.Controls.dll</HintPath>
     </Reference>
@@ -43,6 +46,9 @@
     </Reference>
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.6.0.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Bcl.HashCode, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.HashCode.1.0.0\lib\net461\Microsoft.Bcl.HashCode.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -85,9 +91,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataHolderHistorySingleton.cs" />
     <Compile Include="DataHolderSingleton.cs" />
     <Compile Include="ExcelManager.cs" />
     <Compile Include="ExcelWrapper.cs" />
+    <Compile Include="frmHistory.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmHistory.Designer.cs">
+      <DependentUpon>frmHistory.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmMain.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -108,6 +121,9 @@
     <Compile Include="Project.cs" />
     <Compile Include="ProjectVersion.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="frmHistory.resx">
+      <DependentUpon>frmHistory.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmMain.resx">
       <DependentUpon>frmMain.cs</DependentUpon>
     </EmbeddedResource>

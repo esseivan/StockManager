@@ -14,21 +14,58 @@ namespace StockManagerDB.Tests
     [TestClass()]
     public class DataHolderSingletonTests
     {
-        private string GetFile(int index)
+        /// <summary>
+        /// Delete the file once disposed
+        /// </summary>
+        private class FileClass : IDisposable
         {
-            string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ESN", "Defaults", "ut_" + index + ".smd");
-            Console.WriteLine($"Path is : '{path}'");
-            if (File.Exists(path))
-                File.Delete(path);
-            return path;
-        }
+            public const bool DELETE_FILE_ON_EXIT = true;
 
+            public string path;
+
+            public FileClass(int index)
+            {
+                path = GetFile(index);
+            }
+
+            ~FileClass()
+            {
+                if (DELETE_FILE_ON_EXIT)
+                    Dispose();
+            }
+
+            public static implicit operator string(FileClass x) => x.path;
+
+            public void Dispose()
+            {
+                if (File.Exists(path))
+                {
+                    File.Delete(path);
+                }
+                if (File.Exists(path + ".bak"))
+                {
+                    File.Delete(path + ".bak");
+                }
+            }
+
+            private string GetFile(int index)
+            {
+                // Disable history for this test. Every test must call this method
+                dhs.__disable_history = true;
+
+                string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ESN", "Defaults", "ut_" + index + ".smd");
+                Console.WriteLine($"Path is : '{path}'");
+                if (File.Exists(path))
+                    File.Delete(path);
+                return path;
+            }
+        }
         private dhs d => dhs.Instance;
 
         [TestMethod()]
         public void LoadNewTest()
         {
-            string f = GetFile(1);
+            FileClass f = new FileClass(1);
             dhs.LoadNew(f);
 
             Assert.IsNotNull(d);
@@ -39,7 +76,7 @@ namespace StockManagerDB.Tests
         [TestMethod()]
         public void LoadFileTest()
         {
-            string f = GetFile(2);
+            FileClass f = new FileClass(2);
             dhs.LoadNew(f);
             d.Load();
 
@@ -51,7 +88,7 @@ namespace StockManagerDB.Tests
         [TestMethod()]
         public void CloseFileTest()
         {
-            string f = GetFile(3);
+            FileClass f = new FileClass(3);
             dhs.LoadNew(f);
             d.Load();
 
@@ -68,7 +105,7 @@ namespace StockManagerDB.Tests
         [TestMethod()]
         public void InvokeOnPartListModifiedTest()
         {
-            string f = GetFile(4);
+            FileClass f = new FileClass(4);
             dhs.LoadNew(f);
             d.Load();
 
@@ -94,7 +131,7 @@ namespace StockManagerDB.Tests
         [TestMethod()]
         public void InvokeOnPartListModifiedTest_notDefined()
         {
-            string f = GetFile(4);
+            FileClass f = new FileClass(4);
             dhs.LoadNew(f);
             d.Load();
 

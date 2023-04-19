@@ -109,6 +109,27 @@ namespace StockManagerDB
         }
 
         /// <summary>
+        /// This part version is valid from this date
+        /// </summary>
+        [JsonInclude]
+        public DateTime ValidFrom;
+        /// <summary>
+        /// This part version is valid until this date
+        /// </summary>
+        [JsonInclude]
+        public DateTime ValidUntil;
+        /// <summary>
+        /// The status of the part
+        /// </summary>
+        [JsonInclude]
+        public string Status;
+        /// <summary>
+        /// The version of this part
+        /// </summary>
+        [JsonInclude]
+        public int Version;
+
+        /// <summary>
         /// List of parameters
         /// </summary>
         public Dictionary<Parameter, string> Parameters = new Dictionary<Parameter, string>();
@@ -129,6 +150,10 @@ namespace StockManagerDB
             Price,
             Supplier,
             SPN,
+        }
+
+        public Part()
+        {
         }
 
         /// <summary>
@@ -161,6 +186,22 @@ namespace StockManagerDB
             return $"MPN:{MPN}; Stock:{Stock}; Location:{Location}";
         }
 
+        /// <summary>
+        /// Clone the part to be stored in the History
+        /// </summary>
+        /// <returns>Part with cloned validFrom, validUntil, version, status</returns>
+        public Part CloneForHistory()
+        {
+            Part oldPart = Clone() as Part;
+
+            oldPart.ValidFrom = ValidFrom;
+            oldPart.ValidUntil = ValidUntil;
+            oldPart.Version = Version;
+            oldPart.Status = Status;
+
+            return oldPart;
+        }
+
         public object Clone()
         {
             Part newPart = new Part();
@@ -189,6 +230,22 @@ namespace StockManagerDB
             public int Compare(Part x, Part y)
             {
                 return x.MPN.CompareTo(y.MPN);
+            }
+        }
+        public class CompareMPNThenVersion : Comparer<Part>
+        {
+            public override int Compare(Part x, Part y)
+            {
+                if (x.MPN.Equals(y.MPN))
+                {
+                    // Same MPN, sort by version High -> Low
+                    return y.Version.CompareTo(x.Version);
+                }
+                else
+                {
+                    // Different MPN, sort by MPN A-Z
+                    return x.MPN.CompareTo(y.MPN);
+                }
             }
         }
     }

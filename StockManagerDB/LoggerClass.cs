@@ -24,7 +24,7 @@ namespace StockManagerDB
         {
             if (!logger.Enable())
                 throw new InvalidOperationException("Unable to start logger");
-#if DEBUG
+#if false
             Process.Start(logger.FileOutputPath);
 #endif
         }
