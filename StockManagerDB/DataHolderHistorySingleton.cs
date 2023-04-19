@@ -62,6 +62,9 @@ namespace StockManagerDB
         /// </summary>
         public void Save()
         {
+            // Sort before save
+            PartHistory.Sort(new ComparePartVersion());
+
             SettingsManager.SaveTo(Filepath, PartHistory, backup: true, indent: true);
         }
 
@@ -121,6 +124,23 @@ namespace StockManagerDB
             // Add to history
             Instance.PartHistory.Add(oldPart);
             Instance.Save();
+        }
+
+        public class ComparePartVersion : Comparer<Part>
+        {
+            public override int Compare(Part x, Part y)
+            {
+                if (x.MPN.Equals(y.MPN))
+                {
+                    // Same MPN, sort by version High -> Low
+                    return y.Version.CompareTo(x.Version);
+                }
+                else
+                {
+                    // Different MPN, sort by MPN A-Z
+                    return x.MPN.CompareTo(y.MPN);
+                }
+            }
         }
     }
 }

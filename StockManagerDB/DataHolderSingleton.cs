@@ -128,7 +128,7 @@ namespace StockManagerDB
         public bool EditPart(Part newPart, Part.Parameter param, string value)
         {
             // Update event, clone the part beforehand
-            Part oldPart = newPart.Clone() as Part;
+            Part oldPart = newPart.CloneForHistory();
 
             switch (param)
             {
