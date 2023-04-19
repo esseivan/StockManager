@@ -1,4 +1,5 @@
 ﻿using BrightIdeasSoftware;
+using CsvHelper;
 using ESNLib.Controls;
 using ESNLib.Tools;
 using System;
@@ -7,12 +8,14 @@ using System.ComponentModel;
 using System.Data;
 using System.Data.SQLite;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using dhs = StockManagerDB.DataHolderSingleton;
 
 namespace StockManagerDB
@@ -113,8 +116,11 @@ namespace StockManagerDB
             // Set default filter type
             cbboxFilterType.SelectedIndex = 2;
 
+            // Init statusLabel timeout timer
+
             // Set number label
             UpdateNumberLabel();
+            SetStatus("Idle...");
         }
 
         #region Listviews and display
@@ -357,7 +363,7 @@ namespace StockManagerDB
         /// <summary>
         /// Import parts from excel file into the database
         /// </summary>
-        private void ImportFromExcel()
+        private bool ImportFromExcel()
         {
             LoggerClass.Write($"Importing Excel file...", Logger.LogLevels.Debug);
             // A file must be loaded prior to importing.
@@ -365,7 +371,7 @@ namespace StockManagerDB
             {
                 LoggerClass.Write("Unable to load Excel file when no Data file is loaded", Logger.LogLevels.Debug);
                 MessageBox.Show("No file loaded ! Open or create a new one", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
+                return false;
             }
 
             // Ask to open the excel file
@@ -373,113 +379,132 @@ namespace StockManagerDB
             {
                 Filter = "All files|*.*",
             };
-            if (ofd.ShowDialog() == DialogResult.OK)
+            if (ofd.ShowDialog() != DialogResult.OK)
             {
-                LoggerClass.Write($"File selected for Excel import : {ofd.FileName}", Logger.LogLevels.Debug);
-                // Extract the parts. This is a hardcoded way
-                Cursor = Cursors.WaitCursor;
-                ExcelManager em = new ExcelManager(ofd.FileName);
-                List<Part> importedParts = em.GetParts();
-                em.Dispose();
-                Cursor = Cursors.Default;
-
-                if ((null == importedParts) || (0 == importedParts.Count))
-                {
-                    LoggerClass.Write("No part found in that file");
-                    return;
-                }
-
-                // Confirmation
-                LoggerClass.Write($"{importedParts.Count} part(s) found in that file", Logger.LogLevels.Debug);
-                if (MessageBox.Show($"Please confirm the additions of '{importedParts.Count}' parts to the current databse. This cannot be undone\nContinue ?", "Warning", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning) != DialogResult.Yes)
-                    return;
-
-                LoggerClass.Write($"Import confirmed. Processing...", Logger.LogLevels.Debug);
-                // Add the parts to the list
-                Cursor = Cursors.WaitCursor;
-                foreach (Part importedPart in importedParts)
-                {
-                    if (Parts.ContainsKey(importedPart.MPN))
-                    {
-                        LoggerClass.Write($"Duplicate part found : MPN={importedPart.MPN}", Logger.LogLevels.Warn);
-                        continue;
-                    }
-
-                    Parts.Add(importedPart.MPN, importedPart);
-                }
-                Cursor = Cursors.Default;
-                LoggerClass.Write($"Import finished", Logger.LogLevels.Debug);
-                PartsHaveChanged();
+                return false;
             }
+            LoggerClass.Write($"File selected for Excel import : {ofd.FileName}", Logger.LogLevels.Debug);
+            // Extract the parts. This is a hardcoded way
+            Cursor = Cursors.WaitCursor;
+            ExcelManager em = new ExcelManager(ofd.FileName);
+            List<Part> importedParts = em.GetParts();
+            em.Dispose();
+            Cursor = Cursors.Default;
+
+            if ((null == importedParts) || (0 == importedParts.Count))
+            {
+                LoggerClass.Write("No part found in that file");
+                return false;
+            }
+
+            // Confirmation
+            LoggerClass.Write($"{importedParts.Count} part(s) found in that file", Logger.LogLevels.Debug);
+            if (MessageBox.Show($"Please confirm the additions of '{importedParts.Count}' parts to the current databse. This cannot be undone\nContinue ?", "Warning", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning) != DialogResult.Yes)
+                return false;
+
+            LoggerClass.Write($"Import confirmed. Processing...", Logger.LogLevels.Debug);
+            // Add the parts to the list
+            Cursor = Cursors.WaitCursor;
+            foreach (Part importedPart in importedParts)
+            {
+                if (Parts.ContainsKey(importedPart.MPN))
+                {
+                    LoggerClass.Write($"Duplicate part found : MPN={importedPart.MPN}", Logger.LogLevels.Warn);
+                    continue;
+                }
+
+                Parts.Add(importedPart.MPN, importedPart);
+            }
+            Cursor = Cursors.Default;
+            LoggerClass.Write($"Import finished", Logger.LogLevels.Debug);
+            PartsHaveChanged();
+
+            return true;
         }
 
         /// <summary>
         /// Create a new file with a template part
         /// </summary>
-        private void CreateNewFile()
+        private bool CreateNewFile()
         {
             LoggerClass.Write($"Creating new data file", Logger.LogLevels.Debug);
             SaveFileDialog fsd = new SaveFileDialog()
             {
                 Filter = "StockManager Data|*.smd|All files|*.*",
             };
-            if (fsd.ShowDialog() == DialogResult.OK)
+            if (fsd.ShowDialog() != DialogResult.OK)
             {
-                LoggerClass.Write($"Filepath selected is : {fsd.FileName}", Logger.LogLevels.Debug);
-                // Never overwrite files. Ask the user to manually delete the file...
-                if (File.Exists(fsd.FileName))
-                {
-                    LoggerClass.Write($"This file already exists. Aborting...", Logger.LogLevels.Debug);
-                    MessageBox.Show("This file already exists.\nPlease select another one or manually delete that file...", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-
-                LoggerClass.Write($"Creating data file at that path", Logger.LogLevels.Debug);
-                // Save path
-                filepath = fsd.FileName;
-                // Create new empty file (with template part)
-                dhs.LoadNew(filepath);
-                SetTitle();
-                // Update listviews content + resize columns
-                UpdateListviews(true);
-                LoggerClass.Write($"Creation finished", Logger.LogLevels.Debug);
+                return false;
             }
+            LoggerClass.Write($"Filepath selected is : {fsd.FileName}", Logger.LogLevels.Debug);
+            // Never overwrite files. Ask the user to manually delete the file...
+            if (File.Exists(fsd.FileName))
+            {
+                LoggerClass.Write($"This file already exists. Aborting...", Logger.LogLevels.Debug);
+                MessageBox.Show("This file already exists.\nPlease select another one or manually delete that file...", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+
+            LoggerClass.Write($"Creating data file at that path", Logger.LogLevels.Debug);
+            // Save path
+            filepath = fsd.FileName;
+            // Create new empty file (with template part)
+            dhs.LoadNew(filepath);
+            SetTitle();
+            // Update listviews content + resize columns
+            UpdateListviews(true);
+            LoggerClass.Write($"Creation finished", Logger.LogLevels.Debug);
+
+            return true;
         }
 
         /// <summary>
         /// Open the specified file
         /// </summary>
-        private void OpenFile()
+        private bool OpenFile()
         {
             LoggerClass.Write($"Openning data file...", Logger.LogLevels.Debug);
             OpenFileDialog ofd = new OpenFileDialog()
             {
                 Filter = "StockManager Data|*.smd|All files|*.*",
             };
-            if (ofd.ShowDialog() == DialogResult.OK)
+
+            if (ofd.ShowDialog() != DialogResult.OK)
             {
-                LoggerClass.Write($"File selected : {ofd.FileName}", Logger.LogLevels.Debug);
-                // Save path
-                filepath = ofd.FileName;
-                // Load the file
-                LoggerClass.Write($"Openning that file...", Logger.LogLevels.Debug);
-                dhs.LoadNew(filepath);
-                SetTitle();
-                // Update listviews content + resize columns
-                UpdateListviews(true);
-                LoggerClass.Write($"Open finished. {Parts.Count} part(s) found", Logger.LogLevels.Debug);
+                return false;
             }
+            LoggerClass.Write($"File selected : {ofd.FileName}", Logger.LogLevels.Debug);
+            // Save path
+            filepath = ofd.FileName;
+            // Load the file
+            LoggerClass.Write($"Openning that file...", Logger.LogLevels.Debug);
+            try
+            {
+                dhs.LoadNew(filepath);
+            }
+            catch (Exception)
+            {
+                filepath = null;
+                return false;
+            }
+            SetTitle();
+            // Update listviews content + resize columns
+            UpdateListviews(true);
+            LoggerClass.Write($"Open finished. {Parts.Count} part(s) found", Logger.LogLevels.Debug);
+
+            return true;
         }
 
         /// <summary>
         /// Close the currently open file
         /// </summary>
-        private void CloseFile()
+        private bool CloseFile()
         {
             LoggerClass.Write($"Closing file : {filepath}", Logger.LogLevels.Debug);
             data.Close();
             SetTitle();
             UpdateListviews();
+            return true;
         }
         #endregion
 
@@ -700,13 +725,13 @@ namespace StockManagerDB
         /// <summary>
         /// Make order for parts with 'stock' lower than 'lowStock'
         /// </summary>
-        private void MakeOrder()
+        private bool ActionMakeOrder()
         {
             if (!IsFileLoaded)
             {
                 LoggerClass.Write("Unable to process action. No file is loaded.", Logger.LogLevels.Debug);
                 MessageBox.Show("No file loaded ! Open or create a new one", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
+                return false;
             }
 
             LoggerClass.Write($"Making automated order...", Logger.LogLevels.Debug);
@@ -717,12 +742,207 @@ namespace StockManagerDB
             // TODO : Actually make order
             LoggerClass.Write($"{selected.Count()} part(s) found for automatic order", Logger.LogLevels.Debug);
             Console.WriteLine(selected.Count() + " parts to order");
+
+            return true;
+        }
+
+        private void ActionDigikeyProcessParts(List<CsvPartImport> records)
+        {
+            LoggerClass.Write($"{records.Count} part(s) found to process...");
+
+            foreach (CsvPartImport item in records)
+            {
+                if (item == null)
+                {
+                    LoggerClass.Write("Null row found... Should not happen", Logger.LogLevels.Error);
+                    continue;
+                }
+
+                if (string.IsNullOrEmpty(item.MPN))
+                {
+                    continue;
+                }
+
+                // Try converting quantity
+                if (!float.TryParse(item.Quantity, out float quantity))
+                {
+                    LoggerClass.Write($"Unable to parse quantity : '{item.Quantity}'", Logger.LogLevels.Error);
+                    continue;
+                }
+
+                if (!Parts.ContainsKey(item.MPN))
+                {
+                    LoggerClass.Write($"Part '{item.MPN}' not available in present list. Creating new part...");
+                    Part p = new Part()
+                    {
+                        MPN = item.MPN,
+                        Description = item.Description,
+                        Category = "__automatically_generated",
+                        Supplier = "Digikey",
+                        SPN = item.SPN
+                    };
+                    Parts.Add(p.MPN, p);
+                }
+
+                // Process edit
+                Part part = Parts[item.MPN];
+                LoggerClass.Write($"Changing stock of '{part.MPN}' from {part.Stock} to {part.Stock + quantity}");
+                part.Stock += quantity;
+            }
+        }
+
+        private bool ActionImportDigikeyOrder()
+        {
+            if (!IsFileLoaded)
+            {
+                LoggerClass.Write("Unable to process action. No file is loaded.", Logger.LogLevels.Debug);
+                MessageBox.Show("No file loaded ! Open or create a new one", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+
+            // Ask to open the excel file
+            OpenFileDialog ofd = new OpenFileDialog()
+            {
+                Filter = "Excel xlsx (*.xlsx, *.csv)|*.xlsx;*.csv|All files (*.*)|*.*",
+            };
+            if (ofd.ShowDialog() != DialogResult.OK)
+            {
+                return false;
+            }
+
+            LoggerClass.Write($"Loading Digikey order...", Logger.LogLevels.Debug);
+
+            string file = ofd.FileName;
+            if (Path.GetExtension(file).Equals(".csv", StringComparison.InvariantCultureIgnoreCase))
+            {
+                // Read lines
+                using (var reader = new StreamReader(file))
+                using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+                {
+                    var records = new List<CsvPartImport>();
+                    csv.Read();
+                    csv.ReadHeader();
+
+                    while (csv.Read())
+                    {
+                        var record = new CsvPartImport
+                        {
+                            MPN = csv.GetField("Manufacturer Part Number"),
+                            Quantity = csv.GetField("Quantity"),
+                        };
+                        // Read the rest only if required
+                        if (!Parts.ContainsKey(record.MPN))
+                        {
+                            record.SPN = csv.GetField("Part Number");
+                            record.Description = csv.GetField("Description");
+                        }
+
+                        records.Add(record);
+                    }
+
+                    ActionDigikeyProcessParts(records);
+                }
+            }
+            else if (Path.GetExtension(file).Equals(".xlsx", StringComparison.InvariantCultureIgnoreCase))
+            {
+
+            }
+
+            // Ask update of part list
+            PartsHaveChanged();
+            return true;
+        }
+
+        private bool ActionImportClipboardDigikeyOrder()
+        {
+            if (!IsFileLoaded)
+            {
+                LoggerClass.Write("Unable to process action. No file is loaded.", Logger.LogLevels.Debug);
+                MessageBox.Show("No file loaded ! Open or create a new one", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+
+            string content = Clipboard.GetText();
+
+            LoggerClass.Write($"Loading Digikey order from clipboard...", Logger.LogLevels.Debug);
+
+            try
+            {
+                // Separate by lines
+                content = content.Replace("\r", "");
+                string[] lines = content.Split('\n');
+
+                if (lines.Length < 2)
+                {
+                    throw new InvalidOperationException("Unsufficient number of lines...");
+                }
+
+                List<CsvPartImport> records = new List<CsvPartImport>();
+
+                for (int i = 1; i < lines.Length; i++)
+                {
+                    string line = lines[i];
+                    string[] fields = line.Split('\t');
+                    CsvPartImport part = new CsvPartImport()
+                    {
+                        MPN = fields[3],
+                        Quantity = fields[1],
+                        SPN = fields[2],
+                        Description = fields[4],
+                    };
+                    records.Add(part);
+                }
+
+
+                ActionDigikeyProcessParts(records);
+
+                // Ask update of part list
+                PartsHaveChanged();
+
+                return true;
+            }
+            catch (Exception)
+            {
+                LoggerClass.Write("Unable to load ordre from clipboard...", Logger.LogLevels.Error);
+                MessageBox.Show("Unable to import order content from clipboard...", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+        }
+
+        public class CsvPartImport
+        {
+            public string MPN { get; set; }
+            public string Quantity { get; set; }
+            public string Description { get; set; }
+            public string SPN { get; set; }
         }
 
         #endregion
 
         #region Misc Events
 
+        private void SetStatus(string status)
+        {
+            SetStatus(status, SystemColors.ControlText);
+        }
+        private void SetStatus(string status, Color color)
+        {
+            labelStatus.ForeColor = color;
+            labelStatus.Text = status;
+
+            // Restart timer
+            statusTimeoutTimer.Stop();
+            statusTimeoutTimer.Start();
+        }
+        private void SetWorkingStatus()
+        {
+            SetStatus("Working...");
+            labelStatus.Invalidate();
+        }
+        private void SetSuccessStatus(bool result)
+        {
+            SetStatus(result ? "Success !" : "Failed", result ? SystemColors.ControlText : Color.Red);
+        }
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             LoggerClass.Write("Closing... Stopping logger", Logger.LogLevels.Info);
@@ -730,19 +950,27 @@ namespace StockManagerDB
         }
         private void importFromExcelToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ImportFromExcel();
+            SetWorkingStatus();
+            bool result = ImportFromExcel();
+            SetSuccessStatus(result);
         }
         private void makeOrderToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MakeOrder();
+            SetWorkingStatus();
+            bool result = ActionMakeOrder();
+            SetSuccessStatus(result);
         }
         private void newDatabaseToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            CreateNewFile();
+            SetWorkingStatus();
+            bool result = CreateNewFile();
+            SetSuccessStatus(result);
         }
         private void openDatabaseToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenFile();
+            SetWorkingStatus();
+            bool result = OpenFile();
+            SetSuccessStatus(result);
         }
         private void listviewParts_ItemChecked(object sender, ItemCheckedEventArgs e)
         {
@@ -766,7 +994,9 @@ namespace StockManagerDB
         }
         private void closeDatabaseToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            CloseFile();
+            SetWorkingStatus();
+            bool result = CloseFile();
+            SetSuccessStatus(result);
         }
         private void quitToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -774,8 +1004,15 @@ namespace StockManagerDB
         }
         private void importOrderFromDigikeyToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            // TODO
-            throw new NotImplementedException();
+            SetWorkingStatus();
+            bool result = ActionImportDigikeyOrder();
+            SetSuccessStatus(result);
+        }
+        private void importOrderFromDigikeyFromClipboardToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SetWorkingStatus();
+            bool result = ActionImportClipboardDigikeyOrder();
+            SetSuccessStatus(result);
         }
 
         private void projectsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -838,8 +1075,13 @@ namespace StockManagerDB
             listviewParts.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
             listviewChecked.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
         }
+        private void statusTimeoutTimer_Tick(object sender, EventArgs e)
+        {
+            statusTimeoutTimer.Stop();
+            labelStatus.ForeColor = SystemColors.ControlText;
+            labelStatus.Text = string.Empty;
+        }
 
         #endregion
-
     }
 }
