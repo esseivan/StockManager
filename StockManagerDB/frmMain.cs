@@ -413,7 +413,7 @@ namespace StockManagerDB
                     continue;
                 }
 
-                Parts.Add(importedPart.MPN, importedPart);
+                data.AddPart(importedPart);
             }
             Cursor = Cursors.Default;
             LoggerClass.Write($"Import finished", Logger.LogLevels.Debug);
@@ -541,7 +541,7 @@ namespace StockManagerDB
             };
 
             // Add to list
-            Parts.Add(pc.MPN, pc);
+            data.AddPart(pc);
             PartsHaveChanged();
             LoggerClass.Write($"Part added", Logger.LogLevels.Debug);
         }
@@ -570,7 +570,7 @@ namespace StockManagerDB
 
             LoggerClass.Write($"Deletion of {checkedParts.Count} part(s)...", Logger.LogLevels.Debug);
             // Remove them from the list
-            checkedParts.ForEach((part) => Parts.Remove(part.MPN));
+            checkedParts.ForEach((part) => data.DeletePart(part));
             LoggerClass.Write($"Deletion finished", Logger.LogLevels.Debug);
             PartsHaveChanged();
         }
@@ -611,7 +611,7 @@ namespace StockManagerDB
             pc.MPN = result.UserInput;
 
             // Add to the list
-            Parts.Add(pc.MPN, pc);
+            data.AddPart(pc);
             PartsHaveChanged();
             LoggerClass.Write($"Cloning finished", Logger.LogLevels.Debug);
         }
@@ -692,28 +692,15 @@ namespace StockManagerDB
                 return;
             }
 
-            if (editedParameter == Part.Parameter.MPN)
+            // Verify that the new MPN doesn't already exists
+            if ((editedParameter == Part.Parameter.MPN) && Parts.ContainsKey(newValue))
             {
-                // Verify that the new MPN doesn't exist
-                if (Parts.ContainsKey(newValue))
-                {
-                    LoggerClass.Write("Unable to edit MPN value. Another part already have this MPN value.", Logger.LogLevels.Error);
-                    MessageBox.Show("Unable to edit the MPN to the specified value. Another part with this MPN already exists...", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-                // Change also the key :
-                // Remove old part
-                Parts.Remove(part.MPN);
-                // Add new part
-                // Apply the changes to the part
-                part.Parameters[Part.Parameter.MPN] = newValue;
-                Parts.Add(part.MPN, part);
+                LoggerClass.Write("Unable to edit MPN value. Another part already have this MPN value.", Logger.LogLevels.Error);
+                MessageBox.Show("Unable to edit the MPN to the specified value. Another part with this MPN already exists...", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
             }
-            else
-            {
-                // Apply the changes to the part
-                part.Parameters[editedParameter] = newValue;
-            }
+
+            data.EditPart(part, editedParameter, newValue);
 
             PartsHaveChanged();
         }
@@ -781,13 +768,13 @@ namespace StockManagerDB
                         Supplier = "Digikey",
                         SPN = item.SPN
                     };
-                    Parts.Add(p.MPN, p);
+                    data.AddPart(p);
                 }
 
                 // Process edit
                 Part part = Parts[item.MPN];
                 LoggerClass.Write($"Changing stock of '{part.MPN}' from {part.Stock} to {part.Stock + quantity}");
-                part.Stock += quantity;
+                data.EditPart(part, Part.Parameter.Stock, (part.Stock + quantity).ToString());
             }
         }
 

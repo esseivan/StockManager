@@ -16,6 +16,9 @@ namespace StockManagerDB.Tests
     {
         private string GetFile(int index)
         {
+            // Disable history for this test. Every test must call this method
+            dhs.__disable_history = true;
+
             string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ESN", "Defaults", "ut_" + index + ".smd");
             Console.WriteLine($"Path is : '{path}'");
             if (File.Exists(path))

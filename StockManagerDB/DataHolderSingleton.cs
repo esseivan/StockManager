@@ -16,6 +16,11 @@ namespace StockManagerDB
     public class DataHolderSingleton
     {
         /// <summary>
+        /// Disable the logging of history of parts into a .smdh file
+        /// </summary>
+        public static bool __disable_history = false;
+
+        /// <summary>
         /// The list of parts
         /// </summary>
         public Dictionary<string, Part> Parts { get; private set; }
@@ -42,7 +47,7 @@ namespace StockManagerDB
         /// <summary>
         /// The file that is used for this singleton
         /// </summary>
-        private string _filepath;
+        private readonly string _filepath;
         /// <summary>
         /// The file that is used for this singleton. To change this, call <see cref="DataHolderSingleton.LoadNew(string)"/>
         /// </summary>
@@ -55,6 +60,110 @@ namespace StockManagerDB
         {
             _filepath = file;
             Load();
+
+
+            if (!__disable_history)
+            {
+                DataHolderHistorySingleton.LoadNew(file);
+            }
+        }
+
+        public bool DeletePart(Part part)
+        {
+            if (!Parts.ContainsKey(part.MPN))
+            {
+                return false;
+            }
+
+            Parts.Remove(part.MPN);
+
+            if (!__disable_history)
+                DataHolderHistorySingleton.AddDeleteEvent(part);
+
+            return true;
+        }
+
+        public bool DeletePart(string MPN)
+        {
+            if (!Parts.ContainsKey(MPN))
+            {
+                return false;
+            }
+
+            Part part = Parts[MPN];
+            Parts.Remove(MPN);
+
+            if (!__disable_history)
+                DataHolderHistorySingleton.AddDeleteEvent(part);
+
+            return true;
+        }
+
+        public bool AddPart(Part part)
+        {
+            if (Parts.ContainsKey(part.MPN))
+            {
+                return false;
+            }
+
+            Parts.Add(part.MPN, part);
+
+            if (!__disable_history)
+                DataHolderHistorySingleton.AddInsertEvent(part);
+
+            return true;
+        }
+
+        public bool EditPart(string MPN, Part.Parameter param, string value)
+        {
+            if (!Parts.ContainsKey(MPN))
+            {
+                return false;
+            }
+
+            Part newPart = Parts[MPN];
+            return EditPart(newPart, param, value);
+        }
+
+        public bool EditPart(Part newPart, Part.Parameter param, string value)
+        {
+            // Update event, clone the part beforehand
+            Part oldPart = newPart.Clone() as Part;
+
+            switch (param)
+            {
+                case Part.Parameter.MPN:
+                    if (Parts.ContainsKey(value))
+                    {
+                        throw new ArgumentOutOfRangeException("Unable to edit part. MPN already exists...", "value");
+                    }
+
+                    Parts.Remove(newPart.MPN);
+                    newPart.Parameters[param] = value;
+                    Parts.Add(newPart.MPN, newPart);
+                    break;
+
+                case Part.Parameter.Manufacturer:
+                case Part.Parameter.Description:
+                case Part.Parameter.Category:
+                case Part.Parameter.Location:
+                case Part.Parameter.Stock:
+                case Part.Parameter.LowStock:
+                case Part.Parameter.Price:
+                case Part.Parameter.Supplier:
+                case Part.Parameter.SPN:
+                    newPart.Parameters[param] = value;
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException("Parameter unknown...", "param");
+            }
+
+            // Update event to history
+            if (!__disable_history)
+                DataHolderHistorySingleton.AddUpdateEvent(oldPart, newPart);
+
+            return true;
         }
 
         /// <summary>
@@ -85,7 +194,6 @@ namespace StockManagerDB
             Save();
             Parts = null;
             Projects = null;
-            _filepath = null;
             _instance = null;
         }
 

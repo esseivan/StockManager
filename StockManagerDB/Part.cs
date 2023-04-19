@@ -109,6 +109,23 @@ namespace StockManagerDB
         }
 
         /// <summary>
+        /// This part version is valid from this date
+        /// </summary>
+        public DateTime ValidFrom;
+        /// <summary>
+        /// This part version is valid until this date
+        /// </summary>
+        public DateTime ValidUntil;
+        /// <summary>
+        /// The status of the part
+        /// </summary>
+        public string Status;
+        /// <summary>
+        /// The version of this part
+        /// </summary>
+        public int Version;
+
+        /// <summary>
         /// List of parameters
         /// </summary>
         public Dictionary<Parameter, string> Parameters = new Dictionary<Parameter, string>();
@@ -129,6 +146,10 @@ namespace StockManagerDB
             Price,
             Supplier,
             SPN,
+        }
+
+        public Part()
+        {
         }
 
         /// <summary>
