@@ -1,4 +1,5 @@
 ﻿using BrightIdeasSoftware;
+using CsvHelper;
 using ESNLib.Controls;
 using ESNLib.Tools;
 using System;
@@ -7,12 +8,14 @@ using System.ComponentModel;
 using System.Data;
 using System.Data.SQLite;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using dhs = StockManagerDB.DataHolderSingleton;
 
 namespace StockManagerDB
@@ -700,7 +703,7 @@ namespace StockManagerDB
         /// <summary>
         /// Make order for parts with 'stock' lower than 'lowStock'
         /// </summary>
-        private void MakeOrder()
+        private void ActionMakeOrder()
         {
             if (!IsFileLoaded)
             {
@@ -719,6 +722,115 @@ namespace StockManagerDB
             Console.WriteLine(selected.Count() + " parts to order");
         }
 
+        private void ActionImportDigikeyOrder()
+        {
+            if (!IsFileLoaded)
+            {
+                LoggerClass.Write("Unable to process action. No file is loaded.", Logger.LogLevels.Debug);
+                MessageBox.Show("No file loaded ! Open or create a new one", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            // Ask to open the excel file
+            OpenFileDialog ofd = new OpenFileDialog()
+            {
+                Filter = "Excel xlsx (*.xlsx, *.csv)|*.xlsx;*.csv|All files (*.*)|*.*",
+            };
+            if (ofd.ShowDialog() != DialogResult.OK)
+            {
+                return;
+            }
+
+            LoggerClass.Write($"Loading Digikey order...", Logger.LogLevels.Debug);
+
+            string file = ofd.FileName;
+            if(Path.GetExtension(file).Equals(".csv", StringComparison.InvariantCultureIgnoreCase))
+            {
+                // Read lines
+                using (var reader = new StreamReader(file))
+                using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+                {
+                    var records = new List<CsvPartImport>();
+                    csv.Read();
+                    csv.ReadHeader();
+
+                    while (csv.Read())
+                    {
+                        var record = new CsvPartImport
+                        {
+                            MPN = csv.GetField("Manufacturer Part Number"),
+                            Quantity = csv.GetField("Quantity"),
+                    };
+                        // Read the rest only if required
+                        if(!Parts.ContainsKey(record.MPN))
+                        {
+                            record.SPN = csv.GetField("Part Number");
+                            record.Description = csv.GetField("Description");
+                        }
+
+                        records.Add(record);
+                    }
+
+                    LoggerClass.Write($"{records.Count} part(s) found to process...");
+
+                    foreach (CsvPartImport item in records)
+                    {
+                        if (item == null)
+                        {
+                            LoggerClass.Write("Null row found... Should not happen", Logger.LogLevels.Error);
+                            continue;
+                        }
+
+                        if(string.IsNullOrEmpty(item.MPN))
+                        {
+                            continue;
+                        }
+
+                        // Try converting quantity
+                        if(!float.TryParse(item.Quantity, out float quantity))
+                        {
+                            LoggerClass.Write($"Unable to parse quantity : '{item.Quantity}'", Logger.LogLevels.Error);
+                            continue;
+                        }
+
+                        if(!Parts.ContainsKey(item.MPN))
+                        {
+                            LoggerClass.Write($"Part '{item.MPN}' not available in present list. Creating new part...");
+                            Part p = new Part()
+                            {
+                                MPN = item.MPN,
+                                Description = item.Description,
+                                Category = "__automatically_generated",
+                                Supplier = "Digikey",
+                                SPN = item.SPN
+                            };
+                            Parts.Add(p.MPN, p);
+                        }
+
+                        // Process edit
+                        Part part = Parts[item.MPN];
+                        LoggerClass.Write($"Changing stock of '{part.MPN}' from {part.Stock} to {part.Stock + quantity}");
+                        part.Stock += quantity;
+                    }
+                }
+            }
+            else if (Path.GetExtension(file).Equals(".xlsx", StringComparison.InvariantCultureIgnoreCase))
+            {
+
+            }
+
+            // Ask update of part list
+            PartsHaveChanged();
+        }
+
+        public class CsvPartImport
+        {
+            public string MPN { get; set; }
+            public string Quantity { get; set; }
+            public string Description { get; set; }
+            public string SPN { get; set; }
+        }
+
         #endregion
 
         #region Misc Events
@@ -734,7 +846,7 @@ namespace StockManagerDB
         }
         private void makeOrderToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MakeOrder();
+            ActionMakeOrder();
         }
         private void newDatabaseToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -774,8 +886,7 @@ namespace StockManagerDB
         }
         private void importOrderFromDigikeyToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            // TODO
-            throw new NotImplementedException();
+            ActionImportDigikeyOrder();
         }
 
         private void projectsToolStripMenuItem_Click(object sender, EventArgs e)
