@@ -35,6 +35,8 @@
             this.openDatabaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.closeDatabaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+            this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.quitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.databaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importFromExcelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -50,6 +52,7 @@
             this.projectsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.resizeColumnsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openHistoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cbboxFilterType = new System.Windows.Forms.ComboBox();
             this.txtboxFilter = new System.Windows.Forms.TextBox();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
@@ -87,7 +90,6 @@
             this.labelStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.filterHighlightRenderer = new BrightIdeasSoftware.HighlightTextRenderer();
             this.statusTimeoutTimer = new System.Windows.Forms.Timer(this.components);
-            this.openHistoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -121,6 +123,8 @@
             this.openDatabaseToolStripMenuItem,
             this.closeDatabaseToolStripMenuItem,
             this.toolStripSeparator4,
+            this.saveToolStripMenuItem,
+            this.toolStripSeparator2,
             this.quitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
@@ -154,6 +158,19 @@
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
             this.toolStripSeparator4.Size = new System.Drawing.Size(195, 6);
+            // 
+            // saveToolStripMenuItem
+            // 
+            this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
+            this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
+            this.saveToolStripMenuItem.Text = "Save";
+            this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(195, 6);
             // 
             // quitToolStripMenuItem
             // 
@@ -274,6 +291,13 @@
             this.resizeColumnsToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
             this.resizeColumnsToolStripMenuItem.Text = "Resize columns";
             this.resizeColumnsToolStripMenuItem.Click += new System.EventHandler(this.resizeColumnsToolStripMenuItem_Click);
+            // 
+            // openHistoryToolStripMenuItem
+            // 
+            this.openHistoryToolStripMenuItem.Name = "openHistoryToolStripMenuItem";
+            this.openHistoryToolStripMenuItem.Size = new System.Drawing.Size(89, 20);
+            this.openHistoryToolStripMenuItem.Text = "Open History";
+            this.openHistoryToolStripMenuItem.Click += new System.EventHandler(this.openHistoryToolStripMenuItem_Click);
             // 
             // cbboxFilterType
             // 
@@ -670,13 +694,6 @@
             this.statusTimeoutTimer.Interval = 2500;
             this.statusTimeoutTimer.Tick += new System.EventHandler(this.statusTimeoutTimer_Tick);
             // 
-            // openHistoryToolStripMenuItem
-            // 
-            this.openHistoryToolStripMenuItem.Name = "openHistoryToolStripMenuItem";
-            this.openHistoryToolStripMenuItem.Size = new System.Drawing.Size(89, 20);
-            this.openHistoryToolStripMenuItem.Text = "Open History";
-            this.openHistoryToolStripMenuItem.Click += new System.EventHandler(this.openHistoryToolStripMenuItem_Click);
-            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -767,6 +784,8 @@
         private System.Windows.Forms.Timer statusTimeoutTimer;
         private System.Windows.Forms.ToolStripStatusLabel labelStatus;
         private System.Windows.Forms.ToolStripMenuItem openHistoryToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
     }
 }
 
