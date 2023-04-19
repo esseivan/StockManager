@@ -1130,7 +1130,12 @@ namespace StockManagerDB
             labelStatus.ForeColor = SystemColors.ControlText;
             labelStatus.Text = string.Empty;
         }
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            data.Save();
+        }
 
         #endregion
+
     }
 }

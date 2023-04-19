@@ -7,6 +7,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace StockManagerDB
 {
@@ -183,10 +184,17 @@ namespace StockManagerDB
         /// </summary>
         public void Save()
         {
-            SettingsManager.SaveTo(Filepath, new DataExportClass(Parts, Projects), backup: true, indent: true);
+            try
+            {
+                SettingsManager.SaveTo(Filepath, new DataExportClass(Parts, Projects), backup: true, indent: true);
 
-            // Also save the history
-            DataHolderHistorySingleton.Instance?.Save();
+                // Also save the history
+                DataHolderHistorySingleton.Instance?.Save();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Unable to save. Maybe the file is open in another process.\nError:\n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         /// <summary>
