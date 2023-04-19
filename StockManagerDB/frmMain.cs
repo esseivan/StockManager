@@ -100,6 +100,42 @@ namespace StockManagerDB
             }
         }
 
+        private frmHistory _historyForm = null;
+        /// <summary>
+        /// The form that displays projects
+        /// </summary>
+        private frmHistory historyForm
+        {
+            get
+            {
+                if (IsFileLoaded)
+                {
+                    if (_historyForm == null)
+                    {
+                        _historyForm = new frmHistory();
+                        _historyForm.FormClosed += _historyForm_FormClosed;
+                    }
+                }
+                else
+                {
+                    if (_historyForm != null)
+                    {
+                        _historyForm.Close();
+                        _historyForm = null;
+                    }
+                }
+                return _historyForm;
+            }
+            set
+            {
+                if (_historyForm != null)
+                {
+                    _historyForm.Close();
+                }
+                _historyForm = value;
+            }
+        }
+
         #endregion
 
         public frmMain()
@@ -131,6 +167,12 @@ namespace StockManagerDB
             dhs.Instance.InvokeOnPartListModified(EventArgs.Empty);
             data.Save();
             UpdateListviews();
+
+            // Update history if open
+            if (historyForm != null)
+            {
+                historyForm.UpdateList();
+            }
         }
 
         /// <summary>
@@ -1015,11 +1057,31 @@ namespace StockManagerDB
             projectForm.Show();
             projectForm.BringToFront();
         }
+        private void openHistoryToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            LoggerClass.Write($"Openning history window...", Logger.LogLevels.Debug);
+            if (!IsFileLoaded)
+            {
+                LoggerClass.Write("Unable to open history, no file loaded...", Logger.LogLevels.Error);
+                return;
+            }
+
+            // Open projects form
+            historyForm.Show();
+            historyForm.BringToFront();
+        }
         private void _projectForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             // When the project form is closed, bring to fron the main form
             this.BringToFront();
             _projectForm = null;
+        }
+
+        private void _historyForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            // When the history form is closed, bring to fron the main form
+            this.BringToFront();
+            _historyForm = null;
         }
         private void listviewParts_KeyDown(object sender, KeyEventArgs e)
         {
