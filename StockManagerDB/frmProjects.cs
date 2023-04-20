@@ -89,18 +89,17 @@ namespace StockManagerDB
                 bool isAvailable = (((Material)x).Quantity * (byte)numMult.Value) <= (((Material)x).PartLink?.Stock ?? 0);
                 return isAvailable ? "Yes" : "No";
             };
-
-            olvcAvailable.Renderer = new GradientRenderer();
+            olvcAvailable.Renderer = new AvailableCellRenderer();
         }
 
-        public class GradientRenderer : BaseRenderer
+        public class AvailableCellRenderer : BaseRenderer
         {
             public override void Render(Graphics g, Rectangle r)
             {
                 string stateText = this.GetText();
                 bool isAvailable = stateText.Equals("Yes");
 
-                Brush brush = isAvailable ? Brushes.LightGreen : Brushes.Coral;
+                Brush brush = isAvailable ? Brushes.LightGreen : Brushes.LightCoral;
                 g.FillRectangle(brush, r);
 
                 StringFormat fmt = new StringFormat(StringFormatFlags.NoWrap)
@@ -760,12 +759,11 @@ namespace StockManagerDB
         {
             listviewMaterials.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
         }
-
-        #endregion
-
         private void numMult_ValueChanged(object sender, EventArgs e)
         {
             listviewMaterials.Invalidate();
         }
+
+        #endregion
     }
 }
