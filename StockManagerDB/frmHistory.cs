@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BrightIdeasSoftware;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -56,6 +57,18 @@ namespace StockManagerDB
             olvcValidUntil.AspectGetter = delegate (object x) { return ((Part)x).ValidUntil; };
             olvcStatus.AspectGetter = delegate (object x) { return ((Part)x).Status; };
             olvcVersion.AspectGetter = delegate (object x) { return ((Part)x).Version; };
+
+
+            // Make the decoration
+            RowBorderDecoration rbd = new RowBorderDecoration();
+            rbd.BorderPen = new Pen(Color.FromArgb(128, Color.DeepSkyBlue), 2);
+            rbd.BoundsPadding = new Size(1, 1);
+            rbd.CornerRounding = 4.0f;
+
+            // Put the decoration onto the hot item
+            listviewParts.HotItemStyle = new HotItemStyle();
+            listviewParts.HotItemStyle.BackColor = Color.Azure;
+            listviewParts.HotItemStyle.Decoration = rbd;
         }
     }
 }

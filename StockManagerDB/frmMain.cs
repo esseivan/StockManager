@@ -285,6 +285,22 @@ namespace StockManagerDB
             olvcPrice2.AspectGetter = delegate (object x) { return ((Part)x).Price; };
             olvcSupplier2.AspectGetter = delegate (object x) { return ((Part)x).Supplier; };
             olvcSPN2.AspectGetter = delegate (object x) { return ((Part)x).SPN; };
+
+            // Make the decoration
+            RowBorderDecoration rbd = new RowBorderDecoration();
+            rbd.BorderPen = new Pen(Color.FromArgb(128, Color.DeepSkyBlue), 2);
+            rbd.BoundsPadding = new Size(1, 1);
+            rbd.CornerRounding = 4.0f;
+
+            // Put the decoration onto the hot item
+            listviewParts.HotItemStyle = new HotItemStyle();
+            listviewParts.HotItemStyle.BackColor = Color.Azure;
+            listviewParts.HotItemStyle.Decoration = rbd;
+
+            // Put the decoration onto the hot item
+            listviewChecked.HotItemStyle = new HotItemStyle();
+            listviewChecked.HotItemStyle.BackColor = Color.Azure;
+            listviewChecked.HotItemStyle.Decoration = rbd;
         }
 
         #region TextFiltering
@@ -698,15 +714,6 @@ namespace StockManagerDB
             }
         }
 
-        private void listviewParts_CellEditStarting(object sender, CellEditEventArgs e)
-        {
-            // Column index 0 is select checkboxes. Quit if this column is being edited
-            if (e.Column.Index == 0)
-            {
-                e.Cancel = true;
-            }
-        }
-
         /// <summary>
         /// Called when a cell is edited
         /// </summary>
@@ -727,7 +734,7 @@ namespace StockManagerDB
                 throw new InvalidOperationException("Unable to edit 'undefined'");
             }
             // Verify that an actual change is made
-            if (part.Parameters[editedParameter].Equals(newValue))
+            if (part.Parameters[editedParameter]?.Equals(newValue) ?? false)
             {
                 // No changes
                 LoggerClass.Write("No change detected. Aborting...");
@@ -938,12 +945,100 @@ namespace StockManagerDB
             }
         }
 
-        public class CsvPartImport
+        public bool ActionExportParts()
         {
-            public string MPN { get; set; }
-            public string Quantity { get; set; }
-            public string Description { get; set; }
-            public string SPN { get; set; }
+            if (!IsFileLoaded)
+            {
+                LoggerClass.Write("Unable to process action. No file is loaded.", Logger.LogLevels.Debug);
+                MessageBox.Show("No file loaded ! Open or create a new one", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+
+            // Ask save path
+            SaveFileDialog fsd = new SaveFileDialog()
+            {
+                Filter = "StockManager Data|*.smd|All files|*.*",
+            };
+            if (fsd.ShowDialog() != DialogResult.OK)
+            {
+                return false;
+            }
+
+            if (File.Exists(fsd.FileName))
+            {
+                LoggerClass.Write($"Unable to export... File already exists", Logger.LogLevels.Debug);
+                MessageBox.Show("Unable to export parts. The selected file already exists...", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+
+            LoggerClass.Write($"Exporting parts...", Logger.LogLevels.Debug);
+            List<Part> parts = GetPartForProcess();
+
+            LoggerClass.Write($"{parts.Count} part(s) found for export", Logger.LogLevels.Debug);
+
+            Dictionary<string, Part> exportParts = new Dictionary<string, Part>();
+            parts.ForEach((p) => exportParts.Add(p.MPN, p));
+            DataExportClass dec = new DataExportClass(exportParts, null);
+
+            SettingsManager.SaveTo(fsd.FileName, dec, backup: false, indent: true, zipFile: true);
+
+            return true;
+        }
+
+        public bool ActionImportParts()
+        {
+            if (!IsFileLoaded)
+            {
+                LoggerClass.Write("Unable to process action. No file is loaded.", Logger.LogLevels.Debug);
+                MessageBox.Show("No file loaded ! Open or create a new one", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+
+            // Ask save path
+            OpenFileDialog ofd = new OpenFileDialog()
+            {
+                Filter = "StockManager Data|*.smd|All files|*.*",
+            };
+            if (ofd.ShowDialog() != DialogResult.OK)
+            {
+                return false;
+            }
+
+            LoggerClass.Write($"Importing parts...", Logger.LogLevels.Debug);
+
+            SettingsManager.LoadFrom(ofd.FileName, out DataExportClass dec, isZipped: true);
+
+            if ((dec == null) || (dec.Parts == null) || (dec.Parts.Count == 0))
+            {
+                LoggerClass.Write("No data found...");
+                MessageBox.Show("No data found in this file...", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+
+            LoggerClass.Write($"{dec.Parts.Count} part(s) found to import...");
+
+            // Confirmation
+            if (MessageBox.Show($"Please confirm the additions of '{dec.Parts.Count}' parts to the current databse. This cannot be undone\nContinue ?", "Warning", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning) != DialogResult.Yes)
+                return false;
+
+            int partCounter = 0;
+            foreach (Part part in dec.Parts)
+            {
+                if (data.AddPart(part))
+                {
+                    partCounter++;
+                }
+                else
+                {
+                    LoggerClass.Write($"Part MPN='{part.MPN}' already present... Skipped");
+                }
+            }
+
+            PartsHaveChanged();
+            SetStatus($"{partCounter}/{dec.Parts.Count} part(s) imported !", Color.Blue);
+            MessageBox.Show($"{partCounter}/{dec.Parts.Count} part(s) imported !", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            return true;
         }
 
         #endregion
@@ -1100,6 +1195,7 @@ namespace StockManagerDB
             }
 
             Clipboard.SetText(selectedPart.MPN);
+            SetStatus("Copied to clipboard...");
         }
         private void btnPartAdd_Click(object sender, EventArgs e)
         {
@@ -1134,8 +1230,16 @@ namespace StockManagerDB
         {
             data.Save();
         }
+        private void exportPartsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Export the parts
+            ActionExportParts();
+        }
+        private void importPartsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ActionImportParts();
+        }
 
         #endregion
-
     }
 }

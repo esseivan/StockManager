@@ -46,6 +46,7 @@
             this.onlyAffectCheckedPartsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.makeOrderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exportPartsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.selectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.checkAllInViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.uncheckAllInViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -90,6 +91,8 @@
             this.labelStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.filterHighlightRenderer = new BrightIdeasSoftware.HighlightTextRenderer();
             this.statusTimeoutTimer = new System.Windows.Forms.Timer(this.components);
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.importPartsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -218,7 +221,10 @@
             this.actionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.onlyAffectCheckedPartsToolStripMenuItem,
             this.toolStripSeparator1,
-            this.makeOrderToolStripMenuItem});
+            this.makeOrderToolStripMenuItem,
+            this.toolStripSeparator3,
+            this.exportPartsToolStripMenuItem,
+            this.importPartsToolStripMenuItem});
             this.actionsToolStripMenuItem.Name = "actionsToolStripMenuItem";
             this.actionsToolStripMenuItem.Size = new System.Drawing.Size(59, 20);
             this.actionsToolStripMenuItem.Text = "Actions";
@@ -241,6 +247,13 @@
             this.makeOrderToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
             this.makeOrderToolStripMenuItem.Text = "Make Order";
             this.makeOrderToolStripMenuItem.Click += new System.EventHandler(this.makeOrderToolStripMenuItem_Click);
+            // 
+            // exportPartsToolStripMenuItem
+            // 
+            this.exportPartsToolStripMenuItem.Name = "exportPartsToolStripMenuItem";
+            this.exportPartsToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
+            this.exportPartsToolStripMenuItem.Text = "Export parts";
+            this.exportPartsToolStripMenuItem.Click += new System.EventHandler(this.exportPartsToolStripMenuItem_Click);
             // 
             // selectionToolStripMenuItem
             // 
@@ -358,7 +371,6 @@
             // 
             // btnPartAdd
             // 
-            this.btnPartAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnPartAdd.BackgroundImage = global::StockManagerDB.Properties.Resources.add;
             this.btnPartAdd.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.btnPartAdd.Location = new System.Drawing.Point(6, 19);
@@ -370,7 +382,6 @@
             // 
             // btnPartDup
             // 
-            this.btnPartDup.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnPartDup.BackgroundImage = global::StockManagerDB.Properties.Resources.dup;
             this.btnPartDup.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.btnPartDup.Location = new System.Drawing.Point(35, 19);
@@ -421,7 +432,6 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.listviewParts.AutoGenerateColumns = false;
             this.listviewParts.CellEditActivation = BrightIdeasSoftware.ObjectListView.CellEditActivateMode.DoubleClick;
-            this.listviewParts.CellEditUseWholeCell = false;
             this.listviewParts.CheckBoxes = true;
             this.listviewParts.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.olvcSelect,
@@ -462,7 +472,6 @@
             this.listviewParts.View = System.Windows.Forms.View.Details;
             this.listviewParts.VirtualMode = true;
             this.listviewParts.CellEditFinished += new BrightIdeasSoftware.CellEditEventHandler(this.listviewParts_CellEditFinished);
-            this.listviewParts.CellEditStarting += new BrightIdeasSoftware.CellEditEventHandler(this.listviewParts_CellEditStarting);
             this.listviewParts.CellEditRequested += new BrightIdeasSoftware.CellEditEventHandler(this.listviewParts_CellEditRequested);
             this.listviewParts.CellRightClick += new System.EventHandler<BrightIdeasSoftware.CellRightClickEventArgs>(this.listviewParts_CellRightClick);
             this.listviewParts.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.listviewParts_ItemChecked);
@@ -470,6 +479,7 @@
             // 
             // olvcSelect
             // 
+            this.olvcSelect.IsEditable = false;
             this.olvcSelect.Text = "Select";
             this.olvcSelect.Width = 30;
             // 
@@ -531,7 +541,6 @@
             // 
             // btnCheckedPartDel
             // 
-            this.btnCheckedPartDel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnCheckedPartDel.BackgroundImage = global::StockManagerDB.Properties.Resources.del;
             this.btnCheckedPartDel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.btnCheckedPartDel.Location = new System.Drawing.Point(6, 19);
@@ -570,7 +579,6 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.listviewChecked.AutoGenerateColumns = false;
-            this.listviewChecked.CellEditUseWholeCell = false;
             this.listviewChecked.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.olvcMPN2,
             this.olvcMAN2,
@@ -694,6 +702,18 @@
             this.statusTimeoutTimer.Interval = 2500;
             this.statusTimeoutTimer.Tick += new System.EventHandler(this.statusTimeoutTimer_Tick);
             // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(205, 6);
+            // 
+            // importPartsToolStripMenuItem
+            // 
+            this.importPartsToolStripMenuItem.Name = "importPartsToolStripMenuItem";
+            this.importPartsToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
+            this.importPartsToolStripMenuItem.Text = "Import parts";
+            this.importPartsToolStripMenuItem.Click += new System.EventHandler(this.importPartsToolStripMenuItem_Click);
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -786,6 +806,9 @@
         private System.Windows.Forms.ToolStripMenuItem openHistoryToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        private System.Windows.Forms.ToolStripMenuItem exportPartsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+        private System.Windows.Forms.ToolStripMenuItem importPartsToolStripMenuItem;
     }
 }
 
