@@ -1,11 +1,14 @@
 ﻿using BrightIdeasSoftware;
 using ESNLib.Controls;
+using ESNLib.Tools;
 using Microsoft.Vbe.Interop;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -80,6 +83,52 @@ namespace StockManagerDB
             olvcPrice.AspectGetter = delegate (object x) { return ((Material)x).PartLink?.Price; };
             olvcSupplier.AspectGetter = delegate (object x) { return ((Material)x).PartLink?.Supplier; };
             olvcSPN.AspectGetter = delegate (object x) { return ((Material)x).PartLink?.SPN; };
+
+            olvcTotalQuantity.AspectGetter = delegate (object x) { return ((Material)x).Quantity * (byte)numMult.Value; };
+            olvcTotalPrice.AspectGetter = delegate (object x) { return (((Material)x).PartLink?.Price ?? 0) * (byte)numMult.Value; };
+            olvcAvailable.AspectGetter = delegate (object x)
+            {
+                bool isAvailable = (((Material)x).Quantity * (byte)numMult.Value) <= (((Material)x).PartLink?.Stock ?? 0);
+                return isAvailable ? "Yes" : "No";
+            };
+            olvcAvailable.Renderer = new AvailableCellRenderer();
+
+
+            // Make the decoration
+            RowBorderDecoration rbd = new RowBorderDecoration();
+            rbd.BorderPen = new Pen(Color.FromArgb(128, Color.DeepSkyBlue), 2);
+            rbd.BoundsPadding = new Size(1, 1);
+            rbd.CornerRounding = 4.0f;
+
+            // Put the decoration onto the hot item
+            listviewMaterials.HotItemStyle = new HotItemStyle();
+            listviewMaterials.HotItemStyle.BackColor = Color.Azure;
+            listviewMaterials.HotItemStyle.Decoration = rbd;
+        }
+
+        public class AvailableCellRenderer : BaseRenderer
+        {
+            public override void Render(Graphics g, Rectangle r)
+            {
+                string stateText = this.GetText();
+                bool isAvailable = stateText.Equals("Yes");
+
+                Brush brush = isAvailable ? Brushes.LightGreen : Brushes.LightCoral;
+                g.FillRectangle(brush, r);
+
+                StringFormat fmt = new StringFormat(StringFormatFlags.NoWrap)
+                {
+                    LineAlignment = StringAlignment.Center,
+                    Trimming = StringTrimming.EllipsisCharacter
+                };
+                switch (this.Column.TextAlign)
+                {
+                    case HorizontalAlignment.Center: fmt.Alignment = StringAlignment.Center; break;
+                    case HorizontalAlignment.Left: fmt.Alignment = StringAlignment.Near; break;
+                    case HorizontalAlignment.Right: fmt.Alignment = StringAlignment.Far; break;
+                }
+                g.DrawString(this.GetText(), this.Font, this.TextBrush, r, fmt);
+            }
         }
 
         #endregion
@@ -635,6 +684,81 @@ namespace StockManagerDB
 
         #endregion
 
+        #region Actions
+
+        public bool ActionExportProjects()
+        {
+            // Ask save path
+            SaveFileDialog fsd = new SaveFileDialog()
+            {
+                Filter = "StockManager Data|*.smd|All files|*.*",
+            };
+            if (fsd.ShowDialog() != DialogResult.OK)
+            {
+                return false;
+            }
+
+            if (File.Exists(fsd.FileName))
+            {
+                LoggerClass.Write($"Unable to export... File already exists", Logger.LogLevels.Debug);
+                MessageBox.Show("Unable to export projects. The selected file already exists...", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+
+            LoggerClass.Write($"Exporting projects...", Logger.LogLevels.Debug);
+            Dictionary<string, Project> projects = data.Projects;
+
+            LoggerClass.Write($"{projects.Count} project(s) found for export", Logger.LogLevels.Debug);
+
+            DataExportClass dec = new DataExportClass(null, projects);
+
+            SettingsManager.SaveTo(fsd.FileName, dec, backup: false, indent: true, zipFile: true);
+
+            return true;
+        }
+
+        public bool ImportProjects()
+        {
+            // Ask file
+            OpenFileDialog ofd = new OpenFileDialog()
+            {
+                Filter = "StockManager Data|*.smd|All files|*.*",
+            };
+            if (ofd.ShowDialog() != DialogResult.OK)
+            {
+                return false;
+            }
+
+            SettingsManager.LoadFrom(ofd.FileName, out DataExportClass dec, isZipped: true);
+
+            List<Project> projects = dec.Projects;
+            foreach (Project project in projects)
+            {
+                if (!data.Projects.ContainsKey(project.Name))
+                {
+                    data.Projects.Add(project.Name, project);
+                }
+                else
+                {
+                    Project currentProject = data.Projects[project.Name];
+                    // Add versions
+                    foreach (ProjectVersion version in project.Versions.Values)
+                    {
+                        if(!currentProject.Versions.ContainsKey(version.Version))
+                        {
+                            currentProject.Versions.Add(version.Version, version);
+                        }
+
+                    }
+                }
+            }
+
+            ProjectsHaveChanged();
+            return true;
+        }
+
+        #endregion
+
         #region Misc Events
 
         private void quitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -724,7 +848,20 @@ namespace StockManagerDB
         {
             listviewMaterials.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
         }
+        private void numMult_ValueChanged(object sender, EventArgs e)
+        {
+            listviewMaterials.Invalidate();
+        }
+        private void exportAllProjectsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ActionExportProjects();
+        }
+        private void importProjectsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ImportProjects();
+        }
 
         #endregion
+
     }
 }

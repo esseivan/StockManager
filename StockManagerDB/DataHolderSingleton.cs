@@ -3,10 +3,10 @@ using Microsoft.Office.Core;
 using Microsoft.Vbe.Interop;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace StockManagerDB
 {
@@ -183,10 +183,17 @@ namespace StockManagerDB
         /// </summary>
         public void Save()
         {
-            SettingsManager.SaveTo(Filepath, new DataExportClass(Parts, Projects), backup: true, indent: true);
+            try
+            {
+                SettingsManager.SaveTo(Filepath, new DataExportClass(Parts, Projects), backup: true, indent: true);
 
-            // Also save the history
-            DataHolderHistorySingleton.Instance.Save();
+                // Also save the history
+                DataHolderHistorySingleton.Instance?.Save();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Unable to save. Maybe the file is open in another process.\nError:\n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         /// <summary>
@@ -211,38 +218,6 @@ namespace StockManagerDB
             _instance = s;
 
             return s;
-        }
-    }
-
-    /// <summary>
-    /// Used to export the data into a file
-    /// </summary>
-    internal class DataExportClass
-    {
-        public DataExportClass()
-        {
-        }
-
-        public DataExportClass(Dictionary<string, Part> parts, Dictionary<string, Project> projects)
-        {
-            Parts = parts.Values.ToList();
-            Parts.Sort(new Part.CompareMPN());
-
-            Projects = projects.Values.ToList();
-            Projects.Sort(new Project.CompareName());
-        }
-
-        public List<Part> Parts { get; set; }
-        public List<Project> Projects { get; set; }
-
-        public Dictionary<string, Part> GetParts()
-        {
-            return new Dictionary<string, Part>(Parts.ToDictionary(p => p.MPN, p => p));
-        }
-
-        public Dictionary<string, Project> GetProjects()
-        {
-            return new Dictionary<string, Project>(Projects.ToDictionary(p => p.Name, p => p));
         }
     }
 }

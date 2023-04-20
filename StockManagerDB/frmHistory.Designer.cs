@@ -39,11 +39,11 @@
             this.olvcPrice = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcSupplier = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcSPN = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.filterHighlightRenderer = new BrightIdeasSoftware.HighlightTextRenderer();
             this.olvcValidFrom = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcValidUntil = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvcVersion = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcStatus = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvcVersion = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.filterHighlightRenderer = new BrightIdeasSoftware.HighlightTextRenderer();
             ((System.ComponentModel.ISupportInitialize)(this.listviewParts)).BeginInit();
             this.SuspendLayout();
             // 
@@ -68,7 +68,6 @@
             this.listviewParts.AlternateRowBackColor = System.Drawing.Color.LightBlue;
             this.listviewParts.AutoGenerateColumns = false;
             this.listviewParts.CellEditActivation = BrightIdeasSoftware.ObjectListView.CellEditActivateMode.DoubleClick;
-            this.listviewParts.CellEditUseWholeCell = false;
             this.listviewParts.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.olvcMPN,
             this.olvcMAN,
@@ -178,15 +177,15 @@
             this.olvcValidUntil.Text = "Valid Until";
             this.olvcValidUntil.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
-            // olvcVersion
-            // 
-            this.olvcVersion.Text = "Version";
-            this.olvcVersion.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
             // olvcStatus
             // 
             this.olvcStatus.Text = "Status";
             this.olvcStatus.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // olvcVersion
+            // 
+            this.olvcVersion.Text = "Version";
+            this.olvcVersion.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // frmHistory
             // 

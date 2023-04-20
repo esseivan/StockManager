@@ -1039,7 +1039,7 @@ namespace BrightIdeasSoftware
             get { return cellEditUseWholeCell; }
             set { cellEditUseWholeCell = value; }
         }
-        private bool cellEditUseWholeCell;
+        private bool cellEditUseWholeCell = true;
 
         /// <summary>
         /// Gets or sets the engine that will handle key presses during a cell edit operation.
