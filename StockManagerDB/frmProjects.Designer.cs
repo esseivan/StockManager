@@ -214,10 +214,12 @@
             // olvcQuantity
             // 
             this.olvcQuantity.Text = "Quantity";
+            this.olvcQuantity.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // olvcReference
             // 
             this.olvcReference.Text = "Reference";
+            this.olvcReference.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // olvcMAN
             // 
@@ -495,6 +497,7 @@
             0,
             0,
             0});
+            this.numMult.ValueChanged += new System.EventHandler(this.numMult_ValueChanged);
             // 
             // label1
             // 
@@ -510,16 +513,19 @@
             // 
             this.olvcTotalQuantity.IsEditable = false;
             this.olvcTotalQuantity.Text = "Total Quantity";
+            this.olvcTotalQuantity.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // olvcTotalPrice
             // 
             this.olvcTotalPrice.IsEditable = false;
             this.olvcTotalPrice.Text = "Total Price";
+            this.olvcTotalPrice.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // olvcAvailable
             // 
             this.olvcAvailable.IsEditable = false;
             this.olvcAvailable.Text = "Available";
+            this.olvcAvailable.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // frmProjects
             // 

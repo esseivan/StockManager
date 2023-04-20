@@ -285,6 +285,17 @@ namespace StockManagerDB
             olvcPrice2.AspectGetter = delegate (object x) { return ((Part)x).Price; };
             olvcSupplier2.AspectGetter = delegate (object x) { return ((Part)x).Supplier; };
             olvcSPN2.AspectGetter = delegate (object x) { return ((Part)x).SPN; };
+
+            // Make the decoration
+            RowBorderDecoration rbd = new RowBorderDecoration();
+            rbd.BorderPen = new Pen(Color.FromArgb(128, Color.Red), 2);
+            rbd.BoundsPadding = new Size(1, 1);
+            rbd.CornerRounding = 4.0f;
+
+            // Put the decoration onto the hot item
+            listviewParts.HotItemStyle = new HotItemStyle();
+            listviewParts.HotItemStyle.BackColor = Color.LightBlue;
+            listviewParts.HotItemStyle.Decoration = rbd;
         }
 
         #region TextFiltering

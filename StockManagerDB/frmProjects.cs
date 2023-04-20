@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -83,7 +84,38 @@ namespace StockManagerDB
 
             olvcTotalQuantity.AspectGetter = delegate (object x) { return ((Material)x).Quantity * (byte)numMult.Value; };
             olvcTotalPrice.AspectGetter = delegate (object x) { return (((Material)x).PartLink?.Price ?? 0) * (byte)numMult.Value; };
-            olvcAvailable.AspectGetter = delegate (object x) { return (((Material)x).Quantity * (byte)numMult.Value) <= (((Material)x).PartLink?.Stock ?? 0); };
+            olvcAvailable.AspectGetter = delegate (object x)
+            {
+                bool isAvailable = (((Material)x).Quantity * (byte)numMult.Value) <= (((Material)x).PartLink?.Stock ?? 0);
+                return isAvailable ? "Yes" : "No";
+            };
+
+            olvcAvailable.Renderer = new GradientRenderer();
+        }
+
+        public class GradientRenderer : BaseRenderer
+        {
+            public override void Render(Graphics g, Rectangle r)
+            {
+                string stateText = this.GetText();
+                bool isAvailable = stateText.Equals("Yes");
+
+                Brush brush = isAvailable ? Brushes.LightGreen : Brushes.Coral;
+                g.FillRectangle(brush, r);
+
+                StringFormat fmt = new StringFormat(StringFormatFlags.NoWrap)
+                {
+                    LineAlignment = StringAlignment.Center,
+                    Trimming = StringTrimming.EllipsisCharacter
+                };
+                switch (this.Column.TextAlign)
+                {
+                    case HorizontalAlignment.Center: fmt.Alignment = StringAlignment.Center; break;
+                    case HorizontalAlignment.Left: fmt.Alignment = StringAlignment.Near; break;
+                    case HorizontalAlignment.Right: fmt.Alignment = StringAlignment.Far; break;
+                }
+                g.DrawString(this.GetText(), this.Font, this.TextBrush, r, fmt);
+            }
         }
 
         #endregion
@@ -730,5 +762,10 @@ namespace StockManagerDB
         }
 
         #endregion
+
+        private void numMult_ValueChanged(object sender, EventArgs e)
+        {
+            listviewMaterials.Invalidate();
+        }
     }
 }
