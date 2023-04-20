@@ -1,5 +1,6 @@
 ﻿using BrightIdeasSoftware;
 using ESNLib.Controls;
+using ESNLib.Tools;
 using Microsoft.Vbe.Interop;
 using System;
 using System.Collections.Generic;
@@ -7,6 +8,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -682,6 +684,41 @@ namespace StockManagerDB
 
         #endregion
 
+        #region Actions
+
+        public bool ActionExportProjects()
+        {
+            // Ask save path
+            SaveFileDialog fsd = new SaveFileDialog()
+            {
+                Filter = "StockManager Data|*.smd|All files|*.*",
+            };
+            if (fsd.ShowDialog() != DialogResult.OK)
+            {
+                return false;
+            }
+
+            if (File.Exists(fsd.FileName))
+            {
+                LoggerClass.Write($"Unable to export... File already exists", Logger.LogLevels.Debug);
+                MessageBox.Show("Unable to export projects. The selected file already exists...", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+
+            LoggerClass.Write($"Exporting projects...", Logger.LogLevels.Debug);
+            Dictionary<string, Project> projects = data.Projects;
+
+            LoggerClass.Write($"{projects.Count} project(s) found for export", Logger.LogLevels.Debug);
+
+            DataExportClass dec = new DataExportClass(null, projects);
+
+            SettingsManager.SaveTo(fsd.FileName, dec, backup: false, indent: true, zipFile: true);
+
+            return true;
+        }
+
+        #endregion
+
         #region Misc Events
 
         private void quitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -774,6 +811,10 @@ namespace StockManagerDB
         private void numMult_ValueChanged(object sender, EventArgs e)
         {
             listviewMaterials.Invalidate();
+        }
+        private void exportAllProjectsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ActionExportProjects();
         }
 
         #endregion

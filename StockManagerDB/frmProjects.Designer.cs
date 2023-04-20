@@ -69,6 +69,8 @@
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.label1 = new System.Windows.Forms.Label();
             this.numMult = new System.Windows.Forms.NumericUpDown();
+            this.exportAllProjectsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.listviewMaterials)).BeginInit();
             this.groupBox1.SuspendLayout();
@@ -99,6 +101,8 @@
             // fileToolStripMenuItem
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.exportAllProjectsToolStripMenuItem,
+            this.toolStripSeparator1,
             this.quitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
@@ -108,8 +112,8 @@
             // 
             this.quitToolStripMenuItem.Name = "quitToolStripMenuItem";
             this.quitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Q)));
-            this.quitToolStripMenuItem.Size = new System.Drawing.Size(140, 22);
-            this.quitToolStripMenuItem.Text = "Quit";
+            this.quitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.quitToolStripMenuItem.Text = "Close";
             this.quitToolStripMenuItem.Click += new System.EventHandler(this.quitToolStripMenuItem_Click);
             // 
             // viewToolStripMenuItem
@@ -123,7 +127,7 @@
             // resizeColumnsToolStripMenuItem
             // 
             this.resizeColumnsToolStripMenuItem.Name = "resizeColumnsToolStripMenuItem";
-            this.resizeColumnsToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
+            this.resizeColumnsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.resizeColumnsToolStripMenuItem.Text = "Resize columns";
             this.resizeColumnsToolStripMenuItem.Click += new System.EventHandler(this.resizeColumnsToolStripMenuItem_Click);
             // 
@@ -526,6 +530,18 @@
             0});
             this.numMult.ValueChanged += new System.EventHandler(this.numMult_ValueChanged);
             // 
+            // exportAllProjectsToolStripMenuItem
+            // 
+            this.exportAllProjectsToolStripMenuItem.Name = "exportAllProjectsToolStripMenuItem";
+            this.exportAllProjectsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.exportAllProjectsToolStripMenuItem.Text = "Export all projects";
+            this.exportAllProjectsToolStripMenuItem.Click += new System.EventHandler(this.exportAllProjectsToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
+            // 
             // frmProjects
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -595,5 +611,7 @@
         private BrightIdeasSoftware.OLVColumn olvcTotalQuantity;
         private BrightIdeasSoftware.OLVColumn olvcTotalPrice;
         private BrightIdeasSoftware.OLVColumn olvcAvailable;
+        private System.Windows.Forms.ToolStripMenuItem exportAllProjectsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
     }
 }
