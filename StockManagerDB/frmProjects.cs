@@ -90,6 +90,18 @@ namespace StockManagerDB
                 return isAvailable ? "Yes" : "No";
             };
             olvcAvailable.Renderer = new AvailableCellRenderer();
+
+
+            // Make the decoration
+            RowBorderDecoration rbd = new RowBorderDecoration();
+            rbd.BorderPen = new Pen(Color.FromArgb(128, Color.DeepSkyBlue), 2);
+            rbd.BoundsPadding = new Size(1, 1);
+            rbd.CornerRounding = 4.0f;
+
+            // Put the decoration onto the hot item
+            listviewMaterials.HotItemStyle = new HotItemStyle();
+            listviewMaterials.HotItemStyle.BackColor = Color.Azure;
+            listviewMaterials.HotItemStyle.Decoration = rbd;
         }
 
         public class AvailableCellRenderer : BaseRenderer
