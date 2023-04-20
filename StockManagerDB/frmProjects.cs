@@ -80,6 +80,10 @@ namespace StockManagerDB
             olvcPrice.AspectGetter = delegate (object x) { return ((Material)x).PartLink?.Price; };
             olvcSupplier.AspectGetter = delegate (object x) { return ((Material)x).PartLink?.Supplier; };
             olvcSPN.AspectGetter = delegate (object x) { return ((Material)x).PartLink?.SPN; };
+
+            olvcTotalQuantity.AspectGetter = delegate (object x) { return ((Material)x).Quantity * (byte)numMult.Value; };
+            olvcTotalPrice.AspectGetter = delegate (object x) { return (((Material)x).PartLink?.Price ?? 0) * (byte)numMult.Value; };
+            olvcAvailable.AspectGetter = delegate (object x) { return (((Material)x).Quantity * (byte)numMult.Value) <= (((Material)x).PartLink?.Stock ?? 0); };
         }
 
         #endregion

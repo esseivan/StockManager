@@ -358,7 +358,6 @@
             // 
             // btnPartAdd
             // 
-            this.btnPartAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnPartAdd.BackgroundImage = global::StockManagerDB.Properties.Resources.add;
             this.btnPartAdd.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.btnPartAdd.Location = new System.Drawing.Point(6, 19);
@@ -370,7 +369,6 @@
             // 
             // btnPartDup
             // 
-            this.btnPartDup.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnPartDup.BackgroundImage = global::StockManagerDB.Properties.Resources.dup;
             this.btnPartDup.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.btnPartDup.Location = new System.Drawing.Point(35, 19);
@@ -462,7 +460,6 @@
             this.listviewParts.View = System.Windows.Forms.View.Details;
             this.listviewParts.VirtualMode = true;
             this.listviewParts.CellEditFinished += new BrightIdeasSoftware.CellEditEventHandler(this.listviewParts_CellEditFinished);
-            this.listviewParts.CellEditStarting += new BrightIdeasSoftware.CellEditEventHandler(this.listviewParts_CellEditStarting);
             this.listviewParts.CellEditRequested += new BrightIdeasSoftware.CellEditEventHandler(this.listviewParts_CellEditRequested);
             this.listviewParts.CellRightClick += new System.EventHandler<BrightIdeasSoftware.CellRightClickEventArgs>(this.listviewParts_CellRightClick);
             this.listviewParts.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.listviewParts_ItemChecked);
@@ -470,6 +467,7 @@
             // 
             // olvcSelect
             // 
+            this.olvcSelect.IsEditable = false;
             this.olvcSelect.Text = "Select";
             this.olvcSelect.Width = 30;
             // 

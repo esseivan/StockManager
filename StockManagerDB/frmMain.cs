@@ -698,15 +698,6 @@ namespace StockManagerDB
             }
         }
 
-        private void listviewParts_CellEditStarting(object sender, CellEditEventArgs e)
-        {
-            // Column index 0 is select checkboxes. Quit if this column is being edited
-            if (e.Column.Index == 0)
-            {
-                e.Cancel = true;
-            }
-        }
-
         /// <summary>
         /// Called when a cell is edited
         /// </summary>
@@ -727,7 +718,7 @@ namespace StockManagerDB
                 throw new InvalidOperationException("Unable to edit 'undefined'");
             }
             // Verify that an actual change is made
-            if (part.Parameters[editedParameter].Equals(newValue))
+            if (part.Parameters[editedParameter]?.Equals(newValue) ?? false)
             {
                 // No changes
                 LoggerClass.Write("No change detected. Aborting...");
@@ -1100,6 +1091,7 @@ namespace StockManagerDB
             }
 
             Clipboard.SetText(selectedPart.MPN);
+            SetStatus("Copied to clipboard...");
         }
         private void btnPartAdd_Click(object sender, EventArgs e)
         {
