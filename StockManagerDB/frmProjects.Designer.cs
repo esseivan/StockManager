@@ -39,13 +39,16 @@
             this.olvcMPN = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcQuantity = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcReference = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvcMAN = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvcStock = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvcTotalQuantity = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvcAvailable = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvcPrice = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvcTotalPrice = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvcLocation = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcDesc = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcCat = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvcLocation = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvcStock = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvcMAN = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcLowStock = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvcPrice = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcSupplier = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcSPN = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.comboboxProjects = new System.Windows.Forms.ComboBox();
@@ -64,11 +67,8 @@
             this.btnVerDup = new System.Windows.Forms.Button();
             this.btnVerRen = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.numMult = new System.Windows.Forms.NumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
-            this.olvcTotalQuantity = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvcTotalPrice = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvcAvailable = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.numMult = new System.Windows.Forms.NumericUpDown();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.listviewMaterials)).BeginInit();
             this.groupBox1.SuspendLayout();
@@ -153,7 +153,6 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.listviewMaterials.AutoGenerateColumns = false;
             this.listviewMaterials.CellEditActivation = BrightIdeasSoftware.ObjectListView.CellEditActivateMode.DoubleClick;
-            this.listviewMaterials.CellEditUseWholeCell = false;
             this.listviewMaterials.CheckBoxes = true;
             this.listviewMaterials.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.olvcSelect,
@@ -221,10 +220,42 @@
             this.olvcReference.Text = "Reference";
             this.olvcReference.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
-            // olvcMAN
+            // olvcStock
             // 
-            this.olvcMAN.Text = "Manufacturer";
-            this.olvcMAN.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.olvcStock.MinimumWidth = 75;
+            this.olvcStock.Text = "Stock";
+            this.olvcStock.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.olvcStock.Width = 75;
+            // 
+            // olvcTotalQuantity
+            // 
+            this.olvcTotalQuantity.IsEditable = false;
+            this.olvcTotalQuantity.Text = "Total Quantity";
+            this.olvcTotalQuantity.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // olvcAvailable
+            // 
+            this.olvcAvailable.IsEditable = false;
+            this.olvcAvailable.Text = "Available";
+            this.olvcAvailable.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // olvcPrice
+            // 
+            this.olvcPrice.MinimumWidth = 75;
+            this.olvcPrice.Text = "Price";
+            this.olvcPrice.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.olvcPrice.Width = 75;
+            // 
+            // olvcTotalPrice
+            // 
+            this.olvcTotalPrice.IsEditable = false;
+            this.olvcTotalPrice.Text = "Total Price";
+            this.olvcTotalPrice.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // olvcLocation
+            // 
+            this.olvcLocation.Text = "Location";
+            this.olvcLocation.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // olvcDesc
             // 
@@ -236,17 +267,10 @@
             this.olvcCat.Text = "Category";
             this.olvcCat.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
-            // olvcLocation
+            // olvcMAN
             // 
-            this.olvcLocation.Text = "Location";
-            this.olvcLocation.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // olvcStock
-            // 
-            this.olvcStock.MinimumWidth = 75;
-            this.olvcStock.Text = "Stock";
-            this.olvcStock.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.olvcStock.Width = 75;
+            this.olvcMAN.Text = "Manufacturer";
+            this.olvcMAN.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // olvcLowStock
             // 
@@ -254,13 +278,6 @@
             this.olvcLowStock.Text = "LowStock";
             this.olvcLowStock.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.olvcLowStock.Width = 75;
-            // 
-            // olvcPrice
-            // 
-            this.olvcPrice.MinimumWidth = 75;
-            this.olvcPrice.Text = "Price";
-            this.olvcPrice.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.olvcPrice.Width = 75;
             // 
             // olvcSupplier
             // 
@@ -480,6 +497,16 @@
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Bill Of Materials";
             // 
+            // label1
+            // 
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(691, 21);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(48, 13);
+            this.label1.TabIndex = 12;
+            this.label1.Text = "Multiplier";
+            // 
             // numMult
             // 
             this.numMult.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -498,34 +525,6 @@
             0,
             0});
             this.numMult.ValueChanged += new System.EventHandler(this.numMult_ValueChanged);
-            // 
-            // label1
-            // 
-            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(691, 21);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(48, 13);
-            this.label1.TabIndex = 12;
-            this.label1.Text = "Multiplier";
-            // 
-            // olvcTotalQuantity
-            // 
-            this.olvcTotalQuantity.IsEditable = false;
-            this.olvcTotalQuantity.Text = "Total Quantity";
-            this.olvcTotalQuantity.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // olvcTotalPrice
-            // 
-            this.olvcTotalPrice.IsEditable = false;
-            this.olvcTotalPrice.Text = "Total Price";
-            this.olvcTotalPrice.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // olvcAvailable
-            // 
-            this.olvcAvailable.IsEditable = false;
-            this.olvcAvailable.Text = "Available";
-            this.olvcAvailable.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // frmProjects
             // 

@@ -419,7 +419,6 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.listviewParts.AutoGenerateColumns = false;
             this.listviewParts.CellEditActivation = BrightIdeasSoftware.ObjectListView.CellEditActivateMode.DoubleClick;
-            this.listviewParts.CellEditUseWholeCell = false;
             this.listviewParts.CheckBoxes = true;
             this.listviewParts.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.olvcSelect,
@@ -567,7 +566,6 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.listviewChecked.AutoGenerateColumns = false;
-            this.listviewChecked.CellEditUseWholeCell = false;
             this.listviewChecked.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.olvcMPN2,
             this.olvcMAN2,
