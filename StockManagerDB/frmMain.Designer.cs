@@ -90,6 +90,7 @@
             this.labelStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.filterHighlightRenderer = new BrightIdeasSoftware.HighlightTextRenderer();
             this.statusTimeoutTimer = new System.Windows.Forms.Timer(this.components);
+            this.exportPartsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -218,7 +219,8 @@
             this.actionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.onlyAffectCheckedPartsToolStripMenuItem,
             this.toolStripSeparator1,
-            this.makeOrderToolStripMenuItem});
+            this.makeOrderToolStripMenuItem,
+            this.exportPartsToolStripMenuItem});
             this.actionsToolStripMenuItem.Name = "actionsToolStripMenuItem";
             this.actionsToolStripMenuItem.Size = new System.Drawing.Size(59, 20);
             this.actionsToolStripMenuItem.Text = "Actions";
@@ -689,6 +691,13 @@
             this.statusTimeoutTimer.Interval = 2500;
             this.statusTimeoutTimer.Tick += new System.EventHandler(this.statusTimeoutTimer_Tick);
             // 
+            // exportPartsToolStripMenuItem
+            // 
+            this.exportPartsToolStripMenuItem.Name = "exportPartsToolStripMenuItem";
+            this.exportPartsToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
+            this.exportPartsToolStripMenuItem.Text = "Export parts";
+            this.exportPartsToolStripMenuItem.Click += new System.EventHandler(this.exportPartsToolStripMenuItem_Click);
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -781,6 +790,7 @@
         private System.Windows.Forms.ToolStripMenuItem openHistoryToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        private System.Windows.Forms.ToolStripMenuItem exportPartsToolStripMenuItem;
     }
 }
 

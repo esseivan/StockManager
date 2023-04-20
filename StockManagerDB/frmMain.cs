@@ -945,12 +945,44 @@ namespace StockManagerDB
             }
         }
 
-        public class CsvPartImport
+        public bool ActionExportParts()
         {
-            public string MPN { get; set; }
-            public string Quantity { get; set; }
-            public string Description { get; set; }
-            public string SPN { get; set; }
+            if (!IsFileLoaded)
+            {
+                LoggerClass.Write("Unable to process action. No file is loaded.", Logger.LogLevels.Debug);
+                MessageBox.Show("No file loaded ! Open or create a new one", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+
+            // Ask save path
+            SaveFileDialog fsd = new SaveFileDialog()
+            {
+                Filter = "StockManager Data|*.smd|All files|*.*",
+            };
+            if (fsd.ShowDialog() != DialogResult.OK)
+            {
+                return false;
+            }
+
+            if (File.Exists(fsd.FileName))
+            {
+                LoggerClass.Write($"Unable to export... File already exists", Logger.LogLevels.Debug);
+                MessageBox.Show("Unable to export parts. The selected file already exists...", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+
+            LoggerClass.Write($"Exporting parts...", Logger.LogLevels.Debug);
+            List<Part> parts = GetPartForProcess();
+
+            LoggerClass.Write($"{parts.Count} part(s) found for export", Logger.LogLevels.Debug);
+
+            Dictionary<string, Part> exportParts = new Dictionary<string, Part>();
+            parts.ForEach((p) => exportParts.Add(p.MPN, p));
+            DataExportClass dec = new DataExportClass(exportParts, null);
+
+            SettingsManager.SaveTo(fsd.FileName, dec, backup: false, indent: true, zipFile: true);
+
+            return true;
         }
 
         #endregion
@@ -1141,6 +1173,11 @@ namespace StockManagerDB
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
             data.Save();
+        }
+        private void exportPartsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Export the parts
+            ActionExportParts();
         }
 
         #endregion
