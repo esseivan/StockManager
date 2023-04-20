@@ -529,7 +529,6 @@
             // 
             // btnCheckedPartDel
             // 
-            this.btnCheckedPartDel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnCheckedPartDel.BackgroundImage = global::StockManagerDB.Properties.Resources.del;
             this.btnCheckedPartDel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.btnCheckedPartDel.Location = new System.Drawing.Point(6, 19);
