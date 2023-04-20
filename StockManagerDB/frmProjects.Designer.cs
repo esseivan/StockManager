@@ -71,6 +71,7 @@
             this.numMult = new System.Windows.Forms.NumericUpDown();
             this.exportAllProjectsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.importProjectsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.listviewMaterials)).BeginInit();
             this.groupBox1.SuspendLayout();
@@ -101,6 +102,7 @@
             // fileToolStripMenuItem
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.importProjectsToolStripMenuItem,
             this.exportAllProjectsToolStripMenuItem,
             this.toolStripSeparator1,
             this.quitToolStripMenuItem});
@@ -542,6 +544,13 @@
             this.toolStripSeparator1.Name = "toolStripSeparator1";
             this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
             // 
+            // importProjectsToolStripMenuItem
+            // 
+            this.importProjectsToolStripMenuItem.Name = "importProjectsToolStripMenuItem";
+            this.importProjectsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.importProjectsToolStripMenuItem.Text = "Import projects";
+            this.importProjectsToolStripMenuItem.Click += new System.EventHandler(this.importProjectsToolStripMenuItem_Click);
+            // 
             // frmProjects
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -613,5 +622,6 @@
         private BrightIdeasSoftware.OLVColumn olvcAvailable;
         private System.Windows.Forms.ToolStripMenuItem exportAllProjectsToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripMenuItem importProjectsToolStripMenuItem;
     }
 }

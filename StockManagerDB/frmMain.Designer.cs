@@ -46,6 +46,7 @@
             this.onlyAffectCheckedPartsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.makeOrderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exportPartsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.selectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.checkAllInViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.uncheckAllInViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -90,7 +91,8 @@
             this.labelStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.filterHighlightRenderer = new BrightIdeasSoftware.HighlightTextRenderer();
             this.statusTimeoutTimer = new System.Windows.Forms.Timer(this.components);
-            this.exportPartsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.importPartsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -220,7 +222,9 @@
             this.onlyAffectCheckedPartsToolStripMenuItem,
             this.toolStripSeparator1,
             this.makeOrderToolStripMenuItem,
-            this.exportPartsToolStripMenuItem});
+            this.toolStripSeparator3,
+            this.exportPartsToolStripMenuItem,
+            this.importPartsToolStripMenuItem});
             this.actionsToolStripMenuItem.Name = "actionsToolStripMenuItem";
             this.actionsToolStripMenuItem.Size = new System.Drawing.Size(59, 20);
             this.actionsToolStripMenuItem.Text = "Actions";
@@ -243,6 +247,13 @@
             this.makeOrderToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
             this.makeOrderToolStripMenuItem.Text = "Make Order";
             this.makeOrderToolStripMenuItem.Click += new System.EventHandler(this.makeOrderToolStripMenuItem_Click);
+            // 
+            // exportPartsToolStripMenuItem
+            // 
+            this.exportPartsToolStripMenuItem.Name = "exportPartsToolStripMenuItem";
+            this.exportPartsToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
+            this.exportPartsToolStripMenuItem.Text = "Export parts";
+            this.exportPartsToolStripMenuItem.Click += new System.EventHandler(this.exportPartsToolStripMenuItem_Click);
             // 
             // selectionToolStripMenuItem
             // 
@@ -691,12 +702,17 @@
             this.statusTimeoutTimer.Interval = 2500;
             this.statusTimeoutTimer.Tick += new System.EventHandler(this.statusTimeoutTimer_Tick);
             // 
-            // exportPartsToolStripMenuItem
+            // toolStripSeparator3
             // 
-            this.exportPartsToolStripMenuItem.Name = "exportPartsToolStripMenuItem";
-            this.exportPartsToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
-            this.exportPartsToolStripMenuItem.Text = "Export parts";
-            this.exportPartsToolStripMenuItem.Click += new System.EventHandler(this.exportPartsToolStripMenuItem_Click);
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(205, 6);
+            // 
+            // importPartsToolStripMenuItem
+            // 
+            this.importPartsToolStripMenuItem.Name = "importPartsToolStripMenuItem";
+            this.importPartsToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
+            this.importPartsToolStripMenuItem.Text = "Import parts";
+            this.importPartsToolStripMenuItem.Click += new System.EventHandler(this.importPartsToolStripMenuItem_Click);
             // 
             // frmMain
             // 
@@ -791,6 +807,8 @@
         private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripMenuItem exportPartsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+        private System.Windows.Forms.ToolStripMenuItem importPartsToolStripMenuItem;
     }
 }
 

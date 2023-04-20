@@ -717,6 +717,46 @@ namespace StockManagerDB
             return true;
         }
 
+        public bool ImportProjects()
+        {
+            // Ask file
+            OpenFileDialog ofd = new OpenFileDialog()
+            {
+                Filter = "StockManager Data|*.smd|All files|*.*",
+            };
+            if (ofd.ShowDialog() != DialogResult.OK)
+            {
+                return false;
+            }
+
+            SettingsManager.LoadFrom(ofd.FileName, out DataExportClass dec, isZipped: true);
+
+            List<Project> projects = dec.Projects;
+            foreach (Project project in projects)
+            {
+                if (!data.Projects.ContainsKey(project.Name))
+                {
+                    data.Projects.Add(project.Name, project);
+                }
+                else
+                {
+                    Project currentProject = data.Projects[project.Name];
+                    // Add versions
+                    foreach (ProjectVersion version in project.Versions.Values)
+                    {
+                        if(!currentProject.Versions.ContainsKey(version.Version))
+                        {
+                            currentProject.Versions.Add(version.Version, version);
+                        }
+
+                    }
+                }
+            }
+
+            ProjectsHaveChanged();
+            return true;
+        }
+
         #endregion
 
         #region Misc Events
@@ -816,7 +856,12 @@ namespace StockManagerDB
         {
             ActionExportProjects();
         }
+        private void importProjectsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ImportProjects();
+        }
 
         #endregion
+
     }
 }

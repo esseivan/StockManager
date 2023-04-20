@@ -985,6 +985,62 @@ namespace StockManagerDB
             return true;
         }
 
+        public bool ActionImportParts()
+        {
+            if (!IsFileLoaded)
+            {
+                LoggerClass.Write("Unable to process action. No file is loaded.", Logger.LogLevels.Debug);
+                MessageBox.Show("No file loaded ! Open or create a new one", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+
+            // Ask save path
+            OpenFileDialog ofd = new OpenFileDialog()
+            {
+                Filter = "StockManager Data|*.smd|All files|*.*",
+            };
+            if (ofd.ShowDialog() != DialogResult.OK)
+            {
+                return false;
+            }
+
+            LoggerClass.Write($"Importing parts...", Logger.LogLevels.Debug);
+
+            SettingsManager.LoadFrom(ofd.FileName, out DataExportClass dec, isZipped: true);
+
+            if ((dec == null) || (dec.Parts == null) || (dec.Parts.Count == 0))
+            {
+                LoggerClass.Write("No data found...");
+                MessageBox.Show("No data found in this file...", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+
+            LoggerClass.Write($"{dec.Parts.Count} part(s) found to import...");
+
+            // Confirmation
+            if (MessageBox.Show($"Please confirm the additions of '{dec.Parts.Count}' parts to the current databse. This cannot be undone\nContinue ?", "Warning", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning) != DialogResult.Yes)
+                return false;
+
+            int partCounter = 0;
+            foreach (Part part in dec.Parts)
+            {
+                if (data.AddPart(part))
+                {
+                    partCounter++;
+                }
+                else
+                {
+                    LoggerClass.Write($"Part MPN='{part.MPN}' already present... Skipped");
+                }
+            }
+
+            PartsHaveChanged();
+            SetStatus($"{partCounter}/{dec.Parts.Count} part(s) imported !", Color.Blue);
+            MessageBox.Show($"{partCounter}/{dec.Parts.Count} part(s) imported !", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            return true;
+        }
+
         #endregion
 
         #region Misc Events
@@ -1179,8 +1235,11 @@ namespace StockManagerDB
             // Export the parts
             ActionExportParts();
         }
+        private void importPartsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ActionImportParts();
+        }
 
         #endregion
-
     }
 }
