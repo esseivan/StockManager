@@ -976,12 +976,12 @@ namespace StockManagerDB
         /// <summary>
         /// Process the list of selected part. Parts already present will have their current stock updated
         /// </summary>
-        private void ActionDigikeyProcessParts(List<CsvPartImport> records)
+        private int ActionDigikeyProcessParts(List<CsvPartImport> records)
         {
             LoggerClass.Write($"{records.Count} part(s) found to process...");
 
             string note = $"Digikey Order ";
-
+            int processedParts = 0;
             foreach (CsvPartImport item in records)
             {
                 if (item == null)
@@ -1008,6 +1008,7 @@ namespace StockManagerDB
                     continue;
                 }
 
+                processedParts++;
                 if (!Parts.ContainsKey(item.MPN))
                 {
                     LoggerClass.Write(
@@ -1039,9 +1040,11 @@ namespace StockManagerDB
                     );
                 }
             }
+
+            return processedParts;
         }
 
-        private bool ActionImportDigikeyOrder()
+        private int ActionImportDigikeyOrder()
         {
             if (!IsFileLoaded)
             {
@@ -1055,7 +1058,7 @@ namespace StockManagerDB
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error
                 );
-                return false;
+                return -1;
             }
 
             // Ask to open the excel file
@@ -1065,12 +1068,13 @@ namespace StockManagerDB
             };
             if (ofd.ShowDialog() != DialogResult.OK)
             {
-                return false;
+                return -1;
             }
 
             LoggerClass.Write($"Loading Digikey order...", Logger.LogLevels.Debug);
 
             string file = ofd.FileName;
+            int processedParts = 0;
             if (Path.GetExtension(file).Equals(".csv", StringComparison.InvariantCultureIgnoreCase))
             {
                 // Read lines
@@ -1099,19 +1103,29 @@ namespace StockManagerDB
                         records.Add(record);
                     }
 
-                    ActionDigikeyProcessParts(records);
+                    processedParts = ActionDigikeyProcessParts(records);
                 }
             }
             else if (
                 Path.GetExtension(file).Equals(".xlsx", StringComparison.InvariantCultureIgnoreCase)
-            ) { }
+            )
+            {
+                // unimplemented
+                MessageBox.Show(
+                    ".xlsx files are not yet supported. Please use .csv",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+                return -1;
+            }
 
             // Ask update of part list
             PartsHaveChanged();
-            return true;
+            return processedParts;
         }
 
-        private bool ActionImportClipboardDigikeyOrder()
+        private int ActionImportClipboardDigikeyOrder()
         {
             if (!IsFileLoaded)
             {
@@ -1125,7 +1139,7 @@ namespace StockManagerDB
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error
                 );
-                return false;
+                return -1;
             }
 
             string content = Clipboard.GetText();
@@ -1159,12 +1173,12 @@ namespace StockManagerDB
                     records.Add(part);
                 }
 
-                ActionDigikeyProcessParts(records);
+                int processedParts = ActionDigikeyProcessParts(records);
 
                 // Ask update of part list
                 PartsHaveChanged();
 
-                return true;
+                return processedParts;
             }
             catch (Exception)
             {
@@ -1175,7 +1189,7 @@ namespace StockManagerDB
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error
                 );
-                return false;
+                return -1;
             }
         }
 
@@ -1421,8 +1435,14 @@ namespace StockManagerDB
         private void importOrderFromDigikeyToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SetWorkingStatus();
-            bool result = ActionImportDigikeyOrder();
-            SetSuccessStatus(result);
+            int result = ActionImportDigikeyOrder();
+            SetSuccessStatus(result > 0);
+            MessageBox.Show(
+                $"Successfully updated {result} part(s).",
+                "Success",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information
+            );
         }
 
         private void importOrderFromDigikeyFromClipboardToolStripMenuItem_Click(
@@ -1431,8 +1451,14 @@ namespace StockManagerDB
         )
         {
             SetWorkingStatus();
-            bool result = ActionImportClipboardDigikeyOrder();
-            SetSuccessStatus(result);
+            int result = ActionImportClipboardDigikeyOrder();
+            SetSuccessStatus(result > 0);
+            MessageBox.Show(
+                $"Successfully updated {result} part(s).",
+                "Success",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information
+            );
         }
 
         private void projectsToolStripMenuItem_Click(object sender, EventArgs e)
