@@ -20,6 +20,7 @@ namespace StockManagerDB
             get => xlApp.Visible;
             set => xlApp.Visible = value;
         }
+
         /// <summary>
         /// Workbook closing event
         /// </summary>
@@ -34,7 +35,8 @@ namespace StockManagerDB
             xlApp.WorkbookBeforeClose += XlApp_WorkbookBeforeClose;
         }
 
-        public ExcelWrapper(string filePath) : this()
+        public ExcelWrapper(string filePath)
+            : this()
         {
             if (File.Exists(filePath))
                 wb = OpenWorkbook(filePath);
@@ -85,7 +87,7 @@ namespace StockManagerDB
                 Process[] excelProcesses = Process.GetProcessesByName("excel");
                 foreach (Process p in excelProcesses)
                 {
-                    if (string.IsNullOrEmpty(p.MainWindowTitle)) // use MainWindowTitle to distinguish this excel process with other excel processes 
+                    if (string.IsNullOrEmpty(p.MainWindowTitle)) // use MainWindowTitle to distinguish this excel process with other excel processes
                     {
                         p.Kill();
                     }
@@ -123,9 +125,21 @@ namespace StockManagerDB
         /// <param name="output">Output read. Dimensions starts at 0</param>
         /// <param name="readFormulas">Whether to read values or formulas</param>
         /// <returns>Values read</returns>
-        public bool ReadRange(int sheet, int startRow, int startCol, int endRow, int endCol, out string[,] output, bool readFormulas = false)
+        public bool ReadRange(
+            int sheet,
+            int startRow,
+            int startCol,
+            int endRow,
+            int endCol,
+            out string[,] output,
+            bool readFormulas = false
+        )
         {
-            sheet++; startRow++; startCol++; endRow++; endCol++;
+            sheet++;
+            startRow++;
+            startCol++;
+            endRow++;
+            endCol++;
             output = null;
             if (wb == null)
                 return false;
@@ -166,9 +180,25 @@ namespace StockManagerDB
         /// <param name="output">Output read. Dimensions starts at 0</param>
         /// <param name="readFormulas">Whether to read values or formulas</param>
         /// <returns>Values read</returns>
-        public bool ReadRangeLength(int sheet, int startRow, int startCol, int rowCount, int colCount, out string[,] output, bool readFormulas = false)
+        public bool ReadRangeLength(
+            int sheet,
+            int startRow,
+            int startCol,
+            int rowCount,
+            int colCount,
+            out string[,] output,
+            bool readFormulas = false
+        )
         {
-            return ReadRange(sheet, startRow, startCol, startRow + rowCount - 1, startCol + colCount - 1, out output, readFormulas);
+            return ReadRange(
+                sheet,
+                startRow,
+                startCol,
+                startRow + rowCount - 1,
+                startCol + colCount - 1,
+                out output,
+                readFormulas
+            );
         }
 
         /// <summary>
@@ -179,7 +209,13 @@ namespace StockManagerDB
         /// <param name="startCol">Start Column index (start at 0)</param>
         /// <param name="data">Data to be written, set null in the array to preserve the cell. Dimensions starts at 0</param>
         /// <param name="writeFormula">Whether to write values or formulas</param>
-        public bool WriteRange(int sheet, int startRow, int startCol, string[,] data, bool writeFormula = false)
+        public bool WriteRange(
+            int sheet,
+            int startRow,
+            int startCol,
+            string[,] data,
+            bool writeFormula = false
+        )
         {
             int endRow = startRow + data.GetLength(0) - 1;
             int endCol = startCol + data.GetLength(1) - 1;
@@ -212,9 +248,21 @@ namespace StockManagerDB
         /// <param name="endCol">End Column index (start at 0)</param>
         /// <param name="data">Data to be written, set null in the array to preserve the cell. Dimensions starts at 0</param>
         /// <param name="writeFormula">Whether to write values or formulas</param>
-        public bool WriteRange(int sheet, int startRow, int startCol, int endRow, int endCol, string[,] data, bool writeFormula = false)
+        public bool WriteRange(
+            int sheet,
+            int startRow,
+            int startCol,
+            int endRow,
+            int endCol,
+            string[,] data,
+            bool writeFormula = false
+        )
         {
-            sheet++; startRow++; startCol++; endRow++; endCol++;
+            sheet++;
+            startRow++;
+            startCol++;
+            endRow++;
+            endCol++;
             if (wb == null)
                 return false;
 

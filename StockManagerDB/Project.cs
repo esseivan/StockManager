@@ -9,9 +9,7 @@ namespace StockManagerDB
     /// </summary>
     public class Project : ICloneable
     {
-        public Project()
-        {
-        }
+        public Project() { }
 
         public Project(string name)
         {
@@ -22,17 +20,16 @@ namespace StockManagerDB
         /// Name of the project. Unique amongst the projects
         /// </summary>
         public string Name { get; set; }
+
         /// <summary>
         /// List of version identified by their unique VersionStr
         /// </summary>
-        public SortedDictionary<string, ProjectVersion> Versions { get; set; } = new SortedDictionary<string, ProjectVersion>(new CompareVersion());
+        public SortedDictionary<string, ProjectVersion> Versions { get; set; } =
+            new SortedDictionary<string, ProjectVersion>(new CompareVersion());
 
         public object Clone()
         {
-            Project newProject = new Project
-            {
-                Name = Name
-            };
+            Project newProject = new Project { Name = Name };
 
             foreach (ProjectVersion version in Versions.Values)
             {

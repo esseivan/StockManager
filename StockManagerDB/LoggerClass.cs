@@ -12,7 +12,9 @@ namespace StockManagerDB
     {
         public const Logger.LogLevels MinLevelFilter = Logger.LogLevels.All;
 
-        public static Logger logger = new Logger(Logger.GetDefaultLogPath("ESN", "StockManagerDB", "log"))
+        public static Logger logger = new Logger(
+            Logger.GetDefaultLogPath("ESN", "StockManagerDB", "log")
+        )
         {
             WriteMode = Logger.WriteModes.Write,
             FilenameMode = Logger.FilenamesModes.FileName_LastPrevious,
@@ -24,7 +26,7 @@ namespace StockManagerDB
         {
             if (!logger.Enable())
                 throw new InvalidOperationException("Unable to start logger");
-#if false
+#if DEBUG
             Process.Start(logger.FileOutputPath);
 #endif
         }

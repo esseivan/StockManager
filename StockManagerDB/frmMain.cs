@@ -1,4 +1,5 @@
 ﻿using BrightIdeasSoftware;
+using BrightIdeasSoftware.Design;
 using CsvHelper;
 using ESNLib.Controls;
 using ESNLib.Tools;
@@ -6,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.Common;
 using System.Data.SQLite;
 using System.Drawing;
 using System.Globalization;
@@ -15,7 +17,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using static System.Net.Mime.MediaTypeNames;
 using dhs = StockManagerDB.DataHolderSingleton;
 
 namespace StockManagerDB
@@ -49,10 +51,7 @@ namespace StockManagerDB
         /// </summary>
         private bool UpdateOnCheck
         {
-            get
-            {
-                return _updateOnCheck;
-            }
+            get { return _updateOnCheck; }
             set
             {
                 _updateOnCheck = value;
@@ -65,6 +64,7 @@ namespace StockManagerDB
         private bool _updateOnCheck = true;
 
         private frmProjects _projectForm = null;
+
         /// <summary>
         /// The form that displays projects
         /// </summary>
@@ -101,6 +101,7 @@ namespace StockManagerDB
         }
 
         private frmHistory _historyForm = null;
+
         /// <summary>
         /// The form that displays projects
         /// </summary>
@@ -136,6 +137,43 @@ namespace StockManagerDB
             }
         }
 
+        private frmSearch _searchForm = null;
+
+        /// <summary>
+        /// The form that displays projects
+        /// </summary>
+        private frmSearch searchForm
+        {
+            get
+            {
+                if (IsFileLoaded)
+                {
+                    if (_searchForm == null)
+                    {
+                        _searchForm = new frmSearch();
+                        _searchForm.FormClosed += _searchForm_FormClosed;
+                    }
+                }
+                else
+                {
+                    if (_searchForm != null)
+                    {
+                        _searchForm.Close();
+                        _searchForm = null;
+                    }
+                }
+                return _searchForm;
+            }
+            set
+            {
+                if (_searchForm != null)
+                {
+                    _searchForm.Close();
+                }
+                _searchForm = value;
+            }
+        }
+
         #endregion
 
         public frmMain()
@@ -152,14 +190,123 @@ namespace StockManagerDB
             // Set default filter type
             cbboxFilterType.SelectedIndex = 2;
 
-            // Init statusLabel timeout timer
-
             // Set number label
             UpdateNumberLabel();
             SetStatus("Idle...");
+
+            frmSearch.OnFilterSet += FrmSearch_OnFilterSet;
         }
 
         #region Listviews and display
+
+        /// <summary>
+        /// Clear all filtering for the parts
+        /// </summary>
+        private void ClearAdvancedFiltering()
+        {
+            olvcCat.UseFiltering = false;
+            olvcCat.ValuesChosenForFiltering = null;
+            // Must define to non null first to update categories
+            listviewParts.AdditionalFilter = new TextMatchFilter(listviewParts);
+            listviewParts.AdditionalFilter = null;
+        }
+
+        /// <summary>
+        /// Advanced filter callback
+        /// </summary>
+        private void FrmSearch_OnFilterSet(object sender, FilterEventArgs e)
+        {
+            this.BringToFront();
+            searchForm.BringToFront();
+
+            // Clear filter on this form
+            txtboxFilter.Clear();
+
+            // Apply filter
+            string txt = e.text;
+            Part.Parameter filterIn = e.filterIn;
+            string category = e.category;
+
+            ObjectListView olv = listviewParts;
+            TextMatchFilter filter = null;
+            if (!string.IsNullOrEmpty(txt))
+            {
+                switch (e.filterType)
+                {
+                    case 0:
+                    default: // Anywhere
+                        filter = TextMatchFilter.Contains(olv, txt);
+                        break;
+                    case 1: // At the start
+                        filter = TextMatchFilter.Prefix(olv, txt);
+                        break;
+                    case 2: // As a regex string
+                        filter = TextMatchFilter.Regex(olv, txt);
+                        break;
+                }
+            }
+
+            filterHighlightRenderer.FilterInColumn = null;
+            if (filter != null)
+            {
+                OLVColumn column = null;
+
+                switch (filterIn)
+                {
+                    case Part.Parameter.MPN:
+                        column = olvcMPN;
+                        break;
+                    case Part.Parameter.Manufacturer:
+                        column = olvcMAN;
+                        break;
+                    case Part.Parameter.Description:
+                        column = olvcDesc;
+                        break;
+                    case Part.Parameter.Category:
+                        column = olvcCat;
+                        break;
+                    case Part.Parameter.Location:
+                        column = olvcLocation;
+                        break;
+                    case Part.Parameter.Stock:
+                        column = olvcStock;
+                        break;
+                    case Part.Parameter.LowStock:
+                        column = olvcLowStock;
+                        break;
+                    case Part.Parameter.Price:
+                        column = olvcPrice;
+                        break;
+                    case Part.Parameter.Supplier:
+                        column = olvcSupplier;
+                        break;
+                    case Part.Parameter.SPN:
+                        column = olvcSPN;
+                        break;
+                    default:
+                        break;
+                }
+
+                if (column != null)
+                {
+                    filter.Columns = new OLVColumn[] { column };
+                }
+                filterHighlightRenderer.FilterInColumn = column;
+            }
+
+            if (!string.IsNullOrEmpty(category))
+            {
+                // Apply category filter
+                olvcCat.ValuesChosenForFiltering = new string[] { category };
+                olvcCat.UseFiltering = true;
+            }
+            else
+            {
+                olvcCat.UseFiltering = false;
+            }
+
+            olv.AdditionalFilter = filter ?? new TextMatchFilter(olv);
+        }
 
         private void PartsHaveChanged()
         {
@@ -197,7 +344,8 @@ namespace StockManagerDB
             }
             else
             {
-                labelCount.Text = $"{listviewParts.FilteredObjects.Cast<object>().Count()}/{Parts.Count}";
+                labelCount.Text =
+                    $"{listviewParts.FilteredObjects.Cast<object>().Count()}/{Parts.Count}";
             }
         }
 
@@ -244,7 +392,7 @@ namespace StockManagerDB
         /// </summary>
         private void UpdateCheckedListview()
         {
-            // Wether to update the checkedlistview or not. 
+            // Wether to update the checkedlistview or not.
             // Usefull to disable when using the CheckAll and UnCheckAll actions
             // Otherwise, it will be called a lot of times...
 
@@ -264,27 +412,87 @@ namespace StockManagerDB
         private void ListViewSetColumns()
         {
             // Setup columns
-            olvcMPN.AspectGetter = delegate (object x) { return ((Part)x).MPN; };
-            olvcMAN.AspectGetter = delegate (object x) { return ((Part)x).Manufacturer; };
-            olvcDesc.AspectGetter = delegate (object x) { return ((Part)x).Description; };
-            olvcCat.AspectGetter = delegate (object x) { return ((Part)x).Category; };
-            olvcLocation.AspectGetter = delegate (object x) { return ((Part)x).Location; };
-            olvcStock.AspectGetter = delegate (object x) { return ((Part)x).Stock; };
-            olvcLowStock.AspectGetter = delegate (object x) { return ((Part)x).LowStock; };
-            olvcPrice.AspectGetter = delegate (object x) { return ((Part)x).Price; };
-            olvcSupplier.AspectGetter = delegate (object x) { return ((Part)x).Supplier; };
-            olvcSPN.AspectGetter = delegate (object x) { return ((Part)x).SPN; };
+            olvcMPN.AspectGetter = delegate (object x)
+            {
+                return ((Part)x).MPN;
+            };
+            olvcMAN.AspectGetter = delegate (object x)
+            {
+                return ((Part)x).Manufacturer;
+            };
+            olvcDesc.AspectGetter = delegate (object x)
+            {
+                return ((Part)x).Description;
+            };
+            olvcCat.AspectGetter = delegate (object x)
+            {
+                return ((Part)x).Category;
+            };
+            olvcLocation.AspectGetter = delegate (object x)
+            {
+                return ((Part)x).Location;
+            };
+            olvcStock.AspectGetter = delegate (object x)
+            {
+                return ((Part)x).Stock;
+            };
+            olvcLowStock.AspectGetter = delegate (object x)
+            {
+                return ((Part)x).LowStock;
+            };
+            olvcPrice.AspectGetter = delegate (object x)
+            {
+                return ((Part)x).Price;
+            };
+            olvcSupplier.AspectGetter = delegate (object x)
+            {
+                return ((Part)x).Supplier;
+            };
+            olvcSPN.AspectGetter = delegate (object x)
+            {
+                return ((Part)x).SPN;
+            };
 
-            olvcMPN2.AspectGetter = delegate (object x) { return ((Part)x).MPN; };
-            olvcMAN2.AspectGetter = delegate (object x) { return ((Part)x).Manufacturer; };
-            olvcDesc2.AspectGetter = delegate (object x) { return ((Part)x).Description; };
-            olvcCat2.AspectGetter = delegate (object x) { return ((Part)x).Category; };
-            olvcLocation2.AspectGetter = delegate (object x) { return ((Part)x).Location; };
-            olvcStock2.AspectGetter = delegate (object x) { return ((Part)x).Stock; };
-            olvcLowStock2.AspectGetter = delegate (object x) { return ((Part)x).LowStock; };
-            olvcPrice2.AspectGetter = delegate (object x) { return ((Part)x).Price; };
-            olvcSupplier2.AspectGetter = delegate (object x) { return ((Part)x).Supplier; };
-            olvcSPN2.AspectGetter = delegate (object x) { return ((Part)x).SPN; };
+            olvcMPN2.AspectGetter = delegate (object x)
+            {
+                return ((Part)x).MPN;
+            };
+            olvcMAN2.AspectGetter = delegate (object x)
+            {
+                return ((Part)x).Manufacturer;
+            };
+            olvcDesc2.AspectGetter = delegate (object x)
+            {
+                return ((Part)x).Description;
+            };
+            olvcCat2.AspectGetter = delegate (object x)
+            {
+                return ((Part)x).Category;
+            };
+            olvcLocation2.AspectGetter = delegate (object x)
+            {
+                return ((Part)x).Location;
+            };
+            olvcStock2.AspectGetter = delegate (object x)
+            {
+                return ((Part)x).Stock;
+            };
+            olvcLowStock2.AspectGetter = delegate (object x)
+            {
+                return ((Part)x).LowStock;
+            };
+            olvcPrice2.AspectGetter = delegate (object x)
+            {
+                return ((Part)x).Price;
+            };
+            olvcSupplier2.AspectGetter = delegate (object x)
+            {
+                return ((Part)x).Supplier;
+            };
+            olvcSPN2.AspectGetter = delegate (object x)
+            {
+                return ((Part)x).SPN;
+            };
 
             // Make the decoration
             RowBorderDecoration rbd = new RowBorderDecoration();
@@ -388,7 +596,10 @@ namespace StockManagerDB
             // If "onlyAffectCheckedParts" is checked, get checked parts. Otherwise all parts
             if (onlyAffectCheckedPartsToolStripMenuItem.Checked)
             {
-                LoggerClass.Write($"Action executing on checked parts only...", Logger.LogLevels.Debug);
+                LoggerClass.Write(
+                    $"Action executing on checked parts only...",
+                    Logger.LogLevels.Debug
+                );
                 return GetCheckedParts();
             }
             return GetAll();
@@ -427,21 +638,29 @@ namespace StockManagerDB
             // A file must be loaded prior to importing.
             if (!IsFileLoaded)
             {
-                LoggerClass.Write("Unable to load Excel file when no Data file is loaded", Logger.LogLevels.Debug);
-                MessageBox.Show("No file loaded ! Open or create a new one", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                LoggerClass.Write(
+                    "Unable to load Excel file when no Data file is loaded",
+                    Logger.LogLevels.Debug
+                );
+                MessageBox.Show(
+                    "No file loaded ! Open or create a new one",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
                 return false;
             }
 
             // Ask to open the excel file
-            OpenFileDialog ofd = new OpenFileDialog()
-            {
-                Filter = "All files|*.*",
-            };
+            OpenFileDialog ofd = new OpenFileDialog() { Filter = "All files|*.*", };
             if (ofd.ShowDialog() != DialogResult.OK)
             {
                 return false;
             }
-            LoggerClass.Write($"File selected for Excel import : {ofd.FileName}", Logger.LogLevels.Debug);
+            LoggerClass.Write(
+                $"File selected for Excel import : {ofd.FileName}",
+                Logger.LogLevels.Debug
+            );
             // Extract the parts. This is a hardcoded way
             Cursor = Cursors.WaitCursor;
             ExcelManager em = new ExcelManager(ofd.FileName);
@@ -456,10 +675,21 @@ namespace StockManagerDB
             }
 
             // Confirmation
-            LoggerClass.Write($"{importedParts.Count} part(s) found in that file", Logger.LogLevels.Debug);
-            if (MessageBox.Show($"Please confirm the additions of '{importedParts.Count}' parts to the current databse. This cannot be undone\nContinue ?", "Warning", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning) != DialogResult.Yes)
+            LoggerClass.Write(
+                $"{importedParts.Count} part(s) found in that file",
+                Logger.LogLevels.Debug
+            );
+            if (
+                MessageBox.Show(
+                    $"Please confirm the additions of '{importedParts.Count}' parts to the current databse. This cannot be undone\nContinue ?",
+                    "Warning",
+                    MessageBoxButtons.YesNoCancel,
+                    MessageBoxIcon.Warning
+                ) != DialogResult.Yes
+            )
                 return false;
 
+            string note = $"Imported Excel ";
             LoggerClass.Write($"Import confirmed. Processing...", Logger.LogLevels.Debug);
             // Add the parts to the list
             Cursor = Cursors.WaitCursor;
@@ -467,11 +697,14 @@ namespace StockManagerDB
             {
                 if (Parts.ContainsKey(importedPart.MPN))
                 {
-                    LoggerClass.Write($"Duplicate part found : MPN={importedPart.MPN}", Logger.LogLevels.Warn);
+                    LoggerClass.Write(
+                        $"Duplicate part found : MPN={importedPart.MPN}. Skipping this part...",
+                        Logger.LogLevels.Warn
+                    );
                     continue;
                 }
 
-                data.AddPart(importedPart);
+                data.AddPart(importedPart, note);
             }
             Cursor = Cursors.Default;
             LoggerClass.Write($"Import finished", Logger.LogLevels.Debug);
@@ -499,7 +732,12 @@ namespace StockManagerDB
             if (File.Exists(fsd.FileName))
             {
                 LoggerClass.Write($"This file already exists. Aborting...", Logger.LogLevels.Debug);
-                MessageBox.Show("This file already exists.\nPlease select another one or manually delete that file...", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    "This file already exists.\nPlease select another one or manually delete that file...",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
                 return false;
             }
 
@@ -548,7 +786,10 @@ namespace StockManagerDB
             SetTitle();
             // Update listviews content + resize columns
             UpdateListviews(true);
-            LoggerClass.Write($"Open finished. {Parts.Count} part(s) found", Logger.LogLevels.Debug);
+            LoggerClass.Write(
+                $"Open finished. {Parts.Count} part(s) found",
+                Logger.LogLevels.Debug
+            );
 
             return true;
         }
@@ -575,7 +816,12 @@ namespace StockManagerDB
         {
             LoggerClass.Write($"Creating a new empty part...", Logger.LogLevels.Debug);
             // Ask the user for the MPN
-            Dialog.ShowDialogResult result = Dialog.ShowDialog("Enter the MPN (Manufacturer Product Number) for the part...", Title: "Enter input", Input: true, Btn2: Dialog.ButtonType.Cancel);
+            Dialog.ShowDialogResult result = Dialog.ShowDialog(
+                "Enter the MPN (Manufacturer Product Number) for the part...",
+                Title: "Enter input",
+                Input: true,
+                Btn2: Dialog.ButtonType.Cancel
+            );
 
             if (result.DialogResult != Dialog.DialogResult.OK)
             {
@@ -583,20 +829,28 @@ namespace StockManagerDB
                 return;
             }
 
-            LoggerClass.Write($"Adding a new part with MPN={result.UserInput}...", Logger.LogLevels.Debug);
+            LoggerClass.Write(
+                $"Adding a new part with MPN={result.UserInput}...",
+                Logger.LogLevels.Debug
+            );
 
             if (Parts.ContainsKey(result.UserInput))
             {
-                LoggerClass.Write($"Unable to add the new part. The specified MPN is already present...", Logger.LogLevels.Error);
-                MessageBox.Show("Unable to add the new part. The specified MPN is already present...", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                LoggerClass.Write(
+                    $"Unable to add the new part. The specified MPN is already present...",
+                    Logger.LogLevels.Error
+                );
+                MessageBox.Show(
+                    "Unable to add the new part. The specified MPN is already present...",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
                 return;
             }
 
             // Create empty part with the specified MPN
-            Part pc = new Part()
-            {
-                MPN = result.UserInput,
-            };
+            Part pc = new Part() { MPN = result.UserInput, };
 
             // Add to list
             data.AddPart(pc);
@@ -620,13 +874,23 @@ namespace StockManagerDB
             }
 
             // Ask confirmation
-            if (MessageBox.Show($"Please confirm the deletion of '{checkedParts.Count}' parts. This cannot be undone !\nContinue ?", "Warning", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning) != DialogResult.Yes)
+            if (
+                MessageBox.Show(
+                    $"Please confirm the deletion of '{checkedParts.Count}' parts. This cannot be undone !\nContinue ?",
+                    "Warning",
+                    MessageBoxButtons.YesNoCancel,
+                    MessageBoxIcon.Warning
+                ) != DialogResult.Yes
+            )
             {
                 LoggerClass.Write($"Confirmation denied", Logger.LogLevels.Debug);
                 return;
             }
 
-            LoggerClass.Write($"Deletion of {checkedParts.Count} part(s)...", Logger.LogLevels.Debug);
+            LoggerClass.Write(
+                $"Deletion of {checkedParts.Count} part(s)...",
+                Logger.LogLevels.Debug
+            );
             // Remove them from the list
             checkedParts.ForEach((part) => data.DeletePart(part));
             LoggerClass.Write($"Deletion finished", Logger.LogLevels.Debug);
@@ -647,7 +911,13 @@ namespace StockManagerDB
             }
 
             // Ask the user for the new MPN
-            var result = Dialog.ShowDialog("Enter the new MPN (Manufacturer Product Number) for the part...", Title: "Enter input", Input: true, DefaultInput: pc.MPN, Btn2: Dialog.ButtonType.Cancel);
+            var result = Dialog.ShowDialog(
+                "Enter the new MPN (Manufacturer Product Number) for the part...",
+                Title: "Enter input",
+                Input: true,
+                DefaultInput: pc.MPN,
+                Btn2: Dialog.ButtonType.Cancel
+            );
 
             if (result.DialogResult != Dialog.DialogResult.OK)
             {
@@ -659,8 +929,16 @@ namespace StockManagerDB
 
             if (Parts.ContainsKey(result.UserInput))
             {
-                LoggerClass.Write($"Unable to duplicate the part. The specified MPN is already present...", Logger.LogLevels.Error);
-                MessageBox.Show("Unable to duplicate the part. The specified MPN is already present...", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                LoggerClass.Write(
+                    $"Unable to duplicate the part. The specified MPN is already present...",
+                    Logger.LogLevels.Error
+                );
+                MessageBox.Show(
+                    "Unable to duplicate the part. The specified MPN is already present...",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
                 return;
             }
 
@@ -687,7 +965,10 @@ namespace StockManagerDB
             }
 
             e.ListViewItem.Focused = true;
-            Rectangle columnBounds = listviewParts.CalculateColumnVisibleBounds(listviewParts.Bounds, e.Column);
+            Rectangle columnBounds = listviewParts.CalculateColumnVisibleBounds(
+                listviewParts.Bounds,
+                e.Column
+            );
             int maxX = listviewParts.Width - 21; // Scroll bar + edges : 21 offset
             int rightSide = columnBounds.X + columnBounds.Width;
             int leftSide = columnBounds.X;
@@ -717,10 +998,7 @@ namespace StockManagerDB
         /// <summary>
         /// Called when a cell is edited
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        /// <exception cref="InvalidOperationException"></exception>
-        private void listviewParts_CellEditFinished(object sender, CellEditEventArgs e)
+        private void ApplyEdit(CellEditEventArgs e)
         {
             // Get the unedited part version
             Part part = e.RowObject as Part;
@@ -728,7 +1006,10 @@ namespace StockManagerDB
             Part.Parameter editedParameter = (Part.Parameter)(e.Column.Index);
             string newValue = e.NewValue.ToString();
 
-            LoggerClass.Write($"Cell with MPN={part.MPN} edited : Parameter={editedParameter}, Newvalue={newValue}", Logger.LogLevels.Debug);
+            LoggerClass.Write(
+                $"Cell with MPN={part.MPN} edited : Parameter={editedParameter}, Newvalue={newValue}",
+                Logger.LogLevels.Debug
+            );
             if (editedParameter == Part.Parameter.UNDEFINED)
             {
                 throw new InvalidOperationException("Unable to edit 'undefined'");
@@ -744,8 +1025,16 @@ namespace StockManagerDB
             // Verify that the new MPN doesn't already exists
             if ((editedParameter == Part.Parameter.MPN) && Parts.ContainsKey(newValue))
             {
-                LoggerClass.Write("Unable to edit MPN value. Another part already have this MPN value.", Logger.LogLevels.Error);
-                MessageBox.Show("Unable to edit the MPN to the specified value. Another part with this MPN already exists...", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                LoggerClass.Write(
+                    "Unable to edit MPN value. Another part already have this MPN value.",
+                    Logger.LogLevels.Error
+                );
+                MessageBox.Show(
+                    "Unable to edit the MPN to the specified value. Another part with this MPN already exists...",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
                 return;
             }
 
@@ -765,8 +1054,16 @@ namespace StockManagerDB
         {
             if (!IsFileLoaded)
             {
-                LoggerClass.Write("Unable to process action. No file is loaded.", Logger.LogLevels.Debug);
-                MessageBox.Show("No file loaded ! Open or create a new one", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                LoggerClass.Write(
+                    "Unable to process action. No file is loaded.",
+                    Logger.LogLevels.Debug
+                );
+                MessageBox.Show(
+                    "No file loaded ! Open or create a new one",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
                 return false;
             }
 
@@ -776,21 +1073,32 @@ namespace StockManagerDB
             IEnumerable<Part> selected = parts.Where((part) => (part.Stock < part.LowStock));
 
             // TODO : Actually make order
-            LoggerClass.Write($"{selected.Count()} part(s) found for automatic order", Logger.LogLevels.Debug);
+            LoggerClass.Write(
+                $"{selected.Count()} part(s) found for automatic order",
+                Logger.LogLevels.Debug
+            );
             Console.WriteLine(selected.Count() + " parts to order");
 
             return true;
         }
 
-        private void ActionDigikeyProcessParts(List<CsvPartImport> records)
+        /// <summary>
+        /// Process the list of selected part. Parts already present will have their current stock updated
+        /// </summary>
+        private int ActionDigikeyProcessParts(List<CsvPartImport> records)
         {
             LoggerClass.Write($"{records.Count} part(s) found to process...");
 
+            string note = $"Digikey Order ";
+            int processedParts = 0;
             foreach (CsvPartImport item in records)
             {
                 if (item == null)
                 {
-                    LoggerClass.Write("Null row found... Should not happen", Logger.LogLevels.Error);
+                    LoggerClass.Write(
+                        "Null row found... Should not happen",
+                        Logger.LogLevels.Error
+                    );
                     continue;
                 }
 
@@ -802,38 +1110,64 @@ namespace StockManagerDB
                 // Try converting quantity
                 if (!float.TryParse(item.Quantity, out float quantity))
                 {
-                    LoggerClass.Write($"Unable to parse quantity : '{item.Quantity}'", Logger.LogLevels.Error);
+                    LoggerClass.Write(
+                        $"Unable to parse quantity : '{item.Quantity}'",
+                        Logger.LogLevels.Error
+                    );
                     continue;
                 }
 
+                processedParts++;
                 if (!Parts.ContainsKey(item.MPN))
                 {
-                    LoggerClass.Write($"Part '{item.MPN}' not available in present list. Creating new part...");
+                    LoggerClass.Write(
+                        $"Part '{item.MPN}' not available in present list. Creating new part..."
+                    );
                     Part p = new Part()
                     {
                         MPN = item.MPN,
                         Description = item.Description,
                         Category = "__automatically_generated",
                         Supplier = "Digikey",
-                        SPN = item.SPN
+                        SPN = item.SPN,
+                        Stock = quantity,
                     };
-                    data.AddPart(p);
+                    data.AddPart(p, note);
                 }
-
-                // Process edit
-                Part part = Parts[item.MPN];
-                LoggerClass.Write($"Changing stock of '{part.MPN}' from {part.Stock} to {part.Stock + quantity}");
-                data.EditPart(part, Part.Parameter.Stock, (part.Stock + quantity).ToString());
+                else
+                {
+                    // Process edit
+                    Part part = Parts[item.MPN];
+                    LoggerClass.Write(
+                        $"Changing stock of '{part.MPN}' from {part.Stock} to {part.Stock + quantity}"
+                    );
+                    data.EditPart(
+                        part,
+                        Part.Parameter.Stock,
+                        (part.Stock + quantity).ToString(),
+                        note
+                    );
+                }
             }
+
+            return processedParts;
         }
 
-        private bool ActionImportDigikeyOrder()
+        private int ActionImportDigikeyOrder()
         {
             if (!IsFileLoaded)
             {
-                LoggerClass.Write("Unable to process action. No file is loaded.", Logger.LogLevels.Debug);
-                MessageBox.Show("No file loaded ! Open or create a new one", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return false;
+                LoggerClass.Write(
+                    "Unable to process action. No file is loaded.",
+                    Logger.LogLevels.Debug
+                );
+                MessageBox.Show(
+                    "No file loaded ! Open or create a new one",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+                return -1;
             }
 
             // Ask to open the excel file
@@ -843,12 +1177,13 @@ namespace StockManagerDB
             };
             if (ofd.ShowDialog() != DialogResult.OK)
             {
-                return false;
+                return -1;
             }
 
             LoggerClass.Write($"Loading Digikey order...", Logger.LogLevels.Debug);
 
             string file = ofd.FileName;
+            int processedParts = 0;
             if (Path.GetExtension(file).Equals(".csv", StringComparison.InvariantCultureIgnoreCase))
             {
                 // Read lines
@@ -869,6 +1204,7 @@ namespace StockManagerDB
                         // Read the rest only if required
                         if (!Parts.ContainsKey(record.MPN))
                         {
+                            // Cerating new part. Gathering more informations on part
                             record.SPN = csv.GetField("Part Number");
                             record.Description = csv.GetField("Description");
                         }
@@ -876,26 +1212,43 @@ namespace StockManagerDB
                         records.Add(record);
                     }
 
-                    ActionDigikeyProcessParts(records);
+                    processedParts = ActionDigikeyProcessParts(records);
                 }
             }
-            else if (Path.GetExtension(file).Equals(".xlsx", StringComparison.InvariantCultureIgnoreCase))
+            else if (
+                Path.GetExtension(file).Equals(".xlsx", StringComparison.InvariantCultureIgnoreCase)
+            )
             {
-
+                // unimplemented
+                MessageBox.Show(
+                    ".xlsx files are not yet supported. Please use .csv",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+                return -1;
             }
 
             // Ask update of part list
             PartsHaveChanged();
-            return true;
+            return processedParts;
         }
 
-        private bool ActionImportClipboardDigikeyOrder()
+        private int ActionImportClipboardDigikeyOrder()
         {
             if (!IsFileLoaded)
             {
-                LoggerClass.Write("Unable to process action. No file is loaded.", Logger.LogLevels.Debug);
-                MessageBox.Show("No file loaded ! Open or create a new one", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return false;
+                LoggerClass.Write(
+                    "Unable to process action. No file is loaded.",
+                    Logger.LogLevels.Debug
+                );
+                MessageBox.Show(
+                    "No file loaded ! Open or create a new one",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+                return -1;
             }
 
             string content = Clipboard.GetText();
@@ -929,19 +1282,23 @@ namespace StockManagerDB
                     records.Add(part);
                 }
 
-
-                ActionDigikeyProcessParts(records);
+                int processedParts = ActionDigikeyProcessParts(records);
 
                 // Ask update of part list
                 PartsHaveChanged();
 
-                return true;
+                return processedParts;
             }
             catch (Exception)
             {
                 LoggerClass.Write("Unable to load ordre from clipboard...", Logger.LogLevels.Error);
-                MessageBox.Show("Unable to import order content from clipboard...", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return false;
+                MessageBox.Show(
+                    "Unable to import order content from clipboard...",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+                return -1;
             }
         }
 
@@ -949,8 +1306,16 @@ namespace StockManagerDB
         {
             if (!IsFileLoaded)
             {
-                LoggerClass.Write("Unable to process action. No file is loaded.", Logger.LogLevels.Debug);
-                MessageBox.Show("No file loaded ! Open or create a new one", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                LoggerClass.Write(
+                    "Unable to process action. No file is loaded.",
+                    Logger.LogLevels.Debug
+                );
+                MessageBox.Show(
+                    "No file loaded ! Open or create a new one",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
                 return false;
             }
 
@@ -966,8 +1331,16 @@ namespace StockManagerDB
 
             if (File.Exists(fsd.FileName))
             {
-                LoggerClass.Write($"Unable to export... File already exists", Logger.LogLevels.Debug);
-                MessageBox.Show("Unable to export parts. The selected file already exists...", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                LoggerClass.Write(
+                    $"Unable to export... File already exists",
+                    Logger.LogLevels.Debug
+                );
+                MessageBox.Show(
+                    "Unable to export parts. The selected file already exists...",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
                 return false;
             }
 
@@ -989,8 +1362,16 @@ namespace StockManagerDB
         {
             if (!IsFileLoaded)
             {
-                LoggerClass.Write("Unable to process action. No file is loaded.", Logger.LogLevels.Debug);
-                MessageBox.Show("No file loaded ! Open or create a new one", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                LoggerClass.Write(
+                    "Unable to process action. No file is loaded.",
+                    Logger.LogLevels.Debug
+                );
+                MessageBox.Show(
+                    "No file loaded ! Open or create a new one",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
                 return false;
             }
 
@@ -1011,14 +1392,26 @@ namespace StockManagerDB
             if ((dec == null) || (dec.Parts == null) || (dec.Parts.Count == 0))
             {
                 LoggerClass.Write("No data found...");
-                MessageBox.Show("No data found in this file...", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(
+                    "No data found in this file...",
+                    "Warning",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
                 return false;
             }
 
             LoggerClass.Write($"{dec.Parts.Count} part(s) found to import...");
 
             // Confirmation
-            if (MessageBox.Show($"Please confirm the additions of '{dec.Parts.Count}' parts to the current databse. This cannot be undone\nContinue ?", "Warning", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning) != DialogResult.Yes)
+            if (
+                MessageBox.Show(
+                    $"Please confirm the additions of '{dec.Parts.Count}' parts to the current databse. This cannot be undone\nContinue ?",
+                    "Warning",
+                    MessageBoxButtons.YesNoCancel,
+                    MessageBoxIcon.Warning
+                ) != DialogResult.Yes
+            )
                 return false;
 
             int partCounter = 0;
@@ -1036,7 +1429,12 @@ namespace StockManagerDB
 
             PartsHaveChanged();
             SetStatus($"{partCounter}/{dec.Parts.Count} part(s) imported !", Color.Blue);
-            MessageBox.Show($"{partCounter}/{dec.Parts.Count} part(s) imported !", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show(
+                $"{partCounter}/{dec.Parts.Count} part(s) imported !",
+                "Success",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information
+            );
 
             return true;
         }
@@ -1049,6 +1447,7 @@ namespace StockManagerDB
         {
             SetStatus(status, SystemColors.ControlText);
         }
+
         private void SetStatus(string status, Color color)
         {
             labelStatus.ForeColor = color;
@@ -1058,48 +1457,60 @@ namespace StockManagerDB
             statusTimeoutTimer.Stop();
             statusTimeoutTimer.Start();
         }
+
         private void SetWorkingStatus()
         {
             SetStatus("Working...");
             labelStatus.Invalidate();
         }
+
         private void SetSuccessStatus(bool result)
         {
-            SetStatus(result ? "Success !" : "Failed", result ? SystemColors.ControlText : Color.Red);
+            SetStatus(
+                result ? "Success !" : "Failed",
+                result ? SystemColors.ControlText : Color.Red
+            );
         }
+
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             LoggerClass.Write("Closing... Stopping logger", Logger.LogLevels.Info);
             LoggerClass.logger.Dispose();
         }
+
         private void importFromExcelToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SetWorkingStatus();
             bool result = ImportFromExcel();
             SetSuccessStatus(result);
         }
+
         private void makeOrderToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SetWorkingStatus();
             bool result = ActionMakeOrder();
             SetSuccessStatus(result);
         }
+
         private void newDatabaseToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SetWorkingStatus();
             bool result = CreateNewFile();
             SetSuccessStatus(result);
         }
+
         private void openDatabaseToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SetWorkingStatus();
             bool result = OpenFile();
             SetSuccessStatus(result);
         }
+
         private void listviewParts_ItemChecked(object sender, ItemCheckedEventArgs e)
         {
             UpdateCheckedListview();
         }
+
         private void checkAllInViewToolStripMenuItem_Click(object sender, EventArgs e)
         {
             // Check all in view
@@ -1108,6 +1519,7 @@ namespace StockManagerDB
             listviewParts.Focus();
             UpdateOnCheck = true;
         }
+
         private void uncheckAllInViewToolStripMenuItem_Click(object sender, EventArgs e)
         {
             // Uncheck all in view
@@ -1116,27 +1528,46 @@ namespace StockManagerDB
             listviewParts.Focus();
             UpdateOnCheck = true;
         }
+
         private void closeDatabaseToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SetWorkingStatus();
             bool result = CloseFile();
             SetSuccessStatus(result);
         }
+
         private void quitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.Close();
         }
+
         private void importOrderFromDigikeyToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SetWorkingStatus();
-            bool result = ActionImportDigikeyOrder();
-            SetSuccessStatus(result);
+            int result = ActionImportDigikeyOrder();
+            SetSuccessStatus(result > 0);
+            MessageBox.Show(
+                $"Successfully updated {result} part(s).",
+                "Success",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information
+            );
         }
-        private void importOrderFromDigikeyFromClipboardToolStripMenuItem_Click(object sender, EventArgs e)
+
+        private void importOrderFromDigikeyFromClipboardToolStripMenuItem_Click(
+            object sender,
+            EventArgs e
+        )
         {
             SetWorkingStatus();
-            bool result = ActionImportClipboardDigikeyOrder();
-            SetSuccessStatus(result);
+            int result = ActionImportClipboardDigikeyOrder();
+            SetSuccessStatus(result > 0);
+            MessageBox.Show(
+                $"Successfully updated {result} part(s).",
+                "Success",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information
+            );
         }
 
         private void projectsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1144,7 +1575,10 @@ namespace StockManagerDB
             LoggerClass.Write($"Openning project window...", Logger.LogLevels.Debug);
             if (!IsFileLoaded)
             {
-                LoggerClass.Write("Unable to open projects, no file loaded...", Logger.LogLevels.Error);
+                LoggerClass.Write(
+                    "Unable to open projects, no file loaded...",
+                    Logger.LogLevels.Error
+                );
                 return;
             }
 
@@ -1152,12 +1586,16 @@ namespace StockManagerDB
             projectForm.Show();
             projectForm.BringToFront();
         }
+
         private void openHistoryToolStripMenuItem_Click(object sender, EventArgs e)
         {
             LoggerClass.Write($"Openning history window...", Logger.LogLevels.Debug);
             if (!IsFileLoaded)
             {
-                LoggerClass.Write("Unable to open history, no file loaded...", Logger.LogLevels.Error);
+                LoggerClass.Write(
+                    "Unable to open history, no file loaded...",
+                    Logger.LogLevels.Error
+                );
                 return;
             }
 
@@ -1165,6 +1603,7 @@ namespace StockManagerDB
             historyForm.Show();
             historyForm.BringToFront();
         }
+
         private void _projectForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             // When the project form is closed, bring to fron the main form
@@ -1178,6 +1617,15 @@ namespace StockManagerDB
             this.BringToFront();
             _historyForm = null;
         }
+
+        private void _searchForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            // When the history form is closed, bring to fron the main form
+            this.BringToFront();
+            _searchForm = null;
+            ClearAdvancedFiltering();
+        }
+
         private void listviewParts_KeyDown(object sender, KeyEventArgs e)
         {
             // 'hack' to check selected rows but call the CheckedChanged event only once
@@ -1186,6 +1634,7 @@ namespace StockManagerDB
                 ToggleCheckSelection();
             }
         }
+
         private void listviewParts_CellRightClick(object sender, CellRightClickEventArgs e)
         {
             // When rightclicking a cell, copy the MPN of the corresponding row
@@ -1197,6 +1646,7 @@ namespace StockManagerDB
             Clipboard.SetText(selectedPart.MPN);
             SetStatus("Copied to clipboard...");
         }
+
         private void btnPartAdd_Click(object sender, EventArgs e)
         {
             AddEmptyPart();
@@ -1220,24 +1670,40 @@ namespace StockManagerDB
             listviewParts.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
             listviewChecked.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
         }
+
         private void statusTimeoutTimer_Tick(object sender, EventArgs e)
         {
             statusTimeoutTimer.Stop();
             labelStatus.ForeColor = SystemColors.ControlText;
             labelStatus.Text = string.Empty;
         }
+
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
             data.Save();
         }
+
         private void exportPartsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             // Export the parts
             ActionExportParts();
         }
+
         private void importPartsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ActionImportParts();
+        }
+
+        private void advancedSearchToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (!IsFileLoaded)
+                return;
+
+            searchForm.Show();
+        }
+        private void listviewParts_CellEditFinished(object sender, CellEditEventArgs e)
+        {
+            ApplyEdit(e);
         }
 
         #endregion

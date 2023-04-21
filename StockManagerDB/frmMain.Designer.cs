@@ -36,23 +36,27 @@
             this.closeDatabaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.quitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.databaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.importsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importFromExcelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importOrderFromDigikeyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importOrderFromDigikeyFromClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.quitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.actionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.onlyAffectCheckedPartsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.makeOrderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.exportPartsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.selectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.checkAllInViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.uncheckAllInViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.projectsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.importPartsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.resizeColumnsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
+            this.checkAllInViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.uncheckAllInViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
+            this.advancedSearchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.projectsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openHistoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cbboxFilterType = new System.Windows.Forms.ComboBox();
             this.txtboxFilter = new System.Windows.Forms.TextBox();
@@ -91,8 +95,6 @@
             this.labelStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.filterHighlightRenderer = new BrightIdeasSoftware.HighlightTextRenderer();
             this.statusTimeoutTimer = new System.Windows.Forms.Timer(this.components);
-            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-            this.importPartsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -105,16 +107,16 @@
             // 
             // menuStrip1
             // 
+            this.menuStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
-            this.databaseToolStripMenuItem,
             this.actionsToolStripMenuItem,
-            this.selectionToolStripMenuItem,
-            this.projectsToolStripMenuItem,
             this.viewToolStripMenuItem,
+            this.projectsToolStripMenuItem,
             this.openHistoryToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Padding = new System.Windows.Forms.Padding(4, 1, 0, 1);
             this.menuStrip1.Size = new System.Drawing.Size(866, 24);
             this.menuStrip1.TabIndex = 9;
             this.menuStrip1.Text = "menuStrip1";
@@ -127,10 +129,11 @@
             this.closeDatabaseToolStripMenuItem,
             this.toolStripSeparator4,
             this.saveToolStripMenuItem,
+            this.importsToolStripMenuItem,
             this.toolStripSeparator2,
             this.quitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 22);
             this.fileToolStripMenuItem.Text = "File";
             // 
             // newDatabaseToolStripMenuItem
@@ -170,28 +173,15 @@
             this.saveToolStripMenuItem.Text = "Save";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
-            // toolStripSeparator2
+            // importsToolStripMenuItem
             // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(195, 6);
-            // 
-            // quitToolStripMenuItem
-            // 
-            this.quitToolStripMenuItem.Name = "quitToolStripMenuItem";
-            this.quitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Q)));
-            this.quitToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
-            this.quitToolStripMenuItem.Text = "Quit";
-            this.quitToolStripMenuItem.Click += new System.EventHandler(this.quitToolStripMenuItem_Click);
-            // 
-            // databaseToolStripMenuItem
-            // 
-            this.databaseToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.importsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.importFromExcelToolStripMenuItem,
             this.importOrderFromDigikeyToolStripMenuItem,
             this.importOrderFromDigikeyFromClipboardToolStripMenuItem});
-            this.databaseToolStripMenuItem.Name = "databaseToolStripMenuItem";
-            this.databaseToolStripMenuItem.Size = new System.Drawing.Size(60, 20);
-            this.databaseToolStripMenuItem.Text = "Imports";
+            this.importsToolStripMenuItem.Name = "importsToolStripMenuItem";
+            this.importsToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
+            this.importsToolStripMenuItem.Text = "Import...";
             // 
             // importFromExcelToolStripMenuItem
             // 
@@ -216,6 +206,19 @@
             this.importOrderFromDigikeyFromClipboardToolStripMenuItem.Text = "Import order from Digikey from Clipboard";
             this.importOrderFromDigikeyFromClipboardToolStripMenuItem.Click += new System.EventHandler(this.importOrderFromDigikeyFromClipboardToolStripMenuItem_Click);
             // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(195, 6);
+            // 
+            // quitToolStripMenuItem
+            // 
+            this.quitToolStripMenuItem.Name = "quitToolStripMenuItem";
+            this.quitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Q)));
+            this.quitToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
+            this.quitToolStripMenuItem.Text = "Quit";
+            this.quitToolStripMenuItem.Click += new System.EventHandler(this.quitToolStripMenuItem_Click);
+            // 
             // actionsToolStripMenuItem
             // 
             this.actionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -226,7 +229,7 @@
             this.exportPartsToolStripMenuItem,
             this.importPartsToolStripMenuItem});
             this.actionsToolStripMenuItem.Name = "actionsToolStripMenuItem";
-            this.actionsToolStripMenuItem.Size = new System.Drawing.Size(59, 20);
+            this.actionsToolStripMenuItem.Size = new System.Drawing.Size(59, 22);
             this.actionsToolStripMenuItem.Text = "Actions";
             // 
             // onlyAffectCheckedPartsToolStripMenuItem
@@ -248,6 +251,11 @@
             this.makeOrderToolStripMenuItem.Text = "Make Order";
             this.makeOrderToolStripMenuItem.Click += new System.EventHandler(this.makeOrderToolStripMenuItem_Click);
             // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(205, 6);
+            // 
             // exportPartsToolStripMenuItem
             // 
             this.exportPartsToolStripMenuItem.Name = "exportPartsToolStripMenuItem";
@@ -255,14 +263,37 @@
             this.exportPartsToolStripMenuItem.Text = "Export parts";
             this.exportPartsToolStripMenuItem.Click += new System.EventHandler(this.exportPartsToolStripMenuItem_Click);
             // 
-            // selectionToolStripMenuItem
+            // importPartsToolStripMenuItem
             // 
-            this.selectionToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.importPartsToolStripMenuItem.Name = "importPartsToolStripMenuItem";
+            this.importPartsToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
+            this.importPartsToolStripMenuItem.Text = "Import parts";
+            this.importPartsToolStripMenuItem.Click += new System.EventHandler(this.importPartsToolStripMenuItem_Click);
+            // 
+            // viewToolStripMenuItem
+            // 
+            this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.resizeColumnsToolStripMenuItem,
+            this.toolStripSeparator5,
             this.checkAllInViewToolStripMenuItem,
-            this.uncheckAllInViewToolStripMenuItem});
-            this.selectionToolStripMenuItem.Name = "selectionToolStripMenuItem";
-            this.selectionToolStripMenuItem.Size = new System.Drawing.Size(67, 20);
-            this.selectionToolStripMenuItem.Text = "Selection";
+            this.uncheckAllInViewToolStripMenuItem,
+            this.toolStripSeparator6,
+            this.advancedSearchToolStripMenuItem});
+            this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
+            this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 22);
+            this.viewToolStripMenuItem.Text = "View";
+            // 
+            // resizeColumnsToolStripMenuItem
+            // 
+            this.resizeColumnsToolStripMenuItem.Name = "resizeColumnsToolStripMenuItem";
+            this.resizeColumnsToolStripMenuItem.Size = new System.Drawing.Size(249, 22);
+            this.resizeColumnsToolStripMenuItem.Text = "Resize columns";
+            this.resizeColumnsToolStripMenuItem.Click += new System.EventHandler(this.resizeColumnsToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator5
+            // 
+            this.toolStripSeparator5.Name = "toolStripSeparator5";
+            this.toolStripSeparator5.Size = new System.Drawing.Size(246, 6);
             // 
             // checkAllInViewToolStripMenuItem
             // 
@@ -282,33 +313,31 @@
             this.uncheckAllInViewToolStripMenuItem.Text = "Uncheck all in view";
             this.uncheckAllInViewToolStripMenuItem.Click += new System.EventHandler(this.uncheckAllInViewToolStripMenuItem_Click);
             // 
+            // toolStripSeparator6
+            // 
+            this.toolStripSeparator6.Name = "toolStripSeparator6";
+            this.toolStripSeparator6.Size = new System.Drawing.Size(246, 6);
+            // 
+            // advancedSearchToolStripMenuItem
+            // 
+            this.advancedSearchToolStripMenuItem.Name = "advancedSearchToolStripMenuItem";
+            this.advancedSearchToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.K)));
+            this.advancedSearchToolStripMenuItem.Size = new System.Drawing.Size(249, 22);
+            this.advancedSearchToolStripMenuItem.Text = "Advanced search";
+            this.advancedSearchToolStripMenuItem.Click += new System.EventHandler(this.advancedSearchToolStripMenuItem_Click);
+            // 
             // projectsToolStripMenuItem
             // 
             this.projectsToolStripMenuItem.Name = "projectsToolStripMenuItem";
             this.projectsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
-            this.projectsToolStripMenuItem.Size = new System.Drawing.Size(93, 20);
+            this.projectsToolStripMenuItem.Size = new System.Drawing.Size(93, 22);
             this.projectsToolStripMenuItem.Text = "Open Projects";
             this.projectsToolStripMenuItem.Click += new System.EventHandler(this.projectsToolStripMenuItem_Click);
-            // 
-            // viewToolStripMenuItem
-            // 
-            this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.resizeColumnsToolStripMenuItem});
-            this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
-            this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
-            this.viewToolStripMenuItem.Text = "View";
-            // 
-            // resizeColumnsToolStripMenuItem
-            // 
-            this.resizeColumnsToolStripMenuItem.Name = "resizeColumnsToolStripMenuItem";
-            this.resizeColumnsToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
-            this.resizeColumnsToolStripMenuItem.Text = "Resize columns";
-            this.resizeColumnsToolStripMenuItem.Click += new System.EventHandler(this.resizeColumnsToolStripMenuItem_Click);
             // 
             // openHistoryToolStripMenuItem
             // 
             this.openHistoryToolStripMenuItem.Name = "openHistoryToolStripMenuItem";
-            this.openHistoryToolStripMenuItem.Size = new System.Drawing.Size(89, 20);
+            this.openHistoryToolStripMenuItem.Size = new System.Drawing.Size(89, 22);
             this.openHistoryToolStripMenuItem.Text = "Open History";
             this.openHistoryToolStripMenuItem.Click += new System.EventHandler(this.openHistoryToolStripMenuItem_Click);
             // 
@@ -366,7 +395,7 @@
             this.splitContainer1.Panel2.Padding = new System.Windows.Forms.Padding(3);
             this.splitContainer1.Panel2MinSize = 125;
             this.splitContainer1.Size = new System.Drawing.Size(866, 466);
-            this.splitContainer1.SplitterDistance = 274;
+            this.splitContainer1.SplitterDistance = 272;
             this.splitContainer1.TabIndex = 40;
             // 
             // btnPartAdd
@@ -458,7 +487,7 @@
             this.listviewParts.ShowCommandMenuOnRightClick = true;
             this.listviewParts.ShowGroups = false;
             this.listviewParts.ShowImagesOnSubItems = true;
-            this.listviewParts.Size = new System.Drawing.Size(858, 222);
+            this.listviewParts.Size = new System.Drawing.Size(858, 220);
             this.listviewParts.SortGroupItemsByPrimaryColumn = false;
             this.listviewParts.TabIndex = 6;
             this.listviewParts.TintSortColumn = true;
@@ -480,62 +509,71 @@
             // olvcSelect
             // 
             this.olvcSelect.IsEditable = false;
-            this.olvcSelect.Text = "Select";
-            this.olvcSelect.Width = 30;
+            this.olvcSelect.MaximumWidth = 22;
+            this.olvcSelect.MinimumWidth = 22;
+            this.olvcSelect.Text = "";
+            this.olvcSelect.Width = 22;
             // 
             // olvcMPN
             // 
+            this.olvcMPN.MinimumWidth = 20;
             this.olvcMPN.Text = "Manufacturer PN";
             this.olvcMPN.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // olvcMAN
             // 
+            this.olvcMAN.MinimumWidth = 20;
             this.olvcMAN.Text = "Manufacturer";
             this.olvcMAN.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // olvcDesc
             // 
+            this.olvcDesc.MinimumWidth = 20;
             this.olvcDesc.Text = "Description";
             this.olvcDesc.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // olvcCat
             // 
+            this.olvcCat.MinimumWidth = 20;
             this.olvcCat.Text = "Category";
             this.olvcCat.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // olvcLocation
             // 
+            this.olvcLocation.MinimumWidth = 20;
             this.olvcLocation.Text = "Location";
             this.olvcLocation.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // olvcStock
             // 
-            this.olvcStock.MinimumWidth = 75;
+            this.olvcStock.MinimumWidth = 20;
             this.olvcStock.Text = "Stock";
             this.olvcStock.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.olvcStock.Width = 75;
             // 
             // olvcLowStock
             // 
-            this.olvcLowStock.MinimumWidth = 75;
+            this.olvcLowStock.MinimumWidth = 20;
             this.olvcLowStock.Text = "LowStock";
             this.olvcLowStock.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.olvcLowStock.Width = 75;
             // 
             // olvcPrice
             // 
-            this.olvcPrice.MinimumWidth = 75;
+            this.olvcPrice.MinimumWidth = 20;
             this.olvcPrice.Text = "Price";
             this.olvcPrice.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.olvcPrice.Width = 75;
             // 
             // olvcSupplier
             // 
+            this.olvcSupplier.MinimumWidth = 20;
             this.olvcSupplier.Text = "Supplier";
             this.olvcSupplier.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // olvcSPN
             // 
+            this.olvcSPN.MinimumWidth = 20;
             this.olvcSPN.Text = "SPN";
             this.olvcSPN.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -603,7 +641,7 @@
             this.listviewChecked.ShowCommandMenuOnRightClick = true;
             this.listviewChecked.ShowGroups = false;
             this.listviewChecked.ShowImagesOnSubItems = true;
-            this.listviewChecked.Size = new System.Drawing.Size(858, 138);
+            this.listviewChecked.Size = new System.Drawing.Size(858, 139);
             this.listviewChecked.SortGroupItemsByPrimaryColumn = false;
             this.listviewChecked.TabIndex = 7;
             this.listviewChecked.TintSortColumn = true;
@@ -675,6 +713,7 @@
             // 
             // statusStrip1
             // 
+            this.statusStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.labelCount,
             this.labelStatus});
@@ -702,18 +741,6 @@
             this.statusTimeoutTimer.Interval = 2500;
             this.statusTimeoutTimer.Tick += new System.EventHandler(this.statusTimeoutTimer_Tick);
             // 
-            // toolStripSeparator3
-            // 
-            this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(205, 6);
-            // 
-            // importPartsToolStripMenuItem
-            // 
-            this.importPartsToolStripMenuItem.Name = "importPartsToolStripMenuItem";
-            this.importPartsToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
-            this.importPartsToolStripMenuItem.Text = "Import parts";
-            this.importPartsToolStripMenuItem.Click += new System.EventHandler(this.importPartsToolStripMenuItem_Click);
-            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -723,7 +750,7 @@
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
-            this.MinimumSize = new System.Drawing.Size(400, 320);
+            this.MinimumSize = new System.Drawing.Size(398, 314);
             this.Name = "frmMain";
             this.Text = "Stock Manager";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
@@ -761,8 +788,6 @@
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem newDatabaseToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem openDatabaseToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem databaseToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem importFromExcelToolStripMenuItem;
         private System.Windows.Forms.ComboBox cbboxFilterType;
         private System.Windows.Forms.TextBox txtboxFilter;
         private System.Windows.Forms.ToolStripMenuItem actionsToolStripMenuItem;
@@ -781,15 +806,11 @@
         private BrightIdeasSoftware.OLVColumn olvcPrice2;
         private BrightIdeasSoftware.OLVColumn olvcSupplier2;
         private BrightIdeasSoftware.OLVColumn olvcSPN2;
-        private System.Windows.Forms.ToolStripMenuItem selectionToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem checkAllInViewToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem uncheckAllInViewToolStripMenuItem;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel labelCount;
         private System.Windows.Forms.ToolStripMenuItem closeDatabaseToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
         private System.Windows.Forms.ToolStripMenuItem quitToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem importOrderFromDigikeyToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem projectsToolStripMenuItem;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
@@ -800,7 +821,6 @@
         private System.Windows.Forms.Button btnCheckedPartDel;
         private System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem resizeColumnsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem importOrderFromDigikeyFromClipboardToolStripMenuItem;
         private System.Windows.Forms.Timer statusTimeoutTimer;
         private System.Windows.Forms.ToolStripStatusLabel labelStatus;
         private System.Windows.Forms.ToolStripMenuItem openHistoryToolStripMenuItem;
@@ -809,6 +829,15 @@
         private System.Windows.Forms.ToolStripMenuItem exportPartsToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripMenuItem importPartsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem importsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem importFromExcelToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem importOrderFromDigikeyToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem importOrderFromDigikeyFromClipboardToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
+        private System.Windows.Forms.ToolStripMenuItem checkAllInViewToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem uncheckAllInViewToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
+        private System.Windows.Forms.ToolStripMenuItem advancedSearchToolStripMenuItem;
     }
 }
 

@@ -33,10 +33,11 @@ namespace StockManagerDB
 
             ListViewSetColumns();
 
-            dhs.OnPartListModified += Dhs_OnListModified; ;
+            dhs.OnPartListModified += Dhs_OnListModified;
             dhs.OnProjectsListModified += Dhs_OnListModified;
 
             UpdateProjectList();
+            SetStatus("Idle...");
         }
 
         #region ListView Init
@@ -71,28 +72,71 @@ namespace StockManagerDB
         private void ListViewSetColumns()
         {
             // Setup columns
-            olvcMPN.AspectGetter = delegate (object x) { return ((Material)x).MPN; };
-            olvcQuantity.AspectGetter = delegate (object x) { return ((Material)x).Quantity; };
-            olvcReference.AspectGetter = delegate (object x) { return ((Material)x).Reference; };
-            olvcMAN.AspectGetter = delegate (object x) { return ((Material)x).PartLink?.Manufacturer; };
-            olvcDesc.AspectGetter = delegate (object x) { return ((Material)x).PartLink?.Description; };
-            olvcCat.AspectGetter = delegate (object x) { return ((Material)x).PartLink?.Category; };
-            olvcLocation.AspectGetter = delegate (object x) { return ((Material)x).PartLink?.Location; };
-            olvcStock.AspectGetter = delegate (object x) { return ((Material)x).PartLink?.Stock; };
-            olvcLowStock.AspectGetter = delegate (object x) { return ((Material)x).PartLink?.LowStock; };
-            olvcPrice.AspectGetter = delegate (object x) { return ((Material)x).PartLink?.Price; };
-            olvcSupplier.AspectGetter = delegate (object x) { return ((Material)x).PartLink?.Supplier; };
-            olvcSPN.AspectGetter = delegate (object x) { return ((Material)x).PartLink?.SPN; };
+            olvcMPN.AspectGetter = delegate (object x)
+            {
+                return ((Material)x).MPN;
+            };
+            olvcQuantity.AspectGetter = delegate (object x)
+            {
+                return ((Material)x).Quantity;
+            };
+            olvcReference.AspectGetter = delegate (object x)
+            {
+                return ((Material)x).Reference;
+            };
+            olvcMAN.AspectGetter = delegate (object x)
+            {
+                return ((Material)x).PartLink?.Manufacturer;
+            };
+            olvcDesc.AspectGetter = delegate (object x)
+            {
+                return ((Material)x).PartLink?.Description;
+            };
+            olvcCat.AspectGetter = delegate (object x)
+            {
+                return ((Material)x).PartLink?.Category;
+            };
+            olvcLocation.AspectGetter = delegate (object x)
+            {
+                return ((Material)x).PartLink?.Location;
+            };
+            olvcStock.AspectGetter = delegate (object x)
+            {
+                return ((Material)x).PartLink?.Stock;
+            };
+            olvcLowStock.AspectGetter = delegate (object x)
+            {
+                return ((Material)x).PartLink?.LowStock;
+            };
+            olvcPrice.AspectGetter = delegate (object x)
+            {
+                return ((Material)x).PartLink?.Price;
+            };
+            olvcSupplier.AspectGetter = delegate (object x)
+            {
+                return ((Material)x).PartLink?.Supplier;
+            };
+            olvcSPN.AspectGetter = delegate (object x)
+            {
+                return ((Material)x).PartLink?.SPN;
+            };
 
-            olvcTotalQuantity.AspectGetter = delegate (object x) { return ((Material)x).Quantity * (byte)numMult.Value; };
-            olvcTotalPrice.AspectGetter = delegate (object x) { return (((Material)x).PartLink?.Price ?? 0) * (byte)numMult.Value; };
+            olvcTotalQuantity.AspectGetter = delegate (object x)
+            {
+                return ((Material)x).Quantity * (byte)numMult.Value;
+            };
+            olvcTotalPrice.AspectGetter = delegate (object x)
+            {
+                return (((Material)x).PartLink?.Price ?? 0) * (byte)numMult.Value;
+            };
             olvcAvailable.AspectGetter = delegate (object x)
             {
-                bool isAvailable = (((Material)x).Quantity * (byte)numMult.Value) <= (((Material)x).PartLink?.Stock ?? 0);
+                bool isAvailable =
+                    (((Material)x).Quantity * (byte)numMult.Value)
+                    <= (((Material)x).PartLink?.Stock ?? 0);
                 return isAvailable ? "Yes" : "No";
             };
             olvcAvailable.Renderer = new AvailableCellRenderer();
-
 
             // Make the decoration
             RowBorderDecoration rbd = new RowBorderDecoration();
@@ -123,9 +167,15 @@ namespace StockManagerDB
                 };
                 switch (this.Column.TextAlign)
                 {
-                    case HorizontalAlignment.Center: fmt.Alignment = StringAlignment.Center; break;
-                    case HorizontalAlignment.Left: fmt.Alignment = StringAlignment.Near; break;
-                    case HorizontalAlignment.Right: fmt.Alignment = StringAlignment.Far; break;
+                    case HorizontalAlignment.Center:
+                        fmt.Alignment = StringAlignment.Center;
+                        break;
+                    case HorizontalAlignment.Left:
+                        fmt.Alignment = StringAlignment.Near;
+                        break;
+                    case HorizontalAlignment.Right:
+                        fmt.Alignment = StringAlignment.Far;
+                        break;
                 }
                 g.DrawString(this.GetText(), this.Font, this.TextBrush, r, fmt);
             }
@@ -144,8 +194,7 @@ namespace StockManagerDB
 
             comboboxProjects.DataSource = data.Projects.Keys.ToList();
 
-            if ((selProj != null)
-            && (comboboxProjects.Items.Contains(selProj)))
+            if ((selProj != null) && (comboboxProjects.Items.Contains(selProj)))
                 comboboxProjects.SelectedItem = selProj;
         }
 
@@ -166,8 +215,7 @@ namespace StockManagerDB
 
             comboboxVersions.DataSource = data.Projects[project].Versions.Keys.ToList();
 
-            if ((selVer != null)
-            && (comboboxVersions.Items.Contains(selVer)))
+            if ((selVer != null) && (comboboxVersions.Items.Contains(selVer)))
                 comboboxVersions.SelectedItem = selVer;
         }
 
@@ -188,8 +236,10 @@ namespace StockManagerDB
             //listviewComponents.AutoResizeColumns();
             listviewMaterials.Focus();
 
-            if ((listviewMaterials.SelectedObject is Material selMat)
-            && (listviewMaterials.Objects.Cast<Material>().Contains(selMat)))
+            if (
+                (listviewMaterials.SelectedObject is Material selMat)
+                && (listviewMaterials.Objects.Cast<Material>().Contains(selMat))
+            )
                 listviewMaterials.SelectedObject = selMat;
         }
 
@@ -250,8 +300,8 @@ namespace StockManagerDB
 
             BOM.Add(material);
             MaterialsHaveChanged();
-
         }
+
         /// <summary>
         /// Delete the specified <see cref="Material"/>
         /// </summary>
@@ -289,7 +339,13 @@ namespace StockManagerDB
                 throw new InvalidOperationException("No project version selected");
             }
 
-            Dialog.ShowDialogResult result = Dialog.ShowDialog("Enter the new MPN for the material", Title: "Enter MPN", Input: true, Btn1: Dialog.ButtonType.OK, Btn2: Dialog.ButtonType.Cancel);
+            Dialog.ShowDialogResult result = Dialog.ShowDialog(
+                "Enter the new MPN for the material",
+                Title: "Enter MPN",
+                Input: true,
+                Btn1: Dialog.ButtonType.OK,
+                Btn2: Dialog.ButtonType.Cancel
+            );
             if (result.DialogResult != Dialog.DialogResult.OK)
             {
                 return;
@@ -350,11 +406,17 @@ namespace StockManagerDB
                 throw new InvalidOperationException("No project version selected");
             }
 
-
             // Get selected component
             Material material = listviewMaterials.SelectedObject as Material;
 
-            Dialog.ShowDialogResult result = Dialog.ShowDialog("Enter the new MPN for the project", Title: "Enter MPN", Input: true, DefaultInput: material.MPN, Btn1: Dialog.ButtonType.OK, Btn2: Dialog.ButtonType.Cancel);
+            Dialog.ShowDialogResult result = Dialog.ShowDialog(
+                "Enter the new MPN for the project",
+                Title: "Enter MPN",
+                Input: true,
+                DefaultInput: material.MPN,
+                Btn1: Dialog.ButtonType.OK,
+                Btn2: Dialog.ButtonType.Cancel
+            );
             if (result.DialogResult != Dialog.DialogResult.OK)
             {
                 return;
@@ -391,16 +453,40 @@ namespace StockManagerDB
             switch (editedColumn)
             {
                 case 0: // mpn
+                        // Verify that an actual change is made
+                    if (oldMaterial.MPN?.Equals(newValue) ?? false)
+                    {
+                        // No changes
+                        LoggerClass.Write("No change detected. Aborting...");
+                        return;
+                    }
                     newMaterial.MPN = newValue;
                     break;
                 case 1: // quantity
+                        // Verify that an actual change is made
+                    if (oldMaterial.QuantityStr?.Equals(newValue) ?? false)
+                    {
+                        // No changes
+                        LoggerClass.Write("No change detected. Aborting...");
+                        return;
+                    }
                     newMaterial.QuantityStr = newValue;
                     break;
                 case 2: // reference
+                        // Verify that an actual change is made
+                    if (oldMaterial.Reference?.Equals(newValue) ?? false)
+                    {
+                        // No changes
+                        LoggerClass.Write("No change detected. Aborting...");
+                        return;
+                    }
                     newMaterial.Reference = newValue;
                     break;
                 default:
-                    LoggerClass.Write("Unable to edit this column", ESNLib.Tools.Logger.LogLevels.Error);
+                    LoggerClass.Write(
+                        "Unable to edit this column",
+                        Logger.LogLevels.Error
+                    );
                     break;
             }
 
@@ -417,7 +503,14 @@ namespace StockManagerDB
         /// </summary>
         private void CreateNewProject()
         {
-            Dialog.ShowDialogResult result = Dialog.ShowDialog("Enter the name for the project", Title: "Enter name", Input: true, DefaultInput: "Project", Btn1: Dialog.ButtonType.OK, Btn2: Dialog.ButtonType.Cancel);
+            Dialog.ShowDialogResult result = Dialog.ShowDialog(
+                "Enter the name for the project",
+                Title: "Enter name",
+                Input: true,
+                DefaultInput: "Project",
+                Btn1: Dialog.ButtonType.OK,
+                Btn2: Dialog.ButtonType.Cancel
+            );
             if (result.DialogResult != Dialog.DialogResult.OK)
             {
                 return;
@@ -425,8 +518,16 @@ namespace StockManagerDB
 
             if (data.Projects.ContainsKey(result.UserInput))
             {
-                LoggerClass.Write($"Project with name '{result.UserInput}' already existing...", ESNLib.Tools.Logger.LogLevels.Error);
-                MessageBox.Show($"Project with name '{result.UserInput}' already existing...", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                LoggerClass.Write(
+                    $"Project with name '{result.UserInput}' already existing...",
+                    ESNLib.Tools.Logger.LogLevels.Error
+                );
+                MessageBox.Show(
+                    $"Project with name '{result.UserInput}' already existing...",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
                 return;
             }
 
@@ -449,7 +550,14 @@ namespace StockManagerDB
                 return;
             }
 
-            Dialog.ShowDialogResult result = Dialog.ShowDialog("Enter the new name for the project", Title: "Enter new name", Input: true, DefaultInput: currentName, Btn1: Dialog.ButtonType.OK, Btn2: Dialog.ButtonType.Cancel);
+            Dialog.ShowDialogResult result = Dialog.ShowDialog(
+                "Enter the new name for the project",
+                Title: "Enter new name",
+                Input: true,
+                DefaultInput: currentName,
+                Btn1: Dialog.ButtonType.OK,
+                Btn2: Dialog.ButtonType.Cancel
+            );
             if (result.DialogResult != Dialog.DialogResult.OK)
             {
                 return;
@@ -459,8 +567,16 @@ namespace StockManagerDB
 
             if (data.Projects.ContainsKey(newName))
             {
-                LoggerClass.Write($"Project with name '{result.UserInput}' already existing...", ESNLib.Tools.Logger.LogLevels.Error);
-                MessageBox.Show($"Project with name '{result.UserInput}' already existing...", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                LoggerClass.Write(
+                    $"Project with name '{result.UserInput}' already existing...",
+                    ESNLib.Tools.Logger.LogLevels.Error
+                );
+                MessageBox.Show(
+                    $"Project with name '{result.UserInput}' already existing...",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
                 return;
             }
 
@@ -484,7 +600,14 @@ namespace StockManagerDB
                 return;
             }
 
-            Dialog.ShowDialogResult result = Dialog.ShowDialog("Enter the name for the duplicated project", Title: "Enter new name", Input: true, DefaultInput: currentName, Btn1: Dialog.ButtonType.OK, Btn2: Dialog.ButtonType.Cancel);
+            Dialog.ShowDialogResult result = Dialog.ShowDialog(
+                "Enter the name for the duplicated project",
+                Title: "Enter new name",
+                Input: true,
+                DefaultInput: currentName,
+                Btn1: Dialog.ButtonType.OK,
+                Btn2: Dialog.ButtonType.Cancel
+            );
             if (result.DialogResult != Dialog.DialogResult.OK)
             {
                 return;
@@ -494,8 +617,16 @@ namespace StockManagerDB
 
             if (data.Projects.ContainsKey(newName))
             {
-                LoggerClass.Write($"Project with name '{result.UserInput}' already existing...", ESNLib.Tools.Logger.LogLevels.Error);
-                MessageBox.Show($"Project with name '{result.UserInput}' already existing...", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                LoggerClass.Write(
+                    $"Project with name '{result.UserInput}' already existing...",
+                    ESNLib.Tools.Logger.LogLevels.Error
+                );
+                MessageBox.Show(
+                    $"Project with name '{result.UserInput}' already existing...",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
                 return;
             }
 
@@ -537,7 +668,14 @@ namespace StockManagerDB
                 return;
             }
 
-            Dialog.ShowDialogResult result = Dialog.ShowDialog("Enter the new version", Title: "Enter new version", Input: true, DefaultInput: new Version(1, 0, 0).ToString(), Btn1: Dialog.ButtonType.OK, Btn2: Dialog.ButtonType.Cancel);
+            Dialog.ShowDialogResult result = Dialog.ShowDialog(
+                "Enter the new version",
+                Title: "Enter new version",
+                Input: true,
+                DefaultInput: new Version(1, 0, 0).ToString(),
+                Btn1: Dialog.ButtonType.OK,
+                Btn2: Dialog.ButtonType.Cancel
+            );
             if (result.DialogResult != Dialog.DialogResult.OK)
             {
                 return;
@@ -545,7 +683,12 @@ namespace StockManagerDB
 
             if (data.Projects[project].Versions.ContainsKey(result.UserInput))
             {
-                MessageBox.Show("This version already exists...", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    "This version already exists...",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
                 return;
             }
 
@@ -584,7 +727,8 @@ namespace StockManagerDB
             // Ask confirmation
             Dialog.DialogConfig dc = new Dialog.DialogConfig()
             {
-                Message = $"Warning, this action cannot be undone !\nPlease confirm the deletion of the version :\n{project} - v{version}\nDo you really want to delete it ?",
+                Message =
+                    $"Warning, this action cannot be undone !\nPlease confirm the deletion of the version :\n{project} - v{version}\nDo you really want to delete it ?",
                 Title = "Warning",
                 Icon = Dialog.DialogIcon.Warning,
                 Button1 = Dialog.ButtonType.Custom1,
@@ -621,7 +765,14 @@ namespace StockManagerDB
                 return;
             }
 
-            Dialog.ShowDialogResult result = Dialog.ShowDialog("Enter the new version", Title: "Enter new version", Input: true, DefaultInput: version, Btn1: Dialog.ButtonType.OK, Btn2: Dialog.ButtonType.Cancel);
+            Dialog.ShowDialogResult result = Dialog.ShowDialog(
+                "Enter the new version",
+                Title: "Enter new version",
+                Input: true,
+                DefaultInput: version,
+                Btn1: Dialog.ButtonType.OK,
+                Btn2: Dialog.ButtonType.Cancel
+            );
             if (result.DialogResult != Dialog.DialogResult.OK)
             {
                 return;
@@ -629,7 +780,12 @@ namespace StockManagerDB
 
             if (data.Projects[project].Versions.ContainsKey(result.UserInput))
             {
-                MessageBox.Show("This version already exists...", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    "This version already exists...",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
                 return;
             }
 
@@ -655,7 +811,14 @@ namespace StockManagerDB
                 return;
             }
 
-            Dialog.ShowDialogResult result = Dialog.ShowDialog("Enter the new version", Title: "Enter new version", Input: true, DefaultInput: version, Btn1: Dialog.ButtonType.OK, Btn2: Dialog.ButtonType.Cancel);
+            Dialog.ShowDialogResult result = Dialog.ShowDialog(
+                "Enter the new version",
+                Title: "Enter new version",
+                Input: true,
+                DefaultInput: version,
+                Btn1: Dialog.ButtonType.OK,
+                Btn2: Dialog.ButtonType.Cancel
+            );
             if (result.DialogResult != Dialog.DialogResult.OK)
             {
                 return;
@@ -669,7 +832,12 @@ namespace StockManagerDB
 
             if (data.Projects[project].Versions.ContainsKey(result.UserInput))
             {
-                MessageBox.Show("This version already exists...", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    "This version already exists...",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
                 return;
             }
 
@@ -700,15 +868,26 @@ namespace StockManagerDB
 
             if (File.Exists(fsd.FileName))
             {
-                LoggerClass.Write($"Unable to export... File already exists", Logger.LogLevels.Debug);
-                MessageBox.Show("Unable to export projects. The selected file already exists...", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                LoggerClass.Write(
+                    $"Unable to export... File already exists",
+                    Logger.LogLevels.Debug
+                );
+                MessageBox.Show(
+                    "Unable to export projects. The selected file already exists...",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
                 return false;
             }
 
             LoggerClass.Write($"Exporting projects...", Logger.LogLevels.Debug);
             Dictionary<string, Project> projects = data.Projects;
 
-            LoggerClass.Write($"{projects.Count} project(s) found for export", Logger.LogLevels.Debug);
+            LoggerClass.Write(
+                $"{projects.Count} project(s) found for export",
+                Logger.LogLevels.Debug
+            );
 
             DataExportClass dec = new DataExportClass(null, projects);
 
@@ -744,11 +923,10 @@ namespace StockManagerDB
                     // Add versions
                     foreach (ProjectVersion version in project.Versions.Values)
                     {
-                        if(!currentProject.Versions.ContainsKey(version.Version))
+                        if (!currentProject.Versions.ContainsKey(version.Version))
                         {
                             currentProject.Versions.Add(version.Version, version);
                         }
-
                     }
                 }
             }
@@ -761,18 +939,36 @@ namespace StockManagerDB
 
         #region Misc Events
 
+        private void SetStatus(string status)
+        {
+            SetStatus(status, SystemColors.ControlText);
+        }
+
+        private void SetStatus(string status, Color color)
+        {
+            labelStatus.ForeColor = color;
+            labelStatus.Text = status;
+
+            // Restart timer
+            statusTimeoutTimer.Stop();
+            statusTimeoutTimer.Start();
+        }
+
         private void quitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.Close();
         }
+
         private void comboboxProjects_SelectedIndexChanged(object sender, EventArgs e)
         {
             UpdateVersionList();
         }
+
         private void comboboxVersions_SelectedIndexChanged(object sender, EventArgs e)
         {
             UpdateMaterialList();
         }
+
         private void listviewComponents_CellEditFinished(object sender, CellEditEventArgs e)
         {
             ApplyEdit(e);
@@ -848,17 +1044,31 @@ namespace StockManagerDB
         {
             listviewMaterials.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
         }
+
         private void numMult_ValueChanged(object sender, EventArgs e)
         {
             listviewMaterials.Invalidate();
         }
+
         private void exportAllProjectsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ActionExportProjects();
         }
+
         private void importProjectsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ImportProjects();
+        }
+        private void listviewMaterials_CellRightClick(object sender, CellRightClickEventArgs e)
+        {
+            // When rightclicking a cell, copy the MPN of the corresponding row
+            if (!(e.Model is Material selectedMaterial))
+            {
+                return;
+            }
+
+            Clipboard.SetText(selectedMaterial.MPN);
+            SetStatus("Copied to clipboard...");
         }
 
         #endregion
