@@ -216,7 +216,7 @@ namespace StockManagerDB
             TextMatchFilter filter = null;
             if (!string.IsNullOrEmpty(txt))
             {
-                switch (0)
+                switch (e.filterType)
                 {
                     case 0:
                     default: // Anywhere
@@ -279,12 +279,6 @@ namespace StockManagerDB
                 filterHighlightRenderer.FilterInColumn = column;
             }
 
-            // Model filter clears all current filter on columns. This is what we want
-            if (filter == null)
-                olv.AdditionalFilter = null;
-            else
-                olv.AdditionalFilter = filter;
-
             if (!string.IsNullOrEmpty(category))
             {
                 // Apply category filter
@@ -295,6 +289,11 @@ namespace StockManagerDB
             {
                 olvcCat.UseFiltering = false;
             }
+
+            if (filter == null)
+                olv.AdditionalFilter = new TextMatchFilter(olv);
+            else
+                olv.AdditionalFilter = filter;
         }
 
         private void PartsHaveChanged()

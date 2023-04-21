@@ -28,18 +28,26 @@ namespace StockManagerDB
         /// </summary>
         public static event EventHandler<FilterEventArgs> OnFilterSet;
 
+        private bool IsReady = false;
+
         public frmSearch()
         {
             InitializeComponent();
 
-            Init();
+            InitLists();
+
+            cbboxFilterType.SelectedIndex = 0;
+
+            IsReady = true;
         }
 
-        private void Init()
+        private void InitLists()
         {
-            listviewCategories.Items.AddRange(Parts.Select((p) => p.Category).Distinct().Select((p) => new ListViewItem(p)).ToArray());
+            List<string> categories = Parts.Select((p) => p.Category).Distinct().ToList();
+            categories.Sort();
+
+            listviewCategories.Items.AddRange(categories.Select((p) => new ListViewItem(p)).ToArray());
             listviewCategories.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
-            listviewCategories.SelectedIndices.Add(0);
 
             listviewType.Items.Clear();
             listviewType.Items.AddRange(Enum.GetNames(typeof(Part.Parameter)).Select((x) => new ListViewItem(x)).ToArray());
@@ -49,15 +57,16 @@ namespace StockManagerDB
 
         private void InvokeOnFilterSet()
         {
-            if(listviewType.SelectedIndices.Count == 0)
+            if (listviewType.SelectedIndices.Count == 0)
             {
                 return;
             }
 
             var args = new FilterEventArgs()
             {
-                text = textBox1.Text,
+                text = txtboxFilter.Text,
                 category = (listviewCategories.SelectedItems.Count > 0 ? listviewCategories.SelectedItems[0].Text : null),
+                filterType = cbboxFilterType.SelectedIndex,
             };
 
             args.filterIn = (Part.Parameter)Enum.Parse(typeof(Part.Parameter), listviewType.SelectedItems[0].Text);
@@ -65,7 +74,7 @@ namespace StockManagerDB
             OnFilterSet?.Invoke(this, args);
         }
 
-        private void textBox1_TextChanged(object sender, EventArgs e)
+        private void txtboxFilter_TextChanged(object sender, EventArgs e)
         {
             if (listviewType.SelectedIndices.Count == 0)
             {
@@ -119,6 +128,19 @@ namespace StockManagerDB
 
             InvokeOnFilterSet();
         }
+
+        private void btnClearCat_Click(object sender, EventArgs e)
+        {
+            txtboxCategory.Clear();
+        }
+
+        private void cbboxFilterType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!IsReady)
+                return;
+
+            InvokeOnFilterSet();
+        }
     }
 
     public class FilterEventArgs : EventArgs
@@ -126,5 +148,6 @@ namespace StockManagerDB
         public string text;
         public string category;
         public Part.Parameter filterIn;
+        public int filterType;
     }
 }
