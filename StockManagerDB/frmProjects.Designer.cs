@@ -75,6 +75,8 @@
             this.label1 = new System.Windows.Forms.Label();
             this.numMult = new System.Windows.Forms.NumericUpDown();
             this.statusTimeoutTimer = new System.Windows.Forms.Timer(this.components);
+            this.actionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.orderTheSelectedProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.listviewMaterials)).BeginInit();
@@ -104,6 +106,7 @@
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
+            this.actionsToolStripMenuItem,
             this.viewToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
@@ -569,6 +572,20 @@
             this.statusTimeoutTimer.Enabled = true;
             this.statusTimeoutTimer.Interval = 2500;
             // 
+            // actionsToolStripMenuItem
+            // 
+            this.actionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.orderTheSelectedProjectToolStripMenuItem});
+            this.actionsToolStripMenuItem.Name = "actionsToolStripMenuItem";
+            this.actionsToolStripMenuItem.Size = new System.Drawing.Size(59, 20);
+            this.actionsToolStripMenuItem.Text = "Actions";
+            // 
+            // orderTheSelectedProjectToolStripMenuItem
+            // 
+            this.orderTheSelectedProjectToolStripMenuItem.Name = "orderTheSelectedProjectToolStripMenuItem";
+            this.orderTheSelectedProjectToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
+            this.orderTheSelectedProjectToolStripMenuItem.Text = "Order the selected project";
+            // 
             // frmProjects
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -645,5 +662,7 @@
         private System.Windows.Forms.ToolStripMenuItem importProjectsToolStripMenuItem;
         private System.Windows.Forms.ToolStripStatusLabel labelStatus;
         private System.Windows.Forms.Timer statusTimeoutTimer;
+        private System.Windows.Forms.ToolStripMenuItem actionsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem orderTheSelectedProjectToolStripMenuItem;
     }
 }
