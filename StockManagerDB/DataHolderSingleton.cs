@@ -185,7 +185,7 @@ namespace StockManagerDB
         {
             try
             {
-                SettingsManager.SaveTo(Filepath, new DataExportClass(Parts, Projects), backup: true, indent: true);
+                SettingsManager.SaveTo(Filepath, new DataExportClass(Parts, Projects), backup: true, indent: true, internalFileName: "settings.txt");
 
                 // Also save the history
                 DataHolderHistorySingleton.Instance?.Save();
