@@ -72,64 +72,64 @@ namespace StockManagerDB
         private void ListViewSetColumns()
         {
             // Setup columns
-            olvcMPN.AspectGetter = delegate(object x)
+            olvcMPN.AspectGetter = delegate (object x)
             {
                 return ((Material)x).MPN;
             };
-            olvcQuantity.AspectGetter = delegate(object x)
+            olvcQuantity.AspectGetter = delegate (object x)
             {
                 return ((Material)x).Quantity;
             };
-            olvcReference.AspectGetter = delegate(object x)
+            olvcReference.AspectGetter = delegate (object x)
             {
                 return ((Material)x).Reference;
             };
-            olvcMAN.AspectGetter = delegate(object x)
+            olvcMAN.AspectGetter = delegate (object x)
             {
                 return ((Material)x).PartLink?.Manufacturer;
             };
-            olvcDesc.AspectGetter = delegate(object x)
+            olvcDesc.AspectGetter = delegate (object x)
             {
                 return ((Material)x).PartLink?.Description;
             };
-            olvcCat.AspectGetter = delegate(object x)
+            olvcCat.AspectGetter = delegate (object x)
             {
                 return ((Material)x).PartLink?.Category;
             };
-            olvcLocation.AspectGetter = delegate(object x)
+            olvcLocation.AspectGetter = delegate (object x)
             {
                 return ((Material)x).PartLink?.Location;
             };
-            olvcStock.AspectGetter = delegate(object x)
+            olvcStock.AspectGetter = delegate (object x)
             {
                 return ((Material)x).PartLink?.Stock;
             };
-            olvcLowStock.AspectGetter = delegate(object x)
+            olvcLowStock.AspectGetter = delegate (object x)
             {
                 return ((Material)x).PartLink?.LowStock;
             };
-            olvcPrice.AspectGetter = delegate(object x)
+            olvcPrice.AspectGetter = delegate (object x)
             {
                 return ((Material)x).PartLink?.Price;
             };
-            olvcSupplier.AspectGetter = delegate(object x)
+            olvcSupplier.AspectGetter = delegate (object x)
             {
                 return ((Material)x).PartLink?.Supplier;
             };
-            olvcSPN.AspectGetter = delegate(object x)
+            olvcSPN.AspectGetter = delegate (object x)
             {
                 return ((Material)x).PartLink?.SPN;
             };
 
-            olvcTotalQuantity.AspectGetter = delegate(object x)
+            olvcTotalQuantity.AspectGetter = delegate (object x)
             {
                 return ((Material)x).Quantity * (byte)numMult.Value;
             };
-            olvcTotalPrice.AspectGetter = delegate(object x)
+            olvcTotalPrice.AspectGetter = delegate (object x)
             {
                 return (((Material)x).PartLink?.Price ?? 0) * (byte)numMult.Value;
             };
-            olvcAvailable.AspectGetter = delegate(object x)
+            olvcAvailable.AspectGetter = delegate (object x)
             {
                 bool isAvailable =
                     (((Material)x).Quantity * (byte)numMult.Value)
@@ -453,18 +453,39 @@ namespace StockManagerDB
             switch (editedColumn)
             {
                 case 0: // mpn
+                        // Verify that an actual change is made
+                    if (oldMaterial.MPN?.Equals(newValue) ?? false)
+                    {
+                        // No changes
+                        LoggerClass.Write("No change detected. Aborting...");
+                        return;
+                    }
                     newMaterial.MPN = newValue;
                     break;
                 case 1: // quantity
+                        // Verify that an actual change is made
+                    if (oldMaterial.QuantityStr?.Equals(newValue) ?? false)
+                    {
+                        // No changes
+                        LoggerClass.Write("No change detected. Aborting...");
+                        return;
+                    }
                     newMaterial.QuantityStr = newValue;
                     break;
                 case 2: // reference
+                        // Verify that an actual change is made
+                    if (oldMaterial.Reference?.Equals(newValue) ?? false)
+                    {
+                        // No changes
+                        LoggerClass.Write("No change detected. Aborting...");
+                        return;
+                    }
                     newMaterial.Reference = newValue;
                     break;
                 default:
                     LoggerClass.Write(
                         "Unable to edit this column",
-                        ESNLib.Tools.Logger.LogLevels.Error
+                        Logger.LogLevels.Error
                     );
                     break;
             }

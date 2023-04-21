@@ -300,84 +300,84 @@ namespace StockManagerDB
         private void ListViewSetColumns()
         {
             // Setup columns
-            olvcMPN.AspectGetter = delegate(object x)
+            olvcMPN.AspectGetter = delegate (object x)
             {
                 return ((Part)x).MPN;
             };
-            olvcMAN.AspectGetter = delegate(object x)
+            olvcMAN.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Manufacturer;
             };
-            olvcDesc.AspectGetter = delegate(object x)
+            olvcDesc.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Description;
             };
-            olvcCat.AspectGetter = delegate(object x)
+            olvcCat.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Category;
             };
-            olvcLocation.AspectGetter = delegate(object x)
+            olvcLocation.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Location;
             };
-            olvcStock.AspectGetter = delegate(object x)
+            olvcStock.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Stock;
             };
-            olvcLowStock.AspectGetter = delegate(object x)
+            olvcLowStock.AspectGetter = delegate (object x)
             {
                 return ((Part)x).LowStock;
             };
-            olvcPrice.AspectGetter = delegate(object x)
+            olvcPrice.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Price;
             };
-            olvcSupplier.AspectGetter = delegate(object x)
+            olvcSupplier.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Supplier;
             };
-            olvcSPN.AspectGetter = delegate(object x)
+            olvcSPN.AspectGetter = delegate (object x)
             {
                 return ((Part)x).SPN;
             };
 
-            olvcMPN2.AspectGetter = delegate(object x)
+            olvcMPN2.AspectGetter = delegate (object x)
             {
                 return ((Part)x).MPN;
             };
-            olvcMAN2.AspectGetter = delegate(object x)
+            olvcMAN2.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Manufacturer;
             };
-            olvcDesc2.AspectGetter = delegate(object x)
+            olvcDesc2.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Description;
             };
-            olvcCat2.AspectGetter = delegate(object x)
+            olvcCat2.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Category;
             };
-            olvcLocation2.AspectGetter = delegate(object x)
+            olvcLocation2.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Location;
             };
-            olvcStock2.AspectGetter = delegate(object x)
+            olvcStock2.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Stock;
             };
-            olvcLowStock2.AspectGetter = delegate(object x)
+            olvcLowStock2.AspectGetter = delegate (object x)
             {
                 return ((Part)x).LowStock;
             };
-            olvcPrice2.AspectGetter = delegate(object x)
+            olvcPrice2.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Price;
             };
-            olvcSupplier2.AspectGetter = delegate(object x)
+            olvcSupplier2.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Supplier;
             };
-            olvcSPN2.AspectGetter = delegate(object x)
+            olvcSPN2.AspectGetter = delegate (object x)
             {
                 return ((Part)x).SPN;
             };
@@ -886,10 +886,7 @@ namespace StockManagerDB
         /// <summary>
         /// Called when a cell is edited
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        /// <exception cref="InvalidOperationException"></exception>
-        private void listviewParts_CellEditFinished(object sender, CellEditEventArgs e)
+        private void ApplyEdit(CellEditEventArgs e)
         {
             // Get the unedited part version
             Part part = e.RowObject as Part;
@@ -1590,6 +1587,10 @@ namespace StockManagerDB
                 return;
 
             searchForm.Show();
+        }
+        private void listviewParts_CellEditFinished(object sender, CellEditEventArgs e)
+        {
+            ApplyEdit(e);
         }
 
         #endregion
