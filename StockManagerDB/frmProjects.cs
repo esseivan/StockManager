@@ -34,10 +34,10 @@ namespace StockManagerDB
             ListViewSetColumns();
 
             dhs.OnPartListModified += Dhs_OnListModified;
-            ;
             dhs.OnProjectsListModified += Dhs_OnListModified;
 
             UpdateProjectList();
+            SetStatus("Idle...");
         }
 
         #region ListView Init
@@ -939,6 +939,21 @@ namespace StockManagerDB
 
         #region Misc Events
 
+        private void SetStatus(string status)
+        {
+            SetStatus(status, SystemColors.ControlText);
+        }
+
+        private void SetStatus(string status, Color color)
+        {
+            labelStatus.ForeColor = color;
+            labelStatus.Text = status;
+
+            // Restart timer
+            statusTimeoutTimer.Stop();
+            statusTimeoutTimer.Start();
+        }
+
         private void quitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.Close();
@@ -1044,7 +1059,19 @@ namespace StockManagerDB
         {
             ImportProjects();
         }
+        private void listviewMaterials_CellRightClick(object sender, CellRightClickEventArgs e)
+        {
+            // When rightclicking a cell, copy the MPN of the corresponding row
+            if (!(e.Model is Material selectedMaterial))
+            {
+                return;
+            }
+
+            Clipboard.SetText(selectedMaterial.MPN);
+            SetStatus("Copied to clipboard...");
+        }
 
         #endregion
+
     }
 }

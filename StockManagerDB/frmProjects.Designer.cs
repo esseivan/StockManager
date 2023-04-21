@@ -28,9 +28,14 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.labelStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.importProjectsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exportAllProjectsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.quitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.resizeColumnsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -69,9 +74,8 @@
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.label1 = new System.Windows.Forms.Label();
             this.numMult = new System.Windows.Forms.NumericUpDown();
-            this.exportAllProjectsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.importProjectsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.statusTimeoutTimer = new System.Windows.Forms.Timer(this.components);
+            this.statusStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.listviewMaterials)).BeginInit();
             this.groupBox1.SuspendLayout();
@@ -82,11 +86,19 @@
             // 
             // statusStrip1
             // 
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.labelStatus});
             this.statusStrip1.Location = new System.Drawing.Point(0, 466);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(995, 22);
             this.statusStrip1.TabIndex = 1;
             this.statusStrip1.Text = "statusStrip1";
+            // 
+            // labelStatus
+            // 
+            this.labelStatus.Name = "labelStatus";
+            this.labelStatus.Size = new System.Drawing.Size(66, 17);
+            this.labelStatus.Text = "statusLabel";
             // 
             // menuStrip1
             // 
@@ -110,11 +122,30 @@
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
             // 
+            // importProjectsToolStripMenuItem
+            // 
+            this.importProjectsToolStripMenuItem.Name = "importProjectsToolStripMenuItem";
+            this.importProjectsToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
+            this.importProjectsToolStripMenuItem.Text = "Import projects";
+            this.importProjectsToolStripMenuItem.Click += new System.EventHandler(this.importProjectsToolStripMenuItem_Click);
+            // 
+            // exportAllProjectsToolStripMenuItem
+            // 
+            this.exportAllProjectsToolStripMenuItem.Name = "exportAllProjectsToolStripMenuItem";
+            this.exportAllProjectsToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
+            this.exportAllProjectsToolStripMenuItem.Text = "Export all projects";
+            this.exportAllProjectsToolStripMenuItem.Click += new System.EventHandler(this.exportAllProjectsToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(165, 6);
+            // 
             // quitToolStripMenuItem
             // 
             this.quitToolStripMenuItem.Name = "quitToolStripMenuItem";
             this.quitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Q)));
-            this.quitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.quitToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
             this.quitToolStripMenuItem.Text = "Close";
             this.quitToolStripMenuItem.Click += new System.EventHandler(this.quitToolStripMenuItem_Click);
             // 
@@ -129,7 +160,7 @@
             // resizeColumnsToolStripMenuItem
             // 
             this.resizeColumnsToolStripMenuItem.Name = "resizeColumnsToolStripMenuItem";
-            this.resizeColumnsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.resizeColumnsToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
             this.resizeColumnsToolStripMenuItem.Text = "Resize columns";
             this.resizeColumnsToolStripMenuItem.Click += new System.EventHandler(this.resizeColumnsToolStripMenuItem_Click);
             // 
@@ -204,11 +235,12 @@
             this.listviewMaterials.View = System.Windows.Forms.View.Details;
             this.listviewMaterials.VirtualMode = true;
             this.listviewMaterials.CellEditFinished += new BrightIdeasSoftware.CellEditEventHandler(this.listviewComponents_CellEditFinished);
+            this.listviewMaterials.CellRightClick += new System.EventHandler<BrightIdeasSoftware.CellRightClickEventArgs>(this.listviewMaterials_CellRightClick);
             // 
             // olvcSelect
             // 
             this.olvcSelect.IsEditable = false;
-            this.olvcSelect.Text = "Select";
+            this.olvcSelect.Text = "";
             this.olvcSelect.Width = 30;
             // 
             // olvcMPN
@@ -532,24 +564,10 @@
             0});
             this.numMult.ValueChanged += new System.EventHandler(this.numMult_ValueChanged);
             // 
-            // exportAllProjectsToolStripMenuItem
+            // statusTimeoutTimer
             // 
-            this.exportAllProjectsToolStripMenuItem.Name = "exportAllProjectsToolStripMenuItem";
-            this.exportAllProjectsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.exportAllProjectsToolStripMenuItem.Text = "Export all projects";
-            this.exportAllProjectsToolStripMenuItem.Click += new System.EventHandler(this.exportAllProjectsToolStripMenuItem_Click);
-            // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
-            // 
-            // importProjectsToolStripMenuItem
-            // 
-            this.importProjectsToolStripMenuItem.Name = "importProjectsToolStripMenuItem";
-            this.importProjectsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.importProjectsToolStripMenuItem.Text = "Import projects";
-            this.importProjectsToolStripMenuItem.Click += new System.EventHandler(this.importProjectsToolStripMenuItem_Click);
+            this.statusTimeoutTimer.Enabled = true;
+            this.statusTimeoutTimer.Interval = 2500;
             // 
             // frmProjects
             // 
@@ -565,6 +583,8 @@
             this.MinimumSize = new System.Drawing.Size(400, 400);
             this.Name = "frmProjects";
             this.Text = "Projects";
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.listviewMaterials)).EndInit();
@@ -623,5 +643,7 @@
         private System.Windows.Forms.ToolStripMenuItem exportAllProjectsToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem importProjectsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripStatusLabel labelStatus;
+        private System.Windows.Forms.Timer statusTimeoutTimer;
     }
 }

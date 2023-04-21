@@ -509,8 +509,10 @@
             // olvcSelect
             // 
             this.olvcSelect.IsEditable = false;
-            this.olvcSelect.Text = "Select";
-            this.olvcSelect.Width = 30;
+            this.olvcSelect.MaximumWidth = 22;
+            this.olvcSelect.MinimumWidth = 22;
+            this.olvcSelect.Text = "";
+            this.olvcSelect.Width = 22;
             // 
             // olvcMPN
             // 
