@@ -186,8 +186,6 @@ namespace StockManagerDB
             SettingsManager.LoadFrom(Filepath, out DataExportClass data);
             Parts = data?.GetParts() ?? new Dictionary<string, Part>();
             Projects = data?.GetProjects() ?? new Dictionary<string, Project>();
-            // Save just after loading
-            Save();
         }
 
         /// <summary>

@@ -1,4 +1,5 @@
 ﻿using BrightIdeasSoftware;
+using BrightIdeasSoftware.Design;
 using CsvHelper;
 using ESNLib.Controls;
 using ESNLib.Tools;
@@ -6,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.Common;
 using System.Data.SQLite;
 using System.Drawing;
 using System.Globalization;
@@ -15,6 +17,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Net.Mime.MediaTypeNames;
 using dhs = StockManagerDB.DataHolderSingleton;
 
 namespace StockManagerDB
@@ -187,14 +190,123 @@ namespace StockManagerDB
             // Set default filter type
             cbboxFilterType.SelectedIndex = 2;
 
-            // Init statusLabel timeout timer
-
             // Set number label
             UpdateNumberLabel();
             SetStatus("Idle...");
+
+            frmSearch.OnFilterSet += FrmSearch_OnFilterSet;
         }
 
         #region Listviews and display
+
+        /// <summary>
+        /// Clear all filtering for the parts
+        /// </summary>
+        private void ClearAdvancedFiltering()
+        {
+            olvcCat.UseFiltering = false;
+            olvcCat.ValuesChosenForFiltering = null;
+            // Must define to non null first to update categories
+            listviewParts.AdditionalFilter = new TextMatchFilter(listviewParts);
+            listviewParts.AdditionalFilter = null;
+        }
+
+        /// <summary>
+        /// Advanced filter callback
+        /// </summary>
+        private void FrmSearch_OnFilterSet(object sender, FilterEventArgs e)
+        {
+            this.BringToFront();
+            searchForm.BringToFront();
+
+            // Clear filter on this form
+            txtboxFilter.Clear();
+
+            // Apply filter
+            string txt = e.text;
+            Part.Parameter filterIn = e.filterIn;
+            string category = e.category;
+
+            ObjectListView olv = listviewParts;
+            TextMatchFilter filter = null;
+            if (!string.IsNullOrEmpty(txt))
+            {
+                switch (e.filterType)
+                {
+                    case 0:
+                    default: // Anywhere
+                        filter = TextMatchFilter.Contains(olv, txt);
+                        break;
+                    case 1: // At the start
+                        filter = TextMatchFilter.Prefix(olv, txt);
+                        break;
+                    case 2: // As a regex string
+                        filter = TextMatchFilter.Regex(olv, txt);
+                        break;
+                }
+            }
+
+            filterHighlightRenderer.FilterInColumn = null;
+            if (filter != null)
+            {
+                OLVColumn column = null;
+
+                switch (filterIn)
+                {
+                    case Part.Parameter.MPN:
+                        column = olvcMPN;
+                        break;
+                    case Part.Parameter.Manufacturer:
+                        column = olvcMAN;
+                        break;
+                    case Part.Parameter.Description:
+                        column = olvcDesc;
+                        break;
+                    case Part.Parameter.Category:
+                        column = olvcCat;
+                        break;
+                    case Part.Parameter.Location:
+                        column = olvcLocation;
+                        break;
+                    case Part.Parameter.Stock:
+                        column = olvcStock;
+                        break;
+                    case Part.Parameter.LowStock:
+                        column = olvcLowStock;
+                        break;
+                    case Part.Parameter.Price:
+                        column = olvcPrice;
+                        break;
+                    case Part.Parameter.Supplier:
+                        column = olvcSupplier;
+                        break;
+                    case Part.Parameter.SPN:
+                        column = olvcSPN;
+                        break;
+                    default:
+                        break;
+                }
+
+                if (column != null)
+                {
+                    filter.Columns = new OLVColumn[] { column };
+                }
+                filterHighlightRenderer.FilterInColumn = column;
+            }
+
+            if (!string.IsNullOrEmpty(category))
+            {
+                // Apply category filter
+                olvcCat.ValuesChosenForFiltering = new string[] { category };
+                olvcCat.UseFiltering = true;
+            }
+            else
+            {
+                olvcCat.UseFiltering = false;
+            }
+
+            olv.AdditionalFilter = filter ?? new TextMatchFilter(olv);
+        }
 
         private void PartsHaveChanged()
         {
@@ -1511,6 +1623,7 @@ namespace StockManagerDB
             // When the history form is closed, bring to fron the main form
             this.BringToFront();
             _searchForm = null;
+            ClearAdvancedFiltering();
         }
 
         private void listviewParts_KeyDown(object sender, KeyEventArgs e)
