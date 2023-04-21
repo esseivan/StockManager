@@ -577,6 +577,7 @@ namespace StockManagerDB
             )
                 return false;
 
+            string note = $"Imported Excel ";
             LoggerClass.Write($"Import confirmed. Processing...", Logger.LogLevels.Debug);
             // Add the parts to the list
             Cursor = Cursors.WaitCursor;
@@ -585,13 +586,13 @@ namespace StockManagerDB
                 if (Parts.ContainsKey(importedPart.MPN))
                 {
                     LoggerClass.Write(
-                        $"Duplicate part found : MPN={importedPart.MPN}",
+                        $"Duplicate part found : MPN={importedPart.MPN}. Skipping this part...",
                         Logger.LogLevels.Warn
                     );
                     continue;
                 }
 
-                data.AddPart(importedPart);
+                data.AddPart(importedPart, note);
             }
             Cursor = Cursors.Default;
             LoggerClass.Write($"Import finished", Logger.LogLevels.Debug);
@@ -972,9 +973,14 @@ namespace StockManagerDB
             return true;
         }
 
+        /// <summary>
+        /// Process the list of selected part. Parts already present will have their current stock updated
+        /// </summary>
         private void ActionDigikeyProcessParts(List<CsvPartImport> records)
         {
             LoggerClass.Write($"{records.Count} part(s) found to process...");
+
+            string note = $"Digikey Order ";
 
             foreach (CsvPartImport item in records)
             {
@@ -1013,17 +1019,25 @@ namespace StockManagerDB
                         Description = item.Description,
                         Category = "__automatically_generated",
                         Supplier = "Digikey",
-                        SPN = item.SPN
+                        SPN = item.SPN,
+                        Stock = quantity,
                     };
-                    data.AddPart(p);
+                    data.AddPart(p, note);
                 }
-
-                // Process edit
-                Part part = Parts[item.MPN];
-                LoggerClass.Write(
-                    $"Changing stock of '{part.MPN}' from {part.Stock} to {part.Stock + quantity}"
-                );
-                data.EditPart(part, Part.Parameter.Stock, (part.Stock + quantity).ToString());
+                else
+                {
+                    // Process edit
+                    Part part = Parts[item.MPN];
+                    LoggerClass.Write(
+                        $"Changing stock of '{part.MPN}' from {part.Stock} to {part.Stock + quantity}"
+                    );
+                    data.EditPart(
+                        part,
+                        Part.Parameter.Stock,
+                        (part.Stock + quantity).ToString(),
+                        note
+                    );
+                }
             }
         }
 
@@ -1077,6 +1091,7 @@ namespace StockManagerDB
                         // Read the rest only if required
                         if (!Parts.ContainsKey(record.MPN))
                         {
+                            // Cerating new part. Gathering more informations on part
                             record.SPN = csv.GetField("Part Number");
                             record.Description = csv.GetField("Description");
                         }

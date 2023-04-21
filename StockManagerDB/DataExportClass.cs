@@ -30,11 +30,21 @@ namespace StockManagerDB
 
         public Dictionary<string, Part> GetParts()
         {
+            if (Parts == null)
+            {
+                return null;
+            }
+
             return new Dictionary<string, Part>(Parts.ToDictionary(p => p.MPN, p => p));
         }
 
         public Dictionary<string, Project> GetProjects()
         {
+            if (Projects == null)
+            {
+                return null;
+            }
+
             return new Dictionary<string, Project>(Projects.ToDictionary(p => p.Name, p => p));
         }
     }

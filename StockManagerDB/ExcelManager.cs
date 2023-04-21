@@ -83,8 +83,9 @@ namespace StockManagerDB
             for (int i = 0; i < output.GetLength(1); i += 1)
             {
                 string headerName = output[0, i]; // Get header name
-                LoggerClass.Write("\t" + headerName);
                 Part.Parameter headerParam = Part.GetParameter(headerName); // Get corresponding parameter
+
+                LoggerClass.Write($"\t{headerName} -> {headerParam}");
                 header[i] = headerParam; // Add to the dictionary
             }
 

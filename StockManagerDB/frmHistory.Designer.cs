@@ -44,6 +44,7 @@
             this.olvcStatus = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcVersion = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.filterHighlightRenderer = new BrightIdeasSoftware.HighlightTextRenderer();
+            this.olvcNote = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             ((System.ComponentModel.ISupportInitialize)(this.listviewParts)).BeginInit();
             this.SuspendLayout();
             // 
@@ -63,6 +64,7 @@
             this.listviewParts.AllColumns.Add(this.olvcValidUntil);
             this.listviewParts.AllColumns.Add(this.olvcStatus);
             this.listviewParts.AllColumns.Add(this.olvcVersion);
+            this.listviewParts.AllColumns.Add(this.olvcNote);
             this.listviewParts.AllowCheckWithSpace = true;
             this.listviewParts.AllowColumnReorder = true;
             this.listviewParts.AlternateRowBackColor = System.Drawing.Color.LightBlue;
@@ -82,7 +84,8 @@
             this.olvcValidFrom,
             this.olvcValidUntil,
             this.olvcStatus,
-            this.olvcVersion});
+            this.olvcVersion,
+            this.olvcNote});
             this.listviewParts.Cursor = System.Windows.Forms.Cursors.Default;
             this.listviewParts.DataSource = null;
             this.listviewParts.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -97,7 +100,7 @@
             this.listviewParts.ShowCommandMenuOnRightClick = true;
             this.listviewParts.ShowGroups = false;
             this.listviewParts.ShowImagesOnSubItems = true;
-            this.listviewParts.Size = new System.Drawing.Size(902, 450);
+            this.listviewParts.Size = new System.Drawing.Size(953, 450);
             this.listviewParts.SortGroupItemsByPrimaryColumn = false;
             this.listviewParts.TabIndex = 7;
             this.listviewParts.TintSortColumn = true;
@@ -187,11 +190,16 @@
             this.olvcVersion.Text = "Version";
             this.olvcVersion.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
+            // olvcNote
+            // 
+            this.olvcNote.Text = "Note";
+            this.olvcNote.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
             // frmHistory
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(902, 450);
+            this.ClientSize = new System.Drawing.Size(953, 450);
             this.Controls.Add(this.listviewParts);
             this.Name = "frmHistory";
             this.Text = "History";
@@ -218,5 +226,6 @@
         private BrightIdeasSoftware.OLVColumn olvcValidUntil;
         private BrightIdeasSoftware.OLVColumn olvcStatus;
         private BrightIdeasSoftware.OLVColumn olvcVersion;
+        private BrightIdeasSoftware.OLVColumn olvcNote;
     }
 }

@@ -190,18 +190,21 @@
             | System.Windows.Forms.Keys.O)));
             this.importFromExcelToolStripMenuItem.Size = new System.Drawing.Size(296, 22);
             this.importFromExcelToolStripMenuItem.Text = "Import from Excel";
+            this.importFromExcelToolStripMenuItem.Click += new System.EventHandler(this.importFromExcelToolStripMenuItem_Click);
             // 
             // importOrderFromDigikeyToolStripMenuItem
             // 
             this.importOrderFromDigikeyToolStripMenuItem.Name = "importOrderFromDigikeyToolStripMenuItem";
             this.importOrderFromDigikeyToolStripMenuItem.Size = new System.Drawing.Size(296, 22);
             this.importOrderFromDigikeyToolStripMenuItem.Text = "Import order from Digikey";
+            this.importOrderFromDigikeyToolStripMenuItem.Click += new System.EventHandler(this.importOrderFromDigikeyToolStripMenuItem_Click);
             // 
             // importOrderFromDigikeyFromClipboardToolStripMenuItem
             // 
             this.importOrderFromDigikeyFromClipboardToolStripMenuItem.Name = "importOrderFromDigikeyFromClipboardToolStripMenuItem";
             this.importOrderFromDigikeyFromClipboardToolStripMenuItem.Size = new System.Drawing.Size(296, 22);
             this.importOrderFromDigikeyFromClipboardToolStripMenuItem.Text = "Import order from Digikey from Clipboard";
+            this.importOrderFromDigikeyFromClipboardToolStripMenuItem.Click += new System.EventHandler(this.importOrderFromDigikeyFromClipboardToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
@@ -299,6 +302,7 @@
             | System.Windows.Forms.Keys.A)));
             this.checkAllInViewToolStripMenuItem.Size = new System.Drawing.Size(249, 22);
             this.checkAllInViewToolStripMenuItem.Text = "Check all in view";
+            this.checkAllInViewToolStripMenuItem.Click += new System.EventHandler(this.checkAllInViewToolStripMenuItem_Click);
             // 
             // uncheckAllInViewToolStripMenuItem
             // 
@@ -307,6 +311,7 @@
             | System.Windows.Forms.Keys.D)));
             this.uncheckAllInViewToolStripMenuItem.Size = new System.Drawing.Size(249, 22);
             this.uncheckAllInViewToolStripMenuItem.Text = "Uncheck all in view";
+            this.uncheckAllInViewToolStripMenuItem.Click += new System.EventHandler(this.uncheckAllInViewToolStripMenuItem_Click);
             // 
             // toolStripSeparator6
             // 
@@ -379,7 +384,7 @@
             this.splitContainer1.Panel1.Controls.Add(this.txtboxFilter);
             this.splitContainer1.Panel1.Controls.Add(this.label2);
             this.splitContainer1.Panel1.Controls.Add(this.listviewParts);
-            this.splitContainer1.Panel1.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.splitContainer1.Panel1.Padding = new System.Windows.Forms.Padding(3);
             this.splitContainer1.Panel1MinSize = 125;
             // 
             // splitContainer1.Panel2
@@ -387,7 +392,7 @@
             this.splitContainer1.Panel2.Controls.Add(this.btnCheckedPartDel);
             this.splitContainer1.Panel2.Controls.Add(this.label1);
             this.splitContainer1.Panel2.Controls.Add(this.listviewChecked);
-            this.splitContainer1.Panel2.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.splitContainer1.Panel2.Padding = new System.Windows.Forms.Padding(3);
             this.splitContainer1.Panel2MinSize = 125;
             this.splitContainer1.Size = new System.Drawing.Size(866, 466);
             this.splitContainer1.SplitterDistance = 272;
@@ -476,7 +481,7 @@
             this.listviewParts.GridLines = true;
             this.listviewParts.HideSelection = false;
             this.listviewParts.Location = new System.Drawing.Point(3, 47);
-            this.listviewParts.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.listviewParts.Margin = new System.Windows.Forms.Padding(2);
             this.listviewParts.Name = "listviewParts";
             this.listviewParts.SelectColumnsOnRightClickBehaviour = BrightIdeasSoftware.ObjectListView.ColumnSelectBehaviour.Submenu;
             this.listviewParts.ShowCommandMenuOnRightClick = true;
@@ -621,7 +626,7 @@
             this.listviewChecked.GridLines = true;
             this.listviewChecked.HideSelection = false;
             this.listviewChecked.Location = new System.Drawing.Point(3, 47);
-            this.listviewChecked.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.listviewChecked.Margin = new System.Windows.Forms.Padding(2);
             this.listviewChecked.Name = "listviewChecked";
             this.listviewChecked.SelectColumnsOnRightClickBehaviour = BrightIdeasSoftware.ObjectListView.ColumnSelectBehaviour.Submenu;
             this.listviewChecked.ShowCommandMenuOnRightClick = true;

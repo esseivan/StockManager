@@ -72,7 +72,7 @@ namespace StockManagerDB
             }
         }
 
-        public bool DeletePart(Part part)
+        public bool DeletePart(Part part, string note = "")
         {
             if (!Parts.ContainsKey(part.MPN))
             {
@@ -80,6 +80,7 @@ namespace StockManagerDB
             }
 
             Parts.Remove(part.MPN);
+            part.note += note;
 
             if (!__disable_history)
                 DataHolderHistorySingleton.AddDeleteEvent(part);
@@ -87,7 +88,7 @@ namespace StockManagerDB
             return true;
         }
 
-        public bool DeletePart(string MPN)
+        public bool DeletePart(string MPN, string note = "")
         {
             if (!Parts.ContainsKey(MPN))
             {
@@ -96,6 +97,7 @@ namespace StockManagerDB
 
             Part part = Parts[MPN];
             Parts.Remove(MPN);
+            part.note += note;
 
             if (!__disable_history)
                 DataHolderHistorySingleton.AddDeleteEvent(part);
@@ -103,7 +105,7 @@ namespace StockManagerDB
             return true;
         }
 
-        public bool AddPart(Part part)
+        public bool AddPart(Part part, string note = "")
         {
             if (Parts.ContainsKey(part.MPN))
             {
@@ -111,6 +113,7 @@ namespace StockManagerDB
             }
 
             Parts.Add(part.MPN, part);
+            part.note += note;
 
             if (!__disable_history)
                 DataHolderHistorySingleton.AddInsertEvent(part);
@@ -118,7 +121,7 @@ namespace StockManagerDB
             return true;
         }
 
-        public bool EditPart(string MPN, Part.Parameter param, string value)
+        public bool EditPart(string MPN, Part.Parameter param, string value, string note = "")
         {
             if (!Parts.ContainsKey(MPN))
             {
@@ -126,13 +129,15 @@ namespace StockManagerDB
             }
 
             Part newPart = Parts[MPN];
-            return EditPart(newPart, param, value);
+            return EditPart(newPart, param, value, note);
         }
 
-        public bool EditPart(Part newPart, Part.Parameter param, string value)
+        public bool EditPart(Part newPart, Part.Parameter param, string value, string note = "")
         {
             // Update event, clone the part beforehand
             Part oldPart = newPart.CloneForHistory();
+            oldPart.note += note;
+            newPart.note = "";
 
             switch (param)
             {

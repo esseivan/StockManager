@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Remoting.Messaging;
 using System.Text.Json.Serialization;
 
 namespace StockManagerDB
@@ -152,6 +153,12 @@ namespace StockManagerDB
         public int Version;
 
         /// <summary>
+        /// Note on this version
+        /// </summary>
+        [JsonInclude]
+        public string note = "";
+
+        /// <summary>
         /// List of parameters
         /// </summary>
         public Dictionary<Parameter, string> Parameters = new Dictionary<Parameter, string>();
@@ -188,8 +195,22 @@ namespace StockManagerDB
 
             switch (value.ToLowerInvariant())
             {
+                case "art. number":
+                    return Parameter.MPN;
+                case "place":
+                    return Parameter.Location;
                 case "man":
                     return Parameter.Manufacturer;
+                case "in stock":
+                    return Parameter.Stock;
+                case "min in stock":
+                    return Parameter.LowStock;
+                case "default art. number":
+                    return Parameter.SPN;
+                case "default retailer":
+                    return Parameter.Supplier;
+                case "default unit price":
+                    return Parameter.Price;
                 case "desc":
                     return Parameter.Description;
                 case "category":

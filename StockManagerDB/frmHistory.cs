@@ -99,6 +99,10 @@ namespace StockManagerDB
             {
                 return ((Part)x).Version;
             };
+            olvcNote.AspectGetter = delegate(object x)
+            {
+                return ((Part)x).note;
+            };
 
             // Make the decoration
             RowBorderDecoration rbd = new RowBorderDecoration();
