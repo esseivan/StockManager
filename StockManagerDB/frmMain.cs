@@ -1239,6 +1239,10 @@ namespace StockManagerDB
         {
             ActionImportParts();
         }
+        private void advancedSearchToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
 
         #endregion
     }
