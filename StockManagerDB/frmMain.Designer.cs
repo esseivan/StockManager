@@ -36,6 +36,10 @@
             this.closeDatabaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.importsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.importFromExcelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.importOrderFromDigikeyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.importOrderFromDigikeyFromClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.quitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.actionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -45,9 +49,14 @@
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.exportPartsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importPartsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.projectsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.resizeColumnsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
+            this.checkAllInViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.uncheckAllInViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
+            this.advancedSearchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.projectsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openHistoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cbboxFilterType = new System.Windows.Forms.ComboBox();
             this.txtboxFilter = new System.Windows.Forms.TextBox();
@@ -86,15 +95,6 @@
             this.labelStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.filterHighlightRenderer = new BrightIdeasSoftware.HighlightTextRenderer();
             this.statusTimeoutTimer = new System.Windows.Forms.Timer(this.components);
-            this.importsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.importFromExcelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.importOrderFromDigikeyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.importOrderFromDigikeyFromClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.checkAllInViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.uncheckAllInViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
-            this.advancedSearchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -107,7 +107,6 @@
             // 
             // menuStrip1
             // 
-            this.menuStrip1.GripMargin = new System.Windows.Forms.Padding(2, 2, 0, 2);
             this.menuStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
@@ -117,7 +116,8 @@
             this.openHistoryToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1299, 35);
+            this.menuStrip1.Padding = new System.Windows.Forms.Padding(4, 1, 0, 1);
+            this.menuStrip1.Size = new System.Drawing.Size(866, 24);
             this.menuStrip1.TabIndex = 9;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -133,14 +133,14 @@
             this.toolStripSeparator2,
             this.quitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(54, 29);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 22);
             this.fileToolStripMenuItem.Text = "File";
             // 
             // newDatabaseToolStripMenuItem
             // 
             this.newDatabaseToolStripMenuItem.Name = "newDatabaseToolStripMenuItem";
             this.newDatabaseToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
-            this.newDatabaseToolStripMenuItem.Size = new System.Drawing.Size(302, 34);
+            this.newDatabaseToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
             this.newDatabaseToolStripMenuItem.Text = "New database";
             this.newDatabaseToolStripMenuItem.Click += new System.EventHandler(this.newDatabaseToolStripMenuItem_Click);
             // 
@@ -148,7 +148,7 @@
             // 
             this.openDatabaseToolStripMenuItem.Name = "openDatabaseToolStripMenuItem";
             this.openDatabaseToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-            this.openDatabaseToolStripMenuItem.Size = new System.Drawing.Size(302, 34);
+            this.openDatabaseToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
             this.openDatabaseToolStripMenuItem.Text = "Open database";
             this.openDatabaseToolStripMenuItem.Click += new System.EventHandler(this.openDatabaseToolStripMenuItem_Click);
             // 
@@ -156,33 +156,63 @@
             // 
             this.closeDatabaseToolStripMenuItem.Name = "closeDatabaseToolStripMenuItem";
             this.closeDatabaseToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.W)));
-            this.closeDatabaseToolStripMenuItem.Size = new System.Drawing.Size(302, 34);
+            this.closeDatabaseToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
             this.closeDatabaseToolStripMenuItem.Text = "Close database";
             this.closeDatabaseToolStripMenuItem.Click += new System.EventHandler(this.closeDatabaseToolStripMenuItem_Click);
             // 
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(299, 6);
+            this.toolStripSeparator4.Size = new System.Drawing.Size(195, 6);
             // 
             // saveToolStripMenuItem
             // 
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
             this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(302, 34);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
             this.saveToolStripMenuItem.Text = "Save";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
+            // 
+            // importsToolStripMenuItem
+            // 
+            this.importsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.importFromExcelToolStripMenuItem,
+            this.importOrderFromDigikeyToolStripMenuItem,
+            this.importOrderFromDigikeyFromClipboardToolStripMenuItem});
+            this.importsToolStripMenuItem.Name = "importsToolStripMenuItem";
+            this.importsToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
+            this.importsToolStripMenuItem.Text = "Import...";
+            // 
+            // importFromExcelToolStripMenuItem
+            // 
+            this.importFromExcelToolStripMenuItem.Name = "importFromExcelToolStripMenuItem";
+            this.importFromExcelToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            | System.Windows.Forms.Keys.O)));
+            this.importFromExcelToolStripMenuItem.Size = new System.Drawing.Size(296, 22);
+            this.importFromExcelToolStripMenuItem.Text = "Import from Excel";
+            // 
+            // importOrderFromDigikeyToolStripMenuItem
+            // 
+            this.importOrderFromDigikeyToolStripMenuItem.Name = "importOrderFromDigikeyToolStripMenuItem";
+            this.importOrderFromDigikeyToolStripMenuItem.Size = new System.Drawing.Size(296, 22);
+            this.importOrderFromDigikeyToolStripMenuItem.Text = "Import order from Digikey";
+            // 
+            // importOrderFromDigikeyFromClipboardToolStripMenuItem
+            // 
+            this.importOrderFromDigikeyFromClipboardToolStripMenuItem.Name = "importOrderFromDigikeyFromClipboardToolStripMenuItem";
+            this.importOrderFromDigikeyFromClipboardToolStripMenuItem.Size = new System.Drawing.Size(296, 22);
+            this.importOrderFromDigikeyFromClipboardToolStripMenuItem.Text = "Import order from Digikey from Clipboard";
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(299, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(195, 6);
             // 
             // quitToolStripMenuItem
             // 
             this.quitToolStripMenuItem.Name = "quitToolStripMenuItem";
             this.quitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Q)));
-            this.quitToolStripMenuItem.Size = new System.Drawing.Size(302, 34);
+            this.quitToolStripMenuItem.Size = new System.Drawing.Size(198, 22);
             this.quitToolStripMenuItem.Text = "Quit";
             this.quitToolStripMenuItem.Click += new System.EventHandler(this.quitToolStripMenuItem_Click);
             // 
@@ -196,54 +226,46 @@
             this.exportPartsToolStripMenuItem,
             this.importPartsToolStripMenuItem});
             this.actionsToolStripMenuItem.Name = "actionsToolStripMenuItem";
-            this.actionsToolStripMenuItem.Size = new System.Drawing.Size(87, 29);
+            this.actionsToolStripMenuItem.Size = new System.Drawing.Size(59, 22);
             this.actionsToolStripMenuItem.Text = "Actions";
             // 
             // onlyAffectCheckedPartsToolStripMenuItem
             // 
             this.onlyAffectCheckedPartsToolStripMenuItem.CheckOnClick = true;
             this.onlyAffectCheckedPartsToolStripMenuItem.Name = "onlyAffectCheckedPartsToolStripMenuItem";
-            this.onlyAffectCheckedPartsToolStripMenuItem.Size = new System.Drawing.Size(314, 34);
+            this.onlyAffectCheckedPartsToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
             this.onlyAffectCheckedPartsToolStripMenuItem.Text = "Only affect checked parts";
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(311, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(205, 6);
             // 
             // makeOrderToolStripMenuItem
             // 
             this.makeOrderToolStripMenuItem.Name = "makeOrderToolStripMenuItem";
-            this.makeOrderToolStripMenuItem.Size = new System.Drawing.Size(314, 34);
+            this.makeOrderToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
             this.makeOrderToolStripMenuItem.Text = "Make Order";
             this.makeOrderToolStripMenuItem.Click += new System.EventHandler(this.makeOrderToolStripMenuItem_Click);
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(311, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(205, 6);
             // 
             // exportPartsToolStripMenuItem
             // 
             this.exportPartsToolStripMenuItem.Name = "exportPartsToolStripMenuItem";
-            this.exportPartsToolStripMenuItem.Size = new System.Drawing.Size(314, 34);
+            this.exportPartsToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
             this.exportPartsToolStripMenuItem.Text = "Export parts";
             this.exportPartsToolStripMenuItem.Click += new System.EventHandler(this.exportPartsToolStripMenuItem_Click);
             // 
             // importPartsToolStripMenuItem
             // 
             this.importPartsToolStripMenuItem.Name = "importPartsToolStripMenuItem";
-            this.importPartsToolStripMenuItem.Size = new System.Drawing.Size(314, 34);
+            this.importPartsToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
             this.importPartsToolStripMenuItem.Text = "Import parts";
             this.importPartsToolStripMenuItem.Click += new System.EventHandler(this.importPartsToolStripMenuItem_Click);
-            // 
-            // projectsToolStripMenuItem
-            // 
-            this.projectsToolStripMenuItem.Name = "projectsToolStripMenuItem";
-            this.projectsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
-            this.projectsToolStripMenuItem.Size = new System.Drawing.Size(139, 29);
-            this.projectsToolStripMenuItem.Text = "Open Projects";
-            this.projectsToolStripMenuItem.Click += new System.EventHandler(this.projectsToolStripMenuItem_Click);
             // 
             // viewToolStripMenuItem
             // 
@@ -255,20 +277,62 @@
             this.toolStripSeparator6,
             this.advancedSearchToolStripMenuItem});
             this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
-            this.viewToolStripMenuItem.Size = new System.Drawing.Size(65, 29);
+            this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 22);
             this.viewToolStripMenuItem.Text = "View";
             // 
             // resizeColumnsToolStripMenuItem
             // 
             this.resizeColumnsToolStripMenuItem.Name = "resizeColumnsToolStripMenuItem";
-            this.resizeColumnsToolStripMenuItem.Size = new System.Drawing.Size(373, 34);
+            this.resizeColumnsToolStripMenuItem.Size = new System.Drawing.Size(249, 22);
             this.resizeColumnsToolStripMenuItem.Text = "Resize columns";
             this.resizeColumnsToolStripMenuItem.Click += new System.EventHandler(this.resizeColumnsToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator5
+            // 
+            this.toolStripSeparator5.Name = "toolStripSeparator5";
+            this.toolStripSeparator5.Size = new System.Drawing.Size(246, 6);
+            // 
+            // checkAllInViewToolStripMenuItem
+            // 
+            this.checkAllInViewToolStripMenuItem.Name = "checkAllInViewToolStripMenuItem";
+            this.checkAllInViewToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            | System.Windows.Forms.Keys.A)));
+            this.checkAllInViewToolStripMenuItem.Size = new System.Drawing.Size(249, 22);
+            this.checkAllInViewToolStripMenuItem.Text = "Check all in view";
+            // 
+            // uncheckAllInViewToolStripMenuItem
+            // 
+            this.uncheckAllInViewToolStripMenuItem.Name = "uncheckAllInViewToolStripMenuItem";
+            this.uncheckAllInViewToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            | System.Windows.Forms.Keys.D)));
+            this.uncheckAllInViewToolStripMenuItem.Size = new System.Drawing.Size(249, 22);
+            this.uncheckAllInViewToolStripMenuItem.Text = "Uncheck all in view";
+            // 
+            // toolStripSeparator6
+            // 
+            this.toolStripSeparator6.Name = "toolStripSeparator6";
+            this.toolStripSeparator6.Size = new System.Drawing.Size(246, 6);
+            // 
+            // advancedSearchToolStripMenuItem
+            // 
+            this.advancedSearchToolStripMenuItem.Name = "advancedSearchToolStripMenuItem";
+            this.advancedSearchToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.K)));
+            this.advancedSearchToolStripMenuItem.Size = new System.Drawing.Size(249, 22);
+            this.advancedSearchToolStripMenuItem.Text = "Advanced search";
+            this.advancedSearchToolStripMenuItem.Click += new System.EventHandler(this.advancedSearchToolStripMenuItem_Click);
+            // 
+            // projectsToolStripMenuItem
+            // 
+            this.projectsToolStripMenuItem.Name = "projectsToolStripMenuItem";
+            this.projectsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
+            this.projectsToolStripMenuItem.Size = new System.Drawing.Size(93, 22);
+            this.projectsToolStripMenuItem.Text = "Open Projects";
+            this.projectsToolStripMenuItem.Click += new System.EventHandler(this.projectsToolStripMenuItem_Click);
             // 
             // openHistoryToolStripMenuItem
             // 
             this.openHistoryToolStripMenuItem.Name = "openHistoryToolStripMenuItem";
-            this.openHistoryToolStripMenuItem.Size = new System.Drawing.Size(134, 29);
+            this.openHistoryToolStripMenuItem.Size = new System.Drawing.Size(89, 22);
             this.openHistoryToolStripMenuItem.Text = "Open History";
             this.openHistoryToolStripMenuItem.Click += new System.EventHandler(this.openHistoryToolStripMenuItem_Click);
             // 
@@ -281,20 +345,18 @@
             "Any text",
             "Prefix",
             "Regex"});
-            this.cbboxFilterType.Location = new System.Drawing.Point(1149, 9);
-            this.cbboxFilterType.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.cbboxFilterType.Location = new System.Drawing.Point(766, 6);
             this.cbboxFilterType.Name = "cbboxFilterType";
-            this.cbboxFilterType.Size = new System.Drawing.Size(139, 28);
+            this.cbboxFilterType.Size = new System.Drawing.Size(94, 21);
             this.cbboxFilterType.TabIndex = 1;
             this.cbboxFilterType.SelectedIndexChanged += new System.EventHandler(this.cbboxFilterType_SelectedIndexChanged);
             // 
             // txtboxFilter
             // 
             this.txtboxFilter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtboxFilter.Location = new System.Drawing.Point(990, 11);
-            this.txtboxFilter.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.txtboxFilter.Location = new System.Drawing.Point(660, 7);
             this.txtboxFilter.Name = "txtboxFilter";
-            this.txtboxFilter.Size = new System.Drawing.Size(148, 26);
+            this.txtboxFilter.Size = new System.Drawing.Size(100, 20);
             this.txtboxFilter.TabIndex = 0;
             this.txtboxFilter.TextChanged += new System.EventHandler(this.txtboxFilter_TextChanged);
             // 
@@ -304,8 +366,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.splitContainer1.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
-            this.splitContainer1.Location = new System.Drawing.Point(0, 42);
-            this.splitContainer1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.splitContainer1.Location = new System.Drawing.Point(0, 27);
             this.splitContainer1.Name = "splitContainer1";
             this.splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
@@ -318,7 +379,7 @@
             this.splitContainer1.Panel1.Controls.Add(this.txtboxFilter);
             this.splitContainer1.Panel1.Controls.Add(this.label2);
             this.splitContainer1.Panel1.Controls.Add(this.listviewParts);
-            this.splitContainer1.Panel1.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.splitContainer1.Panel1.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
             this.splitContainer1.Panel1MinSize = 125;
             // 
             // splitContainer1.Panel2
@@ -326,21 +387,19 @@
             this.splitContainer1.Panel2.Controls.Add(this.btnCheckedPartDel);
             this.splitContainer1.Panel2.Controls.Add(this.label1);
             this.splitContainer1.Panel2.Controls.Add(this.listviewChecked);
-            this.splitContainer1.Panel2.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.splitContainer1.Panel2.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
             this.splitContainer1.Panel2MinSize = 125;
-            this.splitContainer1.Size = new System.Drawing.Size(1299, 717);
-            this.splitContainer1.SplitterDistance = 523;
-            this.splitContainer1.SplitterWidth = 6;
+            this.splitContainer1.Size = new System.Drawing.Size(866, 466);
+            this.splitContainer1.SplitterDistance = 272;
             this.splitContainer1.TabIndex = 40;
             // 
             // btnPartAdd
             // 
             this.btnPartAdd.BackgroundImage = global::StockManagerDB.Properties.Resources.add;
             this.btnPartAdd.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.btnPartAdd.Location = new System.Drawing.Point(9, 29);
-            this.btnPartAdd.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.btnPartAdd.Location = new System.Drawing.Point(6, 19);
             this.btnPartAdd.Name = "btnPartAdd";
-            this.btnPartAdd.Size = new System.Drawing.Size(34, 35);
+            this.btnPartAdd.Size = new System.Drawing.Size(23, 23);
             this.btnPartAdd.TabIndex = 11;
             this.btnPartAdd.UseVisualStyleBackColor = true;
             this.btnPartAdd.Click += new System.EventHandler(this.btnPartAdd_Click);
@@ -349,10 +408,9 @@
             // 
             this.btnPartDup.BackgroundImage = global::StockManagerDB.Properties.Resources.dup;
             this.btnPartDup.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.btnPartDup.Location = new System.Drawing.Point(52, 29);
-            this.btnPartDup.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.btnPartDup.Location = new System.Drawing.Point(35, 19);
             this.btnPartDup.Name = "btnPartDup";
-            this.btnPartDup.Size = new System.Drawing.Size(34, 35);
+            this.btnPartDup.Size = new System.Drawing.Size(23, 23);
             this.btnPartDup.TabIndex = 13;
             this.btnPartDup.UseVisualStyleBackColor = true;
             this.btnPartDup.Click += new System.EventHandler(this.btnPartDup_Click);
@@ -361,10 +419,9 @@
             // 
             this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(938, 14);
-            this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label4.Location = new System.Drawing.Point(625, 9);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(44, 20);
+            this.label4.Size = new System.Drawing.Size(29, 13);
             this.label4.TabIndex = 10;
             this.label4.Text = "Filter";
             // 
@@ -372,10 +429,9 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(9, 5);
-            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label2.Location = new System.Drawing.Point(6, 3);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(80, 20);
+            this.label2.Size = new System.Drawing.Size(53, 13);
             this.label2.TabIndex = 8;
             this.label2.Text = "All parts";
             // 
@@ -419,13 +475,14 @@
             this.listviewParts.FullRowSelect = true;
             this.listviewParts.GridLines = true;
             this.listviewParts.HideSelection = false;
-            this.listviewParts.Location = new System.Drawing.Point(4, 72);
+            this.listviewParts.Location = new System.Drawing.Point(3, 47);
+            this.listviewParts.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.listviewParts.Name = "listviewParts";
             this.listviewParts.SelectColumnsOnRightClickBehaviour = BrightIdeasSoftware.ObjectListView.ColumnSelectBehaviour.Submenu;
             this.listviewParts.ShowCommandMenuOnRightClick = true;
             this.listviewParts.ShowGroups = false;
             this.listviewParts.ShowImagesOnSubItems = true;
-            this.listviewParts.Size = new System.Drawing.Size(1285, 440);
+            this.listviewParts.Size = new System.Drawing.Size(857, 219);
             this.listviewParts.SortGroupItemsByPrimaryColumn = false;
             this.listviewParts.TabIndex = 6;
             this.listviewParts.TintSortColumn = true;
@@ -510,10 +567,9 @@
             // 
             this.btnCheckedPartDel.BackgroundImage = global::StockManagerDB.Properties.Resources.del;
             this.btnCheckedPartDel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.btnCheckedPartDel.Location = new System.Drawing.Point(9, 29);
-            this.btnCheckedPartDel.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.btnCheckedPartDel.Location = new System.Drawing.Point(6, 19);
             this.btnCheckedPartDel.Name = "btnCheckedPartDel";
-            this.btnCheckedPartDel.Size = new System.Drawing.Size(34, 35);
+            this.btnCheckedPartDel.Size = new System.Drawing.Size(23, 23);
             this.btnCheckedPartDel.TabIndex = 14;
             this.btnCheckedPartDel.UseVisualStyleBackColor = true;
             this.btnCheckedPartDel.Click += new System.EventHandler(this.btnCheckedPartDel_Click);
@@ -522,10 +578,9 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(9, 5);
-            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label1.Location = new System.Drawing.Point(6, 3);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(130, 20);
+            this.label1.Size = new System.Drawing.Size(89, 13);
             this.label1.TabIndex = 8;
             this.label1.Text = "Checked parts";
             // 
@@ -565,13 +620,14 @@
             this.listviewChecked.FullRowSelect = true;
             this.listviewChecked.GridLines = true;
             this.listviewChecked.HideSelection = false;
-            this.listviewChecked.Location = new System.Drawing.Point(4, 72);
+            this.listviewChecked.Location = new System.Drawing.Point(3, 47);
+            this.listviewChecked.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.listviewChecked.Name = "listviewChecked";
             this.listviewChecked.SelectColumnsOnRightClickBehaviour = BrightIdeasSoftware.ObjectListView.ColumnSelectBehaviour.Submenu;
             this.listviewChecked.ShowCommandMenuOnRightClick = true;
             this.listviewChecked.ShowGroups = false;
             this.listviewChecked.ShowImagesOnSubItems = true;
-            this.listviewChecked.Size = new System.Drawing.Size(1285, 109);
+            this.listviewChecked.Size = new System.Drawing.Size(858, 139);
             this.listviewChecked.SortGroupItemsByPrimaryColumn = false;
             this.listviewChecked.TabIndex = 7;
             this.listviewChecked.TintSortColumn = true;
@@ -647,23 +703,22 @@
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.labelCount,
             this.labelStatus});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 765);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 496);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Padding = new System.Windows.Forms.Padding(2, 0, 21, 0);
-            this.statusStrip1.Size = new System.Drawing.Size(1299, 32);
+            this.statusStrip1.Size = new System.Drawing.Size(866, 22);
             this.statusStrip1.TabIndex = 41;
             this.statusStrip1.Text = "statusStrip1";
             // 
             // labelCount
             // 
             this.labelCount.Name = "labelCount";
-            this.labelCount.Size = new System.Drawing.Size(39, 25);
+            this.labelCount.Size = new System.Drawing.Size(24, 17);
             this.labelCount.Text = "0/0";
             // 
             // labelStatus
             // 
             this.labelStatus.Name = "labelStatus";
-            this.labelStatus.Size = new System.Drawing.Size(100, 25);
+            this.labelStatus.Size = new System.Drawing.Size(66, 17);
             this.labelStatus.Text = "statusLabel";
             // 
             // statusTimeoutTimer
@@ -672,81 +727,16 @@
             this.statusTimeoutTimer.Interval = 2500;
             this.statusTimeoutTimer.Tick += new System.EventHandler(this.statusTimeoutTimer_Tick);
             // 
-            // importsToolStripMenuItem
-            // 
-            this.importsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.importFromExcelToolStripMenuItem,
-            this.importOrderFromDigikeyToolStripMenuItem,
-            this.importOrderFromDigikeyFromClipboardToolStripMenuItem});
-            this.importsToolStripMenuItem.Name = "importsToolStripMenuItem";
-            this.importsToolStripMenuItem.Size = new System.Drawing.Size(302, 34);
-            this.importsToolStripMenuItem.Text = "Import...";
-            // 
-            // importFromExcelToolStripMenuItem
-            // 
-            this.importFromExcelToolStripMenuItem.Name = "importFromExcelToolStripMenuItem";
-            this.importFromExcelToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
-            | System.Windows.Forms.Keys.O)));
-            this.importFromExcelToolStripMenuItem.Size = new System.Drawing.Size(452, 34);
-            this.importFromExcelToolStripMenuItem.Text = "Import from Excel";
-            // 
-            // importOrderFromDigikeyToolStripMenuItem
-            // 
-            this.importOrderFromDigikeyToolStripMenuItem.Name = "importOrderFromDigikeyToolStripMenuItem";
-            this.importOrderFromDigikeyToolStripMenuItem.Size = new System.Drawing.Size(452, 34);
-            this.importOrderFromDigikeyToolStripMenuItem.Text = "Import order from Digikey";
-            // 
-            // importOrderFromDigikeyFromClipboardToolStripMenuItem
-            // 
-            this.importOrderFromDigikeyFromClipboardToolStripMenuItem.Name = "importOrderFromDigikeyFromClipboardToolStripMenuItem";
-            this.importOrderFromDigikeyFromClipboardToolStripMenuItem.Size = new System.Drawing.Size(452, 34);
-            this.importOrderFromDigikeyFromClipboardToolStripMenuItem.Text = "Import order from Digikey from Clipboard";
-            // 
-            // checkAllInViewToolStripMenuItem
-            // 
-            this.checkAllInViewToolStripMenuItem.Name = "checkAllInViewToolStripMenuItem";
-            this.checkAllInViewToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
-            | System.Windows.Forms.Keys.A)));
-            this.checkAllInViewToolStripMenuItem.Size = new System.Drawing.Size(373, 34);
-            this.checkAllInViewToolStripMenuItem.Text = "Check all in view";
-            // 
-            // uncheckAllInViewToolStripMenuItem
-            // 
-            this.uncheckAllInViewToolStripMenuItem.Name = "uncheckAllInViewToolStripMenuItem";
-            this.uncheckAllInViewToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
-            | System.Windows.Forms.Keys.D)));
-            this.uncheckAllInViewToolStripMenuItem.Size = new System.Drawing.Size(373, 34);
-            this.uncheckAllInViewToolStripMenuItem.Text = "Uncheck all in view";
-            // 
-            // toolStripSeparator5
-            // 
-            this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(370, 6);
-            // 
-            // toolStripSeparator6
-            // 
-            this.toolStripSeparator6.Name = "toolStripSeparator6";
-            this.toolStripSeparator6.Size = new System.Drawing.Size(370, 6);
-            // 
-            // advancedSearchToolStripMenuItem
-            // 
-            this.advancedSearchToolStripMenuItem.Name = "advancedSearchToolStripMenuItem";
-            this.advancedSearchToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.K)));
-            this.advancedSearchToolStripMenuItem.Size = new System.Drawing.Size(373, 34);
-            this.advancedSearchToolStripMenuItem.Text = "Advanced search";
-            this.advancedSearchToolStripMenuItem.Click += new System.EventHandler(this.advancedSearchToolStripMenuItem_Click);
-            // 
             // frmMain
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1299, 797);
+            this.ClientSize = new System.Drawing.Size(866, 518);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
-            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.MinimumSize = new System.Drawing.Size(589, 462);
+            this.MinimumSize = new System.Drawing.Size(398, 314);
             this.Name = "frmMain";
             this.Text = "Stock Manager";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
