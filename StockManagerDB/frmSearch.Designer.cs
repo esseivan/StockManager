@@ -28,17 +28,19 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.ListViewItem listViewItem5 = new System.Windows.Forms.ListViewItem("MPN");
-            System.Windows.Forms.ListViewItem listViewItem6 = new System.Windows.Forms.ListViewItem("SPN");
-            System.Windows.Forms.ListViewItem listViewItem7 = new System.Windows.Forms.ListViewItem("Description");
-            System.Windows.Forms.ListViewItem listViewItem8 = new System.Windows.Forms.ListViewItem("Place");
+            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("MPN");
+            System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem("SPN");
+            System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem("Description");
+            System.Windows.Forms.ListViewItem listViewItem4 = new System.Windows.Forms.ListViewItem("Place");
             this.textBox1 = new System.Windows.Forms.TextBox();
-            this.listView2 = new System.Windows.Forms.ListView();
+            this.listviewType = new System.Windows.Forms.ListView();
+            this.colDummy2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.listView1 = new System.Windows.Forms.ListView();
+            this.listviewCategories = new System.Windows.Forms.ListView();
             this.colDummy1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.txtboxCategory = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // textBox1
@@ -48,22 +50,32 @@
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(180, 26);
             this.textBox1.TabIndex = 1;
+            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
-            // listView2
+            // listviewType
             // 
-            this.listView2.HideSelection = false;
-            this.listView2.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem5,
-            listViewItem6,
-            listViewItem7,
-            listViewItem8});
-            this.listView2.Location = new System.Drawing.Point(182, 83);
-            this.listView2.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.listView2.Name = "listView2";
-            this.listView2.Size = new System.Drawing.Size(180, 147);
-            this.listView2.TabIndex = 2;
-            this.listView2.UseCompatibleStateImageBehavior = false;
-            this.listView2.View = System.Windows.Forms.View.List;
+            this.listviewType.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.colDummy2});
+            this.listviewType.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+            this.listviewType.HideSelection = false;
+            this.listviewType.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
+            listViewItem1,
+            listViewItem2,
+            listViewItem3,
+            listViewItem4});
+            this.listviewType.Location = new System.Drawing.Point(182, 83);
+            this.listviewType.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.listviewType.MultiSelect = false;
+            this.listviewType.Name = "listviewType";
+            this.listviewType.Size = new System.Drawing.Size(180, 595);
+            this.listviewType.TabIndex = 2;
+            this.listviewType.UseCompatibleStateImageBehavior = false;
+            this.listviewType.View = System.Windows.Forms.View.Details;
+            this.listviewType.SelectedIndexChanged += new System.EventHandler(this.listviewType_SelectedIndexChanged);
+            // 
+            // colDummy2
+            // 
+            this.colDummy2.Text = "";
             // 
             // label1
             // 
@@ -95,34 +107,45 @@
             this.label3.TabIndex = 6;
             this.label3.Text = "Filter categories :";
             // 
-            // listView1
+            // listviewCategories
             // 
-            this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.listviewCategories.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.colDummy1});
-            this.listView1.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
-            this.listView1.HideSelection = false;
-            this.listView1.Location = new System.Drawing.Point(552, 43);
-            this.listView1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(180, 187);
-            this.listView1.TabIndex = 2;
-            this.listView1.UseCompatibleStateImageBehavior = false;
-            this.listView1.View = System.Windows.Forms.View.Details;
+            this.listviewCategories.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+            this.listviewCategories.HideSelection = false;
+            this.listviewCategories.Location = new System.Drawing.Point(552, 83);
+            this.listviewCategories.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.listviewCategories.MultiSelect = false;
+            this.listviewCategories.Name = "listviewCategories";
+            this.listviewCategories.Size = new System.Drawing.Size(180, 595);
+            this.listviewCategories.TabIndex = 2;
+            this.listviewCategories.UseCompatibleStateImageBehavior = false;
+            this.listviewCategories.View = System.Windows.Forms.View.Details;
+            this.listviewCategories.SelectedIndexChanged += new System.EventHandler(this.listviewCategories_SelectedIndexChanged);
             // 
             // colDummy1
             // 
             this.colDummy1.Text = "";
+            // 
+            // txtboxCategory
+            // 
+            this.txtboxCategory.Location = new System.Drawing.Point(552, 45);
+            this.txtboxCategory.Name = "txtboxCategory";
+            this.txtboxCategory.Size = new System.Drawing.Size(180, 26);
+            this.txtboxCategory.TabIndex = 7;
+            this.txtboxCategory.TextChanged += new System.EventHandler(this.txtboxCategory_TextChanged);
             // 
             // frmSearch
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1200, 692);
+            this.Controls.Add(this.txtboxCategory);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.listView1);
-            this.Controls.Add(this.listView2);
+            this.Controls.Add(this.listviewCategories);
+            this.Controls.Add(this.listviewType);
             this.Controls.Add(this.textBox1);
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "frmSearch";
@@ -134,11 +157,13 @@
 
         #endregion
         private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.ListView listView2;
+        private System.Windows.Forms.ListView listviewType;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.ListView listView1;
+        private System.Windows.Forms.ListView listviewCategories;
         private System.Windows.Forms.ColumnHeader colDummy1;
+        private System.Windows.Forms.ColumnHeader colDummy2;
+        private System.Windows.Forms.TextBox txtboxCategory;
     }
 }
