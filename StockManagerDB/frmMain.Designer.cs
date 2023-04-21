@@ -516,57 +516,64 @@
             // 
             // olvcMPN
             // 
+            this.olvcMPN.MinimumWidth = 20;
             this.olvcMPN.Text = "Manufacturer PN";
             this.olvcMPN.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // olvcMAN
             // 
+            this.olvcMAN.MinimumWidth = 20;
             this.olvcMAN.Text = "Manufacturer";
             this.olvcMAN.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // olvcDesc
             // 
+            this.olvcDesc.MinimumWidth = 20;
             this.olvcDesc.Text = "Description";
             this.olvcDesc.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // olvcCat
             // 
+            this.olvcCat.MinimumWidth = 20;
             this.olvcCat.Text = "Category";
             this.olvcCat.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // olvcLocation
             // 
+            this.olvcLocation.MinimumWidth = 20;
             this.olvcLocation.Text = "Location";
             this.olvcLocation.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // olvcStock
             // 
-            this.olvcStock.MinimumWidth = 75;
+            this.olvcStock.MinimumWidth = 20;
             this.olvcStock.Text = "Stock";
             this.olvcStock.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.olvcStock.Width = 75;
             // 
             // olvcLowStock
             // 
-            this.olvcLowStock.MinimumWidth = 75;
+            this.olvcLowStock.MinimumWidth = 20;
             this.olvcLowStock.Text = "LowStock";
             this.olvcLowStock.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.olvcLowStock.Width = 75;
             // 
             // olvcPrice
             // 
-            this.olvcPrice.MinimumWidth = 75;
+            this.olvcPrice.MinimumWidth = 20;
             this.olvcPrice.Text = "Price";
             this.olvcPrice.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.olvcPrice.Width = 75;
             // 
             // olvcSupplier
             // 
+            this.olvcSupplier.MinimumWidth = 20;
             this.olvcSupplier.Text = "Supplier";
             this.olvcSupplier.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // olvcSPN
             // 
+            this.olvcSPN.MinimumWidth = 20;
             this.olvcSPN.Text = "SPN";
             this.olvcSPN.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
