@@ -24,6 +24,7 @@ namespace StockManagerDB
         /// The list of parts
         /// </summary>
         public Dictionary<string, Part> Parts { get; private set; }
+
         /// <summary>
         /// The list of projects containing versions and materials
         /// </summary>
@@ -33,6 +34,7 @@ namespace StockManagerDB
         /// The instance of the singleton
         /// </summary>
         private static DataHolderSingleton _instance = null;
+
         /// <summary>
         /// Read only access to the instance
         /// </summary>
@@ -42,12 +44,15 @@ namespace StockManagerDB
         public static event EventHandler<EventArgs> OnProjectsListModified;
 
         public void InvokeOnPartListModified(EventArgs e) => OnPartListModified?.Invoke(this, e);
-        public void InvokeOnProjectsListModified(EventArgs e) => OnProjectsListModified?.Invoke(this, e);
+
+        public void InvokeOnProjectsListModified(EventArgs e) =>
+            OnProjectsListModified?.Invoke(this, e);
 
         /// <summary>
         /// The file that is used for this singleton
         /// </summary>
         private readonly string _filepath;
+
         /// <summary>
         /// The file that is used for this singleton. To change this, call <see cref="DataHolderSingleton.LoadNew(string)"/>
         /// </summary>
@@ -60,7 +65,6 @@ namespace StockManagerDB
         {
             _filepath = file;
             Load();
-
 
             if (!__disable_history)
             {
@@ -135,7 +139,10 @@ namespace StockManagerDB
                 case Part.Parameter.MPN:
                     if (Parts.ContainsKey(value))
                     {
-                        throw new ArgumentOutOfRangeException("Unable to edit part. MPN already exists...", "value");
+                        throw new ArgumentOutOfRangeException(
+                            "Unable to edit part. MPN already exists...",
+                            "value"
+                        );
                     }
 
                     Parts.Remove(newPart.MPN);
@@ -185,14 +192,26 @@ namespace StockManagerDB
         {
             try
             {
-                SettingsManager.SaveTo(Filepath, new DataExportClass(Parts, Projects), backup: true, indent: true, internalFileName: "settings.txt");
+                SettingsManager.SaveTo(
+                    Filepath,
+                    new DataExportClass(Parts, Projects),
+                    backup: true,
+                    indent: true,
+                    internalFileName: "settings.txt"
+                );
 
                 // Also save the history
                 DataHolderHistorySingleton.Instance?.Save();
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Unable to save. Maybe the file is open in another process.\nError:\n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    "Unable to save. Maybe the file is open in another process.\nError:\n"
+                        + ex.Message,
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
             }
         }
 

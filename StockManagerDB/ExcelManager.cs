@@ -17,6 +17,7 @@ namespace StockManagerDB
         /// Tool to read from excel
         /// </summary>
         internal ExcelWrapper reader;
+
         /// <summary>
         /// List of parts imported
         /// </summary>
@@ -53,7 +54,12 @@ namespace StockManagerDB
         public void Import()
         {
             if (!PopulateParts())
-                MessageBox.Show("Unable to import file. Sheet not found !", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    "Unable to import file. Sheet not found !",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
         }
 
         /// <summary>
@@ -76,10 +82,10 @@ namespace StockManagerDB
             Dictionary<int, Part.Parameter> header = new Dictionary<int, Part.Parameter>();
             for (int i = 0; i < output.GetLength(1); i += 1)
             {
-                string headerName = output[0, i];    // Get header name
+                string headerName = output[0, i]; // Get header name
                 LoggerClass.Write("\t" + headerName);
-                Part.Parameter headerParam = Part.GetParameter(headerName);   // Get corresponding parameter
-                header[i] = headerParam;    // Add to the dictionary
+                Part.Parameter headerParam = Part.GetParameter(headerName); // Get corresponding parameter
+                header[i] = headerParam; // Add to the dictionary
             }
 
             // Get parts rows
@@ -90,8 +96,8 @@ namespace StockManagerDB
                 // Sweep through all columns
                 for (int j = 0; j < output.GetLength(1); j += 1)
                 {
-                    Part.Parameter currentParameter = header[j];   // Get current header parameter
-                    if (currentParameter != Part.Parameter.UNDEFINED)  // If other than undefined ...
+                    Part.Parameter currentParameter = header[j]; // Get current header parameter
+                    if (currentParameter != Part.Parameter.UNDEFINED) // If other than undefined ...
                         pc.Parameters[currentParameter] = output[i, j]; // ... Add to the part
                 }
 

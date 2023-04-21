@@ -8,9 +8,7 @@ namespace StockManagerDB
     /// </summary>
     public class DataExportClass
     {
-        public DataExportClass()
-        {
-        }
+        public DataExportClass() { }
 
         public DataExportClass(Dictionary<string, Part> parts, Dictionary<string, Project> projects)
         {

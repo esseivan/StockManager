@@ -12,6 +12,7 @@ namespace StockManagerDB
         /// The MPN of the part. Unique amongst a version
         /// </summary>
         public string MPN { get; set; }
+
         /// <summary>
         /// The quantity for this part
         /// </summary>
@@ -21,10 +22,12 @@ namespace StockManagerDB
             get => float.TryParse(QuantityStr, out float value) ? value : 0;
             set => QuantityStr = value.ToString();
         }
+
         /// <summary>
         /// The quantity for this part
         /// </summary>
         public string QuantityStr { get; set; }
+
         /// <summary>
         /// The reference for this part, if any
         /// </summary>

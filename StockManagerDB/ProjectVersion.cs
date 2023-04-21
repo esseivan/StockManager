@@ -13,6 +13,7 @@ namespace StockManagerDB
         /// Name of the project that have this version
         /// </summary>
         public string Project { get; set; }
+
         /// <summary>
         /// Version. Unique amongst the versions of a project
         /// </summary>
@@ -32,8 +33,10 @@ namespace StockManagerDB
                 }
             }
         }
+
         [JsonIgnore]
         private string _version;
+
         /// <summary>
         /// List of material
         /// </summary>
