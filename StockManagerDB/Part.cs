@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Remoting.Messaging;
 using System.Text.Json.Serialization;
 
 namespace StockManagerDB
@@ -17,38 +18,51 @@ namespace StockManagerDB
             get => Parameters.TryGetValue(Parameter.MPN, out string value) ? value : string.Empty;
             set => Parameters[Parameter.MPN] = value;
         }
+
         /// <summary>
         /// Manufacturer
         /// </summary>
         public string Manufacturer
         {
-            get => Parameters.TryGetValue(Parameter.Manufacturer, out string value) ? value : string.Empty;
+            get =>
+                Parameters.TryGetValue(Parameter.Manufacturer, out string value)
+                    ? value
+                    : string.Empty;
             set => Parameters[Parameter.Manufacturer] = value;
         }
+
         /// <summary>
         /// Description
         /// </summary>
         public string Description
         {
-            get => Parameters.TryGetValue(Parameter.Description, out string value) ? value : string.Empty;
+            get =>
+                Parameters.TryGetValue(Parameter.Description, out string value)
+                    ? value
+                    : string.Empty;
             set => Parameters[Parameter.Description] = value;
         }
+
         /// <summary>
         /// Category
         /// </summary>
         public string Category
         {
-            get => Parameters.TryGetValue(Parameter.Category, out string value) ? value : string.Empty;
+            get =>
+                Parameters.TryGetValue(Parameter.Category, out string value) ? value : string.Empty;
             set => Parameters[Parameter.Category] = value;
         }
+
         /// <summary>
         /// Part location
         /// </summary>
         public string Location
         {
-            get => Parameters.TryGetValue(Parameter.Location, out string value) ? value : string.Empty;
+            get =>
+                Parameters.TryGetValue(Parameter.Location, out string value) ? value : string.Empty;
             set => Parameters[Parameter.Location] = value;
         }
+
         /// <summary>
         /// Actual stock
         /// </summary>
@@ -63,6 +77,7 @@ namespace StockManagerDB
             get => Parameters.TryGetValue(Parameter.Stock, out string value) ? value : string.Empty;
             set => Parameters[Parameter.Stock] = value;
         }
+
         /// <summary>
         /// Low stock threshold
         /// </summary>
@@ -74,9 +89,11 @@ namespace StockManagerDB
         }
         public string LowStockStr
         {
-            get => Parameters.TryGetValue(Parameter.LowStock, out string value) ? value : string.Empty;
+            get =>
+                Parameters.TryGetValue(Parameter.LowStock, out string value) ? value : string.Empty;
             set => Parameters[Parameter.LowStock] = value;
         }
+
         /// <summary>
         /// Average unit price
         /// </summary>
@@ -91,14 +108,17 @@ namespace StockManagerDB
             get => Parameters.TryGetValue(Parameter.Price, out string value) ? value : string.Empty;
             set => Parameters[Parameter.Price] = value;
         }
+
         /// <summary>
         /// Supplier
         /// </summary>
         public string Supplier
         {
-            get => Parameters.TryGetValue(Parameter.Supplier, out string value) ? value : string.Empty;
+            get =>
+                Parameters.TryGetValue(Parameter.Supplier, out string value) ? value : string.Empty;
             set => Parameters[Parameter.Supplier] = value;
         }
+
         /// <summary>
         /// Supplier Product Number
         /// </summary>
@@ -113,21 +133,30 @@ namespace StockManagerDB
         /// </summary>
         [JsonInclude]
         public DateTime ValidFrom;
+
         /// <summary>
         /// This part version is valid until this date
         /// </summary>
         [JsonInclude]
         public DateTime ValidUntil;
+
         /// <summary>
         /// The status of the part
         /// </summary>
         [JsonInclude]
         public string Status;
+
         /// <summary>
         /// The version of this part
         /// </summary>
         [JsonInclude]
         public int Version;
+
+        /// <summary>
+        /// Note on this version
+        /// </summary>
+        [JsonInclude]
+        public string note = "";
 
         /// <summary>
         /// List of parameters
@@ -152,9 +181,7 @@ namespace StockManagerDB
             SPN,
         }
 
-        public Part()
-        {
-        }
+        public Part() { }
 
         /// <summary>
         /// Convert string header to parameter type. Used to import from excel, where the value is the header name
@@ -168,8 +195,22 @@ namespace StockManagerDB
 
             switch (value.ToLowerInvariant())
             {
+                case "art. number":
+                    return Parameter.MPN;
+                case "place":
+                    return Parameter.Location;
                 case "man":
                     return Parameter.Manufacturer;
+                case "in stock":
+                    return Parameter.Stock;
+                case "min in stock":
+                    return Parameter.LowStock;
+                case "default art. number":
+                    return Parameter.SPN;
+                case "default retailer":
+                    return Parameter.Supplier;
+                case "default unit price":
+                    return Parameter.Price;
                 case "desc":
                     return Parameter.Description;
                 case "category":
@@ -232,6 +273,7 @@ namespace StockManagerDB
                 return x.MPN.CompareTo(y.MPN);
             }
         }
+
         public class CompareMPNThenVersion : Comparer<Part>
         {
             public override int Compare(Part x, Part y)

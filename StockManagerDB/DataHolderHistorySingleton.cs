@@ -18,17 +18,18 @@ namespace StockManagerDB
         /// The instance of the singleton
         /// </summary>
         private static DataHolderHistorySingleton _instance = null;
+
         /// <summary>
         /// Read only access to the instance
         /// </summary>
         [JsonIgnore]
         public static DataHolderHistorySingleton Instance => _instance;
 
-
         /// <summary>
         /// The file that is used for this singleton
         /// </summary>
         private readonly string _filepath;
+
         /// <summary>
         /// The file that is used for this singleton. To change this, call <see cref="DataHolderHistorySingleton.LoadNew(string)"/>
         /// </summary>
@@ -63,7 +64,13 @@ namespace StockManagerDB
             // Sort before save
             PartHistory.Sort(new Part.CompareMPNThenVersion());
 
-            SettingsManager.SaveTo(Filepath, PartHistory, backup: true, indent: true);
+            SettingsManager.SaveTo(
+                Filepath,
+                PartHistory,
+                backup: true,
+                indent: true,
+                internalFileName: "history.txt"
+            );
         }
 
         /// <summary>

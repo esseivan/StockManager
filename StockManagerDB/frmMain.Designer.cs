@@ -190,18 +190,26 @@
             | System.Windows.Forms.Keys.O)));
             this.importFromExcelToolStripMenuItem.Size = new System.Drawing.Size(296, 22);
             this.importFromExcelToolStripMenuItem.Text = "Import from Excel";
+            this.importFromExcelToolStripMenuItem.Click += new System.EventHandler(this.importFromExcelToolStripMenuItem_Click);
+
             // 
             // importOrderFromDigikeyToolStripMenuItem
             // 
             this.importOrderFromDigikeyToolStripMenuItem.Name = "importOrderFromDigikeyToolStripMenuItem";
             this.importOrderFromDigikeyToolStripMenuItem.Size = new System.Drawing.Size(296, 22);
             this.importOrderFromDigikeyToolStripMenuItem.Text = "Import order from Digikey";
+
+            this.importOrderFromDigikeyToolStripMenuItem.Click += new System.EventHandler(this.importOrderFromDigikeyToolStripMenuItem_Click);
+
             // 
             // importOrderFromDigikeyFromClipboardToolStripMenuItem
             // 
             this.importOrderFromDigikeyFromClipboardToolStripMenuItem.Name = "importOrderFromDigikeyFromClipboardToolStripMenuItem";
             this.importOrderFromDigikeyFromClipboardToolStripMenuItem.Size = new System.Drawing.Size(296, 22);
             this.importOrderFromDigikeyFromClipboardToolStripMenuItem.Text = "Import order from Digikey from Clipboard";
+
+            this.importOrderFromDigikeyFromClipboardToolStripMenuItem.Click += new System.EventHandler(this.importOrderFromDigikeyFromClipboardToolStripMenuItem_Click);
+
             // 
             // toolStripSeparator2
             // 
@@ -299,6 +307,9 @@
             | System.Windows.Forms.Keys.A)));
             this.checkAllInViewToolStripMenuItem.Size = new System.Drawing.Size(249, 22);
             this.checkAllInViewToolStripMenuItem.Text = "Check all in view";
+
+            this.checkAllInViewToolStripMenuItem.Click += new System.EventHandler(this.checkAllInViewToolStripMenuItem_Click);
+
             // 
             // uncheckAllInViewToolStripMenuItem
             // 
@@ -307,6 +318,9 @@
             | System.Windows.Forms.Keys.D)));
             this.uncheckAllInViewToolStripMenuItem.Size = new System.Drawing.Size(249, 22);
             this.uncheckAllInViewToolStripMenuItem.Text = "Uncheck all in view";
+
+            this.uncheckAllInViewToolStripMenuItem.Click += new System.EventHandler(this.uncheckAllInViewToolStripMenuItem_Click);
+
             // 
             // toolStripSeparator6
             // 
@@ -379,7 +393,9 @@
             this.splitContainer1.Panel1.Controls.Add(this.txtboxFilter);
             this.splitContainer1.Panel1.Controls.Add(this.label2);
             this.splitContainer1.Panel1.Controls.Add(this.listviewParts);
-            this.splitContainer1.Panel1.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+
+            this.splitContainer1.Panel1.Padding = new System.Windows.Forms.Padding(3);
+
             this.splitContainer1.Panel1MinSize = 125;
             // 
             // splitContainer1.Panel2
@@ -387,7 +403,9 @@
             this.splitContainer1.Panel2.Controls.Add(this.btnCheckedPartDel);
             this.splitContainer1.Panel2.Controls.Add(this.label1);
             this.splitContainer1.Panel2.Controls.Add(this.listviewChecked);
-            this.splitContainer1.Panel2.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+
+            this.splitContainer1.Panel2.Padding = new System.Windows.Forms.Padding(3);
+
             this.splitContainer1.Panel2MinSize = 125;
             this.splitContainer1.Size = new System.Drawing.Size(866, 466);
             this.splitContainer1.SplitterDistance = 272;
@@ -476,13 +494,17 @@
             this.listviewParts.GridLines = true;
             this.listviewParts.HideSelection = false;
             this.listviewParts.Location = new System.Drawing.Point(3, 47);
-            this.listviewParts.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+
+            this.listviewParts.Margin = new System.Windows.Forms.Padding(2);
+
             this.listviewParts.Name = "listviewParts";
             this.listviewParts.SelectColumnsOnRightClickBehaviour = BrightIdeasSoftware.ObjectListView.ColumnSelectBehaviour.Submenu;
             this.listviewParts.ShowCommandMenuOnRightClick = true;
             this.listviewParts.ShowGroups = false;
             this.listviewParts.ShowImagesOnSubItems = true;
-            this.listviewParts.Size = new System.Drawing.Size(857, 220);
+
+            this.listviewParts.Size = new System.Drawing.Size(857, 219);
+
             this.listviewParts.SortGroupItemsByPrimaryColumn = false;
             this.listviewParts.TabIndex = 6;
             this.listviewParts.TintSortColumn = true;
@@ -504,62 +526,71 @@
             // olvcSelect
             // 
             this.olvcSelect.IsEditable = false;
-            this.olvcSelect.Text = "Select";
-            this.olvcSelect.Width = 30;
+            this.olvcSelect.MaximumWidth = 22;
+            this.olvcSelect.MinimumWidth = 22;
+            this.olvcSelect.Text = "";
+            this.olvcSelect.Width = 22;
             // 
             // olvcMPN
             // 
+            this.olvcMPN.MinimumWidth = 20;
             this.olvcMPN.Text = "Manufacturer PN";
             this.olvcMPN.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // olvcMAN
             // 
+            this.olvcMAN.MinimumWidth = 20;
             this.olvcMAN.Text = "Manufacturer";
             this.olvcMAN.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // olvcDesc
             // 
+            this.olvcDesc.MinimumWidth = 20;
             this.olvcDesc.Text = "Description";
             this.olvcDesc.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // olvcCat
             // 
+            this.olvcCat.MinimumWidth = 20;
             this.olvcCat.Text = "Category";
             this.olvcCat.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // olvcLocation
             // 
+            this.olvcLocation.MinimumWidth = 20;
             this.olvcLocation.Text = "Location";
             this.olvcLocation.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // olvcStock
             // 
-            this.olvcStock.MinimumWidth = 75;
+            this.olvcStock.MinimumWidth = 20;
             this.olvcStock.Text = "Stock";
             this.olvcStock.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.olvcStock.Width = 75;
             // 
             // olvcLowStock
             // 
-            this.olvcLowStock.MinimumWidth = 75;
+            this.olvcLowStock.MinimumWidth = 20;
             this.olvcLowStock.Text = "LowStock";
             this.olvcLowStock.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.olvcLowStock.Width = 75;
             // 
             // olvcPrice
             // 
-            this.olvcPrice.MinimumWidth = 75;
+            this.olvcPrice.MinimumWidth = 20;
             this.olvcPrice.Text = "Price";
             this.olvcPrice.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.olvcPrice.Width = 75;
             // 
             // olvcSupplier
             // 
+            this.olvcSupplier.MinimumWidth = 20;
             this.olvcSupplier.Text = "Supplier";
             this.olvcSupplier.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // olvcSPN
             // 
+            this.olvcSPN.MinimumWidth = 20;
             this.olvcSPN.Text = "SPN";
             this.olvcSPN.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -621,7 +652,9 @@
             this.listviewChecked.GridLines = true;
             this.listviewChecked.HideSelection = false;
             this.listviewChecked.Location = new System.Drawing.Point(3, 47);
-            this.listviewChecked.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+
+            this.listviewChecked.Margin = new System.Windows.Forms.Padding(2);
+
             this.listviewChecked.Name = "listviewChecked";
             this.listviewChecked.SelectColumnsOnRightClickBehaviour = BrightIdeasSoftware.ObjectListView.ColumnSelectBehaviour.Submenu;
             this.listviewChecked.ShowCommandMenuOnRightClick = true;

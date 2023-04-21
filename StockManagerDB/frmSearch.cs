@@ -86,6 +86,7 @@ namespace StockManagerDB
 
         private void listviewType_SelectedIndexChanged(object sender, EventArgs e)
         {
+
             if (!IsReady)
                 return;
 
@@ -130,6 +131,7 @@ namespace StockManagerDB
             listviewCategories.SelectedIndices.Clear();
 
             InvokeOnFilterSet();
+
         }
 
         private void btnClearCat_Click(object sender, EventArgs e)
