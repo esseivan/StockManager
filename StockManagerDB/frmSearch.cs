@@ -86,6 +86,9 @@ namespace StockManagerDB
 
         private void listviewType_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (!IsReady)
+                return;
+
             Console.WriteLine(listviewType.SelectedIndices.Count.ToString());
             if (listviewType.SelectedIndices.Count == 0)
             {

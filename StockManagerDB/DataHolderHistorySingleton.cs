@@ -53,8 +53,6 @@ namespace StockManagerDB
         {
             SettingsManager.LoadFrom(Filepath, out List<Part> data);
             PartHistory = data ?? new List<Part>();
-            // Save just after loading
-            Save();
         }
 
         /// <summary>

@@ -200,10 +200,25 @@ namespace StockManagerDB
         #region Listviews and display
 
         /// <summary>
+        /// Clear all filtering for the parts
+        /// </summary>
+        private void ClearAdvancedFiltering()
+        {
+            olvcCat.UseFiltering = false;
+            olvcCat.ValuesChosenForFiltering = null;
+            // Must define to non null first to update categories
+            listviewParts.AdditionalFilter = new TextMatchFilter(listviewParts);
+            listviewParts.AdditionalFilter = null;
+        }
+
+        /// <summary>
         /// Advanced filter callback
         /// </summary>
         private void FrmSearch_OnFilterSet(object sender, FilterEventArgs e)
         {
+            this.BringToFront();
+            searchForm.BringToFront();
+
             // Clear filter on this form
             txtboxFilter.Clear();
 
@@ -290,10 +305,7 @@ namespace StockManagerDB
                 olvcCat.UseFiltering = false;
             }
 
-            if (filter == null)
-                olv.AdditionalFilter = new TextMatchFilter(olv);
-            else
-                olv.AdditionalFilter = filter;
+            olv.AdditionalFilter = filter ?? new TextMatchFilter(olv);
         }
 
         private void PartsHaveChanged()
@@ -1318,6 +1330,7 @@ namespace StockManagerDB
             // When the history form is closed, bring to fron the main form
             this.BringToFront();
             _searchForm = null;
+            ClearAdvancedFiltering();
         }
         private void listviewParts_KeyDown(object sender, KeyEventArgs e)
         {
