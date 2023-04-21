@@ -32,8 +32,8 @@ namespace StockManagerDB
 
         private void Init()
         {
-            listView1.Items.AddRange(Parts.Select((p) => new ListViewItem(p.Description)).ToArray());
-
+            listView1.Items.AddRange(Parts.Select((p) => new ListViewItem(p.Category)).Distinct().ToArray());
+            listView1.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
 
         }
     }
