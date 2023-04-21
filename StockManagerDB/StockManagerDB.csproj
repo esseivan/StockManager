@@ -96,9 +96,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CsvPartImport.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="CsvPartImport.cs" />
     <Compile Include="DataExportClass.cs" />
     <Compile Include="DataHolderHistorySingleton.cs" />
     <Compile Include="DataHolderSingleton.cs" />
@@ -122,6 +120,12 @@
     <Compile Include="frmProjects.Designer.cs">
       <DependentUpon>frmProjects.cs</DependentUpon>
     </Compile>
+    <Compile Include="frmSearch.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmSearch.Designer.cs">
+      <DependentUpon>frmSearch.cs</DependentUpon>
+    </Compile>
     <Compile Include="ListPlus.cs" />
     <Compile Include="LoggerClass.cs" />
     <Compile Include="Material.cs" />
@@ -138,6 +142,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmProjects.resx">
       <DependentUpon>frmProjects.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmSearch.resx">
+      <DependentUpon>frmSearch.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

@@ -15,7 +15,6 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using dhs = StockManagerDB.DataHolderSingleton;
 
 namespace StockManagerDB
@@ -133,6 +132,42 @@ namespace StockManagerDB
                     _historyForm.Close();
                 }
                 _historyForm = value;
+            }
+        }
+
+        private frmSearch _searchForm = null;
+        /// <summary>
+        /// The form that displays projects
+        /// </summary>
+        private frmSearch searchForm
+        {
+            get
+            {
+                if (IsFileLoaded)
+                {
+                    if (_searchForm == null)
+                    {
+                        _searchForm = new frmSearch();
+                        _searchForm.FormClosed += _searchForm_FormClosed;
+                    }
+                }
+                else
+                {
+                    if (_searchForm != null)
+                    {
+                        _searchForm.Close();
+                        _searchForm = null;
+                    }
+                }
+                return _searchForm;
+            }
+            set
+            {
+                if (_searchForm != null)
+                {
+                    _searchForm.Close();
+                }
+                _searchForm = value;
             }
         }
 
@@ -1178,6 +1213,12 @@ namespace StockManagerDB
             this.BringToFront();
             _historyForm = null;
         }
+        private void _searchForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            // When the history form is closed, bring to fron the main form
+            this.BringToFront();
+            _searchForm = null;
+        }
         private void listviewParts_KeyDown(object sender, KeyEventArgs e)
         {
             // 'hack' to check selected rows but call the CheckedChanged event only once
@@ -1241,7 +1282,10 @@ namespace StockManagerDB
         }
         private void advancedSearchToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if(!IsFileLoaded)
+                return;
 
+            searchForm.Show();
         }
 
         #endregion
