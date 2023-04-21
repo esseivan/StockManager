@@ -469,6 +469,19 @@ namespace BrightIdeasSoftware {
         private OLVColumn column;
 
         /// <summary>
+        /// Get or set the OLVColumn that this renderer will draw
+        /// </summary>
+        [Browsable(false),
+         DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public OLVColumn FilterInColumn
+        {
+            get { return filterInColumn; }
+            set { filterInColumn = value; }
+        }
+
+        private OLVColumn filterInColumn;
+
+        /// <summary>
         /// Get/set the event that caused this renderer to be called
         /// </summary>
         [Browsable(false),
@@ -2104,7 +2117,12 @@ namespace BrightIdeasSoftware {
         /// Gets whether the renderer should actually draw highlighting
         /// </summary>
         protected bool ShouldDrawHighlighting {
-            get { return this.Column == null || (this.Column.Searchable && this.Filter != null && this.Filter.HasComponents); }
+            get { return this.Column == null
+                    || (this.Column.Searchable 
+                        && this.Filter != null 
+                        && this.Filter.HasComponents
+                        && (FilterInColumn == null
+                            || this.Column.Index == FilterInColumn.Index)); }
         }
 
         /// <summary>

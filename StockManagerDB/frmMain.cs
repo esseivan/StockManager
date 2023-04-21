@@ -231,7 +231,7 @@ namespace StockManagerDB
                 }
             }
 
-            filterHighlightRenderer.Column = null;
+            filterHighlightRenderer.FilterInColumn = null;
             if (filter != null)
             {
                 OLVColumn column = null;
@@ -276,7 +276,7 @@ namespace StockManagerDB
                 {
                     filter.Columns = new OLVColumn[] { column };
                 }
-                filterHighlightRenderer.Column = column;
+                filterHighlightRenderer.FilterInColumn = column;
             }
 
             // Model filter clears all current filter on columns. This is what we want
