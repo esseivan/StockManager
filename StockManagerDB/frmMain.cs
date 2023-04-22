@@ -78,6 +78,8 @@ namespace StockManagerDB
                     {
                         _projectForm = new frmProjects();
                         _projectForm.FormClosed += _projectForm_FormClosed;
+                        _projectForm.OnPartEditRequested += FrmProjects_OnPartEditRequested;
+                        _projectForm.OnProjectProcessRequested += FrmProjects_OnProjectProcessRequested;
                     }
                 }
                 else
@@ -152,6 +154,8 @@ namespace StockManagerDB
                     {
                         _searchForm = new frmSearch();
                         _searchForm.FormClosed += _searchForm_FormClosed;
+                        _searchForm.OnFilterSet += FrmSearch_OnFilterSet;
+                        _searchForm.Text = "Parts Advanced Filter";
                     }
                 }
                 else
@@ -193,10 +197,6 @@ namespace StockManagerDB
             // Set number label
             UpdateNumberLabel();
             SetStatus("Idle...");
-
-            frmSearch.OnFilterSet += FrmSearch_OnFilterSet;
-            frmProjects.OnPartEditRequested += FrmProjects_OnPartEditRequested;
-            frmProjects.OnProjectProcessRequested += FrmProjects_OnProjectProcessRequested;
         }
 
         #region Listviews and display
@@ -226,7 +226,7 @@ namespace StockManagerDB
 
             // Apply filter
             string txt = e.text;
-            Part.Parameter filterIn = e.filterIn;
+            Part.Parameter filterIn = (Part.Parameter)e.filterIn;
             string category = e.category;
 
             ObjectListView olv = listviewParts;

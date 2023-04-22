@@ -27,8 +27,8 @@ namespace StockManagerDB
 
         private List<Material> BOM => selectedProjectVersion?.BOM;
 
-        public static event EventHandler<PartEditEventArgs> OnPartEditRequested;
-        public static event EventHandler<ProjectProcessRequestedEventArgs> OnProjectProcessRequested;
+        public event EventHandler<PartEditEventArgs> OnPartEditRequested;
+        public event EventHandler<ProjectProcessRequestedEventArgs> OnProjectProcessRequested;
 
         public frmProjects()
         {

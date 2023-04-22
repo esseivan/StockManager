@@ -18,6 +18,8 @@ namespace StockManagerDB
 
         private List<Part> History => data.PartHistory;
 
+        private frmSearch search = null;
+
         public frmHistory()
         {
             InitializeComponent();
@@ -105,15 +107,226 @@ namespace StockManagerDB
             };
 
             // Make the decoration
-            RowBorderDecoration rbd = new RowBorderDecoration();
-            rbd.BorderPen = new Pen(Color.FromArgb(128, Color.DeepSkyBlue), 2);
-            rbd.BoundsPadding = new Size(1, 1);
-            rbd.CornerRounding = 4.0f;
+            RowBorderDecoration rbd = new RowBorderDecoration
+            {
+                BorderPen = new Pen(Color.FromArgb(128, Color.DeepSkyBlue), 2),
+                BoundsPadding = new Size(1, 1),
+                CornerRounding = 4.0f
+            };
 
             // Put the decoration onto the hot item
-            listviewParts.HotItemStyle = new HotItemStyle();
-            listviewParts.HotItemStyle.BackColor = Color.Azure;
-            listviewParts.HotItemStyle.Decoration = rbd;
+            listviewParts.HotItemStyle = new HotItemStyle
+            {
+                BackColor = Color.Azure,
+                Decoration = rbd
+            };
+        }
+
+        /// <summary>
+        /// Filter a text in the main part listview
+        /// </summary>
+        /// <param name="txt">Text to filter</param>
+        /// <param name="matchKind">Type of filter</param>
+        public void Filter(string txt, int matchKind)
+        {
+            ObjectListView olv = listviewParts;
+            TextMatchFilter filter = null;
+            if (!string.IsNullOrEmpty(txt))
+            {
+                switch (matchKind)
+                {
+                    case 0:
+                    default: // Anywhere
+                        filter = TextMatchFilter.Contains(olv, txt);
+                        break;
+                    case 1: // At the start
+                        filter = TextMatchFilter.Prefix(olv, txt);
+                        break;
+                    case 2: // As a regex string
+                        filter = TextMatchFilter.Regex(olv, txt);
+                        break;
+                }
+            }
+
+            olv.AdditionalFilter = filter;
+        }
+
+        /// <summary>
+        /// Clear all filtering for the parts
+        /// </summary>
+        private void ClearAdvancedFiltering()
+        {
+            olvcCat.UseFiltering = false;
+            olvcCat.ValuesChosenForFiltering = null;
+            // Must define to non null first to update categories
+            listviewParts.AdditionalFilter = new TextMatchFilter(listviewParts);
+            listviewParts.AdditionalFilter = null;
+        }
+
+        /// <summar
+        private void cbboxFilterType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Filter(txtboxFilter.Text, this.cbboxFilterType.SelectedIndex);
+        }
+
+        private void txtboxFilter_TextChanged(object sender, EventArgs e)
+        {
+            Filter(txtboxFilter.Text, this.cbboxFilterType.SelectedIndex);
+        }
+
+        private void btnAdv_Click(object sender, EventArgs e)
+        {
+            if (search == null)
+            {
+                search = new frmSearch(typeof(AdvancedPartParameters));
+                search.OnFilterSet += Search_OnFilterSet;
+                search.FormClosed += Search_FormClosed;
+                search.Text = "History Advanced Filter";
+            }
+
+            search.Show();
+        }
+
+        private void Search_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            // When the history form is closed, bring to fron the main form
+            this.BringToFront();
+            search = null;
+            ClearAdvancedFiltering();
+        }
+
+        private void Search_OnFilterSet(object sender, FilterEventArgs e)
+        {
+            this.BringToFront();
+            search.BringToFront();
+
+            // Clear filter on this form
+            txtboxFilter.Clear();
+
+            // Apply filter
+            string txt = e.text;
+            AdvancedPartParameters filterIn = (AdvancedPartParameters)e.filterIn;
+            string category = e.category;
+
+            ObjectListView olv = listviewParts;
+            TextMatchFilter filter = null;
+            if (!string.IsNullOrEmpty(txt))
+            {
+                switch (e.filterType)
+                {
+                    case 0:
+                    default: // Anywhere
+                        filter = TextMatchFilter.Contains(olv, txt);
+                        break;
+                    case 1: // At the start
+                        filter = TextMatchFilter.Prefix(olv, txt);
+                        break;
+                    case 2: // As a regex string
+                        filter = TextMatchFilter.Regex(olv, txt);
+                        break;
+                }
+            }
+
+            filterHighlightRenderer.FilterInColumn = null;
+            if (filter != null)
+            {
+                OLVColumn column = null;
+
+                switch (filterIn)
+                {
+                    case AdvancedPartParameters.MPN:
+                        column = olvcMPN;
+                        break;
+                    case AdvancedPartParameters.Manufacturer:
+                        column = olvcMAN;
+                        break;
+                    case AdvancedPartParameters.Description:
+                        column = olvcDesc;
+                        break;
+                    case AdvancedPartParameters.Category:
+                        column = olvcCat;
+                        break;
+                    case AdvancedPartParameters.Location:
+                        column = olvcLocation;
+                        break;
+                    case AdvancedPartParameters.Stock:
+                        column = olvcStock;
+                        break;
+                    case AdvancedPartParameters.LowStock:
+                        column = olvcLowStock;
+                        break;
+                    case AdvancedPartParameters.Price:
+                        column = olvcPrice;
+                        break;
+                    case AdvancedPartParameters.Supplier:
+                        column = olvcSupplier;
+                        break;
+                    case AdvancedPartParameters.SPN:
+                        column = olvcSPN;
+                        break;
+                    case AdvancedPartParameters.ValidFrom:
+                        column = olvcValidFrom;
+                        break;
+                    case AdvancedPartParameters.ValidUntil:
+                        column = olvcValidUntil;
+                        break;
+                    case AdvancedPartParameters.Status:
+                        column = olvcStatus;
+                        break;
+                    case AdvancedPartParameters.Version:
+                        column = olvcVersion;
+                        break;
+                    case AdvancedPartParameters.Note:
+                        column = olvcNote;
+                        break;
+                    default:
+                        break;
+                }
+
+                if (column != null)
+                {
+                    filter.Columns = new OLVColumn[] { column };
+                }
+                filterHighlightRenderer.FilterInColumn = column;
+            }
+
+            if (!string.IsNullOrEmpty(category))
+            {
+                // Apply category filter
+                olvcCat.ValuesChosenForFiltering = new string[] { category };
+                olvcCat.UseFiltering = true;
+            }
+            else
+            {
+                olvcCat.UseFiltering = false;
+            }
+
+            olv.AdditionalFilter = filter ?? new TextMatchFilter(olv);
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            listviewParts.AutoResizeColumns();
+        }
+
+        public enum AdvancedPartParameters
+        {
+            UNDEFINED,
+            MPN,
+            Manufacturer,
+            Description,
+            Category,
+            Location,
+            Stock,
+            LowStock,
+            Price,
+            Supplier,
+            SPN,
+            ValidFrom,
+            ValidUntil,
+            Status,
+            Version,
+            Note,
         }
     }
 }
