@@ -77,6 +77,11 @@
             this.label1 = new System.Windows.Forms.Label();
             this.numMult = new System.Windows.Forms.NumericUpDown();
             this.statusTimeoutTimer = new System.Windows.Forms.Timer(this.components);
+            this.processProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tooltip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.checkAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.uncheckAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.listviewMaterials)).BeginInit();
@@ -155,7 +160,8 @@
             // actionsToolStripMenuItem
             // 
             this.actionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.orderTheSelectedProjectToolStripMenuItem});
+            this.orderTheSelectedProjectToolStripMenuItem,
+            this.processProjectToolStripMenuItem});
             this.actionsToolStripMenuItem.Name = "actionsToolStripMenuItem";
             this.actionsToolStripMenuItem.Size = new System.Drawing.Size(59, 20);
             this.actionsToolStripMenuItem.Text = "Actions";
@@ -163,13 +169,16 @@
             // orderTheSelectedProjectToolStripMenuItem
             // 
             this.orderTheSelectedProjectToolStripMenuItem.Name = "orderTheSelectedProjectToolStripMenuItem";
-            this.orderTheSelectedProjectToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
+            this.orderTheSelectedProjectToolStripMenuItem.Size = new System.Drawing.Size(238, 22);
             this.orderTheSelectedProjectToolStripMenuItem.Text = "Order the selected project";
             // 
             // viewToolStripMenuItem
             // 
             this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.resizeColumnsToolStripMenuItem});
+            this.resizeColumnsToolStripMenuItem,
+            this.toolStripSeparator2,
+            this.checkAllToolStripMenuItem,
+            this.uncheckAllToolStripMenuItem});
             this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
             this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.viewToolStripMenuItem.Text = "View";
@@ -586,6 +595,32 @@
             this.statusTimeoutTimer.Enabled = true;
             this.statusTimeoutTimer.Interval = 2500;
             // 
+            // processProjectToolStripMenuItem
+            // 
+            this.processProjectToolStripMenuItem.Name = "processProjectToolStripMenuItem";
+            this.processProjectToolStripMenuItem.Size = new System.Drawing.Size(238, 22);
+            this.processProjectToolStripMenuItem.Text = "Process project\'s checked parts";
+            this.processProjectToolStripMenuItem.ToolTipText = "For each checked part in the project, remove the quantity of this part from the c" +
+    "urrent stock";
+            this.processProjectToolStripMenuItem.Click += new System.EventHandler(this.processProjectToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
+            // 
+            // checkAllToolStripMenuItem
+            // 
+            this.checkAllToolStripMenuItem.Name = "checkAllToolStripMenuItem";
+            this.checkAllToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.checkAllToolStripMenuItem.Text = "Check all";
+            // 
+            // uncheckAllToolStripMenuItem
+            // 
+            this.uncheckAllToolStripMenuItem.Name = "uncheckAllToolStripMenuItem";
+            this.uncheckAllToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.uncheckAllToolStripMenuItem.Text = "Uncheck all";
+            // 
             // frmProjects
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -664,5 +699,10 @@
         private System.Windows.Forms.Timer statusTimeoutTimer;
         private System.Windows.Forms.ToolStripMenuItem actionsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem orderTheSelectedProjectToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem processProjectToolStripMenuItem;
+        private System.Windows.Forms.ToolTip tooltip1;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        private System.Windows.Forms.ToolStripMenuItem checkAllToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem uncheckAllToolStripMenuItem;
     }
 }

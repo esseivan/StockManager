@@ -231,8 +231,20 @@ namespace StockManagerDB
                 return;
             }
 
-            listviewMaterials.DataSource = null;
-            listviewMaterials.DataSource = BOM;
+            // If same datasource
+            if(listviewMaterials.DataSource == BOM)
+            {
+                var last = listviewMaterials.CheckedObjects;
+                listviewMaterials.DataSource = null;
+                listviewMaterials.DataSource = BOM;
+                listviewMaterials.CheckObjects(last);
+            }
+            else
+            {
+                listviewMaterials.DataSource = BOM;
+                listviewMaterials.CheckAll();
+            }
+
             //listviewComponents.AutoResizeColumns();
             listviewMaterials.Focus();
 
@@ -316,17 +328,6 @@ namespace StockManagerDB
 
             BOM.Remove(material);
             MaterialsHaveChanged();
-        }
-
-        /// <summary>
-        /// Edit a <see cref="Material"/>
-        /// </summary>
-        /// <param name="oldMaterial"></param>
-        /// <param name="newMaterial"></param>
-        private void EditMaterial(Material oldMaterial, Material newMaterial)
-        {
-            DeleteMaterial(oldMaterial);
-            AddMaterial(newMaterial);
         }
 
         /// <summary>
@@ -443,44 +444,42 @@ namespace StockManagerDB
                 throw new InvalidOperationException("No project version selected");
             }
 
-            Material oldMaterial = e.RowObject as Material;
+            Material current = e.RowObject as Material;
 
             int editedColumn = e.Column.Index - 1;
             string newValue = e.NewValue.ToString();
-
-            Material newMaterial = oldMaterial.Clone() as Material;
 
             switch (editedColumn)
             {
                 case 0: // mpn
                         // Verify that an actual change is made
-                    if (oldMaterial.MPN?.Equals(newValue) ?? false)
+                    if (current.MPN?.Equals(newValue) ?? false)
                     {
                         // No changes
                         LoggerClass.Write("No change detected. Aborting...");
                         return;
                     }
-                    newMaterial.MPN = newValue;
+                    current.MPN = newValue;
                     break;
                 case 1: // quantity
                         // Verify that an actual change is made
-                    if (oldMaterial.QuantityStr?.Equals(newValue) ?? false)
+                    if (current.QuantityStr?.Equals(newValue) ?? false)
                     {
                         // No changes
                         LoggerClass.Write("No change detected. Aborting...");
                         return;
                     }
-                    newMaterial.QuantityStr = newValue;
+                    current.QuantityStr = newValue;
                     break;
                 case 2: // reference
                         // Verify that an actual change is made
-                    if (oldMaterial.Reference?.Equals(newValue) ?? false)
+                    if (current.Reference?.Equals(newValue) ?? false)
                     {
                         // No changes
                         LoggerClass.Write("No change detected. Aborting...");
                         return;
                     }
-                    newMaterial.Reference = newValue;
+                    current.Reference = newValue;
                     break;
                 default:
                     LoggerClass.Write(
@@ -489,9 +488,6 @@ namespace StockManagerDB
                     );
                     break;
             }
-
-            // Apply manually the new value
-            EditMaterial(oldMaterial, newMaterial);
         }
 
         #endregion
@@ -1073,5 +1069,9 @@ namespace StockManagerDB
 
         #endregion
 
+        private void processProjectToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
