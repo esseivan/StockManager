@@ -1015,7 +1015,7 @@ namespace StockManagerDB
                 throw new InvalidOperationException("Unable to edit 'undefined'");
             }
             // Verify that an actual change is made
-            if (part.Parameters[editedParameter]?.Equals(newValue) ?? false)
+            if ((part.Parameters.ContainsKey(editedParameter)) && (part.Parameters[editedParameter]?.Equals(newValue) ?? false))
             {
                 // No changes
                 LoggerClass.Write("No change detected. Aborting...");
