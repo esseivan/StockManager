@@ -39,8 +39,12 @@
             this.quitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.actionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.orderTheSelectedProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.processProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.resizeColumnsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.checkAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.uncheckAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.listviewMaterials = new BrightIdeasSoftware.FastDataListView();
             this.olvcSelect = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcMPN = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
@@ -52,10 +56,10 @@
             this.olvcPrice = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcTotalPrice = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcLocation = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvcLowStock = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcDesc = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcCat = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcMAN = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvcLowStock = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcSupplier = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcSPN = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.comboboxProjects = new System.Windows.Forms.ComboBox();
@@ -77,11 +81,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.numMult = new System.Windows.Forms.NumericUpDown();
             this.statusTimeoutTimer = new System.Windows.Forms.Timer(this.components);
-            this.processProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tooltip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.checkAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.uncheckAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.listviewMaterials)).BeginInit();
@@ -172,6 +172,15 @@
             this.orderTheSelectedProjectToolStripMenuItem.Size = new System.Drawing.Size(238, 22);
             this.orderTheSelectedProjectToolStripMenuItem.Text = "Order the selected project";
             // 
+            // processProjectToolStripMenuItem
+            // 
+            this.processProjectToolStripMenuItem.Name = "processProjectToolStripMenuItem";
+            this.processProjectToolStripMenuItem.Size = new System.Drawing.Size(238, 22);
+            this.processProjectToolStripMenuItem.Text = "Process project\'s checked parts";
+            this.processProjectToolStripMenuItem.ToolTipText = "For each checked part in the project, remove the quantity of this part from the c" +
+    "urrent stock";
+            this.processProjectToolStripMenuItem.Click += new System.EventHandler(this.processProjectToolStripMenuItem_Click);
+            // 
             // viewToolStripMenuItem
             // 
             this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -190,6 +199,23 @@
             this.resizeColumnsToolStripMenuItem.Text = "Resize columns";
             this.resizeColumnsToolStripMenuItem.Click += new System.EventHandler(this.resizeColumnsToolStripMenuItem_Click);
             // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(152, 6);
+            // 
+            // checkAllToolStripMenuItem
+            // 
+            this.checkAllToolStripMenuItem.Name = "checkAllToolStripMenuItem";
+            this.checkAllToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
+            this.checkAllToolStripMenuItem.Text = "Check all";
+            // 
+            // uncheckAllToolStripMenuItem
+            // 
+            this.uncheckAllToolStripMenuItem.Name = "uncheckAllToolStripMenuItem";
+            this.uncheckAllToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
+            this.uncheckAllToolStripMenuItem.Text = "Uncheck all";
+            // 
             // listviewMaterials
             // 
             this.listviewMaterials.AllColumns.Add(this.olvcSelect);
@@ -202,10 +228,10 @@
             this.listviewMaterials.AllColumns.Add(this.olvcPrice);
             this.listviewMaterials.AllColumns.Add(this.olvcTotalPrice);
             this.listviewMaterials.AllColumns.Add(this.olvcLocation);
+            this.listviewMaterials.AllColumns.Add(this.olvcLowStock);
             this.listviewMaterials.AllColumns.Add(this.olvcDesc);
             this.listviewMaterials.AllColumns.Add(this.olvcCat);
             this.listviewMaterials.AllColumns.Add(this.olvcMAN);
-            this.listviewMaterials.AllColumns.Add(this.olvcLowStock);
             this.listviewMaterials.AllColumns.Add(this.olvcSupplier);
             this.listviewMaterials.AllColumns.Add(this.olvcSPN);
             this.listviewMaterials.AllowCheckWithSpace = true;
@@ -228,10 +254,10 @@
             this.olvcPrice,
             this.olvcTotalPrice,
             this.olvcLocation,
+            this.olvcLowStock,
             this.olvcDesc,
             this.olvcCat,
             this.olvcMAN,
-            this.olvcLowStock,
             this.olvcSupplier,
             this.olvcSPN});
             this.listviewMaterials.Cursor = System.Windows.Forms.Cursors.Default;
@@ -286,6 +312,7 @@
             // 
             // olvcStock
             // 
+            this.olvcStock.IsEditable = false;
             this.olvcStock.MinimumWidth = 75;
             this.olvcStock.Text = "Stock";
             this.olvcStock.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -305,6 +332,7 @@
             // 
             // olvcPrice
             // 
+            this.olvcPrice.IsEditable = false;
             this.olvcPrice.MinimumWidth = 75;
             this.olvcPrice.Text = "Price";
             this.olvcPrice.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -318,23 +346,9 @@
             // 
             // olvcLocation
             // 
+            this.olvcLocation.IsEditable = false;
             this.olvcLocation.Text = "Location";
             this.olvcLocation.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // olvcDesc
-            // 
-            this.olvcDesc.Text = "Description";
-            this.olvcDesc.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // olvcCat
-            // 
-            this.olvcCat.Text = "Category";
-            this.olvcCat.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // olvcMAN
-            // 
-            this.olvcMAN.Text = "Manufacturer";
-            this.olvcMAN.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // olvcLowStock
             // 
@@ -343,13 +357,33 @@
             this.olvcLowStock.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.olvcLowStock.Width = 75;
             // 
+            // olvcDesc
+            // 
+            this.olvcDesc.IsEditable = false;
+            this.olvcDesc.Text = "Description";
+            this.olvcDesc.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // olvcCat
+            // 
+            this.olvcCat.IsEditable = false;
+            this.olvcCat.Text = "Category";
+            this.olvcCat.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // olvcMAN
+            // 
+            this.olvcMAN.IsEditable = false;
+            this.olvcMAN.Text = "Manufacturer";
+            this.olvcMAN.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
             // olvcSupplier
             // 
+            this.olvcSupplier.IsEditable = false;
             this.olvcSupplier.Text = "Supplier";
             this.olvcSupplier.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // olvcSPN
             // 
+            this.olvcSPN.IsEditable = false;
             this.olvcSPN.Text = "SPN";
             this.olvcSPN.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -594,32 +628,6 @@
             // 
             this.statusTimeoutTimer.Enabled = true;
             this.statusTimeoutTimer.Interval = 2500;
-            // 
-            // processProjectToolStripMenuItem
-            // 
-            this.processProjectToolStripMenuItem.Name = "processProjectToolStripMenuItem";
-            this.processProjectToolStripMenuItem.Size = new System.Drawing.Size(238, 22);
-            this.processProjectToolStripMenuItem.Text = "Process project\'s checked parts";
-            this.processProjectToolStripMenuItem.ToolTipText = "For each checked part in the project, remove the quantity of this part from the c" +
-    "urrent stock";
-            this.processProjectToolStripMenuItem.Click += new System.EventHandler(this.processProjectToolStripMenuItem_Click);
-            // 
-            // toolStripSeparator2
-            // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
-            // 
-            // checkAllToolStripMenuItem
-            // 
-            this.checkAllToolStripMenuItem.Name = "checkAllToolStripMenuItem";
-            this.checkAllToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.checkAllToolStripMenuItem.Text = "Check all";
-            // 
-            // uncheckAllToolStripMenuItem
-            // 
-            this.uncheckAllToolStripMenuItem.Name = "uncheckAllToolStripMenuItem";
-            this.uncheckAllToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.uncheckAllToolStripMenuItem.Text = "Uncheck all";
             // 
             // frmProjects
             // 

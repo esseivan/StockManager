@@ -195,6 +195,7 @@ namespace StockManagerDB
             SetStatus("Idle...");
 
             frmSearch.OnFilterSet += FrmSearch_OnFilterSet;
+            frmProjects.OnPartEditRequested += FrmProjects_OnPartEditRequested;
         }
 
         #region Listviews and display
@@ -780,6 +781,7 @@ namespace StockManagerDB
             }
             catch (Exception)
             {
+                LoggerClass.Write($"Openning failed...", Logger.LogLevels.Error);
                 filepath = null;
                 return false;
             }
@@ -1006,6 +1008,15 @@ namespace StockManagerDB
             Part.Parameter editedParameter = (Part.Parameter)(e.Column.Index);
             string newValue = e.NewValue.ToString();
 
+            ApplyEdit(part, editedParameter, newValue);
+        }
+
+
+        /// <summary>
+        /// Called when a cell is edited
+        /// </summary>
+        private void ApplyEdit(Part part, Part.Parameter editedParameter, string newValue)
+        {
             LoggerClass.Write(
                 $"Cell with MPN={part.MPN} edited : Parameter={editedParameter}, Newvalue={newValue}",
                 Logger.LogLevels.Debug
@@ -1539,6 +1550,19 @@ namespace StockManagerDB
         private void quitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        private void FrmProjects_OnPartEditRequested(object sender, frmProjects.PartEditEventArgs e)
+        {
+            // Only allow edit of lowstock
+            if ((e == null)
+                || (e.part == null)
+                || (e.editedParamter != Part.Parameter.LowStock))
+            {
+                return;
+            }
+
+            ApplyEdit(e.part, e.editedParamter, e.value);
         }
 
         private void importOrderFromDigikeyToolStripMenuItem_Click(object sender, EventArgs e)

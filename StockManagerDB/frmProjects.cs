@@ -27,6 +27,8 @@ namespace StockManagerDB
 
         private List<Material> BOM => selectedProjectVersion?.BOM;
 
+        public static event EventHandler<PartEditEventArgs> OnPartEditRequested;
+
         public frmProjects()
         {
             InitializeComponent();
@@ -232,7 +234,7 @@ namespace StockManagerDB
             }
 
             // If same datasource
-            if(listviewMaterials.DataSource == BOM)
+            if (listviewMaterials.DataSource == BOM)
             {
                 var last = listviewMaterials.CheckedObjects;
                 listviewMaterials.DataSource = null;
@@ -444,7 +446,7 @@ namespace StockManagerDB
                 throw new InvalidOperationException("No project version selected");
             }
 
-            Material current = e.RowObject as Material;
+            Material material = e.RowObject as Material;
 
             int editedColumn = e.Column.Index - 1;
             string newValue = e.NewValue.ToString();
@@ -452,38 +454,64 @@ namespace StockManagerDB
             switch (editedColumn)
             {
                 case 0: // mpn
-                        // Verify that an actual change is made
-                    if (current.MPN?.Equals(newValue) ?? false)
+                    // Verify that an actual change is made
+                    if (material.MPN?.Equals(newValue) ?? false)
                     {
                         // No changes
                         LoggerClass.Write("No change detected. Aborting...");
                         return;
                     }
-                    current.MPN = newValue;
+                    material.MPN = newValue;
                     break;
                 case 1: // quantity
-                        // Verify that an actual change is made
-                    if (current.QuantityStr?.Equals(newValue) ?? false)
+                    // Verify that an actual change is made
+                    if (material.QuantityStr?.Equals(newValue) ?? false)
                     {
                         // No changes
                         LoggerClass.Write("No change detected. Aborting...");
                         return;
                     }
-                    current.QuantityStr = newValue;
+                    material.QuantityStr = newValue;
                     break;
                 case 2: // reference
-                        // Verify that an actual change is made
-                    if (current.Reference?.Equals(newValue) ?? false)
+                    // Verify that an actual change is made
+                    if (material.Reference?.Equals(newValue) ?? false)
                     {
                         // No changes
                         LoggerClass.Write("No change detected. Aborting...");
                         return;
                     }
-                    current.Reference = newValue;
+                    material.Reference = newValue;
+                    break;
+                case 9: // LowStock
+                    // Here we edit the PartLink
+                    if (material.PartLink == null)
+                    {
+                        // No link
+                        LoggerClass.Write("No Part link... Aborting...");
+                        return;
+                    }
+
+                    // Verify that an actual change is made
+                    if (material.PartLink.LowStockStr?.Equals(newValue) ?? false)
+                    {
+                        // No changes
+                        LoggerClass.Write("No change detected. Aborting...");
+                        return;
+                    }
+
+                    // Do not edit here. Use callback
+                    OnPartEditRequested?.Invoke(this, new PartEditEventArgs()
+                    {
+                        part = material.PartLink,
+                        editedParamter = Part.Parameter.LowStock,
+                        value = newValue,
+                    });
+
                     break;
                 default:
                     LoggerClass.Write(
-                        "Unable to edit this column",
+                        $"Unable to edit this column, index='{editedColumn}'",
                         Logger.LogLevels.Error
                     );
                     break;
@@ -1067,11 +1095,18 @@ namespace StockManagerDB
             SetStatus("Copied to clipboard...");
         }
 
-        #endregion
-
         private void processProjectToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
+        }
+
+        #endregion
+
+        public class PartEditEventArgs : EventArgs
+        {
+            public Part part;
+            public Part.Parameter editedParamter;
+            public string value;
         }
     }
 }
