@@ -328,5 +328,13 @@ namespace StockManagerDB
             Version,
             Note,
         }
+
+        private void frmHistory_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if(search != null)
+            {
+                search.Close();
+            }
+        }
     }
 }

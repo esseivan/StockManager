@@ -750,6 +750,11 @@ namespace StockManagerDB
             }
 
             LoggerClass.Write($"Creating data file at that path", Logger.LogLevels.Debug);
+            // Closing current file
+            if (!string.IsNullOrEmpty(filepath))
+            {
+                CloseFile();
+            }
             // Save path
             filepath = fsd.FileName;
             // Create new empty file (with template part)
@@ -778,6 +783,13 @@ namespace StockManagerDB
                 return false;
             }
             LoggerClass.Write($"File selected : {ofd.FileName}", Logger.LogLevels.Debug);
+
+            // Closing current file
+            if(!string.IsNullOrEmpty(filepath))
+            {
+                CloseFile();
+            }
+
             // Save path
             filepath = ofd.FileName;
             // Load the file
@@ -809,7 +821,20 @@ namespace StockManagerDB
         private bool CloseFile()
         {
             LoggerClass.Write($"Closing file : {filepath}", Logger.LogLevels.Debug);
+            if(_searchForm != null)
+            {
+                _searchForm.Close();
+            }
+            if (_projectForm != null)
+            {
+                _projectForm.Close();
+            }
+            if (_historyForm != null)
+            {
+                _historyForm.Close();
+            }
             data.Close();
+            filepath = null;
             SetTitle();
             UpdateListviews();
             return true;

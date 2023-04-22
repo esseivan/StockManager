@@ -223,7 +223,7 @@ namespace StockManagerDB
         /// </summary>
         public void Close()
         {
-            Save();
+            // Save(); no longer save on exit.
             Parts = null;
             Projects = null;
             _instance = null;

@@ -268,6 +268,7 @@
             this.Controls.Add(this.listviewParts);
             this.Name = "frmHistory";
             this.Text = "History";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmHistory_FormClosing);
             ((System.ComponentModel.ISupportInitialize)(this.listviewParts)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
