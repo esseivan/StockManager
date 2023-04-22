@@ -196,6 +196,7 @@ namespace StockManagerDB
 
             frmSearch.OnFilterSet += FrmSearch_OnFilterSet;
             frmProjects.OnPartEditRequested += FrmProjects_OnPartEditRequested;
+            frmProjects.OnProjectProcessRequested += FrmProjects_OnProjectProcessRequested;
         }
 
         #region Listviews and display
@@ -496,20 +497,26 @@ namespace StockManagerDB
             };
 
             // Make the decoration
-            RowBorderDecoration rbd = new RowBorderDecoration();
-            rbd.BorderPen = new Pen(Color.FromArgb(128, Color.DeepSkyBlue), 2);
-            rbd.BoundsPadding = new Size(1, 1);
-            rbd.CornerRounding = 4.0f;
+            RowBorderDecoration rbd = new RowBorderDecoration
+            {
+                BorderPen = new Pen(Color.FromArgb(128, Color.DeepSkyBlue), 2),
+                BoundsPadding = new Size(1, 1),
+                CornerRounding = 4.0f
+            };
 
             // Put the decoration onto the hot item
-            listviewParts.HotItemStyle = new HotItemStyle();
-            listviewParts.HotItemStyle.BackColor = Color.Azure;
-            listviewParts.HotItemStyle.Decoration = rbd;
+            listviewParts.HotItemStyle = new HotItemStyle
+            {
+                BackColor = Color.Azure,
+                Decoration = rbd
+            };
 
             // Put the decoration onto the hot item
-            listviewChecked.HotItemStyle = new HotItemStyle();
-            listviewChecked.HotItemStyle.BackColor = Color.Azure;
-            listviewChecked.HotItemStyle.Decoration = rbd;
+            listviewChecked.HotItemStyle = new HotItemStyle
+            {
+                BackColor = Color.Azure,
+                Decoration = rbd
+            };
         }
 
         #region TextFiltering
@@ -1015,7 +1022,7 @@ namespace StockManagerDB
         /// <summary>
         /// Called when a cell is edited
         /// </summary>
-        private void ApplyEdit(Part part, Part.Parameter editedParameter, string newValue)
+        private void ApplyEdit(Part part, Part.Parameter editedParameter, string newValue, string note = "")
         {
             LoggerClass.Write(
                 $"Cell with MPN={part.MPN} edited : Parameter={editedParameter}, Newvalue={newValue}",
@@ -1049,7 +1056,7 @@ namespace StockManagerDB
                 return;
             }
 
-            data.EditPart(part, editedParameter, newValue);
+            data.EditPart(part, editedParameter, newValue, note);
 
             PartsHaveChanged();
         }
@@ -1552,8 +1559,30 @@ namespace StockManagerDB
             this.Close();
         }
 
-        private void FrmProjects_OnPartEditRequested(object sender, frmProjects.PartEditEventArgs e)
+        private void FrmProjects_OnProjectProcessRequested(object sender, ProjectProcessRequestedEventArgs e)
         {
+            Cursor.Current = Cursors.WaitCursor;
+            string note = $"Project processed ";
+
+            // Process project : remove quantity from parts
+            foreach (Material material in e.materials)
+            {
+                // Get partlink
+                if (material.PartLink == null)
+                {
+                    LoggerClass.Write($"Unable to process MPN='{material.MPN}', part not found...", Logger.LogLevels.Error);
+                    continue;
+                }
+
+                // Apply edit
+                ApplyEdit(material.PartLink, Part.Parameter.Stock, (material.PartLink.Stock - (material.Quantity * e.numberOfTimes)).ToString(), note);
+            }
+            Cursor.Current = Cursors.Default;
+        }
+
+        private void FrmProjects_OnPartEditRequested(object sender, PartEditEventArgs e)
+        {
+            string note = $"Edit from project form ";
             // Only allow edit of lowstock
             if ((e == null)
                 || (e.part == null)
@@ -1562,7 +1591,7 @@ namespace StockManagerDB
                 return;
             }
 
-            ApplyEdit(e.part, e.editedParamter, e.value);
+            ApplyEdit(e.part, e.editedParamter, e.value, note);
         }
 
         private void importOrderFromDigikeyToolStripMenuItem_Click(object sender, EventArgs e)

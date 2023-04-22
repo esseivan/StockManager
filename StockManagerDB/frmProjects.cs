@@ -28,6 +28,7 @@ namespace StockManagerDB
         private List<Material> BOM => selectedProjectVersion?.BOM;
 
         public static event EventHandler<PartEditEventArgs> OnPartEditRequested;
+        public static event EventHandler<ProjectProcessRequestedEventArgs> OnProjectProcessRequested;
 
         public frmProjects()
         {
@@ -978,6 +979,14 @@ namespace StockManagerDB
             statusTimeoutTimer.Start();
         }
 
+        private void SetSuccessStatus(bool result)
+        {
+            SetStatus(
+                result ? "Success !" : "Failed",
+                result ? SystemColors.ControlText : Color.Red
+            );
+        }
+
         private void quitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.Close();
@@ -1097,16 +1106,72 @@ namespace StockManagerDB
 
         private void processProjectToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            // For all the checked parts, remove the quantity for the project from the part list (general one)
+            // First, ask to confirm the multiplier, negative number to add allowed
+            Dialog.DialogConfig dc = new Dialog.DialogConfig()
+            {
+                Message = "Please enter the number of time to remove the project's BOM from the part list\n(Note that a negative number is allowed)",
+                Title = "Enter input",
+                Button1 = Dialog.ButtonType.OK,
+                Button2 = Dialog.ButtonType.Cancel,
+                DefaultInput = "1",
+                Input = true,
+                Icon = Dialog.DialogIcon.Question,
+            };
+            Dialog.ShowDialogResult res = Dialog.ShowDialog(dc);
+            if (res.DialogResult != Dialog.DialogResult.OK)
+            {
+                return;
+            }
 
+            // Parse input
+            if (!int.TryParse(res.UserInput, out int n))
+            {
+                MessageBox.Show($"Unable to parse your input : '{res.UserInput}'\nAborting...", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            // Get checked parts
+            IEnumerable<Material> checkedParts = listviewMaterials.CheckedObjects.Cast<Material>();
+
+            // Ask confirmation
+            if (MessageBox.Show($"Confirm the process of '{n}' time(s) for the selected project '{selectedProjectVersion.Project}'\n{checkedParts.Count()} out of {BOM.Count} checked part in BOM", "Confirmation", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) != DialogResult.OK)
+            {
+                return;
+            }
+
+            LoggerClass.Write($"Procesing project '{selectedProjectVersion.Project}' for '{n}' time(s)...");
+
+            // Callback to main form
+            OnProjectProcessRequested?.Invoke(this, new ProjectProcessRequestedEventArgs()
+            {
+                numberOfTimes = n,
+                materials = checkedParts,
+            });
+
+            SetSuccessStatus(true);
+            this.BringToFront();
         }
 
-        #endregion
-
-        public class PartEditEventArgs : EventArgs
+        private void statusTimeoutTimer_Tick(object sender, EventArgs e)
         {
-            public Part part;
-            public Part.Parameter editedParamter;
-            public string value;
+            statusTimeoutTimer.Stop();
+            labelStatus.ForeColor = SystemColors.ControlText;
+            labelStatus.Text = string.Empty;
         }
+    }
+
+    #endregion
+
+    public class PartEditEventArgs : EventArgs
+    {
+        public Part part;
+        public Part.Parameter editedParamter;
+        public string value;
+    }
+    public class ProjectProcessRequestedEventArgs : EventArgs
+    {
+        public int numberOfTimes;
+        public IEnumerable<Material> materials;
     }
 }

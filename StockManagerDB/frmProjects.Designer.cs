@@ -628,6 +628,7 @@
             // 
             this.statusTimeoutTimer.Enabled = true;
             this.statusTimeoutTimer.Interval = 2500;
+            this.statusTimeoutTimer.Tick += new System.EventHandler(this.statusTimeoutTimer_Tick);
             // 
             // frmProjects
             // 
