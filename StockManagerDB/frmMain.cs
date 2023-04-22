@@ -200,6 +200,7 @@ namespace StockManagerDB
 
             LoggerClass.Init();
             LoggerClass.Write("Application started...", Logger.LogLevels.Info);
+            LoggerClass.Write(DateTime.Now.ToString("yyyy.MM.dd HH:mm:ss"), Logger.LogLevels.Info);
             SettingsManager.MyAppName = "StockManager";
 
             // Setup listviews
