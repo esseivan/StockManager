@@ -26,14 +26,28 @@ namespace StockManagerDB
         /// <summary>
         /// Filter set event
         /// </summary>
-        public static event EventHandler<FilterEventArgs> OnFilterSet;
+        public event EventHandler<FilterEventArgs> OnFilterSet;
 
-        private bool IsReady = false;
+        private readonly bool IsReady = false;
+
+        private readonly Type enumType;
 
         public frmSearch()
         {
             InitializeComponent();
 
+            enumType = typeof(Part.Parameter);
+            InitLists();
+
+            cbboxFilterType.SelectedIndex = 0;
+
+            IsReady = true;
+        }
+        public frmSearch(Type enumType)
+        {
+            InitializeComponent();
+
+            this.enumType = enumType;
             InitLists();
 
             cbboxFilterType.SelectedIndex = 0;
@@ -41,16 +55,26 @@ namespace StockManagerDB
             IsReady = true;
         }
 
-        private void InitLists()
+        private void InitLists(bool haveCategories = true)
         {
-            List<string> categories = Parts.Select((p) => p.Category).Distinct().ToList();
-            categories.Sort();
+            if (haveCategories)
+            {
+                List<string> categories = Parts.Select((p) => p.Category).Distinct().ToList();
+                categories.Sort();
 
-            listviewCategories.Items.AddRange(categories.Select((p) => new ListViewItem(p)).ToArray());
-            listviewCategories.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+                listviewCategories.Items.AddRange(categories.Select((p) => new ListViewItem(p)).ToArray());
+                listviewCategories.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+            }
+            else
+            {
+                this.Controls.Remove(listviewCategories);
+                this.Controls.Remove(label3);
+                this.Controls.Remove(txtboxCategory);
+                this.Controls.Remove(btnClearCat);
+            }
 
             listviewType.Items.Clear();
-            listviewType.Items.AddRange(Enum.GetNames(typeof(Part.Parameter)).Select((x) => new ListViewItem(x)).ToArray());
+            listviewType.Items.AddRange(Enum.GetNames(enumType).Select((x) => new ListViewItem(x)).ToArray());
             listviewType.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
             listviewType.SelectedIndices.Add(0);
         }
@@ -62,14 +86,13 @@ namespace StockManagerDB
                 return;
             }
 
-            var args = new FilterEventArgs()
+            var args = new FilterEventArgs
             {
                 text = txtboxFilter.Text,
                 category = (listviewCategories.SelectedItems.Count > 0 ? listviewCategories.SelectedItems[0].Text : null),
                 filterType = cbboxFilterType.SelectedIndex,
+                filterIn = Enum.Parse(enumType, listviewType.SelectedItems[0].Text)
             };
-
-            args.filterIn = (Part.Parameter)Enum.Parse(typeof(Part.Parameter), listviewType.SelectedItems[0].Text);
 
             OnFilterSet?.Invoke(this, args);
         }
@@ -152,7 +175,7 @@ namespace StockManagerDB
     {
         public string text;
         public string category;
-        public Part.Parameter filterIn;
+        public object filterIn;
         public int filterType;
     }
 }

@@ -78,6 +78,8 @@ namespace StockManagerDB
                     {
                         _projectForm = new frmProjects();
                         _projectForm.FormClosed += _projectForm_FormClosed;
+                        _projectForm.OnPartEditRequested += FrmProjects_OnPartEditRequested;
+                        _projectForm.OnProjectProcessRequested += FrmProjects_OnProjectProcessRequested;
                     }
                 }
                 else
@@ -152,6 +154,8 @@ namespace StockManagerDB
                     {
                         _searchForm = new frmSearch();
                         _searchForm.FormClosed += _searchForm_FormClosed;
+                        _searchForm.OnFilterSet += FrmSearch_OnFilterSet;
+                        _searchForm.Text = "Parts Advanced Filter";
                     }
                 }
                 else
@@ -193,8 +197,6 @@ namespace StockManagerDB
             // Set number label
             UpdateNumberLabel();
             SetStatus("Idle...");
-
-            frmSearch.OnFilterSet += FrmSearch_OnFilterSet;
         }
 
         #region Listviews and display
@@ -224,7 +226,7 @@ namespace StockManagerDB
 
             // Apply filter
             string txt = e.text;
-            Part.Parameter filterIn = e.filterIn;
+            Part.Parameter filterIn = (Part.Parameter)e.filterIn;
             string category = e.category;
 
             ObjectListView olv = listviewParts;
@@ -495,20 +497,26 @@ namespace StockManagerDB
             };
 
             // Make the decoration
-            RowBorderDecoration rbd = new RowBorderDecoration();
-            rbd.BorderPen = new Pen(Color.FromArgb(128, Color.DeepSkyBlue), 2);
-            rbd.BoundsPadding = new Size(1, 1);
-            rbd.CornerRounding = 4.0f;
+            RowBorderDecoration rbd = new RowBorderDecoration
+            {
+                BorderPen = new Pen(Color.FromArgb(128, Color.DeepSkyBlue), 2),
+                BoundsPadding = new Size(1, 1),
+                CornerRounding = 4.0f
+            };
 
             // Put the decoration onto the hot item
-            listviewParts.HotItemStyle = new HotItemStyle();
-            listviewParts.HotItemStyle.BackColor = Color.Azure;
-            listviewParts.HotItemStyle.Decoration = rbd;
+            listviewParts.HotItemStyle = new HotItemStyle
+            {
+                BackColor = Color.Azure,
+                Decoration = rbd
+            };
 
             // Put the decoration onto the hot item
-            listviewChecked.HotItemStyle = new HotItemStyle();
-            listviewChecked.HotItemStyle.BackColor = Color.Azure;
-            listviewChecked.HotItemStyle.Decoration = rbd;
+            listviewChecked.HotItemStyle = new HotItemStyle
+            {
+                BackColor = Color.Azure,
+                Decoration = rbd
+            };
         }
 
         #region TextFiltering
@@ -742,6 +750,11 @@ namespace StockManagerDB
             }
 
             LoggerClass.Write($"Creating data file at that path", Logger.LogLevels.Debug);
+            // Closing current file
+            if (!string.IsNullOrEmpty(filepath))
+            {
+                CloseFile();
+            }
             // Save path
             filepath = fsd.FileName;
             // Create new empty file (with template part)
@@ -770,6 +783,13 @@ namespace StockManagerDB
                 return false;
             }
             LoggerClass.Write($"File selected : {ofd.FileName}", Logger.LogLevels.Debug);
+
+            // Closing current file
+            if(!string.IsNullOrEmpty(filepath))
+            {
+                CloseFile();
+            }
+
             // Save path
             filepath = ofd.FileName;
             // Load the file
@@ -780,6 +800,7 @@ namespace StockManagerDB
             }
             catch (Exception)
             {
+                LoggerClass.Write($"Openning failed...", Logger.LogLevels.Error);
                 filepath = null;
                 return false;
             }
@@ -800,7 +821,20 @@ namespace StockManagerDB
         private bool CloseFile()
         {
             LoggerClass.Write($"Closing file : {filepath}", Logger.LogLevels.Debug);
+            if(_searchForm != null)
+            {
+                _searchForm.Close();
+            }
+            if (_projectForm != null)
+            {
+                _projectForm.Close();
+            }
+            if (_historyForm != null)
+            {
+                _historyForm.Close();
+            }
             data.Close();
+            filepath = null;
             SetTitle();
             UpdateListviews();
             return true;
@@ -1006,6 +1040,15 @@ namespace StockManagerDB
             Part.Parameter editedParameter = (Part.Parameter)(e.Column.Index);
             string newValue = e.NewValue.ToString();
 
+            ApplyEdit(part, editedParameter, newValue);
+        }
+
+
+        /// <summary>
+        /// Called when a cell is edited
+        /// </summary>
+        private void ApplyEdit(Part part, Part.Parameter editedParameter, string newValue, string note = "")
+        {
             LoggerClass.Write(
                 $"Cell with MPN={part.MPN} edited : Parameter={editedParameter}, Newvalue={newValue}",
                 Logger.LogLevels.Debug
@@ -1015,7 +1058,7 @@ namespace StockManagerDB
                 throw new InvalidOperationException("Unable to edit 'undefined'");
             }
             // Verify that an actual change is made
-            if (part.Parameters[editedParameter]?.Equals(newValue) ?? false)
+            if ((part.Parameters.ContainsKey(editedParameter)) && (part.Parameters[editedParameter]?.Equals(newValue) ?? false))
             {
                 // No changes
                 LoggerClass.Write("No change detected. Aborting...");
@@ -1038,7 +1081,7 @@ namespace StockManagerDB
                 return;
             }
 
-            data.EditPart(part, editedParameter, newValue);
+            data.EditPart(part, editedParameter, newValue, note);
 
             PartsHaveChanged();
         }
@@ -1539,6 +1582,41 @@ namespace StockManagerDB
         private void quitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        private void FrmProjects_OnProjectProcessRequested(object sender, ProjectProcessRequestedEventArgs e)
+        {
+            Cursor.Current = Cursors.WaitCursor;
+            string note = $"Project processed ";
+
+            // Process project : remove quantity from parts
+            foreach (Material material in e.materials)
+            {
+                // Get partlink
+                if (material.PartLink == null)
+                {
+                    LoggerClass.Write($"Unable to process MPN='{material.MPN}', part not found...", Logger.LogLevels.Error);
+                    continue;
+                }
+
+                // Apply edit
+                ApplyEdit(material.PartLink, Part.Parameter.Stock, (material.PartLink.Stock - (material.Quantity * e.numberOfTimes)).ToString(), note);
+            }
+            Cursor.Current = Cursors.Default;
+        }
+
+        private void FrmProjects_OnPartEditRequested(object sender, PartEditEventArgs e)
+        {
+            string note = $"Edit from project form ";
+            // Only allow edit of lowstock
+            if ((e == null)
+                || (e.part == null)
+                || (e.editedParamter != Part.Parameter.LowStock))
+            {
+                return;
+            }
+
+            ApplyEdit(e.part, e.editedParamter, e.value, note);
         }
 
         private void importOrderFromDigikeyToolStripMenuItem_Click(object sender, EventArgs e)

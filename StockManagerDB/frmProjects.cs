@@ -27,6 +27,9 @@ namespace StockManagerDB
 
         private List<Material> BOM => selectedProjectVersion?.BOM;
 
+        public event EventHandler<PartEditEventArgs> OnPartEditRequested;
+        public event EventHandler<ProjectProcessRequestedEventArgs> OnProjectProcessRequested;
+
         public frmProjects()
         {
             InitializeComponent();
@@ -231,8 +234,20 @@ namespace StockManagerDB
                 return;
             }
 
-            listviewMaterials.DataSource = null;
-            listviewMaterials.DataSource = BOM;
+            // If same datasource
+            if (listviewMaterials.DataSource == BOM)
+            {
+                var last = listviewMaterials.CheckedObjects;
+                listviewMaterials.DataSource = null;
+                listviewMaterials.DataSource = BOM;
+                listviewMaterials.CheckObjects(last);
+            }
+            else
+            {
+                listviewMaterials.DataSource = BOM;
+                listviewMaterials.CheckAll();
+            }
+
             //listviewComponents.AutoResizeColumns();
             listviewMaterials.Focus();
 
@@ -316,17 +331,6 @@ namespace StockManagerDB
 
             BOM.Remove(material);
             MaterialsHaveChanged();
-        }
-
-        /// <summary>
-        /// Edit a <see cref="Material"/>
-        /// </summary>
-        /// <param name="oldMaterial"></param>
-        /// <param name="newMaterial"></param>
-        private void EditMaterial(Material oldMaterial, Material newMaterial)
-        {
-            DeleteMaterial(oldMaterial);
-            AddMaterial(newMaterial);
         }
 
         /// <summary>
@@ -443,55 +447,76 @@ namespace StockManagerDB
                 throw new InvalidOperationException("No project version selected");
             }
 
-            Material oldMaterial = e.RowObject as Material;
+            Material material = e.RowObject as Material;
 
             int editedColumn = e.Column.Index - 1;
             string newValue = e.NewValue.ToString();
 
-            Material newMaterial = oldMaterial.Clone() as Material;
-
             switch (editedColumn)
             {
                 case 0: // mpn
-                        // Verify that an actual change is made
-                    if (oldMaterial.MPN?.Equals(newValue) ?? false)
+                    // Verify that an actual change is made
+                    if (material.MPN?.Equals(newValue) ?? false)
                     {
                         // No changes
                         LoggerClass.Write("No change detected. Aborting...");
                         return;
                     }
-                    newMaterial.MPN = newValue;
+                    material.MPN = newValue;
                     break;
                 case 1: // quantity
-                        // Verify that an actual change is made
-                    if (oldMaterial.QuantityStr?.Equals(newValue) ?? false)
+                    // Verify that an actual change is made
+                    if (material.QuantityStr?.Equals(newValue) ?? false)
                     {
                         // No changes
                         LoggerClass.Write("No change detected. Aborting...");
                         return;
                     }
-                    newMaterial.QuantityStr = newValue;
+                    material.QuantityStr = newValue;
                     break;
                 case 2: // reference
-                        // Verify that an actual change is made
-                    if (oldMaterial.Reference?.Equals(newValue) ?? false)
+                    // Verify that an actual change is made
+                    if (material.Reference?.Equals(newValue) ?? false)
                     {
                         // No changes
                         LoggerClass.Write("No change detected. Aborting...");
                         return;
                     }
-                    newMaterial.Reference = newValue;
+                    material.Reference = newValue;
+                    break;
+                case 9: // LowStock
+                    // Here we edit the PartLink
+                    if (material.PartLink == null)
+                    {
+                        // No link
+                        LoggerClass.Write("No Part link... Aborting...");
+                        return;
+                    }
+
+                    // Verify that an actual change is made
+                    if (material.PartLink.LowStockStr?.Equals(newValue) ?? false)
+                    {
+                        // No changes
+                        LoggerClass.Write("No change detected. Aborting...");
+                        return;
+                    }
+
+                    // Do not edit here. Use callback
+                    OnPartEditRequested?.Invoke(this, new PartEditEventArgs()
+                    {
+                        part = material.PartLink,
+                        editedParamter = Part.Parameter.LowStock,
+                        value = newValue,
+                    });
+
                     break;
                 default:
                     LoggerClass.Write(
-                        "Unable to edit this column",
+                        $"Unable to edit this column, index='{editedColumn}'",
                         Logger.LogLevels.Error
                     );
                     break;
             }
-
-            // Apply manually the new value
-            EditMaterial(oldMaterial, newMaterial);
         }
 
         #endregion
@@ -954,6 +979,14 @@ namespace StockManagerDB
             statusTimeoutTimer.Start();
         }
 
+        private void SetSuccessStatus(bool result)
+        {
+            SetStatus(
+                result ? "Success !" : "Failed",
+                result ? SystemColors.ControlText : Color.Red
+            );
+        }
+
         private void quitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.Close();
@@ -1071,7 +1104,74 @@ namespace StockManagerDB
             SetStatus("Copied to clipboard...");
         }
 
-        #endregion
+        private void processProjectToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // For all the checked parts, remove the quantity for the project from the part list (general one)
+            // First, ask to confirm the multiplier, negative number to add allowed
+            Dialog.DialogConfig dc = new Dialog.DialogConfig()
+            {
+                Message = "Please enter the number of time to remove the project's BOM from the part list\n(Note that a negative number is allowed)",
+                Title = "Enter input",
+                Button1 = Dialog.ButtonType.OK,
+                Button2 = Dialog.ButtonType.Cancel,
+                DefaultInput = "1",
+                Input = true,
+                Icon = Dialog.DialogIcon.Question,
+            };
+            Dialog.ShowDialogResult res = Dialog.ShowDialog(dc);
+            if (res.DialogResult != Dialog.DialogResult.OK)
+            {
+                return;
+            }
 
+            // Parse input
+            if (!int.TryParse(res.UserInput, out int n))
+            {
+                MessageBox.Show($"Unable to parse your input : '{res.UserInput}'\nAborting...", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            // Get checked parts
+            IEnumerable<Material> checkedParts = listviewMaterials.CheckedObjects.Cast<Material>();
+
+            // Ask confirmation
+            if (MessageBox.Show($"Confirm the process of '{n}' time(s) for the selected project '{selectedProjectVersion.Project}'\n{checkedParts.Count()} out of {BOM.Count} checked part in BOM", "Confirmation", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) != DialogResult.OK)
+            {
+                return;
+            }
+
+            LoggerClass.Write($"Procesing project '{selectedProjectVersion.Project}' for '{n}' time(s)...");
+
+            // Callback to main form
+            OnProjectProcessRequested?.Invoke(this, new ProjectProcessRequestedEventArgs()
+            {
+                numberOfTimes = n,
+                materials = checkedParts,
+            });
+
+            SetSuccessStatus(true);
+            this.BringToFront();
+        }
+
+        private void statusTimeoutTimer_Tick(object sender, EventArgs e)
+        {
+            statusTimeoutTimer.Stop();
+            labelStatus.ForeColor = SystemColors.ControlText;
+            labelStatus.Text = string.Empty;
+        }
+    }
+
+    #endregion
+
+    public class PartEditEventArgs : EventArgs
+    {
+        public Part part;
+        public Part.Parameter editedParamter;
+        public string value;
+    }
+    public class ProjectProcessRequestedEventArgs : EventArgs
+    {
+        public int numberOfTimes;
+        public IEnumerable<Material> materials;
     }
 }

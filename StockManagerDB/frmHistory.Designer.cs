@@ -43,8 +43,13 @@
             this.olvcValidUntil = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcStatus = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcVersion = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.filterHighlightRenderer = new BrightIdeasSoftware.HighlightTextRenderer();
             this.olvcNote = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.filterHighlightRenderer = new BrightIdeasSoftware.HighlightTextRenderer();
+            this.label4 = new System.Windows.Forms.Label();
+            this.cbboxFilterType = new System.Windows.Forms.ComboBox();
+            this.txtboxFilter = new System.Windows.Forms.TextBox();
+            this.btnAdv = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.listviewParts)).BeginInit();
             this.SuspendLayout();
             // 
@@ -68,8 +73,10 @@
             this.listviewParts.AllowCheckWithSpace = true;
             this.listviewParts.AllowColumnReorder = true;
             this.listviewParts.AlternateRowBackColor = System.Drawing.Color.LightBlue;
+            this.listviewParts.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.listviewParts.AutoGenerateColumns = false;
-            this.listviewParts.CellEditActivation = BrightIdeasSoftware.ObjectListView.CellEditActivateMode.DoubleClick;
             this.listviewParts.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.olvcMPN,
             this.olvcMAN,
@@ -88,19 +95,18 @@
             this.olvcNote});
             this.listviewParts.Cursor = System.Windows.Forms.Cursors.Default;
             this.listviewParts.DataSource = null;
-            this.listviewParts.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listviewParts.EmptyListMsg = "(Empty)";
             this.listviewParts.FullRowSelect = true;
             this.listviewParts.GridLines = true;
             this.listviewParts.HideSelection = false;
-            this.listviewParts.Location = new System.Drawing.Point(0, 0);
+            this.listviewParts.Location = new System.Drawing.Point(11, 38);
             this.listviewParts.Margin = new System.Windows.Forms.Padding(2);
             this.listviewParts.Name = "listviewParts";
             this.listviewParts.SelectColumnsOnRightClickBehaviour = BrightIdeasSoftware.ObjectListView.ColumnSelectBehaviour.Submenu;
             this.listviewParts.ShowCommandMenuOnRightClick = true;
             this.listviewParts.ShowGroups = false;
             this.listviewParts.ShowImagesOnSubItems = true;
-            this.listviewParts.Size = new System.Drawing.Size(953, 450);
+            this.listviewParts.Size = new System.Drawing.Size(931, 401);
             this.listviewParts.SortGroupItemsByPrimaryColumn = false;
             this.listviewParts.TabIndex = 7;
             this.listviewParts.TintSortColumn = true;
@@ -195,16 +201,77 @@
             this.olvcNote.Text = "Note";
             this.olvcNote.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
+            // label4
+            // 
+            this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(707, 16);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(29, 13);
+            this.label4.TabIndex = 13;
+            this.label4.Text = "Filter";
+            // 
+            // cbboxFilterType
+            // 
+            this.cbboxFilterType.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbboxFilterType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbboxFilterType.FormattingEnabled = true;
+            this.cbboxFilterType.Items.AddRange(new object[] {
+            "Any text",
+            "Prefix",
+            "Regex"});
+            this.cbboxFilterType.Location = new System.Drawing.Point(848, 12);
+            this.cbboxFilterType.Name = "cbboxFilterType";
+            this.cbboxFilterType.Size = new System.Drawing.Size(94, 21);
+            this.cbboxFilterType.TabIndex = 12;
+            this.cbboxFilterType.SelectedIndexChanged += new System.EventHandler(this.cbboxFilterType_SelectedIndexChanged);
+            // 
+            // txtboxFilter
+            // 
+            this.txtboxFilter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtboxFilter.Location = new System.Drawing.Point(742, 13);
+            this.txtboxFilter.Name = "txtboxFilter";
+            this.txtboxFilter.Size = new System.Drawing.Size(100, 20);
+            this.txtboxFilter.TabIndex = 11;
+            this.txtboxFilter.TextChanged += new System.EventHandler(this.txtboxFilter_TextChanged);
+            // 
+            // btnAdv
+            // 
+            this.btnAdv.Location = new System.Drawing.Point(626, 10);
+            this.btnAdv.Name = "btnAdv";
+            this.btnAdv.Size = new System.Drawing.Size(75, 23);
+            this.btnAdv.TabIndex = 14;
+            this.btnAdv.Text = "Advanced";
+            this.btnAdv.UseVisualStyleBackColor = true;
+            this.btnAdv.Click += new System.EventHandler(this.btnAdv_Click);
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(12, 10);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(124, 23);
+            this.button1.TabIndex = 15;
+            this.button1.Text = "Auto resize columns";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // frmHistory
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(953, 450);
+            this.Controls.Add(this.button1);
+            this.Controls.Add(this.btnAdv);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.cbboxFilterType);
+            this.Controls.Add(this.txtboxFilter);
             this.Controls.Add(this.listviewParts);
             this.Name = "frmHistory";
             this.Text = "History";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmHistory_FormClosing);
             ((System.ComponentModel.ISupportInitialize)(this.listviewParts)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -227,5 +294,10 @@
         private BrightIdeasSoftware.OLVColumn olvcStatus;
         private BrightIdeasSoftware.OLVColumn olvcVersion;
         private BrightIdeasSoftware.OLVColumn olvcNote;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.ComboBox cbboxFilterType;
+        private System.Windows.Forms.TextBox txtboxFilter;
+        private System.Windows.Forms.Button btnAdv;
+        private System.Windows.Forms.Button button1;
     }
 }
