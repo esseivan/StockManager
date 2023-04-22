@@ -34,15 +34,18 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>logo.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="CsvHelper, Version=30.0.0.0, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">
       <HintPath>..\packages\CsvHelper.30.0.1\lib\net47\CsvHelper.dll</HintPath>
     </Reference>
     <Reference Include="ESNLib.Controls, Version=1.0.6.6, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESNLib.Controls.1.0.8\lib\net472\ESNLib.Controls.dll</HintPath>
+      <HintPath>..\packages\ESNLib.Controls.1.0.8.2\lib\net472\ESNLib.Controls.dll</HintPath>
     </Reference>
     <Reference Include="ESNLib.Tools, Version=1.0.6.6, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESNLib.Tools.1.0.8\lib\net472\ESNLib.Tools.dll</HintPath>
+      <HintPath>..\packages\ESNLib.Tools.1.0.8.2\lib\net472\ESNLib.Tools.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.6.0.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
@@ -102,6 +105,7 @@
     <Compile Include="DataHolderSingleton.cs" />
     <Compile Include="ExcelManager.cs" />
     <Compile Include="ExcelWrapper.cs" />
+    <Compile Include="ExtensionAssociation.cs" />
     <Compile Include="frmHistory.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -213,6 +217,7 @@
     <Content Include="fig\del.png" />
     <Content Include="fig\dup.png" />
     <Content Include="fig\ren.png" />
+    <Content Include="logo.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.117.0\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets" Condition="Exists('..\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.117.0\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets')" />

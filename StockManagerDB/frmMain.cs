@@ -9,6 +9,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Data.Common;
 using System.Data.SQLite;
+using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
@@ -17,7 +18,6 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static System.Net.Mime.MediaTypeNames;
 using dhs = StockManagerDB.DataHolderSingleton;
 
 namespace StockManagerDB
@@ -183,8 +183,25 @@ namespace StockManagerDB
         public frmMain()
         {
             InitializeComponent();
+
+            string[] args = Environment.GetCommandLineArgs();
+            if ((args.Length == 2) && ("--register" == args[1]))
+            {
+                // Just register extension and exit
+                MessageBox.Show("Registering...");
+                if(ExtensionAssociation.SetAssociation())
+                {
+                    MessageBox.Show("Success...");
+                }
+                this.Close();
+                Application.Exit();
+                return;
+            }
+
             LoggerClass.Init();
             LoggerClass.Write("Application started...", Logger.LogLevels.Info);
+            LoggerClass.Write(DateTime.Now.ToString("yyyy.MM.dd HH:mm:ss"), Logger.LogLevels.Info);
+            SettingsManager.MyAppName = "StockManager";
 
             // Setup listviews
             ListViewSetColumns();
@@ -197,6 +214,14 @@ namespace StockManagerDB
             // Set number label
             UpdateNumberLabel();
             SetStatus("Idle...");
+
+            // Get open arguments
+            if (args.Length == 2)
+            {
+                string file = args[1];
+                // Open file
+                OpenFile(file);
+            }
         }
 
         #region Listviews and display
@@ -784,16 +809,24 @@ namespace StockManagerDB
             }
             LoggerClass.Write($"File selected : {ofd.FileName}", Logger.LogLevels.Debug);
 
+            return OpenFile(ofd.FileName);
+        }
+
+        /// <summary>
+        /// Open the specified file
+        /// </summary>
+        private bool OpenFile(string file)
+        {
             // Closing current file
-            if(!string.IsNullOrEmpty(filepath))
+            if (!string.IsNullOrEmpty(filepath))
             {
                 CloseFile();
             }
 
             // Save path
-            filepath = ofd.FileName;
+            filepath = file;
             // Load the file
-            LoggerClass.Write($"Openning that file...", Logger.LogLevels.Debug);
+            LoggerClass.Write($"Openning file '{filepath}'", Logger.LogLevels.Debug);
             try
             {
                 dhs.LoadNew(filepath);
@@ -821,7 +854,7 @@ namespace StockManagerDB
         private bool CloseFile()
         {
             LoggerClass.Write($"Closing file : {filepath}", Logger.LogLevels.Debug);
-            if(_searchForm != null)
+            if (_searchForm != null)
             {
                 _searchForm.Close();
             }
@@ -1396,7 +1429,7 @@ namespace StockManagerDB
             parts.ForEach((p) => exportParts.Add(p.MPN, p));
             DataExportClass dec = new DataExportClass(exportParts, null);
 
-            SettingsManager.SaveTo(fsd.FileName, dec, backup: false, indent: true, zipFile: true);
+            SettingsManager.SaveTo(fsd.FileName, dec, backup: SettingsManager.BackupMode.None, indent: true, zipFile: true);
 
             return true;
         }
@@ -1430,7 +1463,7 @@ namespace StockManagerDB
 
             LoggerClass.Write($"Importing parts...", Logger.LogLevels.Debug);
 
-            SettingsManager.LoadFrom(ofd.FileName, out DataExportClass dec, isZipped: true);
+            SettingsManager.LoadFrom(ofd.FileName, out DataExportClass dec, zipFile: true);
 
             if ((dec == null) || (dec.Parts == null) || (dec.Parts.Count == 0))
             {
@@ -1782,6 +1815,37 @@ namespace StockManagerDB
         private void listviewParts_CellEditFinished(object sender, CellEditEventArgs e)
         {
             ApplyEdit(e);
+        }
+        private void seeBackupsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string backupPath = SettingsManager.GetDefaultBackupPath();
+            if (!Directory.Exists(backupPath))
+            {
+                Directory.CreateDirectory(backupPath);
+            }
+            Process.Start(backupPath);
+        }
+
+        private void seeLogsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string logPath = LoggerClass.logger.FileOutputPath;
+            if (File.Exists(logPath))
+            {
+                Process.Start(Path.GetDirectoryName(logPath));
+            }
+        }
+
+        private void frmMain_Shown(object sender, EventArgs e)
+        {
+            try
+            {
+                LoggerClass.Write("Registering file extension...", Logger.LogLevels.Error);
+                ExtensionAssociation.SetAssociation();
+            }
+            catch (Exception)
+            {
+                LoggerClass.Write("Unable to register file extension...", Logger.LogLevels.Error);
+            }
         }
 
         #endregion

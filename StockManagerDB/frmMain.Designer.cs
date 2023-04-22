@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newDatabaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -58,6 +59,9 @@
             this.advancedSearchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.projectsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openHistoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.seeBackupsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.seeLogsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cbboxFilterType = new System.Windows.Forms.ComboBox();
             this.txtboxFilter = new System.Windows.Forms.TextBox();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
@@ -113,7 +117,8 @@
             this.actionsToolStripMenuItem,
             this.viewToolStripMenuItem,
             this.projectsToolStripMenuItem,
-            this.openHistoryToolStripMenuItem});
+            this.openHistoryToolStripMenuItem,
+            this.helpToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Padding = new System.Windows.Forms.Padding(4, 1, 0, 1);
@@ -340,6 +345,29 @@
             this.openHistoryToolStripMenuItem.Size = new System.Drawing.Size(89, 22);
             this.openHistoryToolStripMenuItem.Text = "Open History";
             this.openHistoryToolStripMenuItem.Click += new System.EventHandler(this.openHistoryToolStripMenuItem_Click);
+            // 
+            // helpToolStripMenuItem
+            // 
+            this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.seeBackupsToolStripMenuItem,
+            this.seeLogsToolStripMenuItem});
+            this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
+            this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 22);
+            this.helpToolStripMenuItem.Text = "Help";
+            // 
+            // seeBackupsToolStripMenuItem
+            // 
+            this.seeBackupsToolStripMenuItem.Name = "seeBackupsToolStripMenuItem";
+            this.seeBackupsToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+            this.seeBackupsToolStripMenuItem.Text = "See backups...";
+            this.seeBackupsToolStripMenuItem.Click += new System.EventHandler(this.seeBackupsToolStripMenuItem_Click);
+            // 
+            // seeLogsToolStripMenuItem
+            // 
+            this.seeLogsToolStripMenuItem.Name = "seeLogsToolStripMenuItem";
+            this.seeLogsToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+            this.seeLogsToolStripMenuItem.Text = "See logs...";
+            this.seeLogsToolStripMenuItem.Click += new System.EventHandler(this.seeLogsToolStripMenuItem_Click);
             // 
             // cbboxFilterType
             // 
@@ -749,11 +777,13 @@
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.menuStrip1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.MinimumSize = new System.Drawing.Size(398, 314);
             this.Name = "frmMain";
             this.Text = "Stock Manager";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
+            this.Shown += new System.EventHandler(this.frmMain_Shown);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.splitContainer1.Panel1.ResumeLayout(false);
@@ -838,6 +868,9 @@
         private System.Windows.Forms.ToolStripMenuItem uncheckAllInViewToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
         private System.Windows.Forms.ToolStripMenuItem advancedSearchToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem seeBackupsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem seeLogsToolStripMenuItem;
     }
 }
 
