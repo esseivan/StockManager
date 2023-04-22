@@ -142,15 +142,19 @@ namespace StockManagerDB
             olvcAvailable.Renderer = new AvailableCellRenderer();
 
             // Make the decoration
-            RowBorderDecoration rbd = new RowBorderDecoration();
-            rbd.BorderPen = new Pen(Color.FromArgb(128, Color.DeepSkyBlue), 2);
-            rbd.BoundsPadding = new Size(1, 1);
-            rbd.CornerRounding = 4.0f;
+            RowBorderDecoration rbd = new RowBorderDecoration
+            {
+                BorderPen = new Pen(Color.FromArgb(128, Color.DeepSkyBlue), 2),
+                BoundsPadding = new Size(1, 1),
+                CornerRounding = 4.0f
+            };
 
             // Put the decoration onto the hot item
-            listviewMaterials.HotItemStyle = new HotItemStyle();
-            listviewMaterials.HotItemStyle.BackColor = Color.Azure;
-            listviewMaterials.HotItemStyle.Decoration = rbd;
+            listviewMaterials.HotItemStyle = new HotItemStyle
+            {
+                BackColor = Color.Azure,
+                Decoration = rbd
+            };
         }
 
         public class AvailableCellRenderer : BaseRenderer
@@ -916,7 +920,7 @@ namespace StockManagerDB
 
             DataExportClass dec = new DataExportClass(null, projects);
 
-            SettingsManager.SaveTo(fsd.FileName, dec, backup: false, indent: true, zipFile: true);
+            SettingsManager.SaveTo(fsd.FileName, dec, backup: SettingsManager.BackupMode.None, indent: true, zipFile: true);
 
             return true;
         }
@@ -933,7 +937,7 @@ namespace StockManagerDB
                 return false;
             }
 
-            SettingsManager.LoadFrom(ofd.FileName, out DataExportClass dec, isZipped: true);
+            SettingsManager.LoadFrom(ofd.FileName, out DataExportClass dec, zipFile: true);
 
             List<Project> projects = dec.Projects;
             foreach (Project project in projects)

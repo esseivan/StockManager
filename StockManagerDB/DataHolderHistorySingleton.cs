@@ -67,7 +67,7 @@ namespace StockManagerDB
             SettingsManager.SaveTo(
                 Filepath,
                 PartHistory,
-                backup: true,
+                backup: SettingsManager.BackupMode.datetimeFormatAppdata,
                 indent: true,
                 internalFileName: "history.txt"
             );

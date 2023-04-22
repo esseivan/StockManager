@@ -198,7 +198,7 @@ namespace StockManagerDB
                 SettingsManager.SaveTo(
                     Filepath,
                     new DataExportClass(Parts, Projects),
-                    backup: true,
+                    backup: SettingsManager.BackupMode.datetimeFormatAppdata,
                     indent: true,
                     internalFileName: "settings.txt"
                 );

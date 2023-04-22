@@ -9,6 +9,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Data.Common;
 using System.Data.SQLite;
+using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
@@ -185,6 +186,7 @@ namespace StockManagerDB
             InitializeComponent();
             LoggerClass.Init();
             LoggerClass.Write("Application started...", Logger.LogLevels.Info);
+            SettingsManager.MyAppName = "StockManager";
 
             // Setup listviews
             ListViewSetColumns();
@@ -1396,7 +1398,7 @@ namespace StockManagerDB
             parts.ForEach((p) => exportParts.Add(p.MPN, p));
             DataExportClass dec = new DataExportClass(exportParts, null);
 
-            SettingsManager.SaveTo(fsd.FileName, dec, backup: false, indent: true, zipFile: true);
+            SettingsManager.SaveTo(fsd.FileName, dec, backup: SettingsManager.BackupMode.None, indent: true, zipFile: true);
 
             return true;
         }
@@ -1430,7 +1432,7 @@ namespace StockManagerDB
 
             LoggerClass.Write($"Importing parts...", Logger.LogLevels.Debug);
 
-            SettingsManager.LoadFrom(ofd.FileName, out DataExportClass dec, isZipped: true);
+            SettingsManager.LoadFrom(ofd.FileName, out DataExportClass dec, zipFile: true);
 
             if ((dec == null) || (dec.Parts == null) || (dec.Parts.Count == 0))
             {
@@ -1782,6 +1784,24 @@ namespace StockManagerDB
         private void listviewParts_CellEditFinished(object sender, CellEditEventArgs e)
         {
             ApplyEdit(e);
+        }
+        private void seeBackupsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string backupPath = SettingsManager.GetDefaultBackupPath();
+            if (!Directory.Exists(backupPath))
+            {
+                Directory.CreateDirectory(backupPath);
+            }
+            Process.Start(backupPath);
+        }
+
+        private void seeLogsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string logPath = LoggerClass.logger.FileOutputPath;
+            if (File.Exists(logPath))
+            {
+                Process.Start(Path.GetDirectoryName(logPath));
+            }
         }
 
         #endregion
