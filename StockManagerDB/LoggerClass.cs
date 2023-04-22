@@ -15,7 +15,7 @@ namespace StockManagerDB
         public static Logger logger = new Logger(Logger.GetDefaultLogPath("ESN", "StockManagerDB", "log"))
         {
             WriteMode = Logger.WriteModes.Write,
-            FilenameMode = Logger.FilenamesModes.FileName_LastPrevious,
+            FilenameMode = Logger.FilenamesModes.FileName_CurrentPrevious,
             PrefixMode = Logger.PrefixModes.RunTime,
             LogLeveFilter = MinLevelFilter,
         };

@@ -32,6 +32,7 @@
             System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem("SPN");
             System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem("Description");
             System.Windows.Forms.ListViewItem listViewItem4 = new System.Windows.Forms.ListViewItem("Place");
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmSearch));
             this.txtboxFilter = new System.Windows.Forms.TextBox();
             this.listviewType = new System.Windows.Forms.ListView();
             this.colDummy2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -189,6 +190,7 @@
             this.Controls.Add(this.listviewCategories);
             this.Controls.Add(this.listviewType);
             this.Controls.Add(this.txtboxFilter);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "frmSearch";
             this.Text = "frmSearch";
             this.ResumeLayout(false);

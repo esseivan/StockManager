@@ -18,7 +18,6 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static System.Net.Mime.MediaTypeNames;
 using dhs = StockManagerDB.DataHolderSingleton;
 
 namespace StockManagerDB
@@ -184,6 +183,21 @@ namespace StockManagerDB
         public frmMain()
         {
             InitializeComponent();
+
+            string[] args = Environment.GetCommandLineArgs();
+            if ((args.Length == 2) && ("--register" == args[1]))
+            {
+                // Just register extension and exit
+                MessageBox.Show("Registering...");
+                if(ExtensionAssociation.SetAssociation())
+                {
+                    MessageBox.Show("Success...");
+                }
+                this.Close();
+                Application.Exit();
+                return;
+            }
+
             LoggerClass.Init();
             LoggerClass.Write("Application started...", Logger.LogLevels.Info);
             SettingsManager.MyAppName = "StockManager";
@@ -199,6 +213,14 @@ namespace StockManagerDB
             // Set number label
             UpdateNumberLabel();
             SetStatus("Idle...");
+
+            // Get open arguments
+            if (args.Length == 2)
+            {
+                string file = args[1];
+                // Open file
+                OpenFile(file);
+            }
         }
 
         #region Listviews and display
@@ -786,16 +808,24 @@ namespace StockManagerDB
             }
             LoggerClass.Write($"File selected : {ofd.FileName}", Logger.LogLevels.Debug);
 
+            return OpenFile(ofd.FileName);
+        }
+
+        /// <summary>
+        /// Open the specified file
+        /// </summary>
+        private bool OpenFile(string file)
+        {
             // Closing current file
-            if(!string.IsNullOrEmpty(filepath))
+            if (!string.IsNullOrEmpty(filepath))
             {
                 CloseFile();
             }
 
             // Save path
-            filepath = ofd.FileName;
+            filepath = file;
             // Load the file
-            LoggerClass.Write($"Openning that file...", Logger.LogLevels.Debug);
+            LoggerClass.Write($"Openning file '{filepath}'", Logger.LogLevels.Debug);
             try
             {
                 dhs.LoadNew(filepath);
@@ -823,7 +853,7 @@ namespace StockManagerDB
         private bool CloseFile()
         {
             LoggerClass.Write($"Closing file : {filepath}", Logger.LogLevels.Debug);
-            if(_searchForm != null)
+            if (_searchForm != null)
             {
                 _searchForm.Close();
             }
@@ -1801,6 +1831,19 @@ namespace StockManagerDB
             if (File.Exists(logPath))
             {
                 Process.Start(Path.GetDirectoryName(logPath));
+            }
+        }
+
+        private void frmMain_Shown(object sender, EventArgs e)
+        {
+            try
+            {
+                LoggerClass.Write("Registering file extension...", Logger.LogLevels.Error);
+                ExtensionAssociation.SetAssociation();
+            }
+            catch (Exception)
+            {
+                LoggerClass.Write("Unable to register file extension...", Logger.LogLevels.Error);
             }
         }
 

@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newDatabaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -357,14 +358,14 @@
             // seeBackupsToolStripMenuItem
             // 
             this.seeBackupsToolStripMenuItem.Name = "seeBackupsToolStripMenuItem";
-            this.seeBackupsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.seeBackupsToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
             this.seeBackupsToolStripMenuItem.Text = "See backups...";
             this.seeBackupsToolStripMenuItem.Click += new System.EventHandler(this.seeBackupsToolStripMenuItem_Click);
             // 
             // seeLogsToolStripMenuItem
             // 
             this.seeLogsToolStripMenuItem.Name = "seeLogsToolStripMenuItem";
-            this.seeLogsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.seeLogsToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
             this.seeLogsToolStripMenuItem.Text = "See logs...";
             this.seeLogsToolStripMenuItem.Click += new System.EventHandler(this.seeLogsToolStripMenuItem_Click);
             // 
@@ -776,11 +777,13 @@
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.menuStrip1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.MinimumSize = new System.Drawing.Size(398, 314);
             this.Name = "frmMain";
             this.Text = "Stock Manager";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
+            this.Shown += new System.EventHandler(this.frmMain_Shown);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.splitContainer1.Panel1.ResumeLayout(false);
