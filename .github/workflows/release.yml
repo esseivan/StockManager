@@ -1,0 +1,54 @@
+name: Release
+
+on:
+  push:
+    tags: [v*]
+
+jobs:
+  release:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Git
+        run: |
+          git config --global url."https://user:${{ secrets.GITHUB_TOKEN }}@github".insteadOf https://github
+          git config --global user.name github-actions
+          git config --global user.email github-actions@github.com          
+
+      - name: Setup Nuget
+        uses: Nuget/setup-nuget@v1.0.5
+      
+      - name: Restore nuget packages
+        run: nuget restore
+
+      - name: Create esseivan_cert.pfx from B64_SECRET1
+        id: secret-file1
+        run: |
+          $secretFile = Join-Path -Path $env:RUNNER_TEMP -ChildPath "secret-file.txt"; 
+          $encodedBytes = [System.Convert]::FromBase64String($env:SECRET_DATA1); 
+          Set-Content $secretFile -Value $encodedBytes -AsByteStream;
+          $secretFileHash = Get-FileHash $secretFile;
+          Write-Output "::set-output name=SECRET_FILE::$secretFile";
+          Write-Output "::set-output name=SECRET_FILE_HASH::$($secretFileHash.Hash)";
+          Write-Output "Secret file $secretFile has hash $($secretFileHash.Hash)";
+          $expectedHash = $env:SECRET_DATA1_HASH; # Set to output when generating the Base64 string (and hash)
+          if ($secretFileHash.Hash -ne $expectedHash) { Write-Output "::error file=$($secretFile)::Hash doesn't match"; Write-Output "Hash doesn't match"; exit 10; }
+        shell: pwsh
+        env:
+          SECRET_DATA1: ${{ secrets.B64_SECRET1 }}
+          SECRET_DATA1_HASH: ${{ secrets.B64_SECRET1_HASH }}
+
+      - name: Run release script
+        shell: pwsh
+        run: ./release.ps1
+        
+      - name: Delete secret file
+        run: |
+          Remove-Item -Path $env:SECRET_FILE;
+        shell: pwsh
+        if: always()
+        env:
+          SECRET_FILE: ${{ steps.secret-file1.outputs.SECRET_FILE }}
