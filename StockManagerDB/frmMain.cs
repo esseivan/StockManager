@@ -178,18 +178,6 @@ namespace StockManagerDB
             InitializeComponent();
 
             string[] args = Environment.GetCommandLineArgs();
-            if ((args.Length == 2) && ("--register" == args[1]))
-            {
-                // Just register extension and exit
-                MessageBox.Show("Registering...");
-                if(ExtensionAssociation.SetAssociation())
-                {
-                    MessageBox.Show("Success...");
-                }
-                this.Close();
-                Application.Exit();
-                return;
-            }
 
             LoggerClass.Init();
             LoggerClass.Write("Application started...", Logger.LogLevels.Info);
@@ -1830,15 +1818,7 @@ namespace StockManagerDB
 
         private void frmMain_Shown(object sender, EventArgs e)
         {
-            try
-            {
-                LoggerClass.Write("Registering file extension...", Logger.LogLevels.Error);
-                ExtensionAssociation.SetAssociation();
-            }
-            catch (Exception)
-            {
-                LoggerClass.Write("Unable to register file extension...", Logger.LogLevels.Error);
-            }
+
         }
 
         #endregion
