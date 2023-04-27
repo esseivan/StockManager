@@ -1,5 +1,8 @@
 # StockManager
 
+## Install
+You can download the Clickonce installer here : https://esseivan.github.io/StockManager/StockManagerDB.application
+
 TBD
 
 Using "ObjectListView" .NET library from https://github.com/jessejohnston/ObjectListView
