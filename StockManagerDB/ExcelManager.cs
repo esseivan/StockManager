@@ -7,13 +7,8 @@ namespace StockManagerDB
     /// <summary>
     /// Class to import Part parts from an excel worksheet
     /// </summary>
-    internal class ExcelManager : IDisposable
+    internal class ExcelManager
     {
-        /// <summary>
-        /// Tool to read from excel
-        /// </summary>
-        internal ExcelWrapper reader;
-
         /// <summary>
         /// List of parts imported
         /// </summary>
@@ -21,7 +16,6 @@ namespace StockManagerDB
 
         private readonly string File;
 
-        public event Microsoft.Office.Interop.Excel.AppEvents_WorkbookBeforeCloseEventHandler OnClosing;
 
         /// <summary>
         /// Retrieve the parts
@@ -39,8 +33,6 @@ namespace StockManagerDB
         public ExcelManager(string filename)
         {
             File = filename;
-            reader = new ExcelWrapper(File);
-            reader.OnClosing += Et_OnClosing;
             //et.IsVisible = true;
         }
 
@@ -64,11 +56,7 @@ namespace StockManagerDB
         public bool PopulateParts()
         {
             // Read parts sheet
-            if (!reader.ReadSheet("Articles", out string[,] output, false))
-            {
-                LoggerClass.Write("No articles sheet found");
-                return false;
-            }
+            string[,] output = ExcelWrapperV2.ReadSheet(File, "Articles");
 
             // Generate new parts list
             Parts = new List<Part>();
@@ -103,20 +91,6 @@ namespace StockManagerDB
             }
 
             return true;
-        }
-
-        // Called when workbook closed
-        private void Et_OnClosing(Microsoft.Office.Interop.Excel.Workbook Wb, ref bool Cancel)
-        {
-            // Excel (workbook) closed
-            // Call parent event
-            OnClosing?.Invoke(Wb, ref Cancel);
-        }
-
-        public void Dispose()
-        {
-            if (reader != null)
-                reader.Dispose();
         }
     }
 }

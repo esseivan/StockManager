@@ -178,18 +178,6 @@ namespace StockManagerDB
             InitializeComponent();
 
             string[] args = Environment.GetCommandLineArgs();
-            if ((args.Length == 2) && ("--register" == args[1]))
-            {
-                // Just register extension and exit
-                MessageBox.Show("Registering...");
-                if(ExtensionAssociation.SetAssociation())
-                {
-                    MessageBox.Show("Success...");
-                }
-                this.Close();
-                Application.Exit();
-                return;
-            }
 
             LoggerClass.Init();
             LoggerClass.Write("Application started...", Logger.LogLevels.Info);
@@ -691,7 +679,7 @@ namespace StockManagerDB
             Cursor = Cursors.WaitCursor;
             ExcelManager em = new ExcelManager(ofd.FileName);
             List<Part> importedParts = em.GetParts();
-            em.Dispose();
+
             Cursor = Cursors.Default;
 
             if ((null == importedParts) || (0 == importedParts.Count))
@@ -777,6 +765,7 @@ namespace StockManagerDB
             filepath = fsd.FileName;
             // Create new empty file (with template part)
             dhs.LoadNew(filepath);
+            data.Save(); // Then save
             SetTitle();
             // Update listviews content + resize columns
             UpdateListviews(true);
@@ -1830,15 +1819,7 @@ namespace StockManagerDB
 
         private void frmMain_Shown(object sender, EventArgs e)
         {
-            try
-            {
-                LoggerClass.Write("Registering file extension...", Logger.LogLevels.Error);
-                ExtensionAssociation.SetAssociation();
-            }
-            catch (Exception)
-            {
-                LoggerClass.Write("Unable to register file extension...", Logger.LogLevels.Error);
-            }
+
         }
 
         #endregion
