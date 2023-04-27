@@ -150,7 +150,7 @@ namespace StockManagerDB
             if (endRow < startRow || endCol < startCol)
                 return false;
 
-            Worksheet ws = wb.Sheets[sheet];
+            Worksheet ws = (Worksheet)wb.Sheets[sheet];
             Range range = (Range)ws.Range[ws.Cells[startRow, startCol], ws.Cells[endRow, endCol]];
 
             object[,] holder = readFormulas ? (object[,])range.Formula : (object[,])range.Value2;
@@ -229,7 +229,7 @@ namespace StockManagerDB
 
             try
             {
-                Worksheet ws = wb.Worksheets[name];
+                Worksheet ws = (Worksheet)wb.Worksheets[name];
                 return ws.Index;
             }
             catch (Exception)
@@ -269,7 +269,7 @@ namespace StockManagerDB
             if (wb.Worksheets.Count < sheet || sheet < 1)
                 return false;
 
-            Worksheet ws = wb.Sheets[sheet];
+            Worksheet ws = (Worksheet)wb.Sheets[sheet];
             Range range = (Range)ws.Range[ws.Cells[startRow, startCol], ws.Cells[endRow, endCol]];
 
             int iMax = endRow - startRow + 1;
@@ -278,9 +278,9 @@ namespace StockManagerDB
                 for (int j = 0; j < jMax; j++)
                     if (data[i, j] != null)
                         if (writeFormula)
-                            range.Cells[i + 1, j + 1].Formula = data[i, j];
+                            ((Range)range.Cells[i + 1, j + 1]).Formula = data[i, j];
                         else
-                            range.Cells[i + 1, j + 1].Value2 = data[i, j];
+                            ((Range)range.Cells[i + 1, j + 1]).Value2 = data[i, j];
 
             wb.Save();
             return true;
@@ -303,7 +303,7 @@ namespace StockManagerDB
             if (wb.Worksheets.Count < sheet || sheet < 1)
                 return false;
 
-            Worksheet ws = wb.Sheets[sheet];
+            Worksheet ws = (Worksheet)wb.Sheets[sheet];
             int endRow = ws.UsedRange.Rows.Count - 1;
             int endCol = ws.UsedRange.Columns.Count - 1;
 
