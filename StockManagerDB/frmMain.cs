@@ -679,7 +679,7 @@ namespace StockManagerDB
             Cursor = Cursors.WaitCursor;
             ExcelManager em = new ExcelManager(ofd.FileName);
             List<Part> importedParts = em.GetParts();
-            em.Dispose();
+
             Cursor = Cursors.Default;
 
             if ((null == importedParts) || (0 == importedParts.Count))
@@ -765,6 +765,7 @@ namespace StockManagerDB
             filepath = fsd.FileName;
             // Create new empty file (with template part)
             dhs.LoadNew(filepath);
+            data.Save(); // Then save
             SetTitle();
             // Update listviews content + resize columns
             UpdateListviews(true);
