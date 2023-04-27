@@ -1,11 +1,6 @@
 ﻿using ESNLib.Tools;
-using Microsoft.Office.Core;
-using Microsoft.Vbe.Interop;
 using System;
 using System.Collections.Generic;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace StockManagerDB
