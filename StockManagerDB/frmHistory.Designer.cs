@@ -120,6 +120,7 @@
             this.listviewParts.UseTranslucentHotItem = true;
             this.listviewParts.View = System.Windows.Forms.View.Details;
             this.listviewParts.VirtualMode = true;
+            this.listviewParts.CellRightClick += new System.EventHandler<BrightIdeasSoftware.CellRightClickEventArgs>(this.listviewParts_CellRightClick);
             // 
             // olvcMPN
             // 
