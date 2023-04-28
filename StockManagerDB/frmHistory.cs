@@ -331,5 +331,16 @@ namespace StockManagerDB
                 search.Close();
             }
         }
+
+        private void listviewParts_CellRightClick(object sender, CellRightClickEventArgs e)
+        {
+            // When rightclicking a cell, copy the MPN of the corresponding row
+            if (!(e.Model is Part selectedPart))
+            {
+                return;
+            }
+
+            Clipboard.SetText(selectedPart.MPN);
+        }
     }
 }
