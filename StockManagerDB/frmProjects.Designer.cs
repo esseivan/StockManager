@@ -172,6 +172,7 @@
             this.orderTheSelectedProjectToolStripMenuItem.Name = "orderTheSelectedProjectToolStripMenuItem";
             this.orderTheSelectedProjectToolStripMenuItem.Size = new System.Drawing.Size(238, 22);
             this.orderTheSelectedProjectToolStripMenuItem.Text = "Order the selected project";
+            this.orderTheSelectedProjectToolStripMenuItem.Click += new System.EventHandler(this.orderTheSelectedProjectToolStripMenuItem_Click);
             // 
             // processProjectToolStripMenuItem
             // 
