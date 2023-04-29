@@ -15,9 +15,16 @@ namespace StockManagerDB
 
         private frmSearch search = null;
 
+        public void ApplySettings()
+        {
+            this.Font = AppSettings.Settings.AppFont;
+        }
+
         public frmHistory()
         {
             InitializeComponent();
+
+            ApplySettings();
 
             ListViewSetColumns();
             listviewParts.DefaultRenderer = filterHighlightRenderer;

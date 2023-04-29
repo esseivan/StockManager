@@ -10,6 +10,7 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Windows.Forms;
 using dhs = StockManagerDB.DataHolderSingleton;
 
@@ -22,7 +23,29 @@ namespace StockManagerDB
         /// <summary>
         /// filepath to the database
         /// </summary>
-        private string filepath = string.Empty;
+        private string filepath
+        {
+            get => _filepath;
+            set
+            {
+                _filepath = value;
+                if (!string.IsNullOrEmpty(value))
+                {
+                    if (AppSettings.Settings.RecentFiles.Contains(value))
+                    {
+                        // Move it to #1
+                        AppSettings.Settings.RecentFiles.Remove(value);
+                    }
+                    AppSettings.Settings.RecentFiles.Insert(0, value);
+                    if (AppSettings.Settings.RecentFiles.Count > 5)
+                    {
+                        AppSettings.Settings.RecentFiles = AppSettings.Settings.RecentFiles.Take(5).ToList();
+                    }
+                    AppSettings.Save();
+                }
+            }
+        }
+        private string _filepath = string.Empty;
 
         /// <summary>
         /// Manage the lists
@@ -171,6 +194,70 @@ namespace StockManagerDB
             }
         }
 
+        private frmOptions _optionsForm = null;
+        /// <summary>
+        /// The form that displays projects
+        /// </summary>
+        private frmOptions optionsForm
+        {
+            get
+            {
+                if (_optionsForm == null)
+                {
+                    _optionsForm = new frmOptions();
+                    _optionsForm.FormClosed += _optionsForm_FormClosed;
+                }
+                return _optionsForm;
+            }
+            set
+            {
+                if (_optionsForm != null)
+                {
+                    _optionsForm.Close();
+                }
+                _optionsForm = value;
+            }
+        }
+
+        /// <summary>
+        /// Current version of the app
+        /// </summary>
+        public string VersionLabel
+        {
+            get
+            {
+                if (System.Deployment.Application.ApplicationDeployment.IsNetworkDeployed)
+                {
+                    Version ver = System
+                        .Deployment
+                        .Application
+                        .ApplicationDeployment
+                        .CurrentDeployment
+                        .CurrentVersion;
+                    return string.Format(
+                        "Product Name: {4}, Version: {0}.{1}.{2}.{3}",
+                        ver.Major,
+                        ver.Minor,
+                        ver.Build,
+                        ver.Revision,
+                        Assembly.GetEntryAssembly().GetName().Name
+                    );
+                }
+                else
+                {
+                    var ver = Assembly.GetExecutingAssembly().GetName().Version;
+                    return string.Format(
+                        "Product Name: {4}, Version: {0}.{1}.{2}.{3}",
+                        ver.Major,
+                        ver.Minor,
+                        ver.Build,
+                        ver.Revision,
+                        Assembly.GetEntryAssembly().GetName().Name
+                    );
+                }
+            }
+        }
+
         #endregion
 
         public frmMain()
@@ -183,6 +270,16 @@ namespace StockManagerDB
             LoggerClass.Write("Application started...", Logger.LogLevels.Info);
             LoggerClass.Write(DateTime.Now.ToString("yyyy.MM.dd HH:mm:ss"), Logger.LogLevels.Info);
             SettingsManager.MyAppName = "StockManager";
+
+            // Load app settings
+            string settingsPath = SettingsManager.GetDefaultSettingPath(false);
+            LoggerClass.Write($"Loading settings from {settingsPath}...");
+            AppSettings.SetDefaultAppSettings(this); // Set the default settings
+            if (!AppSettings.Load())
+            {
+                AppSettings.ResetToDefault();
+            }
+            ApplySettings();
 
             // Setup listviews
             ListViewSetColumns();
@@ -201,9 +298,46 @@ namespace StockManagerDB
             {
                 string file = args[1];
                 // Open file
-                OpenFile(file);
+                SetWorkingStatus();
+                bool result = OpenFile(file);
+                SetSuccessStatus(result);
+            }
+            else
+            {
+                // Open most recent
+                if (AppSettings.Settings.OpenRecentOnLaunch)
+                {
+                    if (AppSettings.Settings.RecentFiles.Count > 0)
+                    {
+                        SetWorkingStatus();
+                        bool result = OpenFile(AppSettings.Settings.RecentFiles[0]);
+                        SetSuccessStatus(result);
+                    }
+                }
             }
         }
+
+        #region Settings
+
+        public void ApplySettings()
+        {
+            /**** Font ****/
+            //Font newFontNormal = new Font(newFont, FontStyle.Regular);
+            if (AppSettings.Settings.AppFont == null)
+            {
+                AppSettings.ResetToDefault();
+            }
+            Font newFontNormal = AppSettings.Settings.AppFont; // If user has set bold for all, then set bold for all
+            this.Font = newFontNormal;
+            //this.menuStrip1.Font = this.statusStrip1.Font = newFontNormal;
+            // Apply bold fonts
+            Font newFontBold = new Font(AppSettings.Settings.AppFont, FontStyle.Bold | AppSettings.Settings.AppFont.Style); // Add bold style
+            this.label1.Font = this.label2.Font = newFontBold;
+
+
+        }
+
+        #endregion
 
         #region Listviews and display
 
@@ -799,11 +933,18 @@ namespace StockManagerDB
         /// </summary>
         private bool OpenFile(string file)
         {
+            if (string.IsNullOrEmpty(file) || (!File.Exists(file)))
+            {
+                MessageBox.Show($"Error\nFile '{file}' not found...", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+
             // Closing current file
             if (!string.IsNullOrEmpty(filepath))
             {
                 CloseFile();
             }
+
 
             // Save path
             filepath = file;
@@ -1773,7 +1914,12 @@ namespace StockManagerDB
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            data.Save();
+            if (IsFileLoaded)
+            {
+                data.Save();
+            }
+
+            AppSettings.Save();
         }
 
         private void exportPartsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1822,6 +1968,75 @@ namespace StockManagerDB
 
         }
 
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show(
+                $"{VersionLabel}\nMade by EsseivaN",
+                "About",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information
+            );
+        }
+
+        private void optionsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            optionsForm.ReferenceNewSettings = new AppSettings() { AppFont = this.Font };
+            optionsForm.Show();
+        }
+
+        private void _optionsForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            this.BringToFront();
+
+            if (_optionsForm.ChangesMade && (_optionsForm.NewAppSettings != null))
+            {
+                AppSettings.Settings = _optionsForm.NewAppSettings;
+                ApplySettings();
+            }
+
+            _optionsForm = null;
+        }
+
         #endregion
+
+        private Dictionary<int, ToolStripMenuItem> pairs = null;
+        private void openRecentToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
+        {
+            if (pairs == null)
+            {
+                pairs = new Dictionary<int, ToolStripMenuItem>()
+                {
+                    {0,  toolStripMenuItem2},
+                    {1,  toolStripMenuItem3},
+                    {2,  toolStripMenuItem4},
+                    {3,  toolStripMenuItem5},
+                    {4,  toolStripMenuItem6},
+                };
+            }
+
+            int count = AppSettings.Settings.RecentFiles.Count;
+            for (int i = 0; i < pairs.Count; i++)
+            {
+                if (i < count)
+                {
+                    pairs[i].Visible = true;
+                    pairs[i].Text = AppSettings.Settings.RecentFiles[i];
+                }
+                else
+                {
+                    pairs[i].Visible = false;
+                }
+            }
+        }
+
+        private void toolStripMenuItemRecentFile_Click(object sender, EventArgs e)
+        {
+            ToolStripMenuItem item = sender as ToolStripMenuItem;
+            string file = item.Text;
+
+            SetWorkingStatus();
+            bool result = OpenFile(file);
+            SetSuccessStatus(result);
+        }
     }
 }

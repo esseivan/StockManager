@@ -206,12 +206,12 @@
             // label4
             // 
             this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(707, 16);
+            this.label4.Location = new System.Drawing.Point(663, 11);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(29, 13);
+            this.label4.Size = new System.Drawing.Size(73, 23);
             this.label4.TabIndex = 13;
             this.label4.Text = "Filter";
+            this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // cbboxFilterType
             // 
@@ -239,7 +239,7 @@
             // 
             // btnAdv
             // 
-            this.btnAdv.Location = new System.Drawing.Point(626, 10);
+            this.btnAdv.Location = new System.Drawing.Point(592, 10);
             this.btnAdv.Name = "btnAdv";
             this.btnAdv.Size = new System.Drawing.Size(75, 23);
             this.btnAdv.TabIndex = 14;
