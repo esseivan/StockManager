@@ -1146,6 +1146,7 @@ namespace StockManagerDB
             {
                 numberOfTimes = n,
                 materials = checkedParts,
+                projectName = selectedProjectVersion.Project,
             });
 
             SetSuccessStatus(true);
@@ -1158,9 +1159,15 @@ namespace StockManagerDB
             labelStatus.ForeColor = SystemColors.ControlText;
             labelStatus.Text = string.Empty;
         }
-    }
 
-    #endregion
+        private void orderTheSelectedProjectToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        #endregion
+
+    }
 
     public class PartEditEventArgs : EventArgs
     {
@@ -1172,5 +1179,6 @@ namespace StockManagerDB
     {
         public int numberOfTimes;
         public IEnumerable<Material> materials;
+        public string projectName;
     }
 }

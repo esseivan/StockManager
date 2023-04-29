@@ -1602,7 +1602,7 @@ namespace StockManagerDB
         private void FrmProjects_OnProjectProcessRequested(object sender, ProjectProcessRequestedEventArgs e)
         {
             Cursor.Current = Cursors.WaitCursor;
-            string note = $"Project processed ";
+            string note = $"Project processed '{e.projectName}'";
 
             // Process project : remove quantity from parts
             foreach (Material material in e.materials)
