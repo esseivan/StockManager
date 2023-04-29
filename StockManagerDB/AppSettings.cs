@@ -1,0 +1,143 @@
+﻿using ESNLib.Tools;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Text.Json.Serialization;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace StockManagerDB
+{
+    public class AppSettings
+    {
+        #region Settings
+
+        /// <summary>
+        /// The font used for the app
+        /// </summary>
+        [JsonIgnore]
+        public Font AppFont
+        {
+            get
+            {
+                if (_appFont == null)
+                {
+                    return null;
+                }
+
+                return new Font(_appFont.FontFamily, _appFont.Size, _appFont.Style, _appFont.Unit);
+            }
+            set => _appFont = new SerializableFont(value);
+        }
+
+        public SerializableFont _appFont { get; set; }
+
+        /// <summary>
+        /// Recent files, where the index 0 is the most recent
+        /// </summary>
+        public List<string> RecentFiles { get; set; } = new List<string>();
+
+        /// <summary>
+        /// Open the most recent file on launch of the app
+        /// </summary>
+        public bool OpenRecentOnLaunch { get; set; } = false;
+
+        #endregion
+
+        /// <summary>
+        /// Empty settings
+        /// </summary>
+        public AppSettings()
+        {
+
+        }
+
+        /// <summary>
+        /// Default settings creation
+        /// </summary>
+        public AppSettings(Form form)
+        {
+            AppFont = form.Font;
+        }
+
+        private static AppSettings _defaultSettings = null;
+        private static AppSettings _settings = null;
+        /// <summary>
+        /// The current app settings
+        /// </summary>
+        [JsonIgnore]
+        public static AppSettings Settings
+        {
+            get => _settings;
+            set
+            {
+                UpdateSettings(value);
+            }
+        }
+
+        public static AppSettings SetDefaultAppSettings(Form frmMain)
+        {
+            _defaultSettings = new AppSettings(frmMain);
+            return _defaultSettings;
+        }
+
+        public static bool Load()
+        {
+            SettingsManager.LoadFromDefault(out AppSettings loadedSettings, zipFile: false);
+            if (loadedSettings == null)
+            {
+                return false;
+            }
+
+            _settings = loadedSettings;
+            return true;
+        }
+
+        public static void Save()
+        {
+            SettingsManager.SaveToDefault(Settings, SettingsManager.BackupMode.dotBak, indent: true, hide: false, zipFile: false);
+        }
+
+        public static void UpdateSettings(AppSettings newSettings)
+        {
+            _settings = newSettings;
+            Save();
+        }
+
+        public static AppSettings GetDefaultSettings()
+        {
+            return _defaultSettings;
+        }
+
+        public static void ResetToDefault()
+        {
+            UpdateSettings(_defaultSettings);
+        }
+    }
+
+    /// <summary>
+    /// Font that can be serialized
+    /// </summary>
+    public class SerializableFont
+    {
+        public string FontFamily { get; set; }
+        public FontStyle Style { get; set; }
+        public float Size { get; set; }
+        public GraphicsUnit Unit { get; set; }
+
+        public SerializableFont()
+        {
+
+        }
+
+        public SerializableFont(Font font)
+        {
+            FontFamily = font.FontFamily.Name;
+            Style = font.Style;
+            Size = font.Size;
+            Unit = font.Unit;
+        }
+    }
+}

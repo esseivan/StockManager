@@ -25,9 +25,17 @@ namespace StockManagerDB
         public event EventHandler<PartEditEventArgs> OnPartEditRequested;
         public event EventHandler<ProjectProcessRequestedEventArgs> OnProjectProcessRequested;
 
+        public void ApplySettings()
+        {
+            this.Font = AppSettings.Settings.AppFont;
+            this.groupBox1.Font = this.groupBox2.Font = this.groupBox3.Font = AppSettings.Settings.AppFont;
+        }
+
         public frmProjects()
         {
             InitializeComponent();
+
+            ApplySettings();
 
             ListViewSetColumns();
 

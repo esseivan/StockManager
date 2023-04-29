@@ -28,9 +28,16 @@ namespace StockManagerDB
 
         private readonly Type enumType;
 
+        public void ApplySettings()
+        {
+            this.Font = AppSettings.Settings.AppFont;
+        }
+
         public frmSearch()
         {
             InitializeComponent();
+
+            ApplySettings();
 
             enumType = typeof(Part.Parameter);
             InitLists();
@@ -42,6 +49,8 @@ namespace StockManagerDB
         public frmSearch(Type enumType)
         {
             InitializeComponent();
+
+            ApplySettings();
 
             this.enumType = enumType;
             InitLists();

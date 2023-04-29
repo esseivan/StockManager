@@ -600,12 +600,12 @@
             // label1
             // 
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(691, 21);
+            this.label1.Location = new System.Drawing.Point(647, 18);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(48, 13);
+            this.label1.Size = new System.Drawing.Size(92, 18);
             this.label1.TabIndex = 12;
             this.label1.Text = "Multiplier";
+            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // numMult
             // 
@@ -655,7 +655,6 @@
             this.groupBox1.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
-            this.groupBox3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numMult)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
