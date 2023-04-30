@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <asmv1:assembly xsi:schemaLocation="urn:schemas-microsoft-com:asm.v1 assembly.adaptive.xsd" manifestVersion="1.0" xmlns:asmv1="urn:schemas-microsoft-com:asm.v1" xmlns="urn:schemas-microsoft-com:asm.v2" xmlns:asmv2="urn:schemas-microsoft-com:asm.v2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:co.v1="urn:schemas-microsoft-com:clickonce.v1" xmlns:asmv3="urn:schemas-microsoft-com:asm.v3" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" xmlns:co.v2="urn:schemas-microsoft-com:clickonce.v2">
-  <asmv1:assemblyIdentity name="StockManagerDB.exe" version="1.0.10.0" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="msil" type="win32" />
+  <asmv1:assemblyIdentity name="StockManagerDB.exe" version="1.0.11.0" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="msil" type="win32" />
   <description asmv2:iconFile="logo.ico" xmlns="urn:schemas-microsoft-com:asm.v1" />
   <application />
   <entryPoint>
@@ -128,25 +128,25 @@
   </dependency>
   <dependency>
     <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ObjectListView.dll" size="430592">
-      <assemblyIdentity name="ObjectListView" version="2.9.1.23887" publicKeyToken="B1C5BF581481BCD4" language="neutral" processorArchitecture="msil" />
+      <assemblyIdentity name="ObjectListView" version="2.9.1.12558" publicKeyToken="B1C5BF581481BCD4" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>MYePnPLLV769mOZ3YtN81K61+HCLZr+LUVybIJhsUiA=</dsig:DigestValue>
+        <dsig:DigestValue>wxU+AXmfQmDxhbDbUxf3kF9lL/IRxeMQtFNpOim1xNo=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="StockManagerDB.exe" size="331264">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="StockManagerDB.exe" size="331776">
       <assemblyIdentity name="StockManagerDB" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>Ft7fwNQuKHZqZ1dLa8QqL1ek3fT/oLOSs8hCQCbMwvc=</dsig:DigestValue>
+        <dsig:DigestValue>LAPWZMm+ECcko+ETsRIcZj6hipkrqgOCM4kK66R0Rr0=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
