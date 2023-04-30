@@ -269,10 +269,11 @@ namespace StockManagerDB
             LoggerClass.Init();
             LoggerClass.Write("Application started...", Logger.LogLevels.Info);
             LoggerClass.Write(DateTime.Now.ToString("yyyy.MM.dd HH:mm:ss"), Logger.LogLevels.Info);
+            SettingsManager.MyPublisherName = "ESN";
             SettingsManager.MyAppName = "StockManager";
 
             // Load app settings
-            string settingsPath = SettingsManager.GetDefaultSettingPath(false);
+            string settingsPath = SettingsManager.GetDefaultSettingFilePath(false);
             LoggerClass.Write($"Loading settings from {settingsPath}...");
             AppSettings.SetDefaultAppSettings(this); // Set the default settings
             if (!AppSettings.Load())

@@ -82,10 +82,10 @@
       <HintPath>..\packages\CsvHelper.30.0.1\lib\net47\CsvHelper.dll</HintPath>
     </Reference>
     <Reference Include="ESNLib.Controls, Version=1.0.6.6, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESNLib.Controls.1.0.8.2\lib\net472\ESNLib.Controls.dll</HintPath>
+      <HintPath>..\packages\ESNLib.Controls.1.0.8.4\lib\net472\ESNLib.Controls.dll</HintPath>
     </Reference>
     <Reference Include="ESNLib.Tools, Version=1.0.6.6, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESNLib.Tools.1.0.8.2\lib\net472\ESNLib.Tools.dll</HintPath>
+      <HintPath>..\packages\ESNLib.Tools.1.0.8.4\lib\net472\ESNLib.Tools.dll</HintPath>
     </Reference>
     <Reference Include="ExcelDataReader, Version=3.6.0.0, Culture=neutral, PublicKeyToken=93517dbe6a4012fa, processorArchitecture=MSIL">
       <HintPath>..\packages\ExcelDataReader.3.6.0\lib\net45\ExcelDataReader.dll</HintPath>
