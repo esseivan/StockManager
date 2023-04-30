@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <asmv1:assembly xsi:schemaLocation="urn:schemas-microsoft-com:asm.v1 assembly.adaptive.xsd" manifestVersion="1.0" xmlns:asmv1="urn:schemas-microsoft-com:asm.v1" xmlns="urn:schemas-microsoft-com:asm.v2" xmlns:asmv2="urn:schemas-microsoft-com:asm.v2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:co.v1="urn:schemas-microsoft-com:clickonce.v1" xmlns:asmv3="urn:schemas-microsoft-com:asm.v3" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" xmlns:co.v2="urn:schemas-microsoft-com:clickonce.v2">
-  <asmv1:assemblyIdentity name="StockManagerDB.exe" version="1.0.12.0" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="msil" type="win32" />
+  <asmv1:assemblyIdentity name="StockManagerDB.exe" version="1.0.13.0" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="msil" type="win32" />
   <description asmv2:iconFile="logo.ico" xmlns="urn:schemas-microsoft-com:asm.v1" />
   <application />
   <entryPoint>
@@ -67,14 +67,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ESNLib.Tools.dll" size="29184">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ESNLib.Tools.dll" size="29696">
       <assemblyIdentity name="ESNLib.Tools" version="1.0.6.6" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>qhppB2amvjtDDJoZ3URuOZyhPHu+Gq+rxa2RWs7zMi0=</dsig:DigestValue>
+        <dsig:DigestValue>DxVMGleUhxzE0VK4wLHWZqyyi55e7HXaPEyc2pLsRzU=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -128,13 +128,13 @@
   </dependency>
   <dependency>
     <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ObjectListView.dll" size="430592">
-      <assemblyIdentity name="ObjectListView" version="2.9.1.14352" publicKeyToken="B1C5BF581481BCD4" language="neutral" processorArchitecture="msil" />
+      <assemblyIdentity name="ObjectListView" version="2.9.1.15014" publicKeyToken="B1C5BF581481BCD4" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>zDIfN7Ia0Emk23LGIF0aZLRYj9ZCxqwpV0JiTkjgdp4=</dsig:DigestValue>
+        <dsig:DigestValue>JoWJ8ZDTL9Esf1yjSFeHjiBKxtYdIKnFNnx3U3xXMuw=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -146,7 +146,7 @@
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>OFzzffbEPGkz06xqFnOqwXn3nYZ3f1N/pEVB2/6Td/o=</dsig:DigestValue>
+        <dsig:DigestValue>Lk0Mp74WJ8y/lzb6i4vUwL9gvMwk9wZCJdIFsaCzurs=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
