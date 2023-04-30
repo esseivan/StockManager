@@ -12,9 +12,18 @@ namespace StockManagerDB
 {
     public partial class frmOptions : Form
     {
+        /// <summary>
+        /// Not yet approved modified settings
+        /// </summary>
         private AppSettings notApprovedNewSettings = new AppSettings();
+        /// <summary>
+        /// The new app settings class
+        /// </summary>
         public AppSettings NewAppSettings { get; set; } = null;
 
+        /// <summary>
+        /// Set to 'true' when a change is made by the user
+        /// </summary>
         public bool ChangesMade { get; private set; } = false;
 
         private AppSettings _referenceNewSettings;
@@ -30,12 +39,22 @@ namespace StockManagerDB
             set
             {
                 notApprovedNewSettings = _referenceNewSettings = value;
+                SyncControls();
             }
         }
 
         public frmOptions()
         {
             InitializeComponent();
+        }
+
+        /// <summary>
+        /// Apply the setting to the form controls
+        /// </summary>
+        private void SyncControls()
+        {
+            fontDialog1.Font = ReferenceNewSettings.AppFont;
+            checkboxRecent.Checked = ReferenceNewSettings.OpenRecentOnLaunch;
         }
 
         /// <summary>
@@ -60,7 +79,6 @@ namespace StockManagerDB
         /// </summary>
         private void btnFont_Click(object sender, EventArgs e)
         {
-            fontDialog1.Font = ReferenceNewSettings.AppFont;
             if (fontDialog1.ShowDialog() == DialogResult.OK)
             {
                 if (ReferenceNewSettings.AppFont != fontDialog1.Font)

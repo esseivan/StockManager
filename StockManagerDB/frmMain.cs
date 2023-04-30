@@ -1980,7 +1980,7 @@ namespace StockManagerDB
 
         private void optionsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            optionsForm.ReferenceNewSettings = new AppSettings() { AppFont = this.Font };
+            optionsForm.ReferenceNewSettings = AppSettings.Settings;
             optionsForm.Show();
         }
 
@@ -1997,8 +1997,6 @@ namespace StockManagerDB
             _optionsForm = null;
         }
 
-        #endregion
-
         private Dictionary<int, ToolStripMenuItem> pairs = null;
         private void openRecentToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
         {
@@ -2014,6 +2012,7 @@ namespace StockManagerDB
                 };
             }
 
+            // Populate recent files
             int count = AppSettings.Settings.RecentFiles.Count;
             for (int i = 0; i < pairs.Count; i++)
             {
@@ -2031,6 +2030,7 @@ namespace StockManagerDB
 
         private void toolStripMenuItemRecentFile_Click(object sender, EventArgs e)
         {
+            // Open recent file
             ToolStripMenuItem item = sender as ToolStripMenuItem;
             string file = item.Text;
 
@@ -2038,5 +2038,7 @@ namespace StockManagerDB
             bool result = OpenFile(file);
             SetSuccessStatus(result);
         }
+
+        #endregion
     }
 }
