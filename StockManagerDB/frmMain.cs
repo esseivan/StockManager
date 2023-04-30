@@ -508,6 +508,10 @@ namespace StockManagerDB
                 return;
             }
 
+            // Get eventual seleted item
+            Part selItem = listviewParts.SelectedObject as Part;
+            Point lastScroll = listviewParts.LowLevelScrollPosition;
+
             // Main list view : all parts
             listviewParts.DataSource = Parts.Values.ToList();
 
@@ -522,6 +526,28 @@ namespace StockManagerDB
             }
             // Set focus to main listview
             listviewParts.Focus();
+
+            // Select the last item
+            if (selItem != null)
+            {
+                listviewParts.SelectObject(selItem);
+            }
+
+            try
+            {
+                const int factor = 23; // Looks like the perfect error<->correction factor is 23
+                                       // Maybe depends of the machine ?
+
+                int delta = lastScroll.Y - listviewParts.LowLevelScrollPosition.Y;
+                Console.WriteLine($"Delta is '{delta}'. Increment {delta * factor}...");
+                listviewParts.LowLevelScroll(0, delta * factor);
+            }
+            catch (Exception ex)
+            {
+                LoggerClass.Write("Unable to scroll to last position : ", Logger.LogLevels.Error);
+                LoggerClass.Write(ex.Message, Logger.LogLevels.Error);
+            }
+
             // Update the number label
             UpdateNumberLabel();
             // Update the checked listview
