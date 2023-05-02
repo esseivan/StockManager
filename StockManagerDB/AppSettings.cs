@@ -44,6 +44,11 @@ namespace StockManagerDB
         /// </summary>
         public bool OpenRecentOnLaunch { get; set; } = false;
 
+        /// <summary>
+        /// Number of decimal places when editing a floating point value
+        /// </summary>
+        public int EditCellDecimalPlaces { get; set; } = 3; 
+
         #endregion
 
         /// <summary>

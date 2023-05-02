@@ -43,6 +43,8 @@ namespace StockManagerDB
             }
         }
 
+        private bool syncing = false;
+
         public frmOptions()
         {
             InitializeComponent();
@@ -53,8 +55,11 @@ namespace StockManagerDB
         /// </summary>
         private void SyncControls()
         {
+            syncing = true;
             fontDialog1.Font = ReferenceNewSettings.AppFont;
             checkboxRecent.Checked = ReferenceNewSettings.OpenRecentOnLaunch;
+            numDecimals.Value = ReferenceNewSettings.EditCellDecimalPlaces;
+            syncing = false;
         }
 
         /// <summary>
@@ -107,8 +112,18 @@ namespace StockManagerDB
 
         private void checkboxRecent_CheckedChanged(object sender, EventArgs e)
         {
+            if (syncing) return;
+
             ChangesMade = true;
             notApprovedNewSettings.OpenRecentOnLaunch = checkboxRecent.Checked;
+        }
+
+        private void numDecimals_ValueChanged(object sender, EventArgs e)
+        {
+            if (syncing) return;
+
+            ChangesMade = true;
+            notApprovedNewSettings.EditCellDecimalPlaces = (int)numDecimals.Value;
         }
     }
 }

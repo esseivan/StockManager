@@ -1181,6 +1181,12 @@ namespace StockManagerDB
                 return;
             }
 
+            if (e.Control is FloatCellEditor num)
+            {
+                num.DecimalPlaces = AppSettings.Settings.EditCellDecimalPlaces;
+            }
+
+
             e.ListViewItem.Focused = true;
             Rectangle columnBounds = listviewParts.CalculateColumnVisibleBounds(
                 listviewParts.Bounds,
