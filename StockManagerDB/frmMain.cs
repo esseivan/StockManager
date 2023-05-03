@@ -374,17 +374,18 @@ namespace StockManagerDB
             TextMatchFilter filter = null;
             if (!string.IsNullOrEmpty(txt))
             {
+                string[] allTxt = txt.Split(' ');
                 switch (e.filterType)
                 {
                     case 0:
                     default: // Anywhere
-                        filter = TextMatchFilter.Contains(olv, txt);
+                        filter = TextMatchFilter.Contains(olv, allTxt);
                         break;
                     case 1: // At the start
-                        filter = TextMatchFilter.Prefix(olv, txt);
+                        filter = TextMatchFilter.Prefix(olv, allTxt);
                         break;
                     case 2: // As a regex string
-                        filter = TextMatchFilter.Regex(olv, txt);
+                        filter = TextMatchFilter.Regex(olv, allTxt);
                         break;
                 }
             }
@@ -696,25 +697,32 @@ namespace StockManagerDB
         public void Filter(string txt, int matchKind)
         {
             ObjectListView olv = listviewParts;
-            TextMatchFilter filter = null;
+            CompositeAllFilter allFilter = null;
+            List<TextMatchFilter> filters = new List<TextMatchFilter>();
             if (!string.IsNullOrEmpty(txt))
             {
-                switch (matchKind)
+                string[] allTxt = txt.Split(' ').Where((x) => !string.IsNullOrEmpty(x)).ToArray();
+                foreach (string textEntry in allTxt)
                 {
-                    case 0:
-                    default: // Anywhere
-                        filter = TextMatchFilter.Contains(olv, txt);
-                        break;
-                    case 1: // At the start
-                        filter = TextMatchFilter.Prefix(olv, txt);
-                        break;
-                    case 2: // As a regex string
-                        filter = TextMatchFilter.Regex(olv, txt);
-                        break;
+                    switch (matchKind)
+                    {
+                        case 0:
+                        default: // Anywhere
+                            filters.Add(TextMatchFilter.Contains(olv, textEntry));
+                            break;
+                        case 1: // At the start
+                            filters.Add(TextMatchFilter.Prefix(olv, textEntry));
+                            break;
+                        case 2: // As a regex string
+                            filters.Add(TextMatchFilter.Regex(olv, textEntry));
+                            break;
+                    }
+
                 }
             }
-
-            olv.AdditionalFilter = filter;
+            if (filters != null)
+                allFilter = new CompositeAllFilter(filters.Cast<IModelFilter>().ToList());
+            olv.AdditionalFilter = allFilter;
         }
 
         /// <summary>
