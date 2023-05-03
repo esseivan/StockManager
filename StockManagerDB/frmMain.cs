@@ -11,6 +11,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using dhs = StockManagerDB.DataHolderSingleton;
 
@@ -288,7 +289,7 @@ namespace StockManagerDB
             listviewParts.AllowCheckWithSpace = false;
 
             // Set default filter type
-            cbboxFilterType.SelectedIndex = 2;
+            cbboxFilterType.SelectedIndex = 0;
 
             // Set number label
             UpdateNumberLabel();
@@ -689,6 +690,28 @@ namespace StockManagerDB
 
         #region TextFiltering
 
+        private bool IsExactFilterString(string text)
+        {
+            // Detect exact match, only in non-regex mode
+            Regex regexDetectExact = new Regex("^[\"][^\"]{1,}[\"]$");
+            Match result = regexDetectExact.Match(text);
+
+            return result.Success;
+        }
+
+        private string GetExactFilterRegexString(string baseText, bool isPrefix)
+        {
+            string t = Regex.Escape(baseText.Substring(1, baseText.Length-2));
+            Regex regexStr;
+            if (isPrefix)
+                regexStr = new Regex($"^{t}(($)|( ))");
+            else
+                regexStr = new Regex($"((^)|( )){t}(($)|( ))");
+
+            return regexStr.ToString();
+
+        }
+
         /// <summary>
         /// Filter a text in the main part listview
         /// </summary>
@@ -706,18 +729,37 @@ namespace StockManagerDB
                 {
                     switch (matchKind)
                     {
-                        case 0:
-                        default: // Anywhere
-                            filters.Add(TextMatchFilter.Contains(olv, textEntry));
+                        case 0: // Anywhere
+                            if (IsExactFilterString(textEntry))
+                            {
+                                string regexStr = GetExactFilterRegexString(textEntry, false);
+                                filters.Add(TextMatchFilter.Regex(olv, regexStr));
+                            }
+                            else
+                            {
+                                filters.Add(TextMatchFilter.Contains(olv, textEntry));
+                            }
                             break;
+
                         case 1: // At the start
-                            filters.Add(TextMatchFilter.Prefix(olv, textEntry));
+                            if (IsExactFilterString(textEntry))
+                            {
+                                string regexStr = GetExactFilterRegexString(textEntry, true);
+                                filters.Add(TextMatchFilter.Regex(olv, regexStr));
+                            }
+                            else
+                            {
+                                filters.Add(TextMatchFilter.Prefix(olv, textEntry));
+                            }
                             break;
+
                         case 2: // As a regex string
                             filters.Add(TextMatchFilter.Regex(olv, textEntry));
                             break;
-                    }
 
+                        default:
+                            break;
+                    }
                 }
             }
             if (filters != null)
