@@ -261,6 +261,7 @@ namespace StockManagerDB
 
         #endregion
 
+        private readonly bool starting = true;
         public frmMain()
         {
             InitializeComponent();
@@ -289,7 +290,7 @@ namespace StockManagerDB
             listviewParts.AllowCheckWithSpace = false;
 
             // Set default filter type
-            cbboxFilterType.SelectedIndex = 0;
+            cbboxFilterType.SelectedIndex = AppSettings.Settings.LastMatchKindUsed;
 
             // Set number label
             UpdateNumberLabel();
@@ -317,6 +318,8 @@ namespace StockManagerDB
                     }
                 }
             }
+
+            starting = false;
         }
 
         #region Settings
@@ -785,8 +788,11 @@ namespace StockManagerDB
         /// <param name="e"></param>
         private void cbboxFilterType_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (starting) return;
             Filter(txtboxFilter.Text, this.cbboxFilterType.SelectedIndex);
             UpdateNumberLabel();
+            // Save last type used
+            AppSettings.Settings.LastMatchKindUsed = cbboxFilterType.SelectedIndex;
         }
 
         #endregion
@@ -1756,6 +1762,9 @@ namespace StockManagerDB
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
+            // Save settings
+            AppSettings.Save();
+
             LoggerClass.Write("Closing... Stopping logger", Logger.LogLevels.Info);
             LoggerClass.logger.Dispose();
         }
