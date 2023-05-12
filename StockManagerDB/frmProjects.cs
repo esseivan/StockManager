@@ -1113,6 +1113,15 @@ namespace StockManagerDB
 
         private void processProjectToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            // Get checked parts
+            IEnumerable<Material> checkedParts = listviewMaterials.CheckedObjects.Cast<Material>();
+
+            // If no checked parts, return
+            if(checkedParts.Count() == 0)
+            {
+                return;
+            }
+
             // For all the checked parts, remove the quantity for the project from the part list (general one)
             // First, ask to confirm the multiplier, negative number to add allowed
             Dialog.DialogConfig dc = new Dialog.DialogConfig()
@@ -1137,9 +1146,6 @@ namespace StockManagerDB
                 MessageBox.Show($"Unable to parse your input : '{res.UserInput}'\nAborting...", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-
-            // Get checked parts
-            IEnumerable<Material> checkedParts = listviewMaterials.CheckedObjects.Cast<Material>();
 
             // Ask confirmation
             if (MessageBox.Show($"Confirm the process of '{n}' time(s) for the selected project '{selectedProjectVersion.Project}'\n{checkedParts.Count()} out of {BOM.Count} checked part in BOM", "Confirmation", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) != DialogResult.OK)
@@ -1173,8 +1179,17 @@ namespace StockManagerDB
 
         }
 
-        #endregion
+        private void checkAllToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            listviewMaterials.CheckAll();
+        }
 
+        private void uncheckAllToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            listviewMaterials.UncheckAll();
+        }
+
+        #endregion
     }
 
     public class PartEditEventArgs : EventArgs

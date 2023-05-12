@@ -2132,5 +2132,10 @@ namespace StockManagerDB
         }
 
         #endregion
+
+        private void sourceCodeGithubToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Process.Start("https://github.com/esseivan/StockManager");
+        }
     }
 }
