@@ -2137,5 +2137,10 @@ namespace StockManagerDB
         {
             Process.Start("https://github.com/esseivan/StockManager");
         }
+
+        private void openOrderToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

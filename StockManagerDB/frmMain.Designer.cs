@@ -70,6 +70,7 @@
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.seeBackupsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.seeLogsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.sourceCodeGithubToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cbboxFilterType = new System.Windows.Forms.ComboBox();
             this.txtboxFilter = new System.Windows.Forms.TextBox();
@@ -108,7 +109,7 @@
             this.labelStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.filterHighlightRenderer = new BrightIdeasSoftware.HighlightTextRenderer();
             this.statusTimeoutTimer = new System.Windows.Forms.Timer(this.components);
-            this.sourceCodeGithubToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openOrderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -130,10 +131,10 @@
             this.toolsToolStripMenuItem,
             this.projectsToolStripMenuItem,
             this.openHistoryToolStripMenuItem,
+            this.openOrderToolStripMenuItem,
             this.helpToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Padding = new System.Windows.Forms.Padding(6, 2, 0, 2);
             this.menuStrip1.Size = new System.Drawing.Size(1299, 33);
             this.menuStrip1.TabIndex = 9;
             this.menuStrip1.Text = "menuStrip1";
@@ -446,6 +447,13 @@
             this.seeLogsToolStripMenuItem.Text = "See logs...";
             this.seeLogsToolStripMenuItem.Click += new System.EventHandler(this.seeLogsToolStripMenuItem_Click);
             // 
+            // sourceCodeGithubToolStripMenuItem
+            // 
+            this.sourceCodeGithubToolStripMenuItem.Name = "sourceCodeGithubToolStripMenuItem";
+            this.sourceCodeGithubToolStripMenuItem.Size = new System.Drawing.Size(295, 34);
+            this.sourceCodeGithubToolStripMenuItem.Text = "Source Code (Github)...";
+            this.sourceCodeGithubToolStripMenuItem.Click += new System.EventHandler(this.sourceCodeGithubToolStripMenuItem_Click);
+            // 
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
@@ -511,7 +519,7 @@
             this.splitContainer1.Panel2.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.splitContainer1.Panel2MinSize = 125;
             this.splitContainer1.Size = new System.Drawing.Size(1299, 717);
-            this.splitContainer1.SplitterDistance = 519;
+            this.splitContainer1.SplitterDistance = 517;
             this.splitContainer1.SplitterWidth = 6;
             this.splitContainer1.TabIndex = 40;
             // 
@@ -607,7 +615,7 @@
             this.listviewParts.ShowCommandMenuOnRightClick = true;
             this.listviewParts.ShowGroups = false;
             this.listviewParts.ShowImagesOnSubItems = true;
-            this.listviewParts.Size = new System.Drawing.Size(1281, 433);
+            this.listviewParts.Size = new System.Drawing.Size(1281, 431);
             this.listviewParts.SortGroupItemsByPrimaryColumn = false;
             this.listviewParts.TabIndex = 6;
             this.listviewParts.TintSortColumn = true;
@@ -863,12 +871,12 @@
             this.statusTimeoutTimer.Interval = 2500;
             this.statusTimeoutTimer.Tick += new System.EventHandler(this.statusTimeoutTimer_Tick);
             // 
-            // sourceCodeGithubToolStripMenuItem
+            // openOrderToolStripMenuItem
             // 
-            this.sourceCodeGithubToolStripMenuItem.Name = "sourceCodeGithubToolStripMenuItem";
-            this.sourceCodeGithubToolStripMenuItem.Size = new System.Drawing.Size(295, 34);
-            this.sourceCodeGithubToolStripMenuItem.Text = "Source Code (Github)...";
-            this.sourceCodeGithubToolStripMenuItem.Click += new System.EventHandler(this.sourceCodeGithubToolStripMenuItem_Click);
+            this.openOrderToolStripMenuItem.Name = "openOrderToolStripMenuItem";
+            this.openOrderToolStripMenuItem.Size = new System.Drawing.Size(123, 29);
+            this.openOrderToolStripMenuItem.Text = "Open Order";
+            this.openOrderToolStripMenuItem.Click += new System.EventHandler(this.openOrderToolStripMenuItem_Click);
             // 
             // frmMain
             // 
@@ -983,6 +991,7 @@
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem5;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem6;
         private System.Windows.Forms.ToolStripMenuItem sourceCodeGithubToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem openOrderToolStripMenuItem;
     }
 }
 
