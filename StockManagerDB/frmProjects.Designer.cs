@@ -97,22 +97,20 @@
             this.statusStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.labelStatus});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 719);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 466);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Padding = new System.Windows.Forms.Padding(2, 0, 21, 0);
-            this.statusStrip1.Size = new System.Drawing.Size(1492, 32);
+            this.statusStrip1.Size = new System.Drawing.Size(995, 22);
             this.statusStrip1.TabIndex = 1;
             this.statusStrip1.Text = "statusStrip1";
             // 
             // labelStatus
             // 
             this.labelStatus.Name = "labelStatus";
-            this.labelStatus.Size = new System.Drawing.Size(100, 25);
+            this.labelStatus.Size = new System.Drawing.Size(66, 17);
             this.labelStatus.Text = "statusLabel";
             // 
             // menuStrip1
             // 
-            this.menuStrip1.GripMargin = new System.Windows.Forms.Padding(2, 2, 0, 2);
             this.menuStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
@@ -120,7 +118,8 @@
             this.viewToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1492, 35);
+            this.menuStrip1.Padding = new System.Windows.Forms.Padding(4, 1, 0, 1);
+            this.menuStrip1.Size = new System.Drawing.Size(995, 24);
             this.menuStrip1.TabIndex = 2;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -132,33 +131,33 @@
             this.toolStripSeparator1,
             this.quitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(54, 29);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 22);
             this.fileToolStripMenuItem.Text = "File";
             // 
             // importProjectsToolStripMenuItem
             // 
             this.importProjectsToolStripMenuItem.Name = "importProjectsToolStripMenuItem";
-            this.importProjectsToolStripMenuItem.Size = new System.Drawing.Size(255, 34);
+            this.importProjectsToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
             this.importProjectsToolStripMenuItem.Text = "Import projects";
             this.importProjectsToolStripMenuItem.Click += new System.EventHandler(this.importProjectsToolStripMenuItem_Click);
             // 
             // exportAllProjectsToolStripMenuItem
             // 
             this.exportAllProjectsToolStripMenuItem.Name = "exportAllProjectsToolStripMenuItem";
-            this.exportAllProjectsToolStripMenuItem.Size = new System.Drawing.Size(255, 34);
+            this.exportAllProjectsToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
             this.exportAllProjectsToolStripMenuItem.Text = "Export all projects";
             this.exportAllProjectsToolStripMenuItem.Click += new System.EventHandler(this.exportAllProjectsToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(252, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(165, 6);
             // 
             // quitToolStripMenuItem
             // 
             this.quitToolStripMenuItem.Name = "quitToolStripMenuItem";
             this.quitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Q)));
-            this.quitToolStripMenuItem.Size = new System.Drawing.Size(255, 34);
+            this.quitToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
             this.quitToolStripMenuItem.Text = "Close";
             this.quitToolStripMenuItem.Click += new System.EventHandler(this.quitToolStripMenuItem_Click);
             // 
@@ -168,20 +167,20 @@
             this.orderTheSelectedProjectToolStripMenuItem,
             this.processProjectToolStripMenuItem});
             this.actionsToolStripMenuItem.Name = "actionsToolStripMenuItem";
-            this.actionsToolStripMenuItem.Size = new System.Drawing.Size(87, 29);
+            this.actionsToolStripMenuItem.Size = new System.Drawing.Size(59, 22);
             this.actionsToolStripMenuItem.Text = "Actions";
             // 
             // orderTheSelectedProjectToolStripMenuItem
             // 
             this.orderTheSelectedProjectToolStripMenuItem.Name = "orderTheSelectedProjectToolStripMenuItem";
-            this.orderTheSelectedProjectToolStripMenuItem.Size = new System.Drawing.Size(360, 34);
+            this.orderTheSelectedProjectToolStripMenuItem.Size = new System.Drawing.Size(238, 22);
             this.orderTheSelectedProjectToolStripMenuItem.Text = "Order the selected project";
             this.orderTheSelectedProjectToolStripMenuItem.Click += new System.EventHandler(this.orderTheSelectedProjectToolStripMenuItem_Click);
             // 
             // processProjectToolStripMenuItem
             // 
             this.processProjectToolStripMenuItem.Name = "processProjectToolStripMenuItem";
-            this.processProjectToolStripMenuItem.Size = new System.Drawing.Size(360, 34);
+            this.processProjectToolStripMenuItem.Size = new System.Drawing.Size(238, 22);
             this.processProjectToolStripMenuItem.Text = "Process project\'s checked parts";
             this.processProjectToolStripMenuItem.ToolTipText = "For each checked part in the project, remove the quantity of this part from the c" +
     "urrent stock";
@@ -195,32 +194,32 @@
             this.checkAllToolStripMenuItem,
             this.uncheckAllToolStripMenuItem});
             this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
-            this.viewToolStripMenuItem.Size = new System.Drawing.Size(65, 29);
+            this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 22);
             this.viewToolStripMenuItem.Text = "View";
             // 
             // resizeColumnsToolStripMenuItem
             // 
             this.resizeColumnsToolStripMenuItem.Name = "resizeColumnsToolStripMenuItem";
-            this.resizeColumnsToolStripMenuItem.Size = new System.Drawing.Size(270, 34);
+            this.resizeColumnsToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
             this.resizeColumnsToolStripMenuItem.Text = "Resize columns";
             this.resizeColumnsToolStripMenuItem.Click += new System.EventHandler(this.resizeColumnsToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(267, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(152, 6);
             // 
             // checkAllToolStripMenuItem
             // 
             this.checkAllToolStripMenuItem.Name = "checkAllToolStripMenuItem";
-            this.checkAllToolStripMenuItem.Size = new System.Drawing.Size(270, 34);
+            this.checkAllToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
             this.checkAllToolStripMenuItem.Text = "Check all";
             this.checkAllToolStripMenuItem.Click += new System.EventHandler(this.checkAllToolStripMenuItem_Click);
             // 
             // uncheckAllToolStripMenuItem
             // 
             this.uncheckAllToolStripMenuItem.Name = "uncheckAllToolStripMenuItem";
-            this.uncheckAllToolStripMenuItem.Size = new System.Drawing.Size(270, 34);
+            this.uncheckAllToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
             this.uncheckAllToolStripMenuItem.Text = "Uncheck all";
             this.uncheckAllToolStripMenuItem.Click += new System.EventHandler(this.uncheckAllToolStripMenuItem_Click);
             // 
@@ -274,13 +273,14 @@
             this.listviewMaterials.FullRowSelect = true;
             this.listviewMaterials.GridLines = true;
             this.listviewMaterials.HideSelection = false;
-            this.listviewMaterials.Location = new System.Drawing.Point(8, 72);
+            this.listviewMaterials.Location = new System.Drawing.Point(5, 47);
+            this.listviewMaterials.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.listviewMaterials.Name = "listviewMaterials";
             this.listviewMaterials.SelectColumnsOnRightClickBehaviour = BrightIdeasSoftware.ObjectListView.ColumnSelectBehaviour.Submenu;
             this.listviewMaterials.ShowCommandMenuOnRightClick = true;
             this.listviewMaterials.ShowGroups = false;
             this.listviewMaterials.ShowImagesOnSubItems = true;
-            this.listviewMaterials.Size = new System.Drawing.Size(1225, 589);
+            this.listviewMaterials.Size = new System.Drawing.Size(818, 384);
             this.listviewMaterials.SortGroupItemsByPrimaryColumn = false;
             this.listviewMaterials.TabIndex = 7;
             this.listviewMaterials.TintSortColumn = true;
@@ -353,7 +353,6 @@
             // 
             // olvcLocation
             // 
-            this.olvcLocation.IsEditable = false;
             this.olvcLocation.Text = "Location";
             this.olvcLocation.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -401,10 +400,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.comboboxProjects.DropDownStyle = System.Windows.Forms.ComboBoxStyle.Simple;
             this.comboboxProjects.FormattingEnabled = true;
-            this.comboboxProjects.Location = new System.Drawing.Point(4, 29);
-            this.comboboxProjects.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.comboboxProjects.Location = new System.Drawing.Point(3, 19);
             this.comboboxProjects.Name = "comboboxProjects";
-            this.comboboxProjects.Size = new System.Drawing.Size(228, 362);
+            this.comboboxProjects.Size = new System.Drawing.Size(153, 237);
             this.comboboxProjects.TabIndex = 8;
             this.comboboxProjects.SelectedIndexChanged += new System.EventHandler(this.comboboxProjects_SelectedIndexChanged);
             // 
@@ -415,10 +413,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.comboboxVersions.DropDownStyle = System.Windows.Forms.ComboBoxStyle.Simple;
             this.comboboxVersions.FormattingEnabled = true;
-            this.comboboxVersions.Location = new System.Drawing.Point(4, 29);
-            this.comboboxVersions.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.comboboxVersions.Location = new System.Drawing.Point(3, 19);
             this.comboboxVersions.Name = "comboboxVersions";
-            this.comboboxVersions.Size = new System.Drawing.Size(228, 149);
+            this.comboboxVersions.Size = new System.Drawing.Size(153, 98);
             this.comboboxVersions.TabIndex = 8;
             this.comboboxVersions.SelectedIndexChanged += new System.EventHandler(this.comboboxVersions_SelectedIndexChanged);
             // 
@@ -426,10 +423,9 @@
             // 
             this.btnMatDup.BackgroundImage = global::StockManagerDB.Properties.Resources.dup;
             this.btnMatDup.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.btnMatDup.Location = new System.Drawing.Point(96, 29);
-            this.btnMatDup.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.btnMatDup.Location = new System.Drawing.Point(64, 19);
             this.btnMatDup.Name = "btnMatDup";
-            this.btnMatDup.Size = new System.Drawing.Size(34, 35);
+            this.btnMatDup.Size = new System.Drawing.Size(23, 23);
             this.btnMatDup.TabIndex = 10;
             this.btnMatDup.UseVisualStyleBackColor = true;
             this.btnMatDup.Click += new System.EventHandler(this.btnMatDup_Click);
@@ -438,10 +434,9 @@
             // 
             this.btnMatDel.BackgroundImage = global::StockManagerDB.Properties.Resources.del;
             this.btnMatDel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.btnMatDel.Location = new System.Drawing.Point(52, 29);
-            this.btnMatDel.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.btnMatDel.Location = new System.Drawing.Point(35, 19);
             this.btnMatDel.Name = "btnMatDel";
-            this.btnMatDel.Size = new System.Drawing.Size(34, 35);
+            this.btnMatDel.Size = new System.Drawing.Size(23, 23);
             this.btnMatDel.TabIndex = 10;
             this.btnMatDel.UseVisualStyleBackColor = true;
             this.btnMatDel.Click += new System.EventHandler(this.btnMatDel_Click);
@@ -450,10 +445,9 @@
             // 
             this.btnMatAdd.BackgroundImage = global::StockManagerDB.Properties.Resources.add;
             this.btnMatAdd.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.btnMatAdd.Location = new System.Drawing.Point(9, 29);
-            this.btnMatAdd.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.btnMatAdd.Location = new System.Drawing.Point(6, 19);
             this.btnMatAdd.Name = "btnMatAdd";
-            this.btnMatAdd.Size = new System.Drawing.Size(34, 35);
+            this.btnMatAdd.Size = new System.Drawing.Size(23, 23);
             this.btnMatAdd.TabIndex = 10;
             this.btnMatAdd.UseVisualStyleBackColor = true;
             this.btnMatAdd.Click += new System.EventHandler(this.btnMatAdd_Click);
@@ -468,11 +462,9 @@
             this.groupBox1.Controls.Add(this.btnProRen);
             this.groupBox1.Controls.Add(this.comboboxProjects);
             this.groupBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox1.Location = new System.Drawing.Point(3, 42);
-            this.groupBox1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.groupBox1.Location = new System.Drawing.Point(2, 27);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.groupBox1.Size = new System.Drawing.Size(238, 435);
+            this.groupBox1.Size = new System.Drawing.Size(159, 283);
             this.groupBox1.TabIndex = 11;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Projects";
@@ -482,10 +474,10 @@
             this.btnProAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnProAdd.BackgroundImage = global::StockManagerDB.Properties.Resources.add;
             this.btnProAdd.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.btnProAdd.Location = new System.Drawing.Point(9, 394);
-            this.btnProAdd.Margin = new System.Windows.Forms.Padding(4, 2, 4, 2);
+            this.btnProAdd.Location = new System.Drawing.Point(6, 256);
+            this.btnProAdd.Margin = new System.Windows.Forms.Padding(3, 1, 3, 1);
             this.btnProAdd.Name = "btnProAdd";
-            this.btnProAdd.Size = new System.Drawing.Size(34, 35);
+            this.btnProAdd.Size = new System.Drawing.Size(23, 23);
             this.btnProAdd.TabIndex = 10;
             this.btnProAdd.UseVisualStyleBackColor = true;
             this.btnProAdd.Click += new System.EventHandler(this.btnProAdd_Click);
@@ -495,10 +487,9 @@
             this.btnProDel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnProDel.BackgroundImage = global::StockManagerDB.Properties.Resources.del;
             this.btnProDel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.btnProDel.Location = new System.Drawing.Point(52, 394);
-            this.btnProDel.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.btnProDel.Location = new System.Drawing.Point(35, 256);
             this.btnProDel.Name = "btnProDel";
-            this.btnProDel.Size = new System.Drawing.Size(34, 35);
+            this.btnProDel.Size = new System.Drawing.Size(23, 23);
             this.btnProDel.TabIndex = 10;
             this.btnProDel.UseVisualStyleBackColor = true;
             this.btnProDel.Click += new System.EventHandler(this.btnProDel_Click);
@@ -508,10 +499,9 @@
             this.btnProDup.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnProDup.BackgroundImage = global::StockManagerDB.Properties.Resources.dup;
             this.btnProDup.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.btnProDup.Location = new System.Drawing.Point(96, 394);
-            this.btnProDup.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.btnProDup.Location = new System.Drawing.Point(64, 256);
             this.btnProDup.Name = "btnProDup";
-            this.btnProDup.Size = new System.Drawing.Size(34, 35);
+            this.btnProDup.Size = new System.Drawing.Size(23, 23);
             this.btnProDup.TabIndex = 10;
             this.btnProDup.UseVisualStyleBackColor = true;
             this.btnProDup.Click += new System.EventHandler(this.btnProDup_Click);
@@ -521,10 +511,9 @@
             this.btnProRen.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnProRen.BackgroundImage = global::StockManagerDB.Properties.Resources.ren;
             this.btnProRen.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.btnProRen.Location = new System.Drawing.Point(140, 394);
-            this.btnProRen.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.btnProRen.Location = new System.Drawing.Point(93, 256);
             this.btnProRen.Name = "btnProRen";
-            this.btnProRen.Size = new System.Drawing.Size(34, 35);
+            this.btnProRen.Size = new System.Drawing.Size(23, 23);
             this.btnProRen.TabIndex = 10;
             this.btnProRen.UseVisualStyleBackColor = true;
             this.btnProRen.Click += new System.EventHandler(this.btnProRen_Click);
@@ -537,11 +526,10 @@
             this.groupBox2.Controls.Add(this.comboboxVersions);
             this.groupBox2.Controls.Add(this.btnVerDup);
             this.groupBox2.Controls.Add(this.btnVerRen);
-            this.groupBox2.Location = new System.Drawing.Point(3, 483);
-            this.groupBox2.Margin = new System.Windows.Forms.Padding(4, 2, 4, 5);
+            this.groupBox2.Location = new System.Drawing.Point(2, 314);
+            this.groupBox2.Margin = new System.Windows.Forms.Padding(3, 1, 3, 3);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.groupBox2.Size = new System.Drawing.Size(234, 229);
+            this.groupBox2.Size = new System.Drawing.Size(156, 149);
             this.groupBox2.TabIndex = 12;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Versions";
@@ -551,10 +539,10 @@
             this.btnVerAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnVerAdd.BackgroundImage = global::StockManagerDB.Properties.Resources.add;
             this.btnVerAdd.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.btnVerAdd.Location = new System.Drawing.Point(9, 186);
-            this.btnVerAdd.Margin = new System.Windows.Forms.Padding(4, 2, 4, 2);
+            this.btnVerAdd.Location = new System.Drawing.Point(6, 121);
+            this.btnVerAdd.Margin = new System.Windows.Forms.Padding(3, 1, 3, 1);
             this.btnVerAdd.Name = "btnVerAdd";
-            this.btnVerAdd.Size = new System.Drawing.Size(34, 35);
+            this.btnVerAdd.Size = new System.Drawing.Size(23, 23);
             this.btnVerAdd.TabIndex = 10;
             this.btnVerAdd.UseVisualStyleBackColor = true;
             this.btnVerAdd.Click += new System.EventHandler(this.btnVerAdd_Click);
@@ -564,10 +552,9 @@
             this.btnVerDel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnVerDel.BackgroundImage = global::StockManagerDB.Properties.Resources.del;
             this.btnVerDel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.btnVerDel.Location = new System.Drawing.Point(52, 186);
-            this.btnVerDel.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.btnVerDel.Location = new System.Drawing.Point(35, 121);
             this.btnVerDel.Name = "btnVerDel";
-            this.btnVerDel.Size = new System.Drawing.Size(34, 35);
+            this.btnVerDel.Size = new System.Drawing.Size(23, 23);
             this.btnVerDel.TabIndex = 10;
             this.btnVerDel.UseVisualStyleBackColor = true;
             this.btnVerDel.Click += new System.EventHandler(this.btnVerDel_Click);
@@ -577,10 +564,9 @@
             this.btnVerDup.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnVerDup.BackgroundImage = global::StockManagerDB.Properties.Resources.dup;
             this.btnVerDup.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.btnVerDup.Location = new System.Drawing.Point(96, 186);
-            this.btnVerDup.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.btnVerDup.Location = new System.Drawing.Point(64, 121);
             this.btnVerDup.Name = "btnVerDup";
-            this.btnVerDup.Size = new System.Drawing.Size(34, 35);
+            this.btnVerDup.Size = new System.Drawing.Size(23, 23);
             this.btnVerDup.TabIndex = 10;
             this.btnVerDup.UseVisualStyleBackColor = true;
             this.btnVerDup.Click += new System.EventHandler(this.btnVerDup_Click);
@@ -590,10 +576,9 @@
             this.btnVerRen.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnVerRen.BackgroundImage = global::StockManagerDB.Properties.Resources.ren;
             this.btnVerRen.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.btnVerRen.Location = new System.Drawing.Point(140, 186);
-            this.btnVerRen.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.btnVerRen.Location = new System.Drawing.Point(93, 121);
             this.btnVerRen.Name = "btnVerRen";
-            this.btnVerRen.Size = new System.Drawing.Size(34, 35);
+            this.btnVerRen.Size = new System.Drawing.Size(23, 23);
             this.btnVerRen.TabIndex = 10;
             this.btnVerRen.UseVisualStyleBackColor = true;
             this.btnVerRen.Click += new System.EventHandler(this.btnVerRen_Click);
@@ -609,11 +594,9 @@
             this.groupBox3.Controls.Add(this.btnMatDel);
             this.groupBox3.Controls.Add(this.listviewMaterials);
             this.groupBox3.Controls.Add(this.btnMatDup);
-            this.groupBox3.Location = new System.Drawing.Point(250, 42);
-            this.groupBox3.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.groupBox3.Location = new System.Drawing.Point(167, 27);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.groupBox3.Size = new System.Drawing.Size(1242, 671);
+            this.groupBox3.Size = new System.Drawing.Size(828, 436);
             this.groupBox3.TabIndex = 13;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Bill Of Materials";
@@ -621,10 +604,9 @@
             // label1
             // 
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label1.Location = new System.Drawing.Point(970, 28);
-            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label1.Location = new System.Drawing.Point(647, 18);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(138, 28);
+            this.label1.Size = new System.Drawing.Size(92, 18);
             this.label1.TabIndex = 12;
             this.label1.Text = "Multiplier";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -632,15 +614,14 @@
             // numMult
             // 
             this.numMult.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.numMult.Location = new System.Drawing.Point(1118, 29);
-            this.numMult.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.numMult.Location = new System.Drawing.Point(745, 19);
             this.numMult.Minimum = new decimal(new int[] {
             1,
             0,
             0,
             0});
             this.numMult.Name = "numMult";
-            this.numMult.Size = new System.Drawing.Size(117, 26);
+            this.numMult.Size = new System.Drawing.Size(78, 20);
             this.numMult.TabIndex = 11;
             this.numMult.Value = new decimal(new int[] {
             1,
@@ -657,9 +638,9 @@
             // 
             // frmProjects
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1492, 751);
+            this.ClientSize = new System.Drawing.Size(995, 488);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
@@ -667,8 +648,7 @@
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
-            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.MinimumSize = new System.Drawing.Size(589, 585);
+            this.MinimumSize = new System.Drawing.Size(398, 394);
             this.Name = "frmProjects";
             this.Text = "Projects";
             this.statusStrip1.ResumeLayout(false);

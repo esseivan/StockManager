@@ -514,10 +514,6 @@ namespace StockManagerDB
                 return;
             }
 
-            // Get eventual seleted item
-            Part selItem = listviewParts.SelectedObject as Part;
-            Point lastScroll = listviewParts.LowLevelScrollPosition;
-
             // Main list view : all parts
             listviewParts.DataSource = Parts.Values.ToList();
 
@@ -533,8 +529,11 @@ namespace StockManagerDB
             // Set focus to main listview
             listviewParts.Focus();
 
+            // Get eventual seleted item
+            Point lastScroll = listviewParts.LowLevelScrollPosition;
+
             // Select the last item
-            if (selItem != null)
+            if (listviewParts.SelectedObject is Part selItem)
             {
                 listviewParts.SelectObject(selItem);
             }
@@ -704,7 +703,7 @@ namespace StockManagerDB
 
         private string GetExactFilterRegexString(string baseText, bool isPrefix)
         {
-            string t = Regex.Escape(baseText.Substring(1, baseText.Length-2));
+            string t = Regex.Escape(baseText.Substring(1, baseText.Length - 2));
             Regex regexStr;
             if (isPrefix)
                 regexStr = new Regex($"^{t}(($)|( ))");
@@ -1727,6 +1726,18 @@ namespace StockManagerDB
             return true;
         }
 
+        private void OrderLowStock()
+        {
+            List<Part> selParts = GetPartForProcess();
+
+            // Only keep lowstock ones
+            selParts = selParts.Where((p) => p.Stock < p.LowStock).ToList();
+
+
+
+
+        }
+
         #endregion
 
         #region Misc Events
@@ -1857,14 +1868,20 @@ namespace StockManagerDB
         {
             string note = $"Edit from project form ";
             // Only allow edit of lowstock
-            if ((e == null)
-                || (e.part == null)
-                || (e.editedParamter != Part.Parameter.LowStock))
+            if ((e == null) || (e.part == null))
             {
                 return;
             }
 
-            ApplyEdit(e.part, e.editedParamter, e.value, note);
+            switch (e.editedParamter)
+            {
+                case Part.Parameter.LowStock:
+                case Part.Parameter.Location:
+                    ApplyEdit(e.part, e.editedParamter, e.value, note);
+                    break;
+                default:
+                    break;
+            }
         }
 
         private void importOrderFromDigikeyToolStripMenuItem_Click(object sender, EventArgs e)

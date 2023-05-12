@@ -41,10 +41,9 @@
             // 
             // btnFont
             // 
-            this.btnFont.Location = new System.Drawing.Point(18, 18);
-            this.btnFont.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.btnFont.Location = new System.Drawing.Point(12, 12);
             this.btnFont.Name = "btnFont";
-            this.btnFont.Size = new System.Drawing.Size(112, 35);
+            this.btnFont.Size = new System.Drawing.Size(75, 23);
             this.btnFont.TabIndex = 0;
             this.btnFont.Text = "Change font";
             this.btnFont.UseVisualStyleBackColor = true;
@@ -52,10 +51,9 @@
             // 
             // btnOK
             // 
-            this.btnOK.Location = new System.Drawing.Point(948, 638);
-            this.btnOK.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.btnOK.Location = new System.Drawing.Point(632, 415);
             this.btnOK.Name = "btnOK";
-            this.btnOK.Size = new System.Drawing.Size(112, 35);
+            this.btnOK.Size = new System.Drawing.Size(75, 23);
             this.btnOK.TabIndex = 1;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
@@ -63,10 +61,9 @@
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(1070, 638);
-            this.btnCancel.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.btnCancel.Location = new System.Drawing.Point(713, 415);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(112, 35);
+            this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 1;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
@@ -74,10 +71,9 @@
             // 
             // btnReset
             // 
-            this.btnReset.Location = new System.Drawing.Point(18, 638);
-            this.btnReset.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.btnReset.Location = new System.Drawing.Point(12, 415);
             this.btnReset.Name = "btnReset";
-            this.btnReset.Size = new System.Drawing.Size(146, 35);
+            this.btnReset.Size = new System.Drawing.Size(97, 23);
             this.btnReset.TabIndex = 2;
             this.btnReset.Text = "Reset defaults";
             this.btnReset.UseVisualStyleBackColor = true;
@@ -86,10 +82,9 @@
             // checkboxRecent
             // 
             this.checkboxRecent.AutoSize = true;
-            this.checkboxRecent.Location = new System.Drawing.Point(18, 63);
-            this.checkboxRecent.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.checkboxRecent.Location = new System.Drawing.Point(12, 41);
             this.checkboxRecent.Name = "checkboxRecent";
-            this.checkboxRecent.Size = new System.Drawing.Size(281, 24);
+            this.checkboxRecent.Size = new System.Drawing.Size(189, 17);
             this.checkboxRecent.TabIndex = 3;
             this.checkboxRecent.Text = "Automatically open most recent file";
             this.checkboxRecent.UseVisualStyleBackColor = true;
@@ -97,7 +92,8 @@
             // 
             // numDecimals
             // 
-            this.numDecimals.Location = new System.Drawing.Point(238, 99);
+            this.numDecimals.Location = new System.Drawing.Point(159, 64);
+            this.numDecimals.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.numDecimals.Maximum = new decimal(new int[] {
             9,
             0,
@@ -109,7 +105,7 @@
             0,
             0});
             this.numDecimals.Name = "numDecimals";
-            this.numDecimals.Size = new System.Drawing.Size(61, 26);
+            this.numDecimals.Size = new System.Drawing.Size(41, 20);
             this.numDecimals.TabIndex = 4;
             this.numDecimals.Value = new decimal(new int[] {
             1,
@@ -121,17 +117,18 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(14, 101);
+            this.label1.Location = new System.Drawing.Point(9, 66);
+            this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(131, 20);
+            this.label1.Size = new System.Drawing.Size(88, 13);
             this.label1.TabIndex = 5;
             this.label1.Text = "Cell edit decimals";
             // 
             // frmOptions
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1200, 692);
+            this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.numDecimals);
             this.Controls.Add(this.checkboxRecent);
@@ -139,9 +136,8 @@
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOK);
             this.Controls.Add(this.btnFont);
-            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "frmOptions";
-            this.Text = "frmOptions";
+            this.Text = "Options";
             ((System.ComponentModel.ISupportInitialize)(this.numDecimals)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

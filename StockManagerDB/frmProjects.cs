@@ -517,6 +517,32 @@ namespace StockManagerDB
                     });
 
                     break;
+                case 8: // Location
+                    // Here we edit the PartLink
+                    if (material.PartLink == null)
+                    {
+                        // No link
+                        LoggerClass.Write("No Part link... Aborting...");
+                        return;
+                    }
+
+                    // Verify that an actual change is made
+                    if (material.PartLink.Location?.Equals(newValue) ?? false)
+                    {
+                        // No changes
+                        LoggerClass.Write("No change detected. Aborting...");
+                        return;
+                    }
+
+                    // Do not edit here. Use callback
+                    OnPartEditRequested?.Invoke(this, new PartEditEventArgs()
+                    {
+                        part = material.PartLink,
+                        editedParamter = Part.Parameter.Location,
+                        value = newValue,
+                    });
+
+                    break;
                 default:
                     LoggerClass.Write(
                         $"Unable to edit this column, index='{editedColumn}'",
@@ -967,6 +993,68 @@ namespace StockManagerDB
             return true;
         }
 
+        private void CopyMPNToClipboard(Material material)
+        {
+            Clipboard.SetText(material.MPN);
+            SetStatus("Copied to clipboard...");
+        }
+
+        private void ProcessProjectCheckedParts()
+        {
+            // Get checked parts
+            IEnumerable<Material> checkedParts = listviewMaterials.CheckedObjects.Cast<Material>();
+
+            // If no checked parts, return
+            if (checkedParts.Count() == 0)
+            {
+                return;
+            }
+
+            // For all the checked parts, remove the quantity for the project from the part list (general one)
+            // First, ask to confirm the multiplier, negative number to add allowed
+            Dialog.DialogConfig dc = new Dialog.DialogConfig()
+            {
+                Message = "Please enter the number of time to remove the project's BOM from the part list\n(Note that a negative number is allowed)",
+                Title = "Enter input",
+                Button1 = Dialog.ButtonType.OK,
+                Button2 = Dialog.ButtonType.Cancel,
+                DefaultInput = "1",
+                Input = true,
+                Icon = Dialog.DialogIcon.Question,
+            };
+            Dialog.ShowDialogResult res = Dialog.ShowDialog(dc);
+            if (res.DialogResult != Dialog.DialogResult.OK)
+            {
+                return;
+            }
+
+            // Parse input
+            if (!int.TryParse(res.UserInput, out int n))
+            {
+                MessageBox.Show($"Unable to parse your input : '{res.UserInput}'\nAborting...", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            // Ask confirmation
+            if (MessageBox.Show($"Confirm the process of '{n}' time(s) for the selected project '{selectedProjectVersion.Project}'\n{checkedParts.Count()} out of {BOM.Count} checked part in BOM", "Confirmation", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) != DialogResult.OK)
+            {
+                return;
+            }
+
+            LoggerClass.Write($"Procesing project '{selectedProjectVersion.Project}' for '{n}' time(s)...");
+
+            // Callback to main form
+            OnProjectProcessRequested?.Invoke(this, new ProjectProcessRequestedEventArgs()
+            {
+                numberOfTimes = n,
+                materials = checkedParts,
+                projectName = selectedProjectVersion.Project,
+            });
+
+            SetSuccessStatus(true);
+            this.BringToFront();
+        }
+
         #endregion
 
         #region Misc Events
@@ -1107,64 +1195,12 @@ namespace StockManagerDB
                 return;
             }
 
-            Clipboard.SetText(selectedMaterial.MPN);
-            SetStatus("Copied to clipboard...");
+            CopyMPNToClipboard(selectedMaterial);
         }
 
         private void processProjectToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            // Get checked parts
-            IEnumerable<Material> checkedParts = listviewMaterials.CheckedObjects.Cast<Material>();
-
-            // If no checked parts, return
-            if(checkedParts.Count() == 0)
-            {
-                return;
-            }
-
-            // For all the checked parts, remove the quantity for the project from the part list (general one)
-            // First, ask to confirm the multiplier, negative number to add allowed
-            Dialog.DialogConfig dc = new Dialog.DialogConfig()
-            {
-                Message = "Please enter the number of time to remove the project's BOM from the part list\n(Note that a negative number is allowed)",
-                Title = "Enter input",
-                Button1 = Dialog.ButtonType.OK,
-                Button2 = Dialog.ButtonType.Cancel,
-                DefaultInput = "1",
-                Input = true,
-                Icon = Dialog.DialogIcon.Question,
-            };
-            Dialog.ShowDialogResult res = Dialog.ShowDialog(dc);
-            if (res.DialogResult != Dialog.DialogResult.OK)
-            {
-                return;
-            }
-
-            // Parse input
-            if (!int.TryParse(res.UserInput, out int n))
-            {
-                MessageBox.Show($"Unable to parse your input : '{res.UserInput}'\nAborting...", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            // Ask confirmation
-            if (MessageBox.Show($"Confirm the process of '{n}' time(s) for the selected project '{selectedProjectVersion.Project}'\n{checkedParts.Count()} out of {BOM.Count} checked part in BOM", "Confirmation", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) != DialogResult.OK)
-            {
-                return;
-            }
-
-            LoggerClass.Write($"Procesing project '{selectedProjectVersion.Project}' for '{n}' time(s)...");
-
-            // Callback to main form
-            OnProjectProcessRequested?.Invoke(this, new ProjectProcessRequestedEventArgs()
-            {
-                numberOfTimes = n,
-                materials = checkedParts,
-                projectName = selectedProjectVersion.Project,
-            });
-
-            SetSuccessStatus(true);
-            this.BringToFront();
+            ProcessProjectCheckedParts();
         }
 
         private void statusTimeoutTimer_Tick(object sender, EventArgs e)
