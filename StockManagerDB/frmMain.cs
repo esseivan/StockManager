@@ -11,6 +11,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using dhs = StockManagerDB.DataHolderSingleton;
 
@@ -260,6 +261,7 @@ namespace StockManagerDB
 
         #endregion
 
+        private readonly bool starting = true;
         public frmMain()
         {
             InitializeComponent();
@@ -288,7 +290,7 @@ namespace StockManagerDB
             listviewParts.AllowCheckWithSpace = false;
 
             // Set default filter type
-            cbboxFilterType.SelectedIndex = 2;
+            cbboxFilterType.SelectedIndex = AppSettings.Settings.LastMatchKindUsed;
 
             // Set number label
             UpdateNumberLabel();
@@ -316,6 +318,8 @@ namespace StockManagerDB
                     }
                 }
             }
+
+            starting = false;
         }
 
         #region Settings
@@ -374,17 +378,18 @@ namespace StockManagerDB
             TextMatchFilter filter = null;
             if (!string.IsNullOrEmpty(txt))
             {
+                string[] allTxt = txt.Split(' ');
                 switch (e.filterType)
                 {
                     case 0:
                     default: // Anywhere
-                        filter = TextMatchFilter.Contains(olv, txt);
+                        filter = TextMatchFilter.Contains(olv, allTxt);
                         break;
                     case 1: // At the start
-                        filter = TextMatchFilter.Prefix(olv, txt);
+                        filter = TextMatchFilter.Prefix(olv, allTxt);
                         break;
                     case 2: // As a regex string
-                        filter = TextMatchFilter.Regex(olv, txt);
+                        filter = TextMatchFilter.Regex(olv, allTxt);
                         break;
                 }
             }
@@ -509,10 +514,6 @@ namespace StockManagerDB
                 return;
             }
 
-            // Get eventual seleted item
-            Part selItem = listviewParts.SelectedObject as Part;
-            Point lastScroll = listviewParts.LowLevelScrollPosition;
-
             // Main list view : all parts
             listviewParts.DataSource = Parts.Values.ToList();
 
@@ -528,8 +529,11 @@ namespace StockManagerDB
             // Set focus to main listview
             listviewParts.Focus();
 
+            // Get eventual seleted item
+            Point lastScroll = listviewParts.LowLevelScrollPosition;
+
             // Select the last item
-            if (selItem != null)
+            if (listviewParts.SelectedObject is Part selItem)
             {
                 listviewParts.SelectObject(selItem);
             }
@@ -688,6 +692,28 @@ namespace StockManagerDB
 
         #region TextFiltering
 
+        private bool IsExactFilterString(string text)
+        {
+            // Detect exact match, only in non-regex mode
+            Regex regexDetectExact = new Regex("^[\"][^\"]{1,}[\"]$");
+            Match result = regexDetectExact.Match(text);
+
+            return result.Success;
+        }
+
+        private string GetExactFilterRegexString(string baseText, bool isPrefix)
+        {
+            string t = Regex.Escape(baseText.Substring(1, baseText.Length - 2));
+            Regex regexStr;
+            if (isPrefix)
+                regexStr = new Regex($"^{t}(($)|( ))");
+            else
+                regexStr = new Regex($"((^)|( )){t}(($)|( ))");
+
+            return regexStr.ToString();
+
+        }
+
         /// <summary>
         /// Filter a text in the main part listview
         /// </summary>
@@ -696,25 +722,51 @@ namespace StockManagerDB
         public void Filter(string txt, int matchKind)
         {
             ObjectListView olv = listviewParts;
-            TextMatchFilter filter = null;
+            CompositeAllFilter allFilter = null;
+            List<TextMatchFilter> filters = new List<TextMatchFilter>();
             if (!string.IsNullOrEmpty(txt))
             {
-                switch (matchKind)
+                string[] allTxt = txt.Split(' ').Where((x) => !string.IsNullOrEmpty(x)).ToArray();
+                foreach (string textEntry in allTxt)
                 {
-                    case 0:
-                    default: // Anywhere
-                        filter = TextMatchFilter.Contains(olv, txt);
-                        break;
-                    case 1: // At the start
-                        filter = TextMatchFilter.Prefix(olv, txt);
-                        break;
-                    case 2: // As a regex string
-                        filter = TextMatchFilter.Regex(olv, txt);
-                        break;
+                    switch (matchKind)
+                    {
+                        case 0: // Anywhere
+                            if (IsExactFilterString(textEntry))
+                            {
+                                string regexStr = GetExactFilterRegexString(textEntry, false);
+                                filters.Add(TextMatchFilter.Regex(olv, regexStr));
+                            }
+                            else
+                            {
+                                filters.Add(TextMatchFilter.Contains(olv, textEntry));
+                            }
+                            break;
+
+                        case 1: // At the start
+                            if (IsExactFilterString(textEntry))
+                            {
+                                string regexStr = GetExactFilterRegexString(textEntry, true);
+                                filters.Add(TextMatchFilter.Regex(olv, regexStr));
+                            }
+                            else
+                            {
+                                filters.Add(TextMatchFilter.Prefix(olv, textEntry));
+                            }
+                            break;
+
+                        case 2: // As a regex string
+                            filters.Add(TextMatchFilter.Regex(olv, textEntry));
+                            break;
+
+                        default:
+                            break;
+                    }
                 }
             }
-
-            olv.AdditionalFilter = filter;
+            if (filters != null)
+                allFilter = new CompositeAllFilter(filters.Cast<IModelFilter>().ToList());
+            olv.AdditionalFilter = allFilter;
         }
 
         /// <summary>
@@ -735,8 +787,11 @@ namespace StockManagerDB
         /// <param name="e"></param>
         private void cbboxFilterType_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (starting) return;
             Filter(txtboxFilter.Text, this.cbboxFilterType.SelectedIndex);
             UpdateNumberLabel();
+            // Save last type used
+            AppSettings.Settings.LastMatchKindUsed = cbboxFilterType.SelectedIndex;
         }
 
         #endregion
@@ -1180,6 +1235,12 @@ namespace StockManagerDB
             {
                 return;
             }
+
+            if (e.Control is FloatCellEditor num)
+            {
+                num.DecimalPlaces = AppSettings.Settings.EditCellDecimalPlaces;
+            }
+
 
             e.ListViewItem.Focused = true;
             Rectangle columnBounds = listviewParts.CalculateColumnVisibleBounds(
@@ -1665,6 +1726,18 @@ namespace StockManagerDB
             return true;
         }
 
+        private void OrderLowStock()
+        {
+            List<Part> selParts = GetPartForProcess();
+
+            // Only keep lowstock ones
+            selParts = selParts.Where((p) => p.Stock < p.LowStock).ToList();
+
+
+
+
+        }
+
         #endregion
 
         #region Misc Events
@@ -1700,6 +1773,9 @@ namespace StockManagerDB
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
+            // Save settings
+            AppSettings.Save();
+
             LoggerClass.Write("Closing... Stopping logger", Logger.LogLevels.Info);
             LoggerClass.logger.Dispose();
         }
@@ -1792,14 +1868,20 @@ namespace StockManagerDB
         {
             string note = $"Edit from project form ";
             // Only allow edit of lowstock
-            if ((e == null)
-                || (e.part == null)
-                || (e.editedParamter != Part.Parameter.LowStock))
+            if ((e == null) || (e.part == null))
             {
                 return;
             }
 
-            ApplyEdit(e.part, e.editedParamter, e.value, note);
+            switch (e.editedParamter)
+            {
+                case Part.Parameter.LowStock:
+                case Part.Parameter.Location:
+                    ApplyEdit(e.part, e.editedParamter, e.value, note);
+                    break;
+                default:
+                    break;
+            }
         }
 
         private void importOrderFromDigikeyToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2067,5 +2149,15 @@ namespace StockManagerDB
         }
 
         #endregion
+
+        private void sourceCodeGithubToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Process.Start("https://github.com/esseivan/StockManager");
+        }
+
+        private void openOrderToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

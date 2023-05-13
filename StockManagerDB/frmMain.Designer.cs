@@ -67,9 +67,11 @@
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.projectsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openHistoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openOrderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.seeBackupsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.seeLogsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.sourceCodeGithubToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cbboxFilterType = new System.Windows.Forms.ComboBox();
             this.txtboxFilter = new System.Windows.Forms.TextBox();
@@ -128,6 +130,7 @@
             this.toolsToolStripMenuItem,
             this.projectsToolStripMenuItem,
             this.openHistoryToolStripMenuItem,
+            this.openOrderToolStripMenuItem,
             this.helpToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
@@ -419,11 +422,20 @@
             this.openHistoryToolStripMenuItem.Text = "Open History";
             this.openHistoryToolStripMenuItem.Click += new System.EventHandler(this.openHistoryToolStripMenuItem_Click);
             // 
+            // openOrderToolStripMenuItem
+            // 
+            this.openOrderToolStripMenuItem.Enabled = false;
+            this.openOrderToolStripMenuItem.Name = "openOrderToolStripMenuItem";
+            this.openOrderToolStripMenuItem.Size = new System.Drawing.Size(81, 22);
+            this.openOrderToolStripMenuItem.Text = "Open Order";
+            this.openOrderToolStripMenuItem.Click += new System.EventHandler(this.openOrderToolStripMenuItem_Click);
+            // 
             // helpToolStripMenuItem
             // 
             this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.seeBackupsToolStripMenuItem,
             this.seeLogsToolStripMenuItem,
+            this.sourceCodeGithubToolStripMenuItem,
             this.aboutToolStripMenuItem});
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
             this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 22);
@@ -432,21 +444,28 @@
             // seeBackupsToolStripMenuItem
             // 
             this.seeBackupsToolStripMenuItem.Name = "seeBackupsToolStripMenuItem";
-            this.seeBackupsToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+            this.seeBackupsToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
             this.seeBackupsToolStripMenuItem.Text = "See backups...";
             this.seeBackupsToolStripMenuItem.Click += new System.EventHandler(this.seeBackupsToolStripMenuItem_Click);
             // 
             // seeLogsToolStripMenuItem
             // 
             this.seeLogsToolStripMenuItem.Name = "seeLogsToolStripMenuItem";
-            this.seeLogsToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+            this.seeLogsToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
             this.seeLogsToolStripMenuItem.Text = "See logs...";
             this.seeLogsToolStripMenuItem.Click += new System.EventHandler(this.seeLogsToolStripMenuItem_Click);
+            // 
+            // sourceCodeGithubToolStripMenuItem
+            // 
+            this.sourceCodeGithubToolStripMenuItem.Name = "sourceCodeGithubToolStripMenuItem";
+            this.sourceCodeGithubToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
+            this.sourceCodeGithubToolStripMenuItem.Text = "Source Code (Github)...";
+            this.sourceCodeGithubToolStripMenuItem.Click += new System.EventHandler(this.sourceCodeGithubToolStripMenuItem_Click);
             // 
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
             this.aboutToolStripMenuItem.Text = "About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
@@ -505,7 +524,7 @@
             this.splitContainer1.Panel2.Padding = new System.Windows.Forms.Padding(3);
             this.splitContainer1.Panel2MinSize = 125;
             this.splitContainer1.Size = new System.Drawing.Size(866, 466);
-            this.splitContainer1.SplitterDistance = 270;
+            this.splitContainer1.SplitterDistance = 266;
             this.splitContainer1.TabIndex = 40;
             // 
             // btnPartAdd
@@ -597,7 +616,7 @@
             this.listviewParts.ShowCommandMenuOnRightClick = true;
             this.listviewParts.ShowGroups = false;
             this.listviewParts.ShowImagesOnSubItems = true;
-            this.listviewParts.Size = new System.Drawing.Size(854, 214);
+            this.listviewParts.Size = new System.Drawing.Size(854, 210);
             this.listviewParts.SortGroupItemsByPrimaryColumn = false;
             this.listviewParts.TabIndex = 6;
             this.listviewParts.TintSortColumn = true;
@@ -751,7 +770,7 @@
             this.listviewChecked.ShowCommandMenuOnRightClick = true;
             this.listviewChecked.ShowGroups = false;
             this.listviewChecked.ShowImagesOnSubItems = true;
-            this.listviewChecked.Size = new System.Drawing.Size(854, 136);
+            this.listviewChecked.Size = new System.Drawing.Size(854, 137);
             this.listviewChecked.SortGroupItemsByPrimaryColumn = false;
             this.listviewChecked.TabIndex = 7;
             this.listviewChecked.TintSortColumn = true;
@@ -861,7 +880,7 @@
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
-            this.MinimumSize = new System.Drawing.Size(396, 308);
+            this.MinimumSize = new System.Drawing.Size(394, 302);
             this.Name = "frmMain";
             this.Text = "Stock Manager";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
@@ -962,6 +981,8 @@
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem4;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem5;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem6;
+        private System.Windows.Forms.ToolStripMenuItem sourceCodeGithubToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem openOrderToolStripMenuItem;
     }
 }
 

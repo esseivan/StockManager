@@ -94,6 +94,7 @@
             // 
             // statusStrip1
             // 
+            this.statusStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.labelStatus});
             this.statusStrip1.Location = new System.Drawing.Point(0, 466);
@@ -110,12 +111,14 @@
             // 
             // menuStrip1
             // 
+            this.menuStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
             this.actionsToolStripMenuItem,
             this.viewToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Padding = new System.Windows.Forms.Padding(4, 1, 0, 1);
             this.menuStrip1.Size = new System.Drawing.Size(995, 24);
             this.menuStrip1.TabIndex = 2;
             this.menuStrip1.Text = "menuStrip1";
@@ -128,7 +131,7 @@
             this.toolStripSeparator1,
             this.quitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 22);
             this.fileToolStripMenuItem.Text = "File";
             // 
             // importProjectsToolStripMenuItem
@@ -164,7 +167,7 @@
             this.orderTheSelectedProjectToolStripMenuItem,
             this.processProjectToolStripMenuItem});
             this.actionsToolStripMenuItem.Name = "actionsToolStripMenuItem";
-            this.actionsToolStripMenuItem.Size = new System.Drawing.Size(59, 20);
+            this.actionsToolStripMenuItem.Size = new System.Drawing.Size(59, 22);
             this.actionsToolStripMenuItem.Text = "Actions";
             // 
             // orderTheSelectedProjectToolStripMenuItem
@@ -191,7 +194,7 @@
             this.checkAllToolStripMenuItem,
             this.uncheckAllToolStripMenuItem});
             this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
-            this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
+            this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 22);
             this.viewToolStripMenuItem.Text = "View";
             // 
             // resizeColumnsToolStripMenuItem
@@ -211,12 +214,14 @@
             this.checkAllToolStripMenuItem.Name = "checkAllToolStripMenuItem";
             this.checkAllToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
             this.checkAllToolStripMenuItem.Text = "Check all";
+            this.checkAllToolStripMenuItem.Click += new System.EventHandler(this.checkAllToolStripMenuItem_Click);
             // 
             // uncheckAllToolStripMenuItem
             // 
             this.uncheckAllToolStripMenuItem.Name = "uncheckAllToolStripMenuItem";
             this.uncheckAllToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
             this.uncheckAllToolStripMenuItem.Text = "Uncheck all";
+            this.uncheckAllToolStripMenuItem.Click += new System.EventHandler(this.uncheckAllToolStripMenuItem_Click);
             // 
             // listviewMaterials
             // 
@@ -269,7 +274,7 @@
             this.listviewMaterials.GridLines = true;
             this.listviewMaterials.HideSelection = false;
             this.listviewMaterials.Location = new System.Drawing.Point(5, 47);
-            this.listviewMaterials.Margin = new System.Windows.Forms.Padding(2);
+            this.listviewMaterials.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.listviewMaterials.Name = "listviewMaterials";
             this.listviewMaterials.SelectColumnsOnRightClickBehaviour = BrightIdeasSoftware.ObjectListView.ColumnSelectBehaviour.Submenu;
             this.listviewMaterials.ShowCommandMenuOnRightClick = true;
@@ -348,7 +353,6 @@
             // 
             // olvcLocation
             // 
-            this.olvcLocation.IsEditable = false;
             this.olvcLocation.Text = "Location";
             this.olvcLocation.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -644,7 +648,7 @@
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
-            this.MinimumSize = new System.Drawing.Size(400, 400);
+            this.MinimumSize = new System.Drawing.Size(398, 394);
             this.Name = "frmProjects";
             this.Text = "Projects";
             this.statusStrip1.ResumeLayout(false);
