@@ -19,6 +19,11 @@ namespace StockManagerDB
             InitializeComponent();
         }
 
+        private void PartsHaveChanged()
+        {
+
+        }
+
         /// <summary>
         /// Add parts to order to the list according to lowstock and stock parameters
         /// </summary>
