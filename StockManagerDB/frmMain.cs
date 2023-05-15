@@ -156,6 +156,43 @@ namespace StockManagerDB
             }
         }
 
+        private frmOrder _orderForm = null;
+
+        /// <summary>
+        /// The form that displays projects
+        /// </summary>
+        private frmOrder orderForm
+        {
+            get
+            {
+                if (IsFileLoaded)
+                {
+                    if (_orderForm == null)
+                    {
+                        _orderForm = new frmOrder();
+                        _orderForm.FormClosing += _orderForm_FormClosing;
+                    }
+                }
+                else
+                {
+                    if (_orderForm != null)
+                    {
+                        _orderForm.Close();
+                        _orderForm = null;
+                    }
+                }
+                return _orderForm;
+            }
+            set
+            {
+                if (_orderForm != null)
+                {
+                    _orderForm.Close();
+                }
+                _orderForm = value;
+            }
+        }
+
         private frmSearch _searchForm = null;
 
         /// <summary>
@@ -1364,7 +1401,10 @@ namespace StockManagerDB
                 $"{selected.Count()} part(s) found for automatic order",
                 Logger.LogLevels.Debug
             );
-            Console.WriteLine(selected.Count() + " parts to order");
+
+            orderForm.AddPartsToOrder(selected);
+            orderForm.Show();
+            orderForm.BringToFront();
 
             return true;
         }
@@ -1961,6 +2001,15 @@ namespace StockManagerDB
             _historyForm = null;
         }
 
+
+        private void _orderForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            // When the order form is closing, just hide it
+            e.Cancel = true;
+            orderForm.Hide();
+            this.BringToFront();
+        }
+
         private void _searchForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             // When the history form is closed, bring to fron the main form
@@ -2048,6 +2097,7 @@ namespace StockManagerDB
                 return;
 
             searchForm.Show();
+            searchForm.BringToFront();
         }
         private void listviewParts_CellEditFinished(object sender, CellEditEventArgs e)
         {
@@ -2091,6 +2141,7 @@ namespace StockManagerDB
         {
             optionsForm.ReferenceNewSettings = AppSettings.Settings;
             optionsForm.Show();
+            optionsForm.BringToFront();
         }
 
         private void _optionsForm_FormClosed(object sender, FormClosedEventArgs e)
@@ -2157,7 +2208,8 @@ namespace StockManagerDB
 
         private void openOrderToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            orderForm.Show();
+            orderForm.BringToFront();
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BrightIdeasSoftware;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -7,21 +8,101 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static StockManagerDB.frmProjects;
 
 namespace StockManagerDB
 {
     public partial class frmOrder : Form
     {
-        Dictionary<string, Material> PartsToOrder = new Dictionary<string, Material>();
+        readonly Dictionary<string, Material> PartsToOrder = new Dictionary<string, Material>();
 
         public frmOrder()
         {
             InitializeComponent();
+
+            ListViewSetColumns();
+        }
+
+
+        /// <summary>
+        /// Initialisation of the listviews
+        /// </summary>
+        /// <param name="listview"></param>
+        private void ListViewSetColumns()
+        {
+            // Setup columns
+            olvcMPN.AspectGetter = delegate (object x)
+            {
+                return ((Material)x).MPN;
+            };
+            olvcQuantity.AspectGetter = delegate (object x)
+            {
+                return ((Material)x).Quantity;
+            };
+            olvcMAN.AspectGetter = delegate (object x)
+            {
+                return ((Material)x).PartLink?.Manufacturer;
+            };
+            olvcDesc.AspectGetter = delegate (object x)
+            {
+                return ((Material)x).PartLink?.Description;
+            };
+            olvcCat.AspectGetter = delegate (object x)
+            {
+                return ((Material)x).PartLink?.Category;
+            };
+            olvcLocation.AspectGetter = delegate (object x)
+            {
+                return ((Material)x).PartLink?.Location;
+            };
+            olvcStock.AspectGetter = delegate (object x)
+            {
+                return ((Material)x).PartLink?.Stock;
+            };
+            olvcLowStock.AspectGetter = delegate (object x)
+            {
+                return ((Material)x).PartLink?.LowStock;
+            };
+            olvcPrice.AspectGetter = delegate (object x)
+            {
+                return ((Material)x).PartLink?.Price;
+            };
+            olvcSupplier.AspectGetter = delegate (object x)
+            {
+                return ((Material)x).PartLink?.Supplier;
+            };
+            olvcSPN.AspectGetter = delegate (object x)
+            {
+                return ((Material)x).PartLink?.SPN;
+            };
+            olvcTotalPrice.AspectGetter = delegate (object x)
+            {
+                return ((Material)x).PartLink?.Price * ((Material)x).Quantity;
+            };
+
+            // Make the decoration
+            RowBorderDecoration rbd = new RowBorderDecoration
+            {
+                BorderPen = new Pen(Color.FromArgb(128, Color.DeepSkyBlue), 2),
+                BoundsPadding = new Size(1, 1),
+                CornerRounding = 4.0f
+            };
+
+            // Put the decoration onto the hot item
+            listviewMaterials.HotItemStyle = new HotItemStyle
+            {
+                BackColor = Color.Azure,
+                Decoration = rbd
+            };
         }
 
         private void PartsHaveChanged()
         {
+            listviewMaterials.DataSource = PartsToOrder.Values.ToList();
+            listviewMaterials.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
 
+            // Update richtextbox
+            richTextBox1.Text = string.Join("\n", listviewMaterials.Objects.Cast<Material>().Select((m) => $"{m.PartLink?.SPN}\t{m.QuantityStr}"));
         }
 
         /// <summary>
@@ -33,6 +114,8 @@ namespace StockManagerDB
             foreach (Part part in parts)
             {
                 float qty = part.LowStock - part.Stock;
+                if (qty < 0) continue; // No order to do for this part
+
                 if (PartsToOrder.ContainsKey(part.MPN))
                 {
                     // Add to existing
@@ -47,6 +130,7 @@ namespace StockManagerDB
                     };
                 }
             }
+            PartsHaveChanged();
         }
 
         /// <summary>
@@ -72,6 +156,35 @@ namespace StockManagerDB
                     };
                 }
             }
+        }
+
+        private void clearToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            PartsToOrder.Clear();
+            PartsHaveChanged();
+        }
+
+        private bool InfosVisible = false;
+        private bool MoreInfosVisible = true;
+        private void showHideInfosToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            InfosVisible = !InfosVisible;
+            olvcMAN.IsVisible = olvcLocation.IsVisible = olvcCat.IsVisible = InfosVisible;
+            listviewMaterials.RebuildColumns();
+        }
+
+        private void showHideMoreInfosToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MoreInfosVisible = !MoreInfosVisible;
+            olvcDesc.IsVisible = olvcMPN.IsVisible = MoreInfosVisible;
+            listviewMaterials.RebuildColumns();
+        }
+
+        private void frmOrder_Load(object sender, EventArgs e)
+        {
+            olvcMAN.IsVisible = olvcLocation.IsVisible = olvcCat.IsVisible = InfosVisible;
+            olvcDesc.IsVisible = olvcMPN.IsVisible = MoreInfosVisible;
+            listviewMaterials.RebuildColumns();
         }
     }
 }
