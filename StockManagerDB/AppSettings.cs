@@ -54,6 +54,16 @@ namespace StockManagerDB
         /// </summary>
         public int LastMatchKindUsed { get; set; } = 0;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool Order_ShowInfos { get; set; } = false;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool Order_ShowMoreInfos { get; set; } = true;
+
         #endregion
 
         /// <summary>

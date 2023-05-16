@@ -24,6 +24,7 @@ namespace StockManagerDB
 
         public event EventHandler<PartEditEventArgs> OnPartEditRequested;
         public event EventHandler<ProjectProcessRequestedEventArgs> OnProjectProcessRequested;
+        public event EventHandler<ProjectProcessRequestedEventArgs> OnProjectOrder;
 
         public void ApplySettings()
         {
@@ -1212,7 +1213,13 @@ namespace StockManagerDB
 
         private void orderTheSelectedProjectToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            var selected = listviewMaterials.CheckedObjects.Cast<Material>();
+            OnProjectOrder?.Invoke(this, new ProjectProcessRequestedEventArgs()
+            {
+                materials = selected,
+                numberOfTimes = (byte)numMult.Value,
+                projectName = selectedProjectVersion.Project,
+            });
         }
 
         private void checkAllToolStripMenuItem_Click(object sender, EventArgs e)

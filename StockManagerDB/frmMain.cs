@@ -94,9 +94,10 @@ namespace StockManagerDB
                     if (_projectForm == null)
                     {
                         _projectForm = new frmProjects();
-                        _projectForm.FormClosed += _projectForm_FormClosed;
+                        _projectForm.FormClosed += FrmProjects_FormClosed;
                         _projectForm.OnPartEditRequested += FrmProjects_OnPartEditRequested;
                         _projectForm.OnProjectProcessRequested += FrmProjects_OnProjectProcessRequested;
+                        _projectForm.OnProjectOrder += FrmProjects_OnProjectOrder;
                     }
                 }
                 else
@@ -1403,6 +1404,8 @@ namespace StockManagerDB
             );
 
             orderForm.AddPartsToOrder(selected);
+            // update order form
+            orderForm.SetSuppliers(Parts.Select((x) => x.Value.Supplier).Distinct());
             orderForm.Show();
             orderForm.BringToFront();
 
@@ -1904,6 +1907,15 @@ namespace StockManagerDB
             Cursor.Current = Cursors.Default;
         }
 
+        private void FrmProjects_OnProjectOrder(object sender, ProjectProcessRequestedEventArgs e)
+        {
+            orderForm.AddPartsToOrder(e.materials);
+            // update order form
+            orderForm.SetSuppliers(Parts.Select((x) => x.Value.Supplier).Distinct());
+            orderForm.Show();
+            orderForm.BringToFront();
+        }
+
         private void FrmProjects_OnPartEditRequested(object sender, PartEditEventArgs e)
         {
             string note = $"Edit from project form ";
@@ -1987,7 +1999,7 @@ namespace StockManagerDB
             historyForm.BringToFront();
         }
 
-        private void _projectForm_FormClosed(object sender, FormClosedEventArgs e)
+        private void FrmProjects_FormClosed(object sender, FormClosedEventArgs e)
         {
             // When the project form is closed, bring to fron the main form
             this.BringToFront();

@@ -14,7 +14,10 @@ namespace StockManagerDB
 {
     public partial class frmOrder : Form
     {
-        readonly Dictionary<string, Material> PartsToOrder = new Dictionary<string, Material>();
+        private readonly Dictionary<string, Material> PartsToOrder = new Dictionary<string, Material>();
+
+        private bool InfosVisible { get => AppSettings.Settings.Order_ShowInfos; set => AppSettings.Settings.Order_ShowInfos = value; }
+        private bool MoreInfosVisible { get => AppSettings.Settings.Order_ShowMoreInfos; set => AppSettings.Settings.Order_ShowMoreInfos = value; }
 
         public frmOrder()
         {
@@ -98,11 +101,25 @@ namespace StockManagerDB
 
         private void PartsHaveChanged()
         {
+            Cursor = Cursors.WaitCursor;
             listviewMaterials.DataSource = PartsToOrder.Values.ToList();
             listviewMaterials.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
 
             // Update richtextbox
-            richTextBox1.Text = string.Join("\n", listviewMaterials.Objects.Cast<Material>().Select((m) => $"{m.PartLink?.SPN}\t{m.QuantityStr}"));
+            richTextBox1.Text = string.Join("\n",
+                listviewMaterials.Objects.Cast<Material>().Select(
+                    (m) => $"{m.QuantityStr}, {m.PartLink?.SPN ?? "Undefined"}"
+                    )
+                );
+            Cursor = Cursors.Default;
+        }
+
+        public void SetSuppliers(IEnumerable<string> suppliers)
+        {
+            toolStripComboBox1.Items.Clear();
+            toolStripComboBox1.Items.Add("All");
+            toolStripComboBox1.Items.AddRange(suppliers.ToArray());
+            toolStripComboBox1.SelectedIndex = 0;
         }
 
         /// <summary>
@@ -156,6 +173,7 @@ namespace StockManagerDB
                     };
                 }
             }
+            PartsHaveChanged();
         }
 
         private void clearToolStripMenuItem_Click(object sender, EventArgs e)
@@ -164,8 +182,6 @@ namespace StockManagerDB
             PartsHaveChanged();
         }
 
-        private bool InfosVisible = false;
-        private bool MoreInfosVisible = true;
         private void showHideInfosToolStripMenuItem_Click(object sender, EventArgs e)
         {
             InfosVisible = !InfosVisible;
@@ -185,6 +201,34 @@ namespace StockManagerDB
             olvcMAN.IsVisible = olvcLocation.IsVisible = olvcCat.IsVisible = InfosVisible;
             olvcDesc.IsVisible = olvcMPN.IsVisible = MoreInfosVisible;
             listviewMaterials.RebuildColumns();
+        }
+
+        /// <summary>
+        /// Delete selected parts
+        /// </summary>
+        private void deleteSelection()
+        {
+            IEnumerable<Material> selected = listviewMaterials.SelectedObjects.Cast<Material>();
+
+            foreach (Material item in selected)
+            {
+                if (PartsToOrder.ContainsKey(item.MPN))
+                {
+                    PartsToOrder.Remove(item.MPN);
+                }
+            }
+
+            PartsHaveChanged();
+        }
+
+        private void deleteSelectionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            deleteSelection();
+        }
+
+        private void refreshToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            PartsHaveChanged();
         }
     }
 }
