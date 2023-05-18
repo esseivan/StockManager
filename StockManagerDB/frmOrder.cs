@@ -14,18 +14,30 @@ namespace StockManagerDB
 {
     public partial class frmOrder : Form
     {
-        private readonly Dictionary<string, Material> PartsToOrder = new Dictionary<string, Material>();
+        private readonly Dictionary<string, Material> PartsToOrder =
+            new Dictionary<string, Material>();
 
-        private bool InfosVisible { get => AppSettings.Settings.Order_ShowInfos; set => AppSettings.Settings.Order_ShowInfos = value; }
-        private bool MoreInfosVisible { get => AppSettings.Settings.Order_ShowMoreInfos; set => AppSettings.Settings.Order_ShowMoreInfos = value; }
+        private bool InfosVisible
+        {
+            get => AppSettings.Settings.Order_ShowInfos;
+            set => AppSettings.Settings.Order_ShowInfos = value;
+        }
+        private bool MoreInfosVisible
+        {
+            get => AppSettings.Settings.Order_ShowMoreInfos;
+            set => AppSettings.Settings.Order_ShowMoreInfos = value;
+        }
+
+        private bool init = true;
 
         public frmOrder()
         {
             InitializeComponent();
 
             ListViewSetColumns();
-        }
 
+            init = false;
+        }
 
         /// <summary>
         /// Initialisation of the listviews
@@ -34,51 +46,51 @@ namespace StockManagerDB
         private void ListViewSetColumns()
         {
             // Setup columns
-            olvcMPN.AspectGetter = delegate (object x)
+            olvcMPN.AspectGetter = delegate(object x)
             {
                 return ((Material)x).MPN;
             };
-            olvcQuantity.AspectGetter = delegate (object x)
+            olvcQuantity.AspectGetter = delegate(object x)
             {
                 return ((Material)x).Quantity;
             };
-            olvcMAN.AspectGetter = delegate (object x)
+            olvcMAN.AspectGetter = delegate(object x)
             {
                 return ((Material)x).PartLink?.Manufacturer;
             };
-            olvcDesc.AspectGetter = delegate (object x)
+            olvcDesc.AspectGetter = delegate(object x)
             {
                 return ((Material)x).PartLink?.Description;
             };
-            olvcCat.AspectGetter = delegate (object x)
+            olvcCat.AspectGetter = delegate(object x)
             {
                 return ((Material)x).PartLink?.Category;
             };
-            olvcLocation.AspectGetter = delegate (object x)
+            olvcLocation.AspectGetter = delegate(object x)
             {
                 return ((Material)x).PartLink?.Location;
             };
-            olvcStock.AspectGetter = delegate (object x)
+            olvcStock.AspectGetter = delegate(object x)
             {
                 return ((Material)x).PartLink?.Stock;
             };
-            olvcLowStock.AspectGetter = delegate (object x)
+            olvcLowStock.AspectGetter = delegate(object x)
             {
                 return ((Material)x).PartLink?.LowStock;
             };
-            olvcPrice.AspectGetter = delegate (object x)
+            olvcPrice.AspectGetter = delegate(object x)
             {
                 return ((Material)x).PartLink?.Price;
             };
-            olvcSupplier.AspectGetter = delegate (object x)
+            olvcSupplier.AspectGetter = delegate(object x)
             {
                 return ((Material)x).PartLink?.Supplier;
             };
-            olvcSPN.AspectGetter = delegate (object x)
+            olvcSPN.AspectGetter = delegate(object x)
             {
                 return ((Material)x).PartLink?.SPN;
             };
-            olvcTotalPrice.AspectGetter = delegate (object x)
+            olvcTotalPrice.AspectGetter = delegate(object x)
             {
                 return ((Material)x).PartLink?.Price * ((Material)x).Quantity;
             };
@@ -99,27 +111,59 @@ namespace StockManagerDB
             };
         }
 
+        private void UpdateBulkAddText()
+        {
+            if (cbbSuppliers.SelectedIndex == -1)
+                return;
+
+            IEnumerable<Material> filteredParts;
+
+            if (cbbSuppliers.SelectedIndex == 0)
+            {
+                filteredParts = PartsToOrder.Values;
+            }
+            else
+            {
+                string supplier = cbbSuppliers.SelectedItem.ToString();
+
+                filteredParts = PartsToOrder
+                    .Where(
+                        (x) =>
+                            x.Value.PartLink?.Supplier.Equals(
+                                supplier,
+                                StringComparison.InvariantCultureIgnoreCase
+                            ) ?? false
+                    )
+                    .Select((x) => x.Value);
+            }
+
+            string bulkText = string.Join(
+                "\n",
+                filteredParts.Select((m) => $"{m.QuantityStr}, {m.PartLink?.SPN ?? "Undefined"}")
+            );
+
+            textBulkAdd.Text = bulkText;
+        }
+
         private void PartsHaveChanged()
         {
             Cursor = Cursors.WaitCursor;
             listviewMaterials.DataSource = PartsToOrder.Values.ToList();
             listviewMaterials.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
-
-            // Update richtextbox
-            richTextBox1.Text = string.Join("\n",
-                listviewMaterials.Objects.Cast<Material>().Select(
-                    (m) => $"{m.QuantityStr}, {m.PartLink?.SPN ?? "Undefined"}"
-                    )
-                );
+            UpdateBulkAddText();
             Cursor = Cursors.Default;
         }
 
         public void SetSuppliers(IEnumerable<string> suppliers)
         {
-            toolStripComboBox1.Items.Clear();
-            toolStripComboBox1.Items.Add("All");
-            toolStripComboBox1.Items.AddRange(suppliers.ToArray());
-            toolStripComboBox1.SelectedIndex = 0;
+            init = true;
+            cbbSuppliers.Items.Clear();
+            cbbSuppliers.Items.Add("All");
+            cbbSuppliers.Items.AddRange(suppliers.ToArray());
+            cbbSuppliers.SelectedIndex = 0;
+            init = false;
+
+            UpdateBulkAddText();
         }
 
         /// <summary>
@@ -131,7 +175,8 @@ namespace StockManagerDB
             foreach (Part part in parts)
             {
                 float qty = part.LowStock - part.Stock;
-                if (qty < 0) continue; // No order to do for this part
+                if (qty < 0)
+                    continue; // No order to do for this part
 
                 if (PartsToOrder.ContainsKey(part.MPN))
                 {
@@ -140,11 +185,7 @@ namespace StockManagerDB
                 }
                 else
                 {
-                    PartsToOrder[part.MPN] = new Material()
-                    {
-                        MPN = part.MPN,
-                        Quantity = qty,
-                    };
+                    PartsToOrder[part.MPN] = new Material() { MPN = part.MPN, Quantity = qty, };
                 }
             }
             PartsHaveChanged();
@@ -166,11 +207,7 @@ namespace StockManagerDB
                 }
                 else
                 {
-                    PartsToOrder[mat.MPN] = new Material()
-                    {
-                        MPN = mat.MPN,
-                        Quantity = qty,
-                    };
+                    PartsToOrder[mat.MPN] = new Material() { MPN = mat.MPN, Quantity = qty, };
                 }
             }
             PartsHaveChanged();
@@ -229,6 +266,16 @@ namespace StockManagerDB
         private void refreshToolStripMenuItem_Click(object sender, EventArgs e)
         {
             PartsHaveChanged();
+        }
+
+        private void cbbSuppliers_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (init)
+            {
+                return;
+            }
+
+            UpdateBulkAddText();
         }
     }
 }

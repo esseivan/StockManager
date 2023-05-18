@@ -34,6 +34,11 @@ namespace StockManagerDB
         public string Reference { get; set; }
 
         /// <summary>
+        /// Note for the material
+        /// </summary>
+        public string Note { get; set; }
+
+        /// <summary>
         /// Link to the corresponding part
         /// </summary>
         [JsonIgnore]

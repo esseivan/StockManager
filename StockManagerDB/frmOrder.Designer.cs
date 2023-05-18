@@ -42,14 +42,15 @@
             this.olvcPrice = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcQuantity = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcTotalPrice = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
+            this.textBulkAdd = new System.Windows.Forms.RichTextBox();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.clearToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.refreshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showHideInfosToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showHideMoreInfosToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteSelectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.refreshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripComboBox1 = new System.Windows.Forms.ToolStripComboBox();
+            this.cbbSuppliers = new System.Windows.Forms.ComboBox();
+            this.label1 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.listviewMaterials)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -94,13 +95,14 @@
             this.listviewMaterials.FullRowSelect = true;
             this.listviewMaterials.GridLines = true;
             this.listviewMaterials.HideSelection = false;
-            this.listviewMaterials.Location = new System.Drawing.Point(12, 36);
+            this.listviewMaterials.Location = new System.Drawing.Point(8, 23);
+            this.listviewMaterials.Margin = new System.Windows.Forms.Padding(2);
             this.listviewMaterials.Name = "listviewMaterials";
             this.listviewMaterials.SelectColumnsOnRightClickBehaviour = BrightIdeasSoftware.ObjectListView.ColumnSelectBehaviour.Submenu;
             this.listviewMaterials.ShowCommandMenuOnRightClick = true;
             this.listviewMaterials.ShowGroups = false;
             this.listviewMaterials.ShowImagesOnSubItems = true;
-            this.listviewMaterials.Size = new System.Drawing.Size(761, 552);
+            this.listviewMaterials.Size = new System.Drawing.Size(509, 360);
             this.listviewMaterials.SortGroupItemsByPrimaryColumn = false;
             this.listviewMaterials.TabIndex = 8;
             this.listviewMaterials.TintSortColumn = true;
@@ -187,85 +189,108 @@
             this.olvcTotalPrice.Text = "Total Price";
             this.olvcTotalPrice.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
-            // richTextBox1
+            // textBulkAdd
             // 
-            this.richTextBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.textBulkAdd.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.richTextBox1.Location = new System.Drawing.Point(779, 36);
-            this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(300, 552);
-            this.richTextBox1.TabIndex = 9;
-            this.richTextBox1.Text = "";
+            this.textBulkAdd.Location = new System.Drawing.Point(519, 49);
+            this.textBulkAdd.Margin = new System.Windows.Forms.Padding(2);
+            this.textBulkAdd.Name = "textBulkAdd";
+            this.textBulkAdd.Size = new System.Drawing.Size(201, 334);
+            this.textBulkAdd.TabIndex = 9;
+            this.textBulkAdd.Text = "";
             // 
             // menuStrip1
             // 
-            this.menuStrip1.GripMargin = new System.Windows.Forms.Padding(2, 2, 0, 2);
             this.menuStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.clearToolStripMenuItem,
             this.refreshToolStripMenuItem,
             this.showHideInfosToolStripMenuItem,
             this.showHideMoreInfosToolStripMenuItem,
-            this.deleteSelectionToolStripMenuItem,
-            this.toolStripComboBox1});
+            this.deleteSelectionToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1091, 37);
+            this.menuStrip1.Padding = new System.Windows.Forms.Padding(4, 1, 0, 1);
+            this.menuStrip1.Size = new System.Drawing.Size(727, 24);
             this.menuStrip1.TabIndex = 10;
             this.menuStrip1.Text = "menuStrip1";
             // 
             // clearToolStripMenuItem
             // 
             this.clearToolStripMenuItem.Name = "clearToolStripMenuItem";
-            this.clearToolStripMenuItem.Size = new System.Drawing.Size(67, 33);
+            this.clearToolStripMenuItem.Size = new System.Drawing.Size(46, 22);
             this.clearToolStripMenuItem.Text = "Clear";
             this.clearToolStripMenuItem.Click += new System.EventHandler(this.clearToolStripMenuItem_Click);
+            // 
+            // refreshToolStripMenuItem
+            // 
+            this.refreshToolStripMenuItem.Name = "refreshToolStripMenuItem";
+            this.refreshToolStripMenuItem.Size = new System.Drawing.Size(58, 22);
+            this.refreshToolStripMenuItem.Text = "Refresh";
+            this.refreshToolStripMenuItem.Click += new System.EventHandler(this.refreshToolStripMenuItem_Click);
             // 
             // showHideInfosToolStripMenuItem
             // 
             this.showHideInfosToolStripMenuItem.Name = "showHideInfosToolStripMenuItem";
-            this.showHideInfosToolStripMenuItem.Size = new System.Drawing.Size(160, 33);
+            this.showHideInfosToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
             this.showHideInfosToolStripMenuItem.Text = "Show/Hide infos";
             this.showHideInfosToolStripMenuItem.Click += new System.EventHandler(this.showHideInfosToolStripMenuItem_Click);
             // 
             // showHideMoreInfosToolStripMenuItem
             // 
             this.showHideMoreInfosToolStripMenuItem.Name = "showHideMoreInfosToolStripMenuItem";
-            this.showHideMoreInfosToolStripMenuItem.Size = new System.Drawing.Size(207, 33);
+            this.showHideMoreInfosToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
             this.showHideMoreInfosToolStripMenuItem.Text = "Show/Hide more infos";
             this.showHideMoreInfosToolStripMenuItem.Click += new System.EventHandler(this.showHideMoreInfosToolStripMenuItem_Click);
             // 
             // deleteSelectionToolStripMenuItem
             // 
             this.deleteSelectionToolStripMenuItem.Name = "deleteSelectionToolStripMenuItem";
-            this.deleteSelectionToolStripMenuItem.Size = new System.Drawing.Size(152, 33);
+            this.deleteSelectionToolStripMenuItem.Size = new System.Drawing.Size(102, 22);
             this.deleteSelectionToolStripMenuItem.Text = "Delete selection";
             this.deleteSelectionToolStripMenuItem.Click += new System.EventHandler(this.deleteSelectionToolStripMenuItem_Click);
             // 
-            // refreshToolStripMenuItem
+            // cbbSuppliers
             // 
-            this.refreshToolStripMenuItem.Name = "refreshToolStripMenuItem";
-            this.refreshToolStripMenuItem.Size = new System.Drawing.Size(86, 33);
-            this.refreshToolStripMenuItem.Text = "Refresh";
-            this.refreshToolStripMenuItem.Click += new System.EventHandler(this.refreshToolStripMenuItem_Click);
+            this.cbbSuppliers.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbbSuppliers.FormattingEnabled = true;
+            this.cbbSuppliers.Location = new System.Drawing.Point(579, 23);
+            this.cbbSuppliers.Name = "cbbSuppliers";
+            this.cbbSuppliers.Size = new System.Drawing.Size(141, 21);
+            this.cbbSuppliers.TabIndex = 11;
+            this.cbbSuppliers.SelectedIndexChanged += new System.EventHandler(this.cbbSuppliers_SelectedIndexChanged);
             // 
-            // toolStripComboBox1
+            // label1
             // 
-            this.toolStripComboBox1.Name = "toolStripComboBox1";
-            this.toolStripComboBox1.Size = new System.Drawing.Size(121, 33);
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(522, 26);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(51, 13);
+            this.label1.TabIndex = 12;
+            this.label1.Text = "Supplier :";
             // 
             // frmOrder
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1091, 600);
-            this.Controls.Add(this.richTextBox1);
+            this.ClientSize = new System.Drawing.Size(727, 390);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.cbbSuppliers);
+            this.Controls.Add(this.textBulkAdd);
             this.Controls.Add(this.listviewMaterials);
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "frmOrder";
             this.ShowIcon = false;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Order";
             this.Load += new System.EventHandler(this.frmOrder_Load);
             ((System.ComponentModel.ISupportInitialize)(this.listviewMaterials)).EndInit();
@@ -289,7 +314,7 @@
         private BrightIdeasSoftware.OLVColumn olvcMAN;
         private BrightIdeasSoftware.OLVColumn olvcSupplier;
         private BrightIdeasSoftware.OLVColumn olvcSPN;
-        private System.Windows.Forms.RichTextBox richTextBox1;
+        private System.Windows.Forms.RichTextBox textBulkAdd;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem clearToolStripMenuItem;
         private BrightIdeasSoftware.OLVColumn olvcTotalPrice;
@@ -298,6 +323,7 @@
         private System.Windows.Forms.ToolStripMenuItem showHideMoreInfosToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem deleteSelectionToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem refreshToolStripMenuItem;
-        private System.Windows.Forms.ToolStripComboBox toolStripComboBox1;
+        private System.Windows.Forms.ComboBox cbbSuppliers;
+        private System.Windows.Forms.Label label1;
     }
 }

@@ -58,7 +58,7 @@ namespace StockManagerDB
         public void Save()
         {
             // Sort before save
-            PartHistory.Sort(new Part.CompareMPNThenVersion());
+            PartHistory.Sort(new Part.CompareValidUntil());
 
             SettingsManager.SaveTo(
                 Filepath,

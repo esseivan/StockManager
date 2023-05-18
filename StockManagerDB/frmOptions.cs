@@ -16,6 +16,7 @@ namespace StockManagerDB
         /// Not yet approved modified settings
         /// </summary>
         private AppSettings notApprovedNewSettings = new AppSettings();
+
         /// <summary>
         /// The new app settings class
         /// </summary>
@@ -27,15 +28,13 @@ namespace StockManagerDB
         public bool ChangesMade { get; private set; } = false;
 
         private AppSettings _referenceNewSettings;
+
         /// <summary>
         /// The current app settings to sync the values shown to the user
         /// </summary>
         public AppSettings ReferenceNewSettings
         {
-            get
-            {
-                return _referenceNewSettings;
-            }
+            get { return _referenceNewSettings; }
             set
             {
                 notApprovedNewSettings = _referenceNewSettings = value;
@@ -112,7 +111,8 @@ namespace StockManagerDB
 
         private void checkboxRecent_CheckedChanged(object sender, EventArgs e)
         {
-            if (syncing) return;
+            if (syncing)
+                return;
 
             ChangesMade = true;
             notApprovedNewSettings.OpenRecentOnLaunch = checkboxRecent.Checked;
@@ -120,7 +120,8 @@ namespace StockManagerDB
 
         private void numDecimals_ValueChanged(object sender, EventArgs e)
         {
-            if (syncing) return;
+            if (syncing)
+                return;
 
             ChangesMade = true;
             notApprovedNewSettings.EditCellDecimalPlaces = (int)numDecimals.Value;

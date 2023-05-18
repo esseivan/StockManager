@@ -46,6 +46,7 @@ namespace StockManagerDB
 
             IsReady = true;
         }
+
         public frmSearch(Type enumType)
         {
             InitializeComponent();
@@ -67,7 +68,9 @@ namespace StockManagerDB
                 List<string> categories = Parts.Select((p) => p.Category).Distinct().ToList();
                 categories.Sort();
 
-                listviewCategories.Items.AddRange(categories.Select((p) => new ListViewItem(p)).ToArray());
+                listviewCategories.Items.AddRange(
+                    categories.Select((p) => new ListViewItem(p)).ToArray()
+                );
                 listviewCategories.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
             }
             else
@@ -79,7 +82,9 @@ namespace StockManagerDB
             }
 
             listviewType.Items.Clear();
-            listviewType.Items.AddRange(Enum.GetNames(enumType).Select((x) => new ListViewItem(x)).ToArray());
+            listviewType.Items.AddRange(
+                Enum.GetNames(enumType).Select((x) => new ListViewItem(x)).ToArray()
+            );
             listviewType.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
             listviewType.SelectedIndices.Add(0);
         }
@@ -94,7 +99,11 @@ namespace StockManagerDB
             var args = new FilterEventArgs
             {
                 text = txtboxFilter.Text,
-                category = (listviewCategories.SelectedItems.Count > 0 ? listviewCategories.SelectedItems[0].Text : null),
+                category = (
+                    listviewCategories.SelectedItems.Count > 0
+                        ? listviewCategories.SelectedItems[0].Text
+                        : null
+                ),
                 filterType = cbboxFilterType.SelectedIndex,
                 filterIn = Enum.Parse(enumType, listviewType.SelectedItems[0].Text)
             };
@@ -114,7 +123,6 @@ namespace StockManagerDB
 
         private void listviewType_SelectedIndexChanged(object sender, EventArgs e)
         {
-
             if (!IsReady)
                 return;
 
@@ -128,6 +136,7 @@ namespace StockManagerDB
         }
 
         private bool RuntimeTextboxEdit = false;
+
         private void listviewCategories_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (RuntimeTextboxEdit)
@@ -159,7 +168,6 @@ namespace StockManagerDB
             listviewCategories.SelectedIndices.Clear();
 
             InvokeOnFilterSet();
-
         }
 
         private void btnClearCat_Click(object sender, EventArgs e)
