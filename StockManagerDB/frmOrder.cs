@@ -160,7 +160,8 @@ namespace StockManagerDB
             cbbSuppliers.Items.Clear();
             cbbSuppliers.Items.Add("All");
             cbbSuppliers.Items.AddRange(suppliers.ToArray());
-            cbbSuppliers.SelectedIndex = 0;
+            if (cbbSuppliers.Items.Count > 0)
+                cbbSuppliers.SelectedIndex = 1;
             init = false;
 
             UpdateBulkAddText();

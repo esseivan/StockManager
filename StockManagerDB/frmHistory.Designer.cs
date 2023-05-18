@@ -239,6 +239,7 @@
             // 
             // btnAdv
             // 
+            this.btnAdv.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnAdv.Location = new System.Drawing.Point(592, 10);
             this.btnAdv.Name = "btnAdv";
             this.btnAdv.Size = new System.Drawing.Size(75, 23);
