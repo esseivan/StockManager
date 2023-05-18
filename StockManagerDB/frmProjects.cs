@@ -24,11 +24,15 @@ namespace StockManagerDB
 
         public event EventHandler<PartEditEventArgs> OnPartEditRequested;
         public event EventHandler<ProjectProcessRequestedEventArgs> OnProjectProcessRequested;
+        public event EventHandler<ProjectProcessRequestedEventArgs> OnProjectOrder;
 
         public void ApplySettings()
         {
             this.Font = AppSettings.Settings.AppFont;
-            this.groupBox1.Font = this.groupBox2.Font = this.groupBox3.Font = AppSettings.Settings.AppFont;
+            this.groupBox1.Font =
+                this.groupBox2.Font =
+                this.groupBox3.Font =
+                    AppSettings.Settings.AppFont;
         }
 
         public frmProjects()
@@ -78,64 +82,68 @@ namespace StockManagerDB
         private void ListViewSetColumns()
         {
             // Setup columns
-            olvcMPN.AspectGetter = delegate (object x)
+            olvcMPN.AspectGetter = delegate(object x)
             {
                 return ((Material)x).MPN;
             };
-            olvcQuantity.AspectGetter = delegate (object x)
+            olvcQuantity.AspectGetter = delegate(object x)
             {
                 return ((Material)x).Quantity;
             };
-            olvcReference.AspectGetter = delegate (object x)
+            olvcReference.AspectGetter = delegate(object x)
             {
                 return ((Material)x).Reference;
             };
-            olvcMAN.AspectGetter = delegate (object x)
+            olvcNote.AspectGetter = delegate(object x)
+            {
+                return ((Material)x).Note;
+            };
+            olvcMAN.AspectGetter = delegate(object x)
             {
                 return ((Material)x).PartLink?.Manufacturer;
             };
-            olvcDesc.AspectGetter = delegate (object x)
+            olvcDesc.AspectGetter = delegate(object x)
             {
                 return ((Material)x).PartLink?.Description;
             };
-            olvcCat.AspectGetter = delegate (object x)
+            olvcCat.AspectGetter = delegate(object x)
             {
                 return ((Material)x).PartLink?.Category;
             };
-            olvcLocation.AspectGetter = delegate (object x)
+            olvcLocation.AspectGetter = delegate(object x)
             {
                 return ((Material)x).PartLink?.Location;
             };
-            olvcStock.AspectGetter = delegate (object x)
+            olvcStock.AspectGetter = delegate(object x)
             {
                 return ((Material)x).PartLink?.Stock;
             };
-            olvcLowStock.AspectGetter = delegate (object x)
+            olvcLowStock.AspectGetter = delegate(object x)
             {
                 return ((Material)x).PartLink?.LowStock;
             };
-            olvcPrice.AspectGetter = delegate (object x)
+            olvcPrice.AspectGetter = delegate(object x)
             {
                 return ((Material)x).PartLink?.Price;
             };
-            olvcSupplier.AspectGetter = delegate (object x)
+            olvcSupplier.AspectGetter = delegate(object x)
             {
                 return ((Material)x).PartLink?.Supplier;
             };
-            olvcSPN.AspectGetter = delegate (object x)
+            olvcSPN.AspectGetter = delegate(object x)
             {
                 return ((Material)x).PartLink?.SPN;
             };
 
-            olvcTotalQuantity.AspectGetter = delegate (object x)
+            olvcTotalQuantity.AspectGetter = delegate(object x)
             {
                 return ((Material)x).Quantity * (byte)numMult.Value;
             };
-            olvcTotalPrice.AspectGetter = delegate (object x)
+            olvcTotalPrice.AspectGetter = delegate(object x)
             {
                 return (((Material)x).PartLink?.Price ?? 0) * (byte)numMult.Value;
             };
-            olvcAvailable.AspectGetter = delegate (object x)
+            olvcAvailable.AspectGetter = delegate(object x)
             {
                 bool isAvailable =
                     (((Material)x).Quantity * (byte)numMult.Value)
@@ -456,12 +464,13 @@ namespace StockManagerDB
 
             Material material = e.RowObject as Material;
 
+            string editedColumnName = e.Column.Text;
             int editedColumn = e.Column.Index - 1;
             string newValue = e.NewValue.ToString();
 
-            switch (editedColumn)
+            switch (editedColumnName)
             {
-                case 0: // mpn
+                case "Manufacturer PN": // mpn
                     // Verify that an actual change is made
                     if (material.MPN?.Equals(newValue) ?? false)
                     {
@@ -471,7 +480,7 @@ namespace StockManagerDB
                     }
                     material.MPN = newValue;
                     break;
-                case 1: // quantity
+                case "Quantity": // quantity
                     // Verify that an actual change is made
                     if (material.QuantityStr?.Equals(newValue) ?? false)
                     {
@@ -481,7 +490,7 @@ namespace StockManagerDB
                     }
                     material.QuantityStr = newValue;
                     break;
-                case 2: // reference
+                case "Reference": // reference
                     // Verify that an actual change is made
                     if (material.Reference?.Equals(newValue) ?? false)
                     {
@@ -491,7 +500,17 @@ namespace StockManagerDB
                     }
                     material.Reference = newValue;
                     break;
-                case 9: // LowStock
+                case "Note":
+                    // Verify that an actual change is made
+                    if (material.Note?.Equals(newValue) ?? false)
+                    {
+                        // No changes
+                        LoggerClass.Write("No change detected. Aborting...");
+                        return;
+                    }
+                    material.Note = newValue;
+                    break;
+                case "LowStock": // LowStock
                     // Here we edit the PartLink
                     if (material.PartLink == null)
                     {
@@ -509,15 +528,18 @@ namespace StockManagerDB
                     }
 
                     // Do not edit here. Use callback
-                    OnPartEditRequested?.Invoke(this, new PartEditEventArgs()
-                    {
-                        part = material.PartLink,
-                        editedParamter = Part.Parameter.LowStock,
-                        value = newValue,
-                    });
+                    OnPartEditRequested?.Invoke(
+                        this,
+                        new PartEditEventArgs()
+                        {
+                            part = material.PartLink,
+                            editedParamter = Part.Parameter.LowStock,
+                            value = newValue,
+                        }
+                    );
 
                     break;
-                case 8: // Location
+                case "Location": // Location
                     // Here we edit the PartLink
                     if (material.PartLink == null)
                     {
@@ -535,17 +557,20 @@ namespace StockManagerDB
                     }
 
                     // Do not edit here. Use callback
-                    OnPartEditRequested?.Invoke(this, new PartEditEventArgs()
-                    {
-                        part = material.PartLink,
-                        editedParamter = Part.Parameter.Location,
-                        value = newValue,
-                    });
+                    OnPartEditRequested?.Invoke(
+                        this,
+                        new PartEditEventArgs()
+                        {
+                            part = material.PartLink,
+                            editedParamter = Part.Parameter.Location,
+                            value = newValue,
+                        }
+                    );
 
                     break;
                 default:
                     LoggerClass.Write(
-                        $"Unable to edit this column, index='{editedColumn}'",
+                        $"Unable to edit this column, header='{editedColumnName}'",
                         Logger.LogLevels.Error
                     );
                     break;
@@ -949,7 +974,13 @@ namespace StockManagerDB
 
             DataExportClass dec = new DataExportClass(null, projects);
 
-            SettingsManager.SaveTo(fsd.FileName, dec, backup: SettingsManager.BackupMode.None, indent: true, zipFile: true);
+            SettingsManager.SaveTo(
+                fsd.FileName,
+                dec,
+                backup: SettingsManager.BackupMode.None,
+                indent: true,
+                zipFile: true
+            );
 
             return true;
         }
@@ -1014,7 +1045,8 @@ namespace StockManagerDB
             // First, ask to confirm the multiplier, negative number to add allowed
             Dialog.DialogConfig dc = new Dialog.DialogConfig()
             {
-                Message = "Please enter the number of time to remove the project's BOM from the part list\n(Note that a negative number is allowed)",
+                Message =
+                    "Please enter the number of time to remove the project's BOM from the part list\n(Note that a negative number is allowed)",
                 Title = "Enter input",
                 Button1 = Dialog.ButtonType.OK,
                 Button2 = Dialog.ButtonType.Cancel,
@@ -1031,25 +1063,42 @@ namespace StockManagerDB
             // Parse input
             if (!int.TryParse(res.UserInput, out int n))
             {
-                MessageBox.Show($"Unable to parse your input : '{res.UserInput}'\nAborting...", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    $"Unable to parse your input : '{res.UserInput}'\nAborting...",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
                 return;
             }
 
             // Ask confirmation
-            if (MessageBox.Show($"Confirm the process of '{n}' time(s) for the selected project '{selectedProjectVersion.Project}'\n{checkedParts.Count()} out of {BOM.Count} checked part in BOM", "Confirmation", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) != DialogResult.OK)
+            if (
+                MessageBox.Show(
+                    $"Confirm the process of '{n}' time(s) for the selected project '{selectedProjectVersion.Project}'\n{checkedParts.Count()} out of {BOM.Count} checked part in BOM",
+                    "Confirmation",
+                    MessageBoxButtons.OKCancel,
+                    MessageBoxIcon.Question
+                ) != DialogResult.OK
+            )
             {
                 return;
             }
 
-            LoggerClass.Write($"Procesing project '{selectedProjectVersion.Project}' for '{n}' time(s)...");
+            LoggerClass.Write(
+                $"Procesing project '{selectedProjectVersion.Project}' for '{n}' time(s)..."
+            );
 
             // Callback to main form
-            OnProjectProcessRequested?.Invoke(this, new ProjectProcessRequestedEventArgs()
-            {
-                numberOfTimes = n,
-                materials = checkedParts,
-                projectName = selectedProjectVersion.Project,
-            });
+            OnProjectProcessRequested?.Invoke(
+                this,
+                new ProjectProcessRequestedEventArgs()
+                {
+                    numberOfTimes = n,
+                    materials = checkedParts,
+                    projectName = selectedProjectVersion.Project,
+                }
+            );
 
             SetSuccessStatus(true);
             this.BringToFront();
@@ -1187,6 +1236,7 @@ namespace StockManagerDB
         {
             ImportProjects();
         }
+
         private void listviewMaterials_CellRightClick(object sender, CellRightClickEventArgs e)
         {
             // When rightclicking a cell, copy the MPN of the corresponding row
@@ -1212,7 +1262,16 @@ namespace StockManagerDB
 
         private void orderTheSelectedProjectToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            var selected = listviewMaterials.CheckedObjects.Cast<Material>();
+            OnProjectOrder?.Invoke(
+                this,
+                new ProjectProcessRequestedEventArgs()
+                {
+                    materials = selected,
+                    numberOfTimes = (byte)numMult.Value,
+                    projectName = selectedProjectVersion.Project,
+                }
+            );
         }
 
         private void checkAllToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1234,6 +1293,7 @@ namespace StockManagerDB
         public Part.Parameter editedParamter;
         public string value;
     }
+
     public class ProjectProcessRequestedEventArgs : EventArgs
     {
         public int numberOfTimes;

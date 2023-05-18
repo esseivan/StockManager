@@ -289,5 +289,16 @@ namespace StockManagerDB
                 }
             }
         }
+
+        /// <summary>
+        /// Compare valid until date from most recent to least recent
+        /// </summary>
+        public class CompareValidUntil : Comparer<Part>
+        {
+            public override int Compare(Part x, Part y)
+            {
+                return y.ValidUntil.CompareTo(x.ValidUntil);
+            }
+        }
     }
 }

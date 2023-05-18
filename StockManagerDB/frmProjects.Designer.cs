@@ -51,6 +51,7 @@
             this.olvcMPN = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcQuantity = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcReference = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvcNote = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcStock = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcTotalQuantity = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcAvailable = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
@@ -229,6 +230,7 @@
             this.listviewMaterials.AllColumns.Add(this.olvcMPN);
             this.listviewMaterials.AllColumns.Add(this.olvcQuantity);
             this.listviewMaterials.AllColumns.Add(this.olvcReference);
+            this.listviewMaterials.AllColumns.Add(this.olvcNote);
             this.listviewMaterials.AllColumns.Add(this.olvcStock);
             this.listviewMaterials.AllColumns.Add(this.olvcTotalQuantity);
             this.listviewMaterials.AllColumns.Add(this.olvcAvailable);
@@ -255,6 +257,7 @@
             this.olvcMPN,
             this.olvcQuantity,
             this.olvcReference,
+            this.olvcNote,
             this.olvcStock,
             this.olvcTotalQuantity,
             this.olvcAvailable,
@@ -274,7 +277,7 @@
             this.listviewMaterials.GridLines = true;
             this.listviewMaterials.HideSelection = false;
             this.listviewMaterials.Location = new System.Drawing.Point(5, 47);
-            this.listviewMaterials.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.listviewMaterials.Margin = new System.Windows.Forms.Padding(2);
             this.listviewMaterials.Name = "listviewMaterials";
             this.listviewMaterials.SelectColumnsOnRightClickBehaviour = BrightIdeasSoftware.ObjectListView.ColumnSelectBehaviour.Submenu;
             this.listviewMaterials.ShowCommandMenuOnRightClick = true;
@@ -316,6 +319,11 @@
             // 
             this.olvcReference.Text = "Reference";
             this.olvcReference.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // olvcNote
+            // 
+            this.olvcNote.Text = "Note";
+            this.olvcNote.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // olvcStock
             // 
@@ -650,6 +658,7 @@
             this.MainMenuStrip = this.menuStrip1;
             this.MinimumSize = new System.Drawing.Size(398, 394);
             this.Name = "frmProjects";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Projects";
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
@@ -719,5 +728,6 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripMenuItem checkAllToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem uncheckAllToolStripMenuItem;
+        private BrightIdeasSoftware.OLVColumn olvcNote;
     }
 }

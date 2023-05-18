@@ -40,7 +40,9 @@ namespace StockManagerDB
                     AppSettings.Settings.RecentFiles.Insert(0, value);
                     if (AppSettings.Settings.RecentFiles.Count > 5)
                     {
-                        AppSettings.Settings.RecentFiles = AppSettings.Settings.RecentFiles.Take(5).ToList();
+                        AppSettings.Settings.RecentFiles = AppSettings.Settings.RecentFiles
+                            .Take(5)
+                            .ToList();
                     }
                     AppSettings.Save();
                 }
@@ -94,9 +96,11 @@ namespace StockManagerDB
                     if (_projectForm == null)
                     {
                         _projectForm = new frmProjects();
-                        _projectForm.FormClosed += _projectForm_FormClosed;
+                        _projectForm.FormClosed += FrmProjects_FormClosed;
                         _projectForm.OnPartEditRequested += FrmProjects_OnPartEditRequested;
-                        _projectForm.OnProjectProcessRequested += FrmProjects_OnProjectProcessRequested;
+                        _projectForm.OnProjectProcessRequested +=
+                            FrmProjects_OnProjectProcessRequested;
+                        _projectForm.OnProjectOrder += FrmProjects_OnProjectOrder;
                     }
                 }
                 else
@@ -156,6 +160,43 @@ namespace StockManagerDB
             }
         }
 
+        private frmOrder _orderForm = null;
+
+        /// <summary>
+        /// The form that displays projects
+        /// </summary>
+        private frmOrder orderForm
+        {
+            get
+            {
+                if (IsFileLoaded)
+                {
+                    if (_orderForm == null)
+                    {
+                        _orderForm = new frmOrder();
+                        _orderForm.FormClosing += _orderForm_FormClosing;
+                    }
+                }
+                else
+                {
+                    if (_orderForm != null)
+                    {
+                        _orderForm.Close();
+                        _orderForm = null;
+                    }
+                }
+                return _orderForm;
+            }
+            set
+            {
+                if (_orderForm != null)
+                {
+                    _orderForm.Close();
+                }
+                _orderForm = value;
+            }
+        }
+
         private frmSearch _searchForm = null;
 
         /// <summary>
@@ -196,6 +237,7 @@ namespace StockManagerDB
         }
 
         private frmOptions _optionsForm = null;
+
         /// <summary>
         /// The form that displays projects
         /// </summary>
@@ -262,6 +304,7 @@ namespace StockManagerDB
         #endregion
 
         private readonly bool starting = true;
+
         public frmMain()
         {
             InitializeComponent();
@@ -336,10 +379,11 @@ namespace StockManagerDB
             this.Font = newFontNormal;
             //this.menuStrip1.Font = this.statusStrip1.Font = newFontNormal;
             // Apply bold fonts
-            Font newFontBold = new Font(AppSettings.Settings.AppFont, FontStyle.Bold | AppSettings.Settings.AppFont.Style); // Add bold style
+            Font newFontBold = new Font(
+                AppSettings.Settings.AppFont,
+                FontStyle.Bold | AppSettings.Settings.AppFont.Style
+            ); // Add bold style
             this.label1.Font = this.label2.Font = newFontBold;
-
-
         }
 
         #endregion
@@ -541,7 +585,7 @@ namespace StockManagerDB
             try
             {
                 const int factor = 23; // Looks like the perfect error<->correction factor is 23
-                                       // Maybe depends of the machine ?
+                // Maybe depends of the machine ?
 
                 int delta = lastScroll.Y - listviewParts.LowLevelScrollPosition.Y;
                 Console.WriteLine($"Delta is '{delta}'. Increment {delta * factor}...");
@@ -585,84 +629,84 @@ namespace StockManagerDB
         private void ListViewSetColumns()
         {
             // Setup columns
-            olvcMPN.AspectGetter = delegate (object x)
+            olvcMPN.AspectGetter = delegate(object x)
             {
                 return ((Part)x).MPN;
             };
-            olvcMAN.AspectGetter = delegate (object x)
+            olvcMAN.AspectGetter = delegate(object x)
             {
                 return ((Part)x).Manufacturer;
             };
-            olvcDesc.AspectGetter = delegate (object x)
+            olvcDesc.AspectGetter = delegate(object x)
             {
                 return ((Part)x).Description;
             };
-            olvcCat.AspectGetter = delegate (object x)
+            olvcCat.AspectGetter = delegate(object x)
             {
                 return ((Part)x).Category;
             };
-            olvcLocation.AspectGetter = delegate (object x)
+            olvcLocation.AspectGetter = delegate(object x)
             {
                 return ((Part)x).Location;
             };
-            olvcStock.AspectGetter = delegate (object x)
+            olvcStock.AspectGetter = delegate(object x)
             {
                 return ((Part)x).Stock;
             };
-            olvcLowStock.AspectGetter = delegate (object x)
+            olvcLowStock.AspectGetter = delegate(object x)
             {
                 return ((Part)x).LowStock;
             };
-            olvcPrice.AspectGetter = delegate (object x)
+            olvcPrice.AspectGetter = delegate(object x)
             {
                 return ((Part)x).Price;
             };
-            olvcSupplier.AspectGetter = delegate (object x)
+            olvcSupplier.AspectGetter = delegate(object x)
             {
                 return ((Part)x).Supplier;
             };
-            olvcSPN.AspectGetter = delegate (object x)
+            olvcSPN.AspectGetter = delegate(object x)
             {
                 return ((Part)x).SPN;
             };
 
-            olvcMPN2.AspectGetter = delegate (object x)
+            olvcMPN2.AspectGetter = delegate(object x)
             {
                 return ((Part)x).MPN;
             };
-            olvcMAN2.AspectGetter = delegate (object x)
+            olvcMAN2.AspectGetter = delegate(object x)
             {
                 return ((Part)x).Manufacturer;
             };
-            olvcDesc2.AspectGetter = delegate (object x)
+            olvcDesc2.AspectGetter = delegate(object x)
             {
                 return ((Part)x).Description;
             };
-            olvcCat2.AspectGetter = delegate (object x)
+            olvcCat2.AspectGetter = delegate(object x)
             {
                 return ((Part)x).Category;
             };
-            olvcLocation2.AspectGetter = delegate (object x)
+            olvcLocation2.AspectGetter = delegate(object x)
             {
                 return ((Part)x).Location;
             };
-            olvcStock2.AspectGetter = delegate (object x)
+            olvcStock2.AspectGetter = delegate(object x)
             {
                 return ((Part)x).Stock;
             };
-            olvcLowStock2.AspectGetter = delegate (object x)
+            olvcLowStock2.AspectGetter = delegate(object x)
             {
                 return ((Part)x).LowStock;
             };
-            olvcPrice2.AspectGetter = delegate (object x)
+            olvcPrice2.AspectGetter = delegate(object x)
             {
                 return ((Part)x).Price;
             };
-            olvcSupplier2.AspectGetter = delegate (object x)
+            olvcSupplier2.AspectGetter = delegate(object x)
             {
                 return ((Part)x).Supplier;
             };
-            olvcSPN2.AspectGetter = delegate (object x)
+            olvcSPN2.AspectGetter = delegate(object x)
             {
                 return ((Part)x).SPN;
             };
@@ -711,7 +755,6 @@ namespace StockManagerDB
                 regexStr = new Regex($"((^)|( )){t}(($)|( ))");
 
             return regexStr.ToString();
-
         }
 
         /// <summary>
@@ -787,7 +830,8 @@ namespace StockManagerDB
         /// <param name="e"></param>
         private void cbboxFilterType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (starting) return;
+            if (starting)
+                return;
             Filter(txtboxFilter.Text, this.cbboxFilterType.SelectedIndex);
             UpdateNumberLabel();
             // Save last type used
@@ -1017,7 +1061,12 @@ namespace StockManagerDB
         {
             if (string.IsNullOrEmpty(file) || (!File.Exists(file)))
             {
-                MessageBox.Show($"Error\nFile '{file}' not found...", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    $"Error\nFile '{file}' not found...",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
                 return false;
             }
 
@@ -1026,7 +1075,6 @@ namespace StockManagerDB
             {
                 CloseFile();
             }
-
 
             // Save path
             filepath = file;
@@ -1241,7 +1289,6 @@ namespace StockManagerDB
                 num.DecimalPlaces = AppSettings.Settings.EditCellDecimalPlaces;
             }
 
-
             e.ListViewItem.Focused = true;
             Rectangle columnBounds = listviewParts.CalculateColumnVisibleBounds(
                 listviewParts.Bounds,
@@ -1287,11 +1334,15 @@ namespace StockManagerDB
             ApplyEdit(part, editedParameter, newValue);
         }
 
-
         /// <summary>
         /// Called when a cell is edited
         /// </summary>
-        private void ApplyEdit(Part part, Part.Parameter editedParameter, string newValue, string note = "")
+        private void ApplyEdit(
+            Part part,
+            Part.Parameter editedParameter,
+            string newValue,
+            string note = ""
+        )
         {
             LoggerClass.Write(
                 $"Cell with MPN={part.MPN} edited : Parameter={editedParameter}, Newvalue={newValue}",
@@ -1302,7 +1353,10 @@ namespace StockManagerDB
                 throw new InvalidOperationException("Unable to edit 'undefined'");
             }
             // Verify that an actual change is made
-            if ((part.Parameters.ContainsKey(editedParameter)) && (part.Parameters[editedParameter]?.Equals(newValue) ?? false))
+            if (
+                (part.Parameters.ContainsKey(editedParameter))
+                && (part.Parameters[editedParameter]?.Equals(newValue) ?? false)
+            )
             {
                 // No changes
                 LoggerClass.Write("No change detected. Aborting...");
@@ -1364,7 +1418,11 @@ namespace StockManagerDB
                 $"{selected.Count()} part(s) found for automatic order",
                 Logger.LogLevels.Debug
             );
-            Console.WriteLine(selected.Count() + " parts to order");
+
+            orderForm.AddPartsToOrder(selected);
+            // update order form
+            orderForm.SetSuppliers(Parts.Select((x) => x.Value.Supplier).Distinct());
+            ShowForm(orderForm);
 
             return true;
         }
@@ -1640,7 +1698,13 @@ namespace StockManagerDB
             parts.ForEach((p) => exportParts.Add(p.MPN, p));
             DataExportClass dec = new DataExportClass(exportParts, null);
 
-            SettingsManager.SaveTo(fsd.FileName, dec, backup: SettingsManager.BackupMode.None, indent: true, zipFile: true);
+            SettingsManager.SaveTo(
+                fsd.FileName,
+                dec,
+                backup: SettingsManager.BackupMode.None,
+                indent: true,
+                zipFile: true
+            );
 
             return true;
         }
@@ -1732,10 +1796,6 @@ namespace StockManagerDB
 
             // Only keep lowstock ones
             selParts = selParts.Where((p) => p.Stock < p.LowStock).ToList();
-
-
-
-
         }
 
         #endregion
@@ -1843,7 +1903,10 @@ namespace StockManagerDB
             this.Close();
         }
 
-        private void FrmProjects_OnProjectProcessRequested(object sender, ProjectProcessRequestedEventArgs e)
+        private void FrmProjects_OnProjectProcessRequested(
+            object sender,
+            ProjectProcessRequestedEventArgs e
+        )
         {
             Cursor.Current = Cursors.WaitCursor;
             string note = $"Project processed '{e.projectName}'";
@@ -1854,14 +1917,30 @@ namespace StockManagerDB
                 // Get partlink
                 if (material.PartLink == null)
                 {
-                    LoggerClass.Write($"Unable to process MPN='{material.MPN}', part not found...", Logger.LogLevels.Error);
+                    LoggerClass.Write(
+                        $"Unable to process MPN='{material.MPN}', part not found...",
+                        Logger.LogLevels.Error
+                    );
                     continue;
                 }
 
                 // Apply edit
-                ApplyEdit(material.PartLink, Part.Parameter.Stock, (material.PartLink.Stock - (material.Quantity * e.numberOfTimes)).ToString(), note);
+                ApplyEdit(
+                    material.PartLink,
+                    Part.Parameter.Stock,
+                    (material.PartLink.Stock - (material.Quantity * e.numberOfTimes)).ToString(),
+                    note
+                );
             }
             Cursor.Current = Cursors.Default;
+        }
+
+        private void FrmProjects_OnProjectOrder(object sender, ProjectProcessRequestedEventArgs e)
+        {
+            orderForm.AddPartsToOrder(e.materials);
+            // update order form
+            orderForm.SetSuppliers(Parts.Select((x) => x.Value.Supplier).Distinct());
+            ShowForm(orderForm);
         }
 
         private void FrmProjects_OnPartEditRequested(object sender, PartEditEventArgs e)
@@ -1913,6 +1992,15 @@ namespace StockManagerDB
             );
         }
 
+        private void ShowForm(Form frm)
+        {
+            // Open projects form
+            frm.StartPosition = FormStartPosition.CenterParent;
+            frm.Show();
+            frm.SetDesktopLocation(DesktopLocation.X + 20, DesktopLocation.Y + 20);
+            frm.BringToFront();
+        }
+
         private void projectsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             LoggerClass.Write($"Openning project window...", Logger.LogLevels.Debug);
@@ -1925,9 +2013,7 @@ namespace StockManagerDB
                 return;
             }
 
-            // Open projects form
-            projectForm.Show();
-            projectForm.BringToFront();
+            ShowForm(projectForm);
         }
 
         private void openHistoryToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1943,11 +2029,10 @@ namespace StockManagerDB
             }
 
             // Open projects form
-            historyForm.Show();
-            historyForm.BringToFront();
+            ShowForm(historyForm);
         }
 
-        private void _projectForm_FormClosed(object sender, FormClosedEventArgs e)
+        private void FrmProjects_FormClosed(object sender, FormClosedEventArgs e)
         {
             // When the project form is closed, bring to fron the main form
             this.BringToFront();
@@ -1959,6 +2044,14 @@ namespace StockManagerDB
             // When the history form is closed, bring to fron the main form
             this.BringToFront();
             _historyForm = null;
+        }
+
+        private void _orderForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            // When the order form is closing, just hide it
+            e.Cancel = true;
+            orderForm.Hide();
+            this.BringToFront();
         }
 
         private void _searchForm_FormClosed(object sender, FormClosedEventArgs e)
@@ -2047,12 +2140,14 @@ namespace StockManagerDB
             if (!IsFileLoaded)
                 return;
 
-            searchForm.Show();
+            ShowForm(searchForm);
         }
+
         private void listviewParts_CellEditFinished(object sender, CellEditEventArgs e)
         {
             ApplyEdit(e);
         }
+
         private void seeBackupsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             string backupPath = SettingsManager.GetDefaultBackupPath();
@@ -2072,10 +2167,7 @@ namespace StockManagerDB
             }
         }
 
-        private void frmMain_Shown(object sender, EventArgs e)
-        {
-
-        }
+        private void frmMain_Shown(object sender, EventArgs e) { }
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -2090,7 +2182,7 @@ namespace StockManagerDB
         private void optionsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             optionsForm.ReferenceNewSettings = AppSettings.Settings;
-            optionsForm.Show();
+            ShowForm(optionsForm);
         }
 
         private void _optionsForm_FormClosed(object sender, FormClosedEventArgs e)
@@ -2107,17 +2199,18 @@ namespace StockManagerDB
         }
 
         private Dictionary<int, ToolStripMenuItem> pairs = null;
+
         private void openRecentToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
         {
             if (pairs == null)
             {
                 pairs = new Dictionary<int, ToolStripMenuItem>()
                 {
-                    {0,  toolStripMenuItem2},
-                    {1,  toolStripMenuItem3},
-                    {2,  toolStripMenuItem4},
-                    {3,  toolStripMenuItem5},
-                    {4,  toolStripMenuItem6},
+                    { 0, toolStripMenuItem2 },
+                    { 1, toolStripMenuItem3 },
+                    { 2, toolStripMenuItem4 },
+                    { 3, toolStripMenuItem5 },
+                    { 4, toolStripMenuItem6 },
                 };
             }
 
@@ -2157,7 +2250,16 @@ namespace StockManagerDB
 
         private void openOrderToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            ShowForm(orderForm);
+        }
 
+        private void seeInExplorerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (!IsFileLoaded)
+                return;
+
+            string dir = Path.GetDirectoryName(filepath);
+            Process.Start(dir);
         }
     }
 }
