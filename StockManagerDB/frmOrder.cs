@@ -278,5 +278,48 @@ namespace StockManagerDB
 
             UpdateBulkAddText();
         }
+
+        private void copyMPNToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Get the selected part
+            if (!(listviewMaterials.SelectedObject is Material mat))
+            {
+                return;
+            }
+
+            if (!mat.HasPartLink)
+            {
+                return;
+            }
+
+            mat.PartLink.CopyMPNToClipboard();
+        }
+
+        private void openSupplierUrlToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Get the selected part
+            if (!(listviewMaterials.SelectedObject is Material mat))
+            {
+                return;
+            }
+
+            if (!mat.HasPartLink)
+            {
+                return;
+            }
+
+            mat.PartLink.OpenSupplierUrl();
+        }
+
+        private void listviewMaterials_CellRightClick(object sender, CellRightClickEventArgs e)
+        {
+            // When rightclicking a cell, copy the MPN of the corresponding row
+            if (!(e.Model is Material))
+            {
+                return;
+            }
+
+            contextMenuStrip1.Show(Cursor.Position);
+        }
     }
 }
