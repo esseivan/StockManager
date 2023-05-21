@@ -417,29 +417,14 @@ namespace StockManagerDB
             string txt = e.text;
             Part.Parameter filterIn = (Part.Parameter)e.filterIn;
             string category = e.category;
-
+            int matchKind = e.filterType;
             ObjectListView olv = listviewParts;
-            TextMatchFilter filter = null;
-            if (!string.IsNullOrEmpty(txt))
-            {
-                string[] allTxt = txt.Split(' ');
-                switch (e.filterType)
-                {
-                    case 0:
-                    default: // Anywhere
-                        filter = TextMatchFilter.Contains(olv, allTxt);
-                        break;
-                    case 1: // At the start
-                        filter = TextMatchFilter.Prefix(olv, allTxt);
-                        break;
-                    case 2: // As a regex string
-                        filter = TextMatchFilter.Regex(olv, allTxt);
-                        break;
-                }
-            }
 
+            List<TextMatchFilter> filters = GetFilters(txt, matchKind, olv);
+
+            // Apply the filter to the selected column
             filterHighlightRenderer.FilterInColumn = null;
-            if (filter != null)
+            if (filters != null)
             {
                 OLVColumn column = null;
 
@@ -481,11 +466,13 @@ namespace StockManagerDB
 
                 if (column != null)
                 {
-                    filter.Columns = new OLVColumn[] { column };
+                    OLVColumn[] col = new OLVColumn[] { column };
+                    filters.ForEach((f) => f.Columns = col);
                 }
                 filterHighlightRenderer.FilterInColumn = column;
             }
 
+            // Filter for selected category
             if (!string.IsNullOrEmpty(category))
             {
                 // Apply category filter
@@ -497,7 +484,10 @@ namespace StockManagerDB
                 olvcCat.UseFiltering = false;
             }
 
-            olv.AdditionalFilter = filter ?? new TextMatchFilter(olv);
+            CompositeAllFilter allFilters = new CompositeAllFilter(
+                filters.Cast<IModelFilter>().ToList()
+            );
+            olv.AdditionalFilter = allFilters;
         }
 
         private void PartsHaveChanged()
@@ -765,11 +755,29 @@ namespace StockManagerDB
         public void Filter(string txt, int matchKind)
         {
             ObjectListView olv = listviewParts;
-            CompositeAllFilter allFilter = null;
+
+            var filters = GetFilters(txt, matchKind, olv);
+
+            olv.AdditionalFilter =
+                (filters == null)
+                    ? null
+                    : new CompositeAllFilter(filters.Cast<IModelFilter>().ToList());
+        }
+
+        /// <summary>
+        /// Filter a text in the main part listview
+        /// </summary>
+        /// <param name="txt">Text to filter</param>
+        /// <param name="matchKind">Type of filter</param>
+        public List<TextMatchFilter> GetFilters(string txt, int matchKind, ObjectListView olv)
+        {
             List<TextMatchFilter> filters = new List<TextMatchFilter>();
+
             if (!string.IsNullOrEmpty(txt))
             {
+                // Separate with spaces
                 string[] allTxt = txt.Split(' ').Where((x) => !string.IsNullOrEmpty(x)).ToArray();
+                // Process each entry
                 foreach (string textEntry in allTxt)
                 {
                     switch (matchKind)
@@ -807,9 +815,8 @@ namespace StockManagerDB
                     }
                 }
             }
-            if (filters != null)
-                allFilter = new CompositeAllFilter(filters.Cast<IModelFilter>().ToList());
-            olv.AdditionalFilter = allFilter;
+
+            return filters;
         }
 
         /// <summary>
@@ -1788,14 +1795,6 @@ namespace StockManagerDB
             );
 
             return true;
-        }
-
-        private void OrderLowStock()
-        {
-            List<Part> selParts = GetPartForProcess();
-
-            // Only keep lowstock ones
-            selParts = selParts.Where((p) => p.Stock < p.LowStock).ToList();
         }
 
         #endregion
