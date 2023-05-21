@@ -189,6 +189,7 @@
       <DependentUpon>frmSearch.cs</DependentUpon>
     </Compile>
     <Compile Include="ListPlus.cs" />
+    <Compile Include="ListViewPartInit.cs" />
     <Compile Include="LoggerClass.cs" />
     <Compile Include="Material.cs" />
     <Compile Include="Part.cs" />
