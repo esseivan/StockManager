@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmHistory));
             this.listviewParts = new BrightIdeasSoftware.FastDataListView();
             this.olvcMPN = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
@@ -51,7 +52,11 @@
             this.txtboxFilter = new System.Windows.Forms.TextBox();
             this.btnAdv = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.copyMPNToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openSupplierUrlToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.listviewParts)).BeginInit();
+            this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // listviewParts
@@ -258,6 +263,28 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.copyMPNToolStripMenuItem,
+            this.openSupplierUrlToolStripMenuItem});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(176, 48);
+            // 
+            // copyMPNToolStripMenuItem
+            // 
+            this.copyMPNToolStripMenuItem.Name = "copyMPNToolStripMenuItem";
+            this.copyMPNToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.copyMPNToolStripMenuItem.Text = "Copy MPN";
+            this.copyMPNToolStripMenuItem.Click += new System.EventHandler(this.copyMPNToolStripMenuItem_Click);
+            // 
+            // openSupplierUrlToolStripMenuItem
+            // 
+            this.openSupplierUrlToolStripMenuItem.Name = "openSupplierUrlToolStripMenuItem";
+            this.openSupplierUrlToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.openSupplierUrlToolStripMenuItem.Text = "Open Supplier url...";
+            this.openSupplierUrlToolStripMenuItem.Click += new System.EventHandler(this.openSupplierUrlToolStripMenuItem_Click);
+            // 
             // frmHistory
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -274,6 +301,7 @@
             this.Text = "History";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmHistory_FormClosing);
             ((System.ComponentModel.ISupportInitialize)(this.listviewParts)).EndInit();
+            this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -303,5 +331,8 @@
         private System.Windows.Forms.TextBox txtboxFilter;
         private System.Windows.Forms.Button btnAdv;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem copyMPNToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem openSupplierUrlToolStripMenuItem;
     }
 }

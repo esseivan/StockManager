@@ -342,12 +342,34 @@ namespace StockManagerDB
         private void listviewParts_CellRightClick(object sender, CellRightClickEventArgs e)
         {
             // When rightclicking a cell, copy the MPN of the corresponding row
-            if (!(e.Model is Part selectedPart))
+            if (!(e.Model is Material))
             {
                 return;
             }
 
-            Clipboard.SetText(selectedPart.MPN);
+            contextMenuStrip1.Show(Cursor.Position);
+        }
+
+        private void copyMPNToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Get the selected part
+            if (!(listviewParts.SelectedObject is Part part))
+            {
+                return;
+            }
+
+            part.CopyMPNToClipboard();
+        }
+
+        private void openSupplierUrlToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Get the selected part
+            if (!(listviewParts.SelectedObject is Part part))
+            {
+                return;
+            }
+
+            part.OpenSupplierUrl();
         }
     }
 }
