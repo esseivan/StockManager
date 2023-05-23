@@ -10,6 +10,7 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
@@ -304,7 +305,6 @@ namespace StockManagerDB
         #endregion
 
         private readonly bool starting = true;
-
         public frmMain()
         {
             InitializeComponent();
@@ -699,6 +699,11 @@ namespace StockManagerDB
             olvcSPN2.AspectGetter = delegate(object x)
             {
                 return ((Part)x).SPN;
+            };
+
+            olvcIcon.ImageGetter = delegate (object x)
+            {
+                return Image.FromFile(@"");
             };
 
             // Make the decoration
