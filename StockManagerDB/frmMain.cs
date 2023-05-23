@@ -1,7 +1,10 @@
-﻿using BrightIdeasSoftware;
+﻿using ApiClient;
+using BrightIdeasSoftware;
 using CsvHelper;
+using DigikeyApiWrapper;
 using ESNLib.Controls;
 using ESNLib.Tools;
+using ESNLib.Tools.WinForms;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -311,6 +314,8 @@ namespace StockManagerDB
 
             string[] args = Environment.GetCommandLineArgs();
 
+            ApiClient.Models.ApiClientSettings.SetSandboxMode();
+
             LoggerClass.Init();
             LoggerClass.Write("Application started...", Logger.LogLevels.Info);
             LoggerClass.Write(DateTime.Now.ToString("yyyy.MM.dd HH:mm:ss"), Logger.LogLevels.Info);
@@ -619,84 +624,84 @@ namespace StockManagerDB
         private void ListViewSetColumns()
         {
             // Setup columns
-            olvcMPN.AspectGetter = delegate(object x)
+            olvcMPN.AspectGetter = delegate (object x)
             {
                 return ((Part)x).MPN;
             };
-            olvcMAN.AspectGetter = delegate(object x)
+            olvcMAN.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Manufacturer;
             };
-            olvcDesc.AspectGetter = delegate(object x)
+            olvcDesc.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Description;
             };
-            olvcCat.AspectGetter = delegate(object x)
+            olvcCat.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Category;
             };
-            olvcLocation.AspectGetter = delegate(object x)
+            olvcLocation.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Location;
             };
-            olvcStock.AspectGetter = delegate(object x)
+            olvcStock.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Stock;
             };
-            olvcLowStock.AspectGetter = delegate(object x)
+            olvcLowStock.AspectGetter = delegate (object x)
             {
                 return ((Part)x).LowStock;
             };
-            olvcPrice.AspectGetter = delegate(object x)
+            olvcPrice.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Price;
             };
-            olvcSupplier.AspectGetter = delegate(object x)
+            olvcSupplier.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Supplier;
             };
-            olvcSPN.AspectGetter = delegate(object x)
+            olvcSPN.AspectGetter = delegate (object x)
             {
                 return ((Part)x).SPN;
             };
 
-            olvcMPN2.AspectGetter = delegate(object x)
+            olvcMPN2.AspectGetter = delegate (object x)
             {
                 return ((Part)x).MPN;
             };
-            olvcMAN2.AspectGetter = delegate(object x)
+            olvcMAN2.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Manufacturer;
             };
-            olvcDesc2.AspectGetter = delegate(object x)
+            olvcDesc2.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Description;
             };
-            olvcCat2.AspectGetter = delegate(object x)
+            olvcCat2.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Category;
             };
-            olvcLocation2.AspectGetter = delegate(object x)
+            olvcLocation2.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Location;
             };
-            olvcStock2.AspectGetter = delegate(object x)
+            olvcStock2.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Stock;
             };
-            olvcLowStock2.AspectGetter = delegate(object x)
+            olvcLowStock2.AspectGetter = delegate (object x)
             {
                 return ((Part)x).LowStock;
             };
-            olvcPrice2.AspectGetter = delegate(object x)
+            olvcPrice2.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Price;
             };
-            olvcSupplier2.AspectGetter = delegate(object x)
+            olvcSupplier2.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Supplier;
             };
-            olvcSPN2.AspectGetter = delegate(object x)
+            olvcSPN2.AspectGetter = delegate (object x)
             {
                 return ((Part)x).SPN;
             };
@@ -2165,7 +2170,10 @@ namespace StockManagerDB
             }
         }
 
-        private void frmMain_Shown(object sender, EventArgs e) { }
+        private void frmMain_Shown(object sender, EventArgs e)
+        {
+            GetApiAccess();
+        }
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -2282,6 +2290,108 @@ namespace StockManagerDB
 
             part.CopyMPNToClipboard();
             SetStatus("Copied to clipboard...");
+        }
+
+        private async void GetApiAccess()
+        {
+            var client = new ApiClientWrapper();
+            var result = await client.GetAccess();
+
+            if (result.Success)
+            {
+
+            }
+            else
+            {
+                if (!MiscTools.HasAdminPrivileges())
+                {
+                    MessageBox.Show("Unable to get API access... Pleasy try running the app with Admin privileges.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else
+                {
+                    var res = ESNLib.Controls.Dialog.ShowDialog(new ESNLib.Controls.Dialog.DialogConfig("Unable to get access token... Check the config and the logs", "Error")
+                    {
+                        Button1 = ESNLib.Controls.Dialog.ButtonType.Ignore,
+                        Button2 = ESNLib.Controls.Dialog.ButtonType.Custom1,
+                        CustomButton1Text = "Open log",
+                        Icon = ESNLib.Controls.Dialog.DialogIcon.Error,
+                    });
+                    if (res.DialogResult == ESNLib.Controls.Dialog.DialogResult.Custom1)
+                    {
+                        Process.Start(Logger.Instance.FileOutputPath);
+                    }
+                }
+            }
+        }
+
+        private async void ActionUpdateParts()
+        {
+            // Using Digikey API, update this part.
+            // Ask confirmation because overwrites will be made...
+
+            List<Part> selectedParts = GetPartForProcess();
+
+            Dialog.DialogConfig dc = new Dialog.DialogConfig()
+            {
+                Message = $"Confirm the update of the selected parts ({selectedParts.Count} parts)",
+                Title = "Confirmation",
+                Button1 = Dialog.ButtonType.OK,
+                Button2 = Dialog.ButtonType.Cancel,
+                Icon = Dialog.DialogIcon.Question
+            };
+            Dialog.ShowDialogResult result = Dialog.ShowDialog(dc);
+            if (result.DialogResult != Dialog.DialogResult.OK)
+            {
+                return;
+            }
+
+            Cursor = Cursors.WaitCursor;
+            PartSearch ps = new PartSearch();
+            for (int i = 0; i < selectedParts.Count; i++)
+            {
+                Part part = selectedParts[i];
+                DigikeyPart received;
+                try
+                {
+                    var read = await ps.ProductDetails_Essentials(part.MPN);
+                    received = PartSearch.DeserializeProductDetails(read);
+                }
+                catch (Exception)
+                {
+                    Cursor = Cursors.Default;
+                    LoggerClass.Write($"[DigikeyUpdate] Unable to retrieve data... Aborting", Logger.LogLevels.Error);
+                    return;
+                }
+
+                if (received == null)
+                    continue;
+
+                // Verify that the MPN is exactly the same
+                if (!part.MPN.Equals(received.ManufacturerPartNumber))
+                {
+                    LoggerClass.Write($"[DigikeyUpdate] Unable to validate MPN '{part.MPN}' expected, '{received.ManufacturerPartNumber}' received", Logger.LogLevels.Info);
+                    continue;
+                }
+
+                // Update part
+                Part oldPart = part.CloneForHistory();
+                part.Supplier = "Digikey";
+                part.Manufacturer = received.ManufacturerString;
+                part.SPN = received.DigiKeyPartNumber;
+                part.Price = received.UnitPrice;
+                part.Description = received.DetailedDescription;
+
+                // Add to history
+                data.ManualEditPart(part, oldPart);
+            }
+
+            PartsHaveChanged();
+            Cursor = Cursors.Default;
+        }
+
+        private void updateFromDigikeyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ActionUpdateParts();
         }
     }
 }

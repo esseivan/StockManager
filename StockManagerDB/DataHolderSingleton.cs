@@ -116,6 +116,21 @@ namespace StockManagerDB
             return true;
         }
 
+        /// <summary>
+        /// Manually apply the edit to the history. oldPart must be created with <seealso cref="Part.CloneForHistory"/>
+        /// </summary>
+        /// <param name="newPart"></param>
+        /// <param name="oldPart"></param>
+        /// <returns></returns>
+        public bool ManualEditPart(Part newPart, Part oldPart)
+        {
+            // Update event to history
+            if (!__disable_history)
+                DataHolderHistorySingleton.AddUpdateEvent(oldPart, newPart);
+
+            return true;
+        }
+
         public bool EditPart(string MPN, Part.Parameter param, string value, string note = "")
         {
             if (!Parts.ContainsKey(MPN))
