@@ -372,6 +372,9 @@ namespace StockManagerDB
 
         #region Settings
 
+        /// <summary>
+        /// Apply the settings to the app
+        /// </summary>
         public void ApplySettings()
         {
             /**** Font ****/
@@ -389,6 +392,9 @@ namespace StockManagerDB
                 FontStyle.Bold | AppSettings.Settings.AppFont.Style
             ); // Add bold style
             this.label1.Font = this.label2.Font = newFontBold;
+
+            /**** States ****/
+            onlyAffectCheckedPartsToolStripMenuItem.Checked = AppSettings.Settings.ProcessActionOnCheckedOnly;
         }
 
         #endregion
@@ -886,7 +892,7 @@ namespace StockManagerDB
         private List<Part> GetPartForProcess()
         {
             // If "onlyAffectCheckedParts" is checked, get checked parts. Otherwise all parts
-            if (onlyAffectCheckedPartsToolStripMenuItem.Checked)
+            if (AppSettings.Settings.ProcessActionOnCheckedOnly)
             {
                 LoggerClass.Write(
                     $"Action executing on checked parts only...",
@@ -2403,6 +2409,17 @@ namespace StockManagerDB
         private void updateFromDigikeyToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ActionUpdateParts();
+        }
+
+        private void onlyAffectCheckedPartsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if(starting)
+            {
+                return;
+            }
+
+            AppSettings.Settings.ProcessActionOnCheckedOnly = onlyAffectCheckedPartsToolStripMenuItem.Checked;
+            AppSettings.Save();
         }
     }
 }

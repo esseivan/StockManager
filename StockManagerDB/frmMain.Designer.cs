@@ -128,6 +128,7 @@
             // 
             // menuStrip1
             // 
+            this.menuStrip1.GripMargin = new System.Windows.Forms.Padding(2, 2, 0, 2);
             this.menuStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
@@ -314,12 +315,11 @@
             // 
             // onlyAffectCheckedPartsToolStripMenuItem
             // 
-            this.onlyAffectCheckedPartsToolStripMenuItem.Checked = true;
             this.onlyAffectCheckedPartsToolStripMenuItem.CheckOnClick = true;
-            this.onlyAffectCheckedPartsToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.onlyAffectCheckedPartsToolStripMenuItem.Name = "onlyAffectCheckedPartsToolStripMenuItem";
             this.onlyAffectCheckedPartsToolStripMenuItem.Size = new System.Drawing.Size(314, 34);
             this.onlyAffectCheckedPartsToolStripMenuItem.Text = "Only affect checked parts";
+            this.onlyAffectCheckedPartsToolStripMenuItem.Click += new System.EventHandler(this.onlyAffectCheckedPartsToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
@@ -549,7 +549,7 @@
             this.splitContainer1.Panel2.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.splitContainer1.Panel2MinSize = 125;
             this.splitContainer1.Size = new System.Drawing.Size(1299, 717);
-            this.splitContainer1.SplitterDistance = 511;
+            this.splitContainer1.SplitterDistance = 507;
             this.splitContainer1.SplitterWidth = 6;
             this.splitContainer1.TabIndex = 40;
             // 
@@ -645,7 +645,7 @@
             this.listviewParts.ShowCommandMenuOnRightClick = true;
             this.listviewParts.ShowGroups = false;
             this.listviewParts.ShowImagesOnSubItems = true;
-            this.listviewParts.Size = new System.Drawing.Size(1275, 425);
+            this.listviewParts.Size = new System.Drawing.Size(1275, 421);
             this.listviewParts.SortGroupItemsByPrimaryColumn = false;
             this.listviewParts.TabIndex = 6;
             this.listviewParts.TintSortColumn = true;
