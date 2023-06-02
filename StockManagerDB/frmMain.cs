@@ -543,7 +543,8 @@ namespace StockManagerDB
         private void UpdateListviews(bool resizeColumns = false)
         {
             LoggerClass.Write($"Updating part listview..", Logger.LogLevels.Trace);
-            // If not file loaded, set them to be empty
+
+            // If not file loaded, set the listviews as empty
             if (!IsFileLoaded)
             {
                 LoggerClass.Write($"No file loaded. Aborting...", Logger.LogLevels.Trace);
@@ -553,18 +554,23 @@ namespace StockManagerDB
                 return;
             }
 
+            // save the selected item
+            Part lastItem = listviewParts.SelectedObject as Part;
+
             // Main list view : all parts
             listviewParts.DataSource = Parts.Values.ToList();
 
-            btnPartDup.Enabled = (listviewParts.Items.Count != 0);
+            // Set buttons state
+            btnPartDup.Enabled = listviewParts.Items.Count != 0;
             btnPartAdd.Enabled = IsFileLoaded;
 
-            // Resize columns if required
+            // Resize columns if requested
             if (resizeColumns)
             {
                 LoggerClass.Write($"Resizing columns...", Logger.LogLevels.Trace);
                 listviewParts.AutoResizeColumns();
             }
+
             // Set focus to main listview
             listviewParts.Focus();
 
@@ -572,9 +578,9 @@ namespace StockManagerDB
             Point lastScroll = listviewParts.LowLevelScrollPosition;
 
             // Select the last item
-            if (listviewParts.SelectedObject is Part selItem)
+            if (lastItem != null)
             {
-                listviewParts.SelectObject(selItem);
+                listviewParts.SelectObject(lastItem);
             }
 
             try
@@ -2330,6 +2336,11 @@ namespace StockManagerDB
             // Ask confirmation because overwrites will be made...
 
             List<Part> selectedParts = GetPartForProcess();
+
+            if (selectedParts.Count == 0)
+            {
+                return;
+            }
 
             Dialog.DialogConfig dc = new Dialog.DialogConfig()
             {

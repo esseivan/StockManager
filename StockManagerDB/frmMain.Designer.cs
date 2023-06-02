@@ -54,6 +54,7 @@
             this.onlyAffectCheckedPartsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.makeOrderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.updateFromDigikeyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.exportPartsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importPartsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -114,7 +115,6 @@
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.copyMPNToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openSupplierUrlToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.updateFromDigikeyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -128,7 +128,6 @@
             // 
             // menuStrip1
             // 
-            this.menuStrip1.GripMargin = new System.Windows.Forms.Padding(2, 2, 0, 2);
             this.menuStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
@@ -141,7 +140,6 @@
             this.helpToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Padding = new System.Windows.Forms.Padding(6, 2, 0, 2);
             this.menuStrip1.Size = new System.Drawing.Size(1299, 33);
             this.menuStrip1.TabIndex = 9;
             this.menuStrip1.Text = "menuStrip1";
@@ -316,7 +314,9 @@
             // 
             // onlyAffectCheckedPartsToolStripMenuItem
             // 
+            this.onlyAffectCheckedPartsToolStripMenuItem.Checked = true;
             this.onlyAffectCheckedPartsToolStripMenuItem.CheckOnClick = true;
+            this.onlyAffectCheckedPartsToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.onlyAffectCheckedPartsToolStripMenuItem.Name = "onlyAffectCheckedPartsToolStripMenuItem";
             this.onlyAffectCheckedPartsToolStripMenuItem.Size = new System.Drawing.Size(314, 34);
             this.onlyAffectCheckedPartsToolStripMenuItem.Text = "Only affect checked parts";
@@ -332,6 +332,13 @@
             this.makeOrderToolStripMenuItem.Size = new System.Drawing.Size(314, 34);
             this.makeOrderToolStripMenuItem.Text = "Make Order";
             this.makeOrderToolStripMenuItem.Click += new System.EventHandler(this.makeOrderToolStripMenuItem_Click);
+            // 
+            // updateFromDigikeyToolStripMenuItem
+            // 
+            this.updateFromDigikeyToolStripMenuItem.Name = "updateFromDigikeyToolStripMenuItem";
+            this.updateFromDigikeyToolStripMenuItem.Size = new System.Drawing.Size(314, 34);
+            this.updateFromDigikeyToolStripMenuItem.Text = "Update from Digikey";
+            this.updateFromDigikeyToolStripMenuItem.Click += new System.EventHandler(this.updateFromDigikeyToolStripMenuItem_Click);
             // 
             // toolStripSeparator3
             // 
@@ -542,7 +549,7 @@
             this.splitContainer1.Panel2.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.splitContainer1.Panel2MinSize = 125;
             this.splitContainer1.Size = new System.Drawing.Size(1299, 717);
-            this.splitContainer1.SplitterDistance = 513;
+            this.splitContainer1.SplitterDistance = 511;
             this.splitContainer1.SplitterWidth = 6;
             this.splitContainer1.TabIndex = 40;
             // 
@@ -638,7 +645,7 @@
             this.listviewParts.ShowCommandMenuOnRightClick = true;
             this.listviewParts.ShowGroups = false;
             this.listviewParts.ShowImagesOnSubItems = true;
-            this.listviewParts.Size = new System.Drawing.Size(1275, 427);
+            this.listviewParts.Size = new System.Drawing.Size(1275, 425);
             this.listviewParts.SortGroupItemsByPrimaryColumn = false;
             this.listviewParts.TabIndex = 6;
             this.listviewParts.TintSortColumn = true;
@@ -916,13 +923,6 @@
             this.openSupplierUrlToolStripMenuItem.Size = new System.Drawing.Size(235, 32);
             this.openSupplierUrlToolStripMenuItem.Text = "Open Supplier url...";
             this.openSupplierUrlToolStripMenuItem.Click += new System.EventHandler(this.openSupplierUrlToolStripMenuItem_Click);
-            // 
-            // updateFromDigikeyToolStripMenuItem
-            // 
-            this.updateFromDigikeyToolStripMenuItem.Name = "updateFromDigikeyToolStripMenuItem";
-            this.updateFromDigikeyToolStripMenuItem.Size = new System.Drawing.Size(314, 34);
-            this.updateFromDigikeyToolStripMenuItem.Text = "Update from Digikey";
-            this.updateFromDigikeyToolStripMenuItem.Click += new System.EventHandler(this.updateFromDigikeyToolStripMenuItem_Click);
             // 
             // frmMain
             // 

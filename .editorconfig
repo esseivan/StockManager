@@ -2,3 +2,6 @@
 
 # IDE1006: Naming Styles
 dotnet_diagnostic.IDE1006.severity = silent
+
+# IDE0019: Use pattern matching
+csharp_style_pattern_matching_over_as_with_null_check = false
