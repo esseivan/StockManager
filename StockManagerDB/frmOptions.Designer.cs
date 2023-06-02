@@ -37,6 +37,9 @@
             this.numDecimals = new System.Windows.Forms.NumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.btnRefresh = new System.Windows.Forms.Button();
+            this.lblApiStatus = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
             this.btnShowHide = new System.Windows.Forms.Button();
             this.txtboxClientSecret = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
@@ -46,9 +49,6 @@
             this.label4 = new System.Windows.Forms.Label();
             this.txtboxClientId = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
-            this.btnRefresh = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.numDecimals)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -144,7 +144,7 @@
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.btnRefresh);
-            this.groupBox1.Controls.Add(this.label7);
+            this.groupBox1.Controls.Add(this.lblApiStatus);
             this.groupBox1.Controls.Add(this.label6);
             this.groupBox1.Controls.Add(this.btnShowHide);
             this.groupBox1.Controls.Add(this.txtboxClientSecret);
@@ -161,6 +161,34 @@
             this.groupBox1.TabIndex = 6;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Digikey API";
+            // 
+            // btnRefresh
+            // 
+            this.btnRefresh.Location = new System.Drawing.Point(201, 167);
+            this.btnRefresh.Name = "btnRefresh";
+            this.btnRefresh.Size = new System.Drawing.Size(75, 25);
+            this.btnRefresh.TabIndex = 7;
+            this.btnRefresh.Text = "Refresh";
+            this.btnRefresh.UseVisualStyleBackColor = true;
+            this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
+            // 
+            // lblApiStatus
+            // 
+            this.lblApiStatus.AutoSize = true;
+            this.lblApiStatus.Location = new System.Drawing.Point(104, 170);
+            this.lblApiStatus.Name = "lblApiStatus";
+            this.lblApiStatus.Size = new System.Drawing.Size(91, 20);
+            this.lblApiStatus.TabIndex = 7;
+            this.lblApiStatus.Text = "Unavailable";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(6, 170);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(56, 20);
+            this.label6.TabIndex = 7;
+            this.label6.Text = "Status";
             // 
             // btnShowHide
             // 
@@ -252,34 +280,6 @@
             this.label2.TabIndex = 7;
             this.label2.Text = "ClientId";
             // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(6, 170);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(56, 20);
-            this.label6.TabIndex = 7;
-            this.label6.Text = "Status";
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(104, 170);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(91, 20);
-            this.label7.TabIndex = 7;
-            this.label7.Text = "Unavailable";
-            // 
-            // btnRefresh
-            // 
-            this.btnRefresh.Location = new System.Drawing.Point(201, 167);
-            this.btnRefresh.Name = "btnRefresh";
-            this.btnRefresh.Size = new System.Drawing.Size(75, 25);
-            this.btnRefresh.TabIndex = 7;
-            this.btnRefresh.Text = "Refresh";
-            this.btnRefresh.UseVisualStyleBackColor = true;
-            this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
-            // 
             // frmOptions
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
@@ -296,6 +296,7 @@
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "frmOptions";
             this.Text = "Options";
+            this.Load += new System.EventHandler(this.frmOptions_Load);
             ((System.ComponentModel.ISupportInitialize)(this.numDecimals)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
@@ -324,7 +325,7 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox txtboxRedirectUri;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label lblApiStatus;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Button btnRefresh;
     }

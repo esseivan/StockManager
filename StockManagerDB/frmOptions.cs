@@ -1,8 +1,11 @@
-﻿using ApiClient.Models;
+﻿using ApiClient;
+using ApiClient.Models;
+using ESNLib.Tools;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -156,9 +159,71 @@ namespace StockManagerDB
             if (syncing) return;
         }
 
+        private void UpdateApiAccessStatus(bool status)
+        {
+            lblApiStatus.Text = status ? "Available" : "Unavailable";
+            lblApiStatus.BackColor = status ? Color.LightGreen : Color.LightCoral;
+        }
+
+        private async void GetApiAccess()
+        {
+            var client = new ApiClientWrapper();
+
+            bool valid = client.HaveAccess();
+            if (valid)
+            {
+                UpdateApiAccessStatus(valid);
+                return;
+            }
+
+            ApiClientWrapper.AccessResult result;
+            try
+            {
+                result = await client.GetAccess();
+            }
+            catch (Exception)
+            {
+                UpdateApiAccessStatus(false);
+                return;
+            }
+
+            UpdateApiAccessStatus(result.Success);
+
+            if (!result.Success)
+            {
+                if (!MiscTools.HasAdminPrivileges())
+                {
+                    MessageBox.Show("Unable to get API access... Pleasy try running the app with Admin privileges.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else
+                {
+                    var res = ESNLib.Controls.Dialog.ShowDialog(new ESNLib.Controls.Dialog.DialogConfig("Unable to get access token... Check the config and the logs", "Error")
+                    {
+                        Button1 = ESNLib.Controls.Dialog.ButtonType.Ignore,
+                        Button2 = ESNLib.Controls.Dialog.ButtonType.Custom1,
+                        CustomButton1Text = "Open log",
+                        Icon = ESNLib.Controls.Dialog.DialogIcon.Error,
+                    });
+                    if (res.DialogResult == ESNLib.Controls.Dialog.DialogResult.Custom1)
+                    {
+                        Process.Start(Logger.Instance.FileOutputPath);
+                    }
+                }
+            }
+        }
+
+
         private void btnRefresh_Click(object sender, EventArgs e)
         {
             // Try connecting to API with GetAccess
+            GetApiAccess();
+        }
+
+        private void frmOptions_Load(object sender, EventArgs e)
+        {
+            var client = new ApiClientWrapper();
+            bool valid = client.HaveAccess();
+            UpdateApiAccessStatus(valid);
         }
     }
 }
