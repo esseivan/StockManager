@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ApiClient.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -58,6 +59,13 @@ namespace StockManagerDB
             fontDialog1.Font = ReferenceNewSettings.AppFont;
             checkboxRecent.Checked = ReferenceNewSettings.OpenRecentOnLaunch;
             numDecimals.Value = ReferenceNewSettings.EditCellDecimalPlaces;
+
+            txtboxClientId.Text = ApiClientSettings.GetInstance().ClientId;
+            txtboxClientSecret.Text = ApiClientSettings.GetInstance().ClientSecret;
+            txtboxClientSecret.UseSystemPasswordChar = true;
+            txtboxRedirectUri.Text = ApiClientSettings.GetInstance().RedirectUri;
+            txtboxListenUri.Text = ApiClientSettings.GetInstance().ListenUri;
+
             syncing = false;
         }
 
@@ -67,6 +75,14 @@ namespace StockManagerDB
         private void SetNewAppSettings()
         {
             NewAppSettings = notApprovedNewSettings;
+
+            // Apply api settings
+            ApiClientSettings apiSettings = ApiClientSettings.GetInstance();
+            apiSettings.ClientId = txtboxClientId.Text;
+            apiSettings.ClientSecret = txtboxClientSecret.Text;
+            apiSettings.RedirectUri = txtboxRedirectUri.Text;
+            apiSettings.ListenUri = txtboxListenUri.Text;
+            apiSettings.Save();
         }
 
         /// <summary>
@@ -125,6 +141,24 @@ namespace StockManagerDB
 
             ChangesMade = true;
             notApprovedNewSettings.EditCellDecimalPlaces = (int)numDecimals.Value;
+        }
+
+        bool isClientSecretShown = false;
+        private void btnShowHide_Click(object sender, EventArgs e)
+        {
+            isClientSecretShown = !isClientSecretShown;
+            btnShowHide.Text = isClientSecretShown ? "Hide" : "Show";
+            txtboxClientSecret.UseSystemPasswordChar = !isClientSecretShown;
+        }
+
+        private void txtboxClientId_TextChanged(object sender, EventArgs e)
+        {
+            if (syncing) return;
+        }
+
+        private void btnRefresh_Click(object sender, EventArgs e)
+        {
+            // Try connecting to API with GetAccess
         }
     }
 }
