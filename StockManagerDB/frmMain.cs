@@ -2321,14 +2321,14 @@ namespace StockManagerDB
                 }
                 else
                 {
-                    var res = ESNLib.Controls.Dialog.ShowDialog(new ESNLib.Controls.Dialog.DialogConfig("Unable to get access token... Check the config and the logs", "Error")
+                    var res = Dialog.ShowDialog(new Dialog.DialogConfig("Unable to get access token... Check the config and the logs", "Error")
                     {
-                        Button1 = ESNLib.Controls.Dialog.ButtonType.Ignore,
-                        Button2 = ESNLib.Controls.Dialog.ButtonType.Custom1,
+                        Button1 = Dialog.ButtonType.Ignore,
+                        Button2 = Dialog.ButtonType.Custom1,
                         CustomButton1Text = "Open log",
-                        Icon = ESNLib.Controls.Dialog.DialogIcon.Error,
+                        Icon = Dialog.DialogIcon.Error,
                     });
-                    if (res.DialogResult == ESNLib.Controls.Dialog.DialogResult.Custom1)
+                    if (res.DialogResult == Dialog.DialogResult.Custom1)
                     {
                         Process.Start(Logger.Instance.FileOutputPath);
                     }
