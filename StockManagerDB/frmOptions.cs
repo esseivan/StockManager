@@ -63,11 +63,20 @@ namespace StockManagerDB
             checkboxRecent.Checked = ReferenceNewSettings.OpenRecentOnLaunch;
             numDecimals.Value = ReferenceNewSettings.EditCellDecimalPlaces;
 
-            txtboxClientId.Text = ApiClientSettings.GetInstance().ClientId;
-            txtboxClientSecret.Text = ApiClientSettings.GetInstance().ClientSecret;
-            txtboxClientSecret.UseSystemPasswordChar = true;
-            txtboxRedirectUri.Text = ApiClientSettings.GetInstance().RedirectUri;
-            txtboxListenUri.Text = ApiClientSettings.GetInstance().ListenUri;
+            checkBoxDigikeyAPIEnabled.Checked = AppSettings.Settings.IsDigikeyAPIEnabled;
+            try
+            {
+                var apiclientsettings = ApiClientSettings.GetInstance();
+                txtboxClientId.Text = apiclientsettings.ClientId;
+                txtboxClientSecret.Text = apiclientsettings.ClientSecret;
+                txtboxClientSecret.UseSystemPasswordChar = true;
+                txtboxRedirectUri.Text = apiclientsettings.RedirectUri;
+                txtboxListenUri.Text = apiclientsettings.ListenUri;
+            }
+            catch (Exception)
+            {
+
+            }
 
             syncing = false;
         }

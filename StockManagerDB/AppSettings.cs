@@ -67,7 +67,12 @@ namespace StockManagerDB
         /// <summary>
         /// Are actions processed on only checked parts
         /// </summary>
-        public bool ProcessActionOnCheckedOnly { get; set; } = true;   
+        public bool ProcessActionOnCheckedOnly { get; set; } = true;
+
+        /// <summary>
+        /// Is Digikey API enabled
+        /// </summary>
+        public bool IsDigikeyAPIEnabled { get; set; } = false;
 
         #endregion
 

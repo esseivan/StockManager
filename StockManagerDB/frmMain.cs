@@ -1,4 +1,5 @@
 ﻿using ApiClient;
+using ApiClient.Models;
 using BrightIdeasSoftware;
 using CsvHelper;
 using DigikeyApiWrapper;
@@ -314,7 +315,7 @@ namespace StockManagerDB
 
             string[] args = Environment.GetCommandLineArgs();
 
-            ApiClient.Models.ApiClientSettings.SetSandboxMode();
+            ApiClientSettings.SetSandboxMode();
 
             LoggerClass.Init();
             LoggerClass.Write("Application started...", Logger.LogLevels.Info);
@@ -2184,7 +2185,15 @@ namespace StockManagerDB
 
         private void frmMain_Shown(object sender, EventArgs e)
         {
-            GetApiAccess();
+            try
+            {
+                GetApiAccess();
+                AppSettings.Settings.IsDigikeyAPIEnabled = true;
+            }
+            catch (Exception ex)
+            {
+                LoggerClass.Write($"Unable to get API Access : {ex.Message}", Logger.LogLevels.Error);
+            }
         }
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2306,6 +2315,11 @@ namespace StockManagerDB
 
         private async void GetApiAccess()
         {
+            if(!AppSettings.Settings.IsDigikeyAPIEnabled)
+            {
+                return;
+            }
+
             var client = new ApiClientWrapper();
             var result = await client.GetAccess();
 
