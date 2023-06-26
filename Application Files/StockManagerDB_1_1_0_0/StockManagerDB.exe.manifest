@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <asmv1:assembly xsi:schemaLocation="urn:schemas-microsoft-com:asm.v1 assembly.adaptive.xsd" manifestVersion="1.0" xmlns:asmv1="urn:schemas-microsoft-com:asm.v1" xmlns="urn:schemas-microsoft-com:asm.v2" xmlns:asmv2="urn:schemas-microsoft-com:asm.v2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:co.v1="urn:schemas-microsoft-com:clickonce.v1" xmlns:asmv3="urn:schemas-microsoft-com:asm.v3" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" xmlns:co.v2="urn:schemas-microsoft-com:clickonce.v2">
-  <asmv1:assemblyIdentity name="StockManagerDB.exe" version="1.0.18.0" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="msil" type="win32" />
+  <asmv1:assemblyIdentity name="StockManagerDB.exe" version="1.1.0.0" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="msil" type="win32" />
   <description asmv2:iconFile="logo.ico" xmlns="urn:schemas-microsoft-com:asm.v1" />
   <application />
   <entryPoint>
@@ -43,14 +43,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ApiClient.dll" size="43520">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ApiClient.dll" size="40448">
       <assemblyIdentity name="ApiClient" version="1.0.1.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>mCWsKlgoYOkQmrWRWP7usYerF2Uso0+4qPKzeSglWX4=</dsig:DigestValue>
+        <dsig:DigestValue>TsKoTuYZTfqgszCgo7o/KhbKpmx4lLCBUTIe7A3qgHw=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -98,7 +98,7 @@
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>aC1uTWfX4swp4NBZ7SlMLlp+/inweXuHCU9PTMYh2pA=</dsig:DigestValue>
+        <dsig:DigestValue>wsQkXgRD4/krEBKf0qGstEf8z77siEip2dkDoMRlub4=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -200,25 +200,25 @@
   </dependency>
   <dependency>
     <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ObjectListView.dll" size="430592">
-      <assemblyIdentity name="ObjectListView" version="2.9.1.23532" publicKeyToken="B1C5BF581481BCD4" language="neutral" processorArchitecture="msil" />
+      <assemblyIdentity name="ObjectListView" version="2.9.1.31923" publicKeyToken="B1C5BF581481BCD4" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>8I5mXh4SqLBWmtFRYofIpcAEK9GiXOV0tSRi37a2KrQ=</dsig:DigestValue>
+        <dsig:DigestValue>k+hMNOZeHfpf/YLmM/sGptrdxS246+EmKoljj+H6ijg=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="StockManagerDB.exe" size="382976">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="StockManagerDB.exe" size="385024">
       <assemblyIdentity name="StockManagerDB" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>WlEWZrcfqM/wl3JHL77oc2z/6yETKr+lT/UMl6UXtWg=</dsig:DigestValue>
+        <dsig:DigestValue>hZ6Gb/I5i4WFlC9SB0RDND0zLT+O8fCGjja/TuKvWuQ=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
