@@ -2393,7 +2393,7 @@ namespace StockManagerDB
 
         private async void ActionUpdateParts()
         {
-            if(!AppSettings.Settings.IsDigikeyAPIEnabled)
+            if (!AppSettings.Settings.IsDigikeyAPIEnabled)
             {
                 return;
             }
@@ -2426,6 +2426,7 @@ namespace StockManagerDB
             }
             LoggerClass.Write($"[DigikeyUpdate] Processing {selectedParts.Count} part(s)");
 
+            SetWorkingStatus();
             Cursor = Cursors.WaitCursor;
             PartSearch ps = new PartSearch();
             for (int i = 0; i < selectedParts.Count; i++)
@@ -2482,6 +2483,7 @@ namespace StockManagerDB
 
             PartsHaveChanged();
             Cursor = Cursors.Default;
+            SetSuccessStatus(true);
         }
 
         private void updateFromDigikeyToolStripMenuItem_Click(object sender, EventArgs e)
