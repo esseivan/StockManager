@@ -2216,10 +2216,12 @@ namespace StockManagerDB
             int count = AppSettings.Settings.RecentFiles.Count;
             for (int i = 0; i < pairs.Count; i++)
             {
+                pairs[i].Click -= toolStripMenuItemRecentFile_Click;
                 if (i < count)
                 {
                     pairs[i].Visible = true;
                     pairs[i].Text = AppSettings.Settings.RecentFiles[i];
+                    pairs[i].Click += toolStripMenuItemRecentFile_Click;
                 }
                 else
                 {
