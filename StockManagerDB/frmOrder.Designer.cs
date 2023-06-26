@@ -199,6 +199,7 @@
             // 
             this.textBulkAdd.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBulkAdd.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBulkAdd.Location = new System.Drawing.Point(519, 49);
             this.textBulkAdd.Margin = new System.Windows.Forms.Padding(2);
             this.textBulkAdd.Name = "textBulkAdd";
