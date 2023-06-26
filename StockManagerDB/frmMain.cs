@@ -1422,7 +1422,6 @@ namespace StockManagerDB
             // Select parts with current stock lower than lowStock limit
             IEnumerable<Part> selected = parts.Where((part) => (part.Stock < part.LowStock));
 
-            // TODO : Actually make order
             LoggerClass.Write(
                 $"{selected.Count()} part(s) found for automatic order",
                 Logger.LogLevels.Debug
@@ -1432,6 +1431,38 @@ namespace StockManagerDB
             // update order form
             orderForm.SetSuppliers(Parts.Select((x) => x.Value.Supplier).Distinct());
             ShowForm(orderForm);
+
+            return true;
+        }
+
+        private bool AddSelectionToProject()
+        {
+            if (!IsFileLoaded)
+            {
+                LoggerClass.Write(
+                    "Unable to process action. No file is loaded.",
+                    Logger.LogLevels.Debug
+                );
+                MessageBox.Show(
+                    "No file loaded ! Open or create a new one",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+                return false;
+            }
+
+            LoggerClass.Write($"Adding parts to order...", Logger.LogLevels.Debug);
+            List<Part> parts = GetPartForProcess();
+
+            LoggerClass.Write(
+                $"{parts.Count} part(s) found to add to project",
+                Logger.LogLevels.Debug
+            );
+
+            // TODO : show form to add to projects
+
+            //ShowForm(orderForm);
 
             return true;
         }
@@ -2251,8 +2282,6 @@ namespace StockManagerDB
             SetSuccessStatus(result);
         }
 
-        #endregion
-
         private void sourceCodeGithubToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Process.Start("https://github.com/esseivan/StockManager");
@@ -2295,5 +2324,12 @@ namespace StockManagerDB
             part.CopyMPNToClipboard();
             SetStatus("Copied to clipboard...");
         }
+
+        private void addToProjectToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AddSelectionToProject();
+        }
+
+        #endregion
     }
 }
