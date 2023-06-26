@@ -417,29 +417,14 @@ namespace StockManagerDB
             string txt = e.text;
             Part.Parameter filterIn = (Part.Parameter)e.filterIn;
             string category = e.category;
-
+            int matchKind = e.filterType;
             ObjectListView olv = listviewParts;
-            TextMatchFilter filter = null;
-            if (!string.IsNullOrEmpty(txt))
-            {
-                string[] allTxt = txt.Split(' ');
-                switch (e.filterType)
-                {
-                    case 0:
-                    default: // Anywhere
-                        filter = TextMatchFilter.Contains(olv, allTxt);
-                        break;
-                    case 1: // At the start
-                        filter = TextMatchFilter.Prefix(olv, allTxt);
-                        break;
-                    case 2: // As a regex string
-                        filter = TextMatchFilter.Regex(olv, allTxt);
-                        break;
-                }
-            }
 
+            List<TextMatchFilter> filters = GetFilters(txt, matchKind, olv);
+
+            // Apply the filter to the selected column
             filterHighlightRenderer.FilterInColumn = null;
-            if (filter != null)
+            if (filters != null)
             {
                 OLVColumn column = null;
 
@@ -481,11 +466,13 @@ namespace StockManagerDB
 
                 if (column != null)
                 {
-                    filter.Columns = new OLVColumn[] { column };
+                    OLVColumn[] col = new OLVColumn[] { column };
+                    filters.ForEach((f) => f.Columns = col);
                 }
                 filterHighlightRenderer.FilterInColumn = column;
             }
 
+            // Filter for selected category
             if (!string.IsNullOrEmpty(category))
             {
                 // Apply category filter
@@ -497,7 +484,10 @@ namespace StockManagerDB
                 olvcCat.UseFiltering = false;
             }
 
-            olv.AdditionalFilter = filter ?? new TextMatchFilter(olv);
+            CompositeAllFilter allFilters = new CompositeAllFilter(
+                filters.Cast<IModelFilter>().ToList()
+            );
+            olv.AdditionalFilter = allFilters;
         }
 
         private void PartsHaveChanged()
@@ -629,84 +619,84 @@ namespace StockManagerDB
         private void ListViewSetColumns()
         {
             // Setup columns
-            olvcMPN.AspectGetter = delegate(object x)
+            olvcMPN.AspectGetter = delegate (object x)
             {
                 return ((Part)x).MPN;
             };
-            olvcMAN.AspectGetter = delegate(object x)
+            olvcMAN.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Manufacturer;
             };
-            olvcDesc.AspectGetter = delegate(object x)
+            olvcDesc.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Description;
             };
-            olvcCat.AspectGetter = delegate(object x)
+            olvcCat.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Category;
             };
-            olvcLocation.AspectGetter = delegate(object x)
+            olvcLocation.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Location;
             };
-            olvcStock.AspectGetter = delegate(object x)
+            olvcStock.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Stock;
             };
-            olvcLowStock.AspectGetter = delegate(object x)
+            olvcLowStock.AspectGetter = delegate (object x)
             {
                 return ((Part)x).LowStock;
             };
-            olvcPrice.AspectGetter = delegate(object x)
+            olvcPrice.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Price;
             };
-            olvcSupplier.AspectGetter = delegate(object x)
+            olvcSupplier.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Supplier;
             };
-            olvcSPN.AspectGetter = delegate(object x)
+            olvcSPN.AspectGetter = delegate (object x)
             {
                 return ((Part)x).SPN;
             };
 
-            olvcMPN2.AspectGetter = delegate(object x)
+            olvcMPN2.AspectGetter = delegate (object x)
             {
                 return ((Part)x).MPN;
             };
-            olvcMAN2.AspectGetter = delegate(object x)
+            olvcMAN2.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Manufacturer;
             };
-            olvcDesc2.AspectGetter = delegate(object x)
+            olvcDesc2.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Description;
             };
-            olvcCat2.AspectGetter = delegate(object x)
+            olvcCat2.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Category;
             };
-            olvcLocation2.AspectGetter = delegate(object x)
+            olvcLocation2.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Location;
             };
-            olvcStock2.AspectGetter = delegate(object x)
+            olvcStock2.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Stock;
             };
-            olvcLowStock2.AspectGetter = delegate(object x)
+            olvcLowStock2.AspectGetter = delegate (object x)
             {
                 return ((Part)x).LowStock;
             };
-            olvcPrice2.AspectGetter = delegate(object x)
+            olvcPrice2.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Price;
             };
-            olvcSupplier2.AspectGetter = delegate(object x)
+            olvcSupplier2.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Supplier;
             };
-            olvcSPN2.AspectGetter = delegate(object x)
+            olvcSPN2.AspectGetter = delegate (object x)
             {
                 return ((Part)x).SPN;
             };
@@ -765,11 +755,29 @@ namespace StockManagerDB
         public void Filter(string txt, int matchKind)
         {
             ObjectListView olv = listviewParts;
-            CompositeAllFilter allFilter = null;
+
+            var filters = GetFilters(txt, matchKind, olv);
+
+            olv.AdditionalFilter =
+                (filters == null)
+                    ? null
+                    : new CompositeAllFilter(filters.Cast<IModelFilter>().ToList());
+        }
+
+        /// <summary>
+        /// Filter a text in the main part listview
+        /// </summary>
+        /// <param name="txt">Text to filter</param>
+        /// <param name="matchKind">Type of filter</param>
+        public List<TextMatchFilter> GetFilters(string txt, int matchKind, ObjectListView olv)
+        {
             List<TextMatchFilter> filters = new List<TextMatchFilter>();
+
             if (!string.IsNullOrEmpty(txt))
             {
+                // Separate with spaces
                 string[] allTxt = txt.Split(' ').Where((x) => !string.IsNullOrEmpty(x)).ToArray();
+                // Process each entry
                 foreach (string textEntry in allTxt)
                 {
                     switch (matchKind)
@@ -807,9 +815,8 @@ namespace StockManagerDB
                     }
                 }
             }
-            if (filters != null)
-                allFilter = new CompositeAllFilter(filters.Cast<IModelFilter>().ToList());
-            olv.AdditionalFilter = allFilter;
+
+            return filters;
         }
 
         /// <summary>
@@ -1097,6 +1104,8 @@ namespace StockManagerDB
                 $"Open finished. {Parts.Count} part(s) found",
                 Logger.LogLevels.Debug
             );
+
+            UpdateRecentFileList();
 
             return true;
         }
@@ -1413,7 +1422,6 @@ namespace StockManagerDB
             // Select parts with current stock lower than lowStock limit
             IEnumerable<Part> selected = parts.Where((part) => (part.Stock < part.LowStock));
 
-            // TODO : Actually make order
             LoggerClass.Write(
                 $"{selected.Count()} part(s) found for automatic order",
                 Logger.LogLevels.Debug
@@ -1423,6 +1431,38 @@ namespace StockManagerDB
             // update order form
             orderForm.SetSuppliers(Parts.Select((x) => x.Value.Supplier).Distinct());
             ShowForm(orderForm);
+
+            return true;
+        }
+
+        private bool AddSelectionToProject()
+        {
+            if (!IsFileLoaded)
+            {
+                LoggerClass.Write(
+                    "Unable to process action. No file is loaded.",
+                    Logger.LogLevels.Debug
+                );
+                MessageBox.Show(
+                    "No file loaded ! Open or create a new one",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+                return false;
+            }
+
+            LoggerClass.Write($"Adding parts to order...", Logger.LogLevels.Debug);
+            List<Part> parts = GetPartForProcess();
+
+            LoggerClass.Write(
+                $"{parts.Count} part(s) found to add to project",
+                Logger.LogLevels.Debug
+            );
+
+            // TODO : show form to add to projects
+
+            //ShowForm(orderForm);
 
             return true;
         }
@@ -1790,14 +1830,6 @@ namespace StockManagerDB
             return true;
         }
 
-        private void OrderLowStock()
-        {
-            List<Part> selParts = GetPartForProcess();
-
-            // Only keep lowstock ones
-            selParts = selParts.Where((p) => p.Stock < p.LowStock).ToList();
-        }
-
         #endregion
 
         #region Misc Events
@@ -2074,13 +2106,12 @@ namespace StockManagerDB
         private void listviewParts_CellRightClick(object sender, CellRightClickEventArgs e)
         {
             // When rightclicking a cell, copy the MPN of the corresponding row
-            if (!(e.Model is Part selectedPart))
+            if (!(e.Model is Part))
             {
                 return;
             }
 
-            Clipboard.SetText(selectedPart.MPN);
-            SetStatus("Copied to clipboard...");
+            contextMenuStrip1.Show(Cursor.Position);
         }
 
         private void btnPartAdd_Click(object sender, EventArgs e)
@@ -2167,7 +2198,10 @@ namespace StockManagerDB
             }
         }
 
-        private void frmMain_Shown(object sender, EventArgs e) { }
+        private void frmMain_Shown(object sender, EventArgs e)
+        {
+            UpdateRecentFileList();
+        }
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -2200,7 +2234,7 @@ namespace StockManagerDB
 
         private Dictionary<int, ToolStripMenuItem> pairs = null;
 
-        private void openRecentToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
+        private void UpdateRecentFileList()
         {
             if (pairs == null)
             {
@@ -2218,16 +2252,23 @@ namespace StockManagerDB
             int count = AppSettings.Settings.RecentFiles.Count;
             for (int i = 0; i < pairs.Count; i++)
             {
+                pairs[i].Click -= toolStripMenuItemRecentFile_Click;
                 if (i < count)
                 {
                     pairs[i].Visible = true;
                     pairs[i].Text = AppSettings.Settings.RecentFiles[i];
+                    pairs[i].Click += toolStripMenuItemRecentFile_Click;
                 }
                 else
                 {
                     pairs[i].Visible = false;
                 }
             }
+        }
+
+        private void openRecentToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
+        {
+            UpdateRecentFileList();
         }
 
         private void toolStripMenuItemRecentFile_Click(object sender, EventArgs e)
@@ -2240,8 +2281,6 @@ namespace StockManagerDB
             bool result = OpenFile(file);
             SetSuccessStatus(result);
         }
-
-        #endregion
 
         private void sourceCodeGithubToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -2261,5 +2300,36 @@ namespace StockManagerDB
             string dir = Path.GetDirectoryName(filepath);
             Process.Start(dir);
         }
+
+        private void openSupplierUrlToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Get the selected part
+            if (!(listviewParts.SelectedObject is Part part))
+            {
+                return;
+            }
+
+            part.OpenSupplierUrl();
+            SetStatus("Web page openned...");
+        }
+
+        private void copyMPNToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Get the selected part
+            if (!(listviewParts.SelectedObject is Part part))
+            {
+                return;
+            }
+
+            part.CopyMPNToClipboard();
+            SetStatus("Copied to clipboard...");
+        }
+
+        private void addToProjectToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AddSelectionToProject();
+        }
+
+        #endregion
     }
 }

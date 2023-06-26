@@ -34,9 +34,28 @@ namespace StockManagerDB
         {
             InitializeComponent();
 
+            ApplySettings();
             ListViewSetColumns();
 
             init = false;
+        }
+
+        public void ApplySettings()
+        {
+            /**** Font ****/
+            //Font newFontNormal = new Font(newFont, FontStyle.Regular);
+            if (AppSettings.Settings.AppFont == null)
+            {
+                AppSettings.ResetToDefault();
+            }
+            Font newFontNormal = AppSettings.Settings.AppFont; // If user has set bold for all, then set bold for all
+            this.Font = this.label1.Font = this.cbbSuppliers.Font = this.textBulkAdd.Font = newFontNormal;
+            //this.menuStrip1.Font = this.statusStrip1.Font = newFontNormal;
+            // Apply bold fonts
+            Font newFontBold = new Font(
+                AppSettings.Settings.AppFont,
+                FontStyle.Bold | AppSettings.Settings.AppFont.Style
+            ); // Add bold style
         }
 
         /// <summary>
@@ -46,51 +65,51 @@ namespace StockManagerDB
         private void ListViewSetColumns()
         {
             // Setup columns
-            olvcMPN.AspectGetter = delegate(object x)
+            olvcMPN.AspectGetter = delegate (object x)
             {
                 return ((Material)x).MPN;
             };
-            olvcQuantity.AspectGetter = delegate(object x)
+            olvcQuantity.AspectGetter = delegate (object x)
             {
                 return ((Material)x).Quantity;
             };
-            olvcMAN.AspectGetter = delegate(object x)
+            olvcMAN.AspectGetter = delegate (object x)
             {
                 return ((Material)x).PartLink?.Manufacturer;
             };
-            olvcDesc.AspectGetter = delegate(object x)
+            olvcDesc.AspectGetter = delegate (object x)
             {
                 return ((Material)x).PartLink?.Description;
             };
-            olvcCat.AspectGetter = delegate(object x)
+            olvcCat.AspectGetter = delegate (object x)
             {
                 return ((Material)x).PartLink?.Category;
             };
-            olvcLocation.AspectGetter = delegate(object x)
+            olvcLocation.AspectGetter = delegate (object x)
             {
                 return ((Material)x).PartLink?.Location;
             };
-            olvcStock.AspectGetter = delegate(object x)
+            olvcStock.AspectGetter = delegate (object x)
             {
                 return ((Material)x).PartLink?.Stock;
             };
-            olvcLowStock.AspectGetter = delegate(object x)
+            olvcLowStock.AspectGetter = delegate (object x)
             {
                 return ((Material)x).PartLink?.LowStock;
             };
-            olvcPrice.AspectGetter = delegate(object x)
+            olvcPrice.AspectGetter = delegate (object x)
             {
                 return ((Material)x).PartLink?.Price;
             };
-            olvcSupplier.AspectGetter = delegate(object x)
+            olvcSupplier.AspectGetter = delegate (object x)
             {
                 return ((Material)x).PartLink?.Supplier;
             };
-            olvcSPN.AspectGetter = delegate(object x)
+            olvcSPN.AspectGetter = delegate (object x)
             {
                 return ((Material)x).PartLink?.SPN;
             };
-            olvcTotalPrice.AspectGetter = delegate(object x)
+            olvcTotalPrice.AspectGetter = delegate (object x)
             {
                 return ((Material)x).PartLink?.Price * ((Material)x).Quantity;
             };
@@ -277,6 +296,49 @@ namespace StockManagerDB
             }
 
             UpdateBulkAddText();
+        }
+
+        private void copyMPNToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Get the selected part
+            if (!(listviewMaterials.SelectedObject is Material mat))
+            {
+                return;
+            }
+
+            if (!mat.HasPartLink)
+            {
+                return;
+            }
+
+            mat.PartLink.CopyMPNToClipboard();
+        }
+
+        private void openSupplierUrlToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Get the selected part
+            if (!(listviewMaterials.SelectedObject is Material mat))
+            {
+                return;
+            }
+
+            if (!mat.HasPartLink)
+            {
+                return;
+            }
+
+            mat.PartLink.OpenSupplierUrl();
+        }
+
+        private void listviewMaterials_CellRightClick(object sender, CellRightClickEventArgs e)
+        {
+            // When rightclicking a cell, copy the MPN of the corresponding row
+            if (!(e.Model is Material))
+            {
+                return;
+            }
+
+            contextMenuStrip1.Show(Cursor.Position);
         }
     }
 }

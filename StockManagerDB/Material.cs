@@ -60,6 +60,15 @@ namespace StockManagerDB
             }
         }
 
+        /// <summary>
+        /// Indicate if a PartLink can be accessed
+        /// </summary>
+        public bool HasPartLink =>
+            (
+                (DataHolderSingleton.Instance != null)
+                && DataHolderSingleton.Instance.Parts.ContainsKey(MPN)
+            );
+
         public object Clone()
         {
             Material newMaterial = new Material()

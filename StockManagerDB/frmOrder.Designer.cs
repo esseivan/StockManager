@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmOrder));
             this.listviewMaterials = new BrightIdeasSoftware.FastDataListView();
             this.olvcMPN = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
@@ -51,8 +52,12 @@
             this.deleteSelectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cbbSuppliers = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.copyMPNToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openSupplierUrlToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.listviewMaterials)).BeginInit();
             this.menuStrip1.SuspendLayout();
+            this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // listviewMaterials
@@ -115,6 +120,7 @@
             this.listviewMaterials.UseTranslucentHotItem = true;
             this.listviewMaterials.View = System.Windows.Forms.View.Details;
             this.listviewMaterials.VirtualMode = true;
+            this.listviewMaterials.CellRightClick += new System.EventHandler<BrightIdeasSoftware.CellRightClickEventArgs>(this.listviewMaterials_CellRightClick);
             // 
             // olvcMPN
             // 
@@ -193,6 +199,7 @@
             // 
             this.textBulkAdd.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBulkAdd.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBulkAdd.Location = new System.Drawing.Point(519, 49);
             this.textBulkAdd.Margin = new System.Windows.Forms.Padding(2);
             this.textBulkAdd.Name = "textBulkAdd";
@@ -271,6 +278,28 @@
             this.label1.TabIndex = 12;
             this.label1.Text = "Supplier :";
             // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.copyMPNToolStripMenuItem,
+            this.openSupplierUrlToolStripMenuItem});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(176, 48);
+            // 
+            // copyMPNToolStripMenuItem
+            // 
+            this.copyMPNToolStripMenuItem.Name = "copyMPNToolStripMenuItem";
+            this.copyMPNToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.copyMPNToolStripMenuItem.Text = "Copy MPN";
+            this.copyMPNToolStripMenuItem.Click += new System.EventHandler(this.copyMPNToolStripMenuItem_Click);
+            // 
+            // openSupplierUrlToolStripMenuItem
+            // 
+            this.openSupplierUrlToolStripMenuItem.Name = "openSupplierUrlToolStripMenuItem";
+            this.openSupplierUrlToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.openSupplierUrlToolStripMenuItem.Text = "Open Supplier url...";
+            this.openSupplierUrlToolStripMenuItem.Click += new System.EventHandler(this.openSupplierUrlToolStripMenuItem_Click);
+            // 
             // frmOrder
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -292,6 +321,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.listviewMaterials)).EndInit();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -321,5 +351,8 @@
         private System.Windows.Forms.ToolStripMenuItem refreshToolStripMenuItem;
         private System.Windows.Forms.ComboBox cbbSuppliers;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem copyMPNToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem openSupplierUrlToolStripMenuItem;
     }
 }

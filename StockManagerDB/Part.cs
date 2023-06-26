@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text.Json.Serialization;
+using System.Windows.Forms;
 
 namespace StockManagerDB
 {
@@ -252,6 +254,45 @@ namespace StockManagerDB
             }
 
             return newPart;
+        }
+
+        /// <summary>
+        /// List of URL format for link to their parts. the supplier MUST be in lowercase
+        /// </summary>
+        Dictionary<string, string> suppliersUrl = new Dictionary<string, string>()
+        {
+            { "digikey", @"https://www.digikey.ch/products/en?keywords={0}" },
+            { "farnell", @"https://ch.farnell.com/fr-CH/{0}" },
+            { "distrelec", @"https://www.distrelec.ch/search?q={0}" },
+            { "conrad", @"https://www.conrad.ch/fr/p/{0}" },
+            { "mouser", @"https://www.mouser.ch/ProductDetail/{0}" },
+            { "bauhaus", @"https://www.bauhaus.ch/fr/search?query={0}" },
+            { "bricoetloisirs", @"https://bricoetloisirs.ch/p/{0}" },
+            { "aliexpress", @"https://www.aliexpress.com/item/{0}" },
+            { "banggood", @"https://www.banggood.com/search/{0}" },
+            { "jumbo", @"https://www.jumbo.ch/fr/p/{0}" },
+        };
+
+        /// <summary>
+        /// Open a webpage for the part from the supplier
+        /// </summary>
+        public void OpenSupplierUrl()
+        {
+            string supplier = Supplier.ToLower();
+            if (suppliersUrl.ContainsKey(supplier))
+            {
+                string url = string.Format(suppliersUrl[supplier], SPN);
+                LoggerClass.Write($"Openning URL \"{url}\"");
+                Process.Start(url);
+            }
+        }
+
+        /// <summary>
+        /// Copy the MPN to the clipboard
+        /// </summary>
+        public void CopyMPNToClipboard()
+        {
+            Clipboard.SetText(MPN);
         }
 
         /// <summary>

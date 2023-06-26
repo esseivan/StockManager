@@ -4,6 +4,7 @@ using ESNLib.Tools;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -1024,12 +1025,6 @@ namespace StockManagerDB
             return true;
         }
 
-        private void CopyMPNToClipboard(Material material)
-        {
-            Clipboard.SetText(material.MPN);
-            SetStatus("Copied to clipboard...");
-        }
-
         private void ProcessProjectCheckedParts()
         {
             // Get checked parts
@@ -1240,12 +1235,12 @@ namespace StockManagerDB
         private void listviewMaterials_CellRightClick(object sender, CellRightClickEventArgs e)
         {
             // When rightclicking a cell, copy the MPN of the corresponding row
-            if (!(e.Model is Material selectedMaterial))
+            if (!(e.Model is Material))
             {
                 return;
             }
 
-            CopyMPNToClipboard(selectedMaterial);
+            contextMenuStrip1.Show(Cursor.Position);
         }
 
         private void processProjectToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1282,6 +1277,40 @@ namespace StockManagerDB
         private void uncheckAllToolStripMenuItem_Click(object sender, EventArgs e)
         {
             listviewMaterials.UncheckAll();
+        }
+
+        private void copyMPNToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Get the selected part
+            if (!(listviewMaterials.SelectedObject is Material mat))
+            {
+                return;
+            }
+
+            if (!mat.HasPartLink)
+            {
+                return;
+            }
+
+            mat.PartLink.CopyMPNToClipboard();
+            SetStatus("Copied to clipboard...");
+        }
+
+        private void openSupplierUrlToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Get the selected part
+            if (!(listviewMaterials.SelectedObject is Material mat))
+            {
+                return;
+            }
+
+            if (!mat.HasPartLink)
+            {
+                return;
+            }
+
+            mat.PartLink.OpenSupplierUrl();
+            SetStatus("Web page openned...");
         }
 
         #endregion
