@@ -228,6 +228,11 @@ namespace StockManagerDB
             return $"MPN:{MPN}; Stock:{Stock}; Location:{Location}";
         }
 
+        public string ToLongString()
+        {
+            return $"MPN:{MPN}; Desc:{Description}; Man:{Manufacturer}; SPN:{SPN}; Price:{PriceStr}";
+        }
+
         /// <summary>
         /// Clone the part to be stored in the History
         /// </summary>

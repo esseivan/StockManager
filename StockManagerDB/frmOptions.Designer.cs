@@ -36,7 +36,24 @@
             this.checkboxRecent = new System.Windows.Forms.CheckBox();
             this.numDecimals = new System.Windows.Forms.NumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.checkBoxDigikeyAPIEnabled = new System.Windows.Forms.CheckBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.btnRefresh = new System.Windows.Forms.Button();
+            this.lblApiStatus = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.btnShowHide = new System.Windows.Forms.Button();
+            this.txtboxClientSecret = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.txtboxListenUri = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.txtboxRedirectUri = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.txtboxClientId = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.btnClearDigikey = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.numDecimals)).BeginInit();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnFont
@@ -93,7 +110,7 @@
             // numDecimals
             // 
             this.numDecimals.Location = new System.Drawing.Point(159, 64);
-            this.numDecimals.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.numDecimals.Margin = new System.Windows.Forms.Padding(2);
             this.numDecimals.Maximum = new decimal(new int[] {
             9,
             0,
@@ -124,11 +141,199 @@
             this.label1.TabIndex = 5;
             this.label1.Text = "Cell edit decimals";
             // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.btnClearDigikey);
+            this.groupBox1.Controls.Add(this.checkBoxDigikeyAPIEnabled);
+            this.groupBox1.Controls.Add(this.label7);
+            this.groupBox1.Controls.Add(this.btnRefresh);
+            this.groupBox1.Controls.Add(this.lblApiStatus);
+            this.groupBox1.Controls.Add(this.label6);
+            this.groupBox1.Controls.Add(this.btnShowHide);
+            this.groupBox1.Controls.Add(this.txtboxClientSecret);
+            this.groupBox1.Controls.Add(this.label3);
+            this.groupBox1.Controls.Add(this.txtboxListenUri);
+            this.groupBox1.Controls.Add(this.label5);
+            this.groupBox1.Controls.Add(this.txtboxRedirectUri);
+            this.groupBox1.Controls.Add(this.label4);
+            this.groupBox1.Controls.Add(this.txtboxClientId);
+            this.groupBox1.Controls.Add(this.label2);
+            this.groupBox1.Location = new System.Drawing.Point(8, 95);
+            this.groupBox1.Margin = new System.Windows.Forms.Padding(2);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Padding = new System.Windows.Forms.Padding(2);
+            this.groupBox1.Size = new System.Drawing.Size(263, 207);
+            this.groupBox1.TabIndex = 6;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Digikey API";
+            // 
+            // checkBoxDigikeyAPIEnabled
+            // 
+            this.checkBoxDigikeyAPIEnabled.AutoSize = true;
+            this.checkBoxDigikeyAPIEnabled.Location = new System.Drawing.Point(4, 18);
+            this.checkBoxDigikeyAPIEnabled.Name = "checkBoxDigikeyAPIEnabled";
+            this.checkBoxDigikeyAPIEnabled.Size = new System.Drawing.Size(65, 17);
+            this.checkBoxDigikeyAPIEnabled.TabIndex = 9;
+            this.checkBoxDigikeyAPIEnabled.Text = "Enabled";
+            this.checkBoxDigikeyAPIEnabled.UseVisualStyleBackColor = true;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label7.ForeColor = System.Drawing.Color.Maroon;
+            this.label7.Location = new System.Drawing.Point(5, 143);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(254, 13);
+            this.label7.TabIndex = 8;
+            this.label7.Text = "Warning : These informations are stored as plain text";
+            // 
+            // btnRefresh
+            // 
+            this.btnRefresh.Location = new System.Drawing.Point(135, 120);
+            this.btnRefresh.Margin = new System.Windows.Forms.Padding(2);
+            this.btnRefresh.Name = "btnRefresh";
+            this.btnRefresh.Size = new System.Drawing.Size(57, 21);
+            this.btnRefresh.TabIndex = 7;
+            this.btnRefresh.Text = "Refresh";
+            this.btnRefresh.UseVisualStyleBackColor = true;
+            this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
+            // 
+            // lblApiStatus
+            // 
+            this.lblApiStatus.AutoSize = true;
+            this.lblApiStatus.Location = new System.Drawing.Point(69, 124);
+            this.lblApiStatus.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblApiStatus.Name = "lblApiStatus";
+            this.lblApiStatus.Size = new System.Drawing.Size(63, 13);
+            this.lblApiStatus.TabIndex = 7;
+            this.lblApiStatus.Text = "Unavailable";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(4, 121);
+            this.label6.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(37, 13);
+            this.label6.TabIndex = 7;
+            this.label6.Text = "Status";
+            // 
+            // btnShowHide
+            // 
+            this.btnShowHide.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnShowHide.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnShowHide.Location = new System.Drawing.Point(216, 56);
+            this.btnShowHide.Margin = new System.Windows.Forms.Padding(2);
+            this.btnShowHide.Name = "btnShowHide";
+            this.btnShowHide.Size = new System.Drawing.Size(45, 21);
+            this.btnShowHide.TabIndex = 7;
+            this.btnShowHide.Text = "Show";
+            this.btnShowHide.UseVisualStyleBackColor = true;
+            this.btnShowHide.Click += new System.EventHandler(this.btnShowHide_Click);
+            // 
+            // txtboxClientSecret
+            // 
+            this.txtboxClientSecret.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtboxClientSecret.Location = new System.Drawing.Point(72, 57);
+            this.txtboxClientSecret.Margin = new System.Windows.Forms.Padding(2);
+            this.txtboxClientSecret.Name = "txtboxClientSecret";
+            this.txtboxClientSecret.Size = new System.Drawing.Size(140, 20);
+            this.txtboxClientSecret.TabIndex = 7;
+            this.txtboxClientSecret.UseSystemPasswordChar = true;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(4, 59);
+            this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(64, 13);
+            this.label3.TabIndex = 7;
+            this.label3.Text = "ClientSecret";
+            // 
+            // txtboxListenUri
+            // 
+            this.txtboxListenUri.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtboxListenUri.Location = new System.Drawing.Point(72, 99);
+            this.txtboxListenUri.Margin = new System.Windows.Forms.Padding(2);
+            this.txtboxListenUri.Name = "txtboxListenUri";
+            this.txtboxListenUri.Size = new System.Drawing.Size(189, 20);
+            this.txtboxListenUri.TabIndex = 7;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(4, 101);
+            this.label5.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(48, 13);
+            this.label5.TabIndex = 7;
+            this.label5.Text = "ListenUri";
+            // 
+            // txtboxRedirectUri
+            // 
+            this.txtboxRedirectUri.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtboxRedirectUri.Location = new System.Drawing.Point(72, 78);
+            this.txtboxRedirectUri.Margin = new System.Windows.Forms.Padding(2);
+            this.txtboxRedirectUri.Name = "txtboxRedirectUri";
+            this.txtboxRedirectUri.Size = new System.Drawing.Size(189, 20);
+            this.txtboxRedirectUri.TabIndex = 7;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(4, 80);
+            this.label4.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(60, 13);
+            this.label4.TabIndex = 7;
+            this.label4.Text = "RedirectUri";
+            // 
+            // txtboxClientId
+            // 
+            this.txtboxClientId.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtboxClientId.Location = new System.Drawing.Point(72, 36);
+            this.txtboxClientId.Margin = new System.Windows.Forms.Padding(2);
+            this.txtboxClientId.Name = "txtboxClientId";
+            this.txtboxClientId.Size = new System.Drawing.Size(189, 20);
+            this.txtboxClientId.TabIndex = 7;
+            this.txtboxClientId.TextChanged += new System.EventHandler(this.txtboxClientId_TextChanged);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(4, 38);
+            this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(42, 13);
+            this.label2.TabIndex = 7;
+            this.label2.Text = "ClientId";
+            // 
+            // btnClearDigikey
+            // 
+            this.btnClearDigikey.Location = new System.Drawing.Point(72, 159);
+            this.btnClearDigikey.Name = "btnClearDigikey";
+            this.btnClearDigikey.Size = new System.Drawing.Size(75, 23);
+            this.btnClearDigikey.TabIndex = 10;
+            this.btnClearDigikey.Text = "Clear tokens";
+            this.btnClearDigikey.UseVisualStyleBackColor = true;
+            this.btnClearDigikey.Click += new System.EventHandler(this.btnClearDigikey_Click);
+            // 
             // frmOptions
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.numDecimals);
             this.Controls.Add(this.checkboxRecent);
@@ -138,7 +343,10 @@
             this.Controls.Add(this.btnFont);
             this.Name = "frmOptions";
             this.Text = "Options";
+            this.Load += new System.EventHandler(this.frmOptions_Load);
             ((System.ComponentModel.ISupportInitialize)(this.numDecimals)).EndInit();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -154,5 +362,21 @@
         private System.Windows.Forms.CheckBox checkboxRecent;
         private System.Windows.Forms.NumericUpDown numDecimals;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.TextBox txtboxClientId;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Button btnShowHide;
+        private System.Windows.Forms.TextBox txtboxClientSecret;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TextBox txtboxListenUri;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.TextBox txtboxRedirectUri;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label lblApiStatus;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Button btnRefresh;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.CheckBox checkBoxDigikeyAPIEnabled;
+        private System.Windows.Forms.Button btnClearDigikey;
     }
 }

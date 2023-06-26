@@ -55,14 +55,24 @@ namespace StockManagerDB
         public int LastMatchKindUsed { get; set; } = 0;
 
         /// <summary>
-        /// 
+        /// Are Infos columns shown in order form
         /// </summary>
         public bool Order_ShowInfos { get; set; } = false;
 
         /// <summary>
-        /// 
+        /// Are More Infos columns shown in order form
         /// </summary>
         public bool Order_ShowMoreInfos { get; set; } = true;
+
+        /// <summary>
+        /// Are actions processed on only checked parts
+        /// </summary>
+        public bool ProcessActionOnCheckedOnly { get; set; } = true;
+
+        /// <summary>
+        /// Is Digikey API enabled
+        /// </summary>
+        public bool IsDigikeyAPIEnabled { get; set; } = false;
 
         #endregion
 

@@ -1,7 +1,11 @@
-﻿using BrightIdeasSoftware;
+﻿using ApiClient;
+using ApiClient.Models;
+using BrightIdeasSoftware;
 using CsvHelper;
+using DigikeyApiWrapper;
 using ESNLib.Controls;
 using ESNLib.Tools;
+using ESNLib.Tools.WinForms;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -311,6 +315,8 @@ namespace StockManagerDB
 
             string[] args = Environment.GetCommandLineArgs();
 
+            ApiClientSettings.SetProductionMode();
+
             LoggerClass.Init();
             LoggerClass.Write("Application started...", Logger.LogLevels.Info);
             LoggerClass.Write(DateTime.Now.ToString("yyyy.MM.dd HH:mm:ss"), Logger.LogLevels.Info);
@@ -367,6 +373,9 @@ namespace StockManagerDB
 
         #region Settings
 
+        /// <summary>
+        /// Apply the settings to the app
+        /// </summary>
         public void ApplySettings()
         {
             /**** Font ****/
@@ -384,6 +393,9 @@ namespace StockManagerDB
                 FontStyle.Bold | AppSettings.Settings.AppFont.Style
             ); // Add bold style
             this.label1.Font = this.label2.Font = newFontBold;
+
+            /**** States ****/
+            onlyAffectCheckedPartsToolStripMenuItem.Checked = AppSettings.Settings.ProcessActionOnCheckedOnly;
         }
 
         #endregion
@@ -538,7 +550,8 @@ namespace StockManagerDB
         private void UpdateListviews(bool resizeColumns = false)
         {
             LoggerClass.Write($"Updating part listview..", Logger.LogLevels.Trace);
-            // If not file loaded, set them to be empty
+
+            // If not file loaded, set the listviews as empty
             if (!IsFileLoaded)
             {
                 LoggerClass.Write($"No file loaded. Aborting...", Logger.LogLevels.Trace);
@@ -548,18 +561,23 @@ namespace StockManagerDB
                 return;
             }
 
+            // save the selected item
+            Part lastItem = listviewParts.SelectedObject as Part;
+
             // Main list view : all parts
             listviewParts.DataSource = Parts.Values.ToList();
 
-            btnPartDup.Enabled = (listviewParts.Items.Count != 0);
+            // Set buttons state
+            btnPartDup.Enabled = listviewParts.Items.Count != 0;
             btnPartAdd.Enabled = IsFileLoaded;
 
-            // Resize columns if required
+            // Resize columns if requested
             if (resizeColumns)
             {
                 LoggerClass.Write($"Resizing columns...", Logger.LogLevels.Trace);
                 listviewParts.AutoResizeColumns();
             }
+
             // Set focus to main listview
             listviewParts.Focus();
 
@@ -567,9 +585,9 @@ namespace StockManagerDB
             Point lastScroll = listviewParts.LowLevelScrollPosition;
 
             // Select the last item
-            if (listviewParts.SelectedObject is Part selItem)
+            if (lastItem != null)
             {
-                listviewParts.SelectObject(selItem);
+                listviewParts.SelectObject(lastItem);
             }
 
             try
@@ -875,7 +893,7 @@ namespace StockManagerDB
         private List<Part> GetPartForProcess()
         {
             // If "onlyAffectCheckedParts" is checked, get checked parts. Otherwise all parts
-            if (onlyAffectCheckedPartsToolStripMenuItem.Checked)
+            if (AppSettings.Settings.ProcessActionOnCheckedOnly)
             {
                 LoggerClass.Write(
                     $"Action executing on checked parts only...",
@@ -2201,6 +2219,16 @@ namespace StockManagerDB
         private void frmMain_Shown(object sender, EventArgs e)
         {
             UpdateRecentFileList();
+            
+            try
+            {
+                GetApiAccess();
+                AppSettings.Settings.IsDigikeyAPIEnabled = true;
+            }
+            catch (Exception ex)
+            {
+                LoggerClass.Write($"Unable to get API Access : {ex.Message}", Logger.LogLevels.Error);
+            }
         }
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2325,11 +2353,155 @@ namespace StockManagerDB
             SetStatus("Copied to clipboard...");
         }
 
+
+        private async void GetApiAccess()
+        {
+            if (!AppSettings.Settings.IsDigikeyAPIEnabled)
+            {
+                return;
+            }
+
+            var client = new ApiClientWrapper();
+            var result = await client.GetAccess();
+
+            if (result.Success)
+            {
+
+            }
+            else
+            {
+                if (!MiscTools.HasAdminPrivileges())
+                {
+                    MessageBox.Show("Unable to get API access... Pleasy try running the app with Admin privileges.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else
+                {
+                    var res = Dialog.ShowDialog(new Dialog.DialogConfig("Unable to get access token... Check the config and the logs", "Error")
+                    {
+                        Button1 = Dialog.ButtonType.Ignore,
+                        Button2 = Dialog.ButtonType.Custom1,
+                        CustomButton1Text = "Open log",
+                        Icon = Dialog.DialogIcon.Error,
+                    });
+                    if (res.DialogResult == Dialog.DialogResult.Custom1)
+                    {
+                        Process.Start(Logger.Instance.FileOutputPath);
+                    }
+                }
+            }
+        }
+
+        private async void ActionUpdateParts()
+        {
+            // Using Digikey API, update this part.
+            // Ask confirmation because overwrites will be made...
+
+            List<Part> selectedParts = GetPartForProcess();
+
+            // For safety, only update part with no supplier or Digikey as a supplier
+            selectedParts = selectedParts.Where((p) => (string.IsNullOrEmpty(p.Supplier) || string.Equals("digikey", p.Supplier, StringComparison.InvariantCultureIgnoreCase))).ToList();
+
+            if (selectedParts.Count == 0)
+            {
+                LoggerClass.Write($"[DigikeyUpdate] No valid parts selected...");
+                return;
+            }
+
+            Dialog.DialogConfig dc = new Dialog.DialogConfig()
+            {
+                Message = $"Confirm the update of the selected parts ({selectedParts.Count} parts)",
+                Title = "Confirmation",
+                Button1 = Dialog.ButtonType.OK,
+                Button2 = Dialog.ButtonType.Cancel,
+                Icon = Dialog.DialogIcon.Question
+            };
+            Dialog.ShowDialogResult result = Dialog.ShowDialog(dc);
+            if (result.DialogResult != Dialog.DialogResult.OK)
+            {
+                return;
+            }
+            LoggerClass.Write($"[DigikeyUpdate] Processing {selectedParts.Count} part(s)");
+
+            Cursor = Cursors.WaitCursor;
+            PartSearch ps = new PartSearch();
+            for (int i = 0; i < selectedParts.Count; i++)
+            {
+                Part part = selectedParts[i];
+                LoggerClass.Write($"[DigikeyUpdate] Processing MPN '{part.MPN}'...");
+
+                DigikeyPart received;
+                try
+                {
+                    var read = await ps.ProductDetails_Essentials(part.MPN);
+                    if (string.IsNullOrEmpty(read))
+                    {
+                        LoggerClass.Write($"[DigikeyUpdate] No data found for this MPN...", Logger.LogLevels.Error);
+                        continue;
+                    }
+                    received = PartSearch.DeserializeProductDetails(read);
+                }
+                catch (Exception)
+                {
+                    Cursor = Cursors.Default;
+                    LoggerClass.Write($"[DigikeyUpdate] Unable to retrieve data...", Logger.LogLevels.Error);
+                    return;
+                }
+
+                if (received == null)
+                {
+                    LoggerClass.Write($"[DigikeyUpdate] Unable to convert data...", Logger.LogLevels.Error);
+                    continue;
+                }
+
+                // Verify that the MPN is exactly the same
+                if (!part.MPN.Equals(received.ManufacturerPartNumber))
+                {
+                    LoggerClass.Write($"[DigikeyUpdate] Unable to validate MPN '{part.MPN}' expected, '{received.ManufacturerPartNumber}' received", Logger.LogLevels.Info);
+                    continue;
+                }
+
+                LoggerClass.Write($"[DigikeyUpdate] Updating MPN '{received.ManufacturerPartNumber}'...", Logger.LogLevels.Info);
+                // Update part
+                Part oldPart = part.CloneForHistory();
+                LoggerClass.Write($"[DigikeyUpdate] OLD :\t{oldPart.ToLongString()}", Logger.LogLevels.Debug);
+                part.Supplier = "Digikey";
+                part.Manufacturer = received.ManufacturerString;
+                part.SPN = received.DigiKeyPartNumber;
+                part.Price = received.UnitPrice;
+                part.Description = received.DetailedDescription;
+                LoggerClass.Write($"[DigikeyUpdate] NEW :\t{part.ToLongString()}", Logger.LogLevels.Debug);
+
+
+                // Add to history
+                data.ManualEditPart(part, oldPart);
+            }
+
+            PartsHaveChanged();
+            Cursor = Cursors.Default;
+        }
+
+        private void updateFromDigikeyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ActionUpdateParts();
+        }
+
+        private void onlyAffectCheckedPartsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (starting)
+            {
+                return;
+            }
+
+            AppSettings.Settings.ProcessActionOnCheckedOnly = onlyAffectCheckedPartsToolStripMenuItem.Checked;
+            AppSettings.Save();
+        }
+
         private void addToProjectToolStripMenuItem_Click(object sender, EventArgs e)
         {
             AddSelectionToProject();
         }
 
         #endregion
+
     }
 }
