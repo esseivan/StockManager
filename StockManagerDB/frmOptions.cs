@@ -234,5 +234,10 @@ namespace StockManagerDB
             bool valid = client.HaveAccess();
             UpdateApiAccessStatus(valid);
         }
+
+        private void btnClearDigikey_Click(object sender, EventArgs e)
+        {
+            ApiClientSettings.GetInstance().ClearAndSave();
+        }
     }
 }

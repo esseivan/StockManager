@@ -315,7 +315,7 @@ namespace StockManagerDB
 
             string[] args = Environment.GetCommandLineArgs();
 
-            ApiClientSettings.SetSandboxMode();
+            ApiClientSettings.SetProductionMode();
 
             LoggerClass.Init();
             LoggerClass.Write("Application started...", Logger.LogLevels.Info);
@@ -2315,7 +2315,7 @@ namespace StockManagerDB
 
         private async void GetApiAccess()
         {
-            if(!AppSettings.Settings.IsDigikeyAPIEnabled)
+            if (!AppSettings.Settings.IsDigikeyAPIEnabled)
             {
                 return;
             }
@@ -2357,8 +2357,12 @@ namespace StockManagerDB
 
             List<Part> selectedParts = GetPartForProcess();
 
+            // For safety, only update part with no supplier or Digikey as a supplier
+            selectedParts = selectedParts.Where((p) => (string.IsNullOrEmpty(p.Supplier) || string.Equals("digikey", p.Supplier, StringComparison.InvariantCultureIgnoreCase))).ToList();
+
             if (selectedParts.Count == 0)
             {
+                LoggerClass.Write($"[DigikeyUpdate] No valid parts selected...");
                 return;
             }
 
@@ -2375,27 +2379,38 @@ namespace StockManagerDB
             {
                 return;
             }
+            LoggerClass.Write($"[DigikeyUpdate] Processing {selectedParts.Count} part(s)");
 
             Cursor = Cursors.WaitCursor;
             PartSearch ps = new PartSearch();
             for (int i = 0; i < selectedParts.Count; i++)
             {
                 Part part = selectedParts[i];
+                LoggerClass.Write($"[DigikeyUpdate] Processing MPN '{part.MPN}'...");
+
                 DigikeyPart received;
                 try
                 {
                     var read = await ps.ProductDetails_Essentials(part.MPN);
+                    if (string.IsNullOrEmpty(read))
+                    {
+                        LoggerClass.Write($"[DigikeyUpdate] No data found for this MPN...", Logger.LogLevels.Error);
+                        continue;
+                    }
                     received = PartSearch.DeserializeProductDetails(read);
                 }
                 catch (Exception)
                 {
                     Cursor = Cursors.Default;
-                    LoggerClass.Write($"[DigikeyUpdate] Unable to retrieve data... Aborting", Logger.LogLevels.Error);
+                    LoggerClass.Write($"[DigikeyUpdate] Unable to retrieve data...", Logger.LogLevels.Error);
                     return;
                 }
 
                 if (received == null)
+                {
+                    LoggerClass.Write($"[DigikeyUpdate] Unable to convert data...", Logger.LogLevels.Error);
                     continue;
+                }
 
                 // Verify that the MPN is exactly the same
                 if (!part.MPN.Equals(received.ManufacturerPartNumber))
@@ -2404,13 +2419,17 @@ namespace StockManagerDB
                     continue;
                 }
 
+                LoggerClass.Write($"[DigikeyUpdate] Updating MPN '{received.ManufacturerPartNumber}'...", Logger.LogLevels.Info);
                 // Update part
                 Part oldPart = part.CloneForHistory();
+                LoggerClass.Write($"[DigikeyUpdate] OLD :\t{oldPart.ToLongString()}", Logger.LogLevels.Debug);
                 part.Supplier = "Digikey";
                 part.Manufacturer = received.ManufacturerString;
                 part.SPN = received.DigiKeyPartNumber;
                 part.Price = received.UnitPrice;
                 part.Description = received.DetailedDescription;
+                LoggerClass.Write($"[DigikeyUpdate] NEW :\t{part.ToLongString()}", Logger.LogLevels.Debug);
+
 
                 // Add to history
                 data.ManualEditPart(part, oldPart);
@@ -2427,7 +2446,7 @@ namespace StockManagerDB
 
         private void onlyAffectCheckedPartsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if(starting)
+            if (starting)
             {
                 return;
             }

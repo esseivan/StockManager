@@ -79,7 +79,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ApiClient, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\DigikeyApiClient.1.0.6\lib\net472\ApiClient.dll</HintPath>
+      <HintPath>..\packages\DigikeyApiClient.1.0.8.1\lib\net472\ApiClient.dll</HintPath>
     </Reference>
     <Reference Include="Common.Logging, Version=3.4.1.0, Culture=neutral, PublicKeyToken=af08829b84f0328e, processorArchitecture=MSIL">
       <HintPath>..\packages\Common.Logging.3.4.1\lib\net40\Common.Logging.dll</HintPath>
@@ -91,7 +91,7 @@
       <HintPath>..\packages\CsvHelper.30.0.1\lib\net47\CsvHelper.dll</HintPath>
     </Reference>
     <Reference Include="DigikeyApiWrapper, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\DigikeyApiWrapper.1.0.6\lib\net472\DigikeyApiWrapper.dll</HintPath>
+      <HintPath>..\packages\DigikeyApiWrapper.1.0.8.1\lib\net472\DigikeyApiWrapper.dll</HintPath>
     </Reference>
     <Reference Include="ESNLib.Controls, Version=1.0.6.6, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESNLib.Controls.1.0.9\lib\net472\ESNLib.Controls.dll</HintPath>
