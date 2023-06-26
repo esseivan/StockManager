@@ -230,14 +230,26 @@ namespace StockManagerDB
 
         private void frmOptions_Load(object sender, EventArgs e)
         {
-            var client = new ApiClientWrapper();
-            bool valid = client.HaveAccess();
-            UpdateApiAccessStatus(valid);
+            if (AppSettings.Settings.IsDigikeyAPIEnabled)
+            {
+                var client = new ApiClientWrapper();
+                bool valid = client.HaveAccess();
+                UpdateApiAccessStatus(valid);
+            }
         }
 
         private void btnClearDigikey_Click(object sender, EventArgs e)
         {
             ApiClientSettings.GetInstance().ClearAndSave();
+        }
+
+        private void checkBoxDigikeyAPIEnabled_CheckedChanged(object sender, EventArgs e)
+        {
+            if (syncing)
+                return;
+
+            ChangesMade = true;
+            AppSettings.Settings.IsDigikeyAPIEnabled = checkBoxDigikeyAPIEnabled.Checked;
         }
     }
 }

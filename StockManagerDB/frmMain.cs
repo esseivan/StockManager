@@ -396,6 +396,8 @@ namespace StockManagerDB
 
             /**** States ****/
             onlyAffectCheckedPartsToolStripMenuItem.Checked = AppSettings.Settings.ProcessActionOnCheckedOnly;
+
+            updateFromDigikeyToolStripMenuItem.Enabled = AppSettings.Settings.IsDigikeyAPIEnabled;
         }
 
         #endregion
@@ -563,6 +565,8 @@ namespace StockManagerDB
 
             // save the selected item
             Part lastItem = listviewParts.SelectedObject as Part;
+            // Get eventual seleted item
+            Point lastScroll = listviewParts.LowLevelScrollPosition;
 
             // Main list view : all parts
             listviewParts.DataSource = Parts.Values.ToList();
@@ -580,9 +584,6 @@ namespace StockManagerDB
 
             // Set focus to main listview
             listviewParts.Focus();
-
-            // Get eventual seleted item
-            Point lastScroll = listviewParts.LowLevelScrollPosition;
 
             // Select the last item
             if (lastItem != null)
@@ -2219,11 +2220,10 @@ namespace StockManagerDB
         private void frmMain_Shown(object sender, EventArgs e)
         {
             UpdateRecentFileList();
-            
+
             try
             {
                 GetApiAccess();
-                AppSettings.Settings.IsDigikeyAPIEnabled = true;
             }
             catch (Exception ex)
             {
@@ -2393,6 +2393,10 @@ namespace StockManagerDB
 
         private async void ActionUpdateParts()
         {
+            if(!AppSettings.Settings.IsDigikeyAPIEnabled)
+            {
+                return;
+            }
             // Using Digikey API, update this part.
             // Ask confirmation because overwrites will be made...
 
@@ -2444,7 +2448,7 @@ namespace StockManagerDB
                 {
                     Cursor = Cursors.Default;
                     LoggerClass.Write($"[DigikeyUpdate] Unable to retrieve data...", Logger.LogLevels.Error);
-                    return;
+                    continue;
                 }
 
                 if (received == null)
