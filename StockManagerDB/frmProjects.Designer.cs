@@ -87,6 +87,7 @@
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.copyMPNToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openSupplierUrlToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.btnImportDigikeyList = new System.Windows.Forms.Button();
             this.statusStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.listviewMaterials)).BeginInit();
@@ -600,6 +601,7 @@
             this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox3.Controls.Add(this.btnImportDigikeyList);
             this.groupBox3.Controls.Add(this.label1);
             this.groupBox3.Controls.Add(this.numMult);
             this.groupBox3.Controls.Add(this.btnMatAdd);
@@ -669,6 +671,16 @@
             this.openSupplierUrlToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
             this.openSupplierUrlToolStripMenuItem.Text = "Open Supplier url...";
             this.openSupplierUrlToolStripMenuItem.Click += new System.EventHandler(this.openSupplierUrlToolStripMenuItem_Click);
+            // 
+            // btnImportDigikeyList
+            // 
+            this.btnImportDigikeyList.Location = new System.Drawing.Point(93, 19);
+            this.btnImportDigikeyList.Name = "btnImportDigikeyList";
+            this.btnImportDigikeyList.Size = new System.Drawing.Size(75, 23);
+            this.btnImportDigikeyList.TabIndex = 13;
+            this.btnImportDigikeyList.Text = "Import List";
+            this.btnImportDigikeyList.UseVisualStyleBackColor = true;
+            this.btnImportDigikeyList.Click += new System.EventHandler(this.btnImportDigikeyList_Click);
             // 
             // frmProjects
             // 
@@ -759,5 +771,6 @@
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem copyMPNToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem openSupplierUrlToolStripMenuItem;
+        private System.Windows.Forms.Button btnImportDigikeyList;
     }
 }

@@ -1559,6 +1559,70 @@ namespace StockManagerDB
             return processedParts;
         }
 
+        /// <summary>
+        /// Process the list of selected part from the list. Parts already present will have their current stock updated
+        /// </summary>
+        private int ActionDigikeyListProcessParts(List<CsvPartImport> records)
+        {
+            LoggerClass.Write($"{records.Count} part(s) found to process...");
+
+            string note = $"Digikey List Import ";
+            int processedParts = 0;
+            foreach (CsvPartImport item in records)
+            {
+                if (item == null)
+                {
+                    LoggerClass.Write(
+                        "Null row found... Should not happen",
+                        Logger.LogLevels.Error
+                    );
+                    continue;
+                }
+
+                if (string.IsNullOrEmpty(item.MPN))
+                {
+                    continue;
+                }
+
+                // Try converting quantity
+                float quantity = 0; // For this import, we just import information without the quantity. So set to 0
+
+                processedParts++;
+                if (!Parts.ContainsKey(item.MPN))
+                {
+                    LoggerClass.Write(
+                        $"Part '{item.MPN}' not available in present list. Creating new part..."
+                    );
+                    Part p = new Part()
+                    {
+                        MPN = item.MPN,
+                        Description = item.Description,
+                        Category = "__automatically_generated",
+                        Supplier = "Digikey",
+                        SPN = item.SPN,
+                        Stock = quantity,
+                    };
+                    data.AddPart(p, note);
+                }
+                else
+                {
+                    // Process edit
+                    Part part = Parts[item.MPN];
+                    LoggerClass.Write(
+                        $"Changing stock of '{part.MPN}' from {part.Stock} to {part.Stock + quantity}"
+                    );
+                    data.EditPart(
+                        part,
+                        Part.Parameter.Stock,
+                        (part.Stock + quantity).ToString(),
+                        note
+                    );
+                }
+            }
+
+            return processedParts;
+        }
+
         private int ActionImportDigikeyOrder()
         {
             if (!IsFileLoaded)
@@ -1706,6 +1770,93 @@ namespace StockManagerDB
                 );
                 return -1;
             }
+        }
+
+        private int ActionImportDigikeyList()
+        {
+            if (!IsFileLoaded)
+            {
+                LoggerClass.Write(
+                    "Unable to process action. No file is loaded.",
+                    Logger.LogLevels.Debug
+                );
+                MessageBox.Show(
+                    "No file loaded ! Open or create a new one",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+                return -1;
+            }
+
+            // Ask to open the excel file
+            OpenFileDialog ofd = new OpenFileDialog()
+            {
+                Filter = "Excel xlsx (*.xlsx, *.csv)|*.xlsx;*.csv|All files (*.*)|*.*",
+            };
+            if (ofd.ShowDialog() != DialogResult.OK)
+            {
+                return -1;
+            }
+
+            LoggerClass.Write($"Loading Digikey list...", Logger.LogLevels.Debug);
+
+            string file = ofd.FileName;
+            int processedParts = 0;
+            if (Path.GetExtension(file).Equals(".csv", StringComparison.InvariantCultureIgnoreCase))
+            {
+                // Read lines
+                using (var reader = new StreamReader(file))
+                {
+                    // Skip first 2 lines
+                    _ = reader.ReadLine();
+                    _ = reader.ReadLine();
+
+                    using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+                    {
+                        var records = new List<CsvPartImport>();
+                        csv.Read();
+                        csv.ReadHeader();
+
+                        while (csv.Read())
+                        {
+                            var record = new CsvPartImport
+                            {
+                                MPN = csv.GetField("Manufacturer Part Number"),
+                                Quantity = "0", /*csv.GetField("Requested Quantity 1"),*/ // For this import, we set the quantity as 0
+                            };
+                            // Read the rest only if required
+                            if (!Parts.ContainsKey(record.MPN))
+                            {
+                                // Cerating new part. Gathering more informations on part
+                                record.SPN = csv.GetField("Digi-Key Part Number 1");
+                                record.Description = csv.GetField("Description");
+                            }
+
+                            records.Add(record);
+                        }
+
+                        processedParts = ActionDigikeyListProcessParts(records);
+                    }
+                }
+            }
+            else if (
+                Path.GetExtension(file).Equals(".xlsx", StringComparison.InvariantCultureIgnoreCase)
+            )
+            {
+                // unimplemented
+                MessageBox.Show(
+                    ".xlsx files are not yet supported. Please use .csv",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+                return -1;
+            }
+
+            // Ask update of part list
+            PartsHaveChanged();
+            return processedParts;
         }
 
         public bool ActionExportParts()
@@ -2511,5 +2662,17 @@ namespace StockManagerDB
 
         #endregion
 
+        private void importListFromDigikeyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SetWorkingStatus();
+            int result = ActionImportDigikeyList();
+            SetSuccessStatus(result > 0);
+            MessageBox.Show(
+                $"Successfully updated {result} part(s).",
+                "Success",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information
+            );
+        }
     }
 }

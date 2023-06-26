@@ -1,4 +1,5 @@
 ﻿using BrightIdeasSoftware;
+using CsvHelper;
 using ESNLib.Controls;
 using ESNLib.Tools;
 using System;
@@ -6,6 +7,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -83,68 +85,68 @@ namespace StockManagerDB
         private void ListViewSetColumns()
         {
             // Setup columns
-            olvcMPN.AspectGetter = delegate(object x)
+            olvcMPN.AspectGetter = delegate (object x)
             {
                 return ((Material)x).MPN;
             };
-            olvcQuantity.AspectGetter = delegate(object x)
+            olvcQuantity.AspectGetter = delegate (object x)
             {
                 return ((Material)x).Quantity;
             };
-            olvcReference.AspectGetter = delegate(object x)
+            olvcReference.AspectGetter = delegate (object x)
             {
                 return ((Material)x).Reference;
             };
-            olvcNote.AspectGetter = delegate(object x)
+            olvcNote.AspectGetter = delegate (object x)
             {
                 return ((Material)x).Note;
             };
-            olvcMAN.AspectGetter = delegate(object x)
+            olvcMAN.AspectGetter = delegate (object x)
             {
                 return ((Material)x).PartLink?.Manufacturer;
             };
-            olvcDesc.AspectGetter = delegate(object x)
+            olvcDesc.AspectGetter = delegate (object x)
             {
                 return ((Material)x).PartLink?.Description;
             };
-            olvcCat.AspectGetter = delegate(object x)
+            olvcCat.AspectGetter = delegate (object x)
             {
                 return ((Material)x).PartLink?.Category;
             };
-            olvcLocation.AspectGetter = delegate(object x)
+            olvcLocation.AspectGetter = delegate (object x)
             {
                 return ((Material)x).PartLink?.Location;
             };
-            olvcStock.AspectGetter = delegate(object x)
+            olvcStock.AspectGetter = delegate (object x)
             {
                 return ((Material)x).PartLink?.Stock;
             };
-            olvcLowStock.AspectGetter = delegate(object x)
+            olvcLowStock.AspectGetter = delegate (object x)
             {
                 return ((Material)x).PartLink?.LowStock;
             };
-            olvcPrice.AspectGetter = delegate(object x)
+            olvcPrice.AspectGetter = delegate (object x)
             {
                 return ((Material)x).PartLink?.Price;
             };
-            olvcSupplier.AspectGetter = delegate(object x)
+            olvcSupplier.AspectGetter = delegate (object x)
             {
                 return ((Material)x).PartLink?.Supplier;
             };
-            olvcSPN.AspectGetter = delegate(object x)
+            olvcSPN.AspectGetter = delegate (object x)
             {
                 return ((Material)x).PartLink?.SPN;
             };
 
-            olvcTotalQuantity.AspectGetter = delegate(object x)
+            olvcTotalQuantity.AspectGetter = delegate (object x)
             {
                 return ((Material)x).Quantity * (byte)numMult.Value;
             };
-            olvcTotalPrice.AspectGetter = delegate(object x)
+            olvcTotalPrice.AspectGetter = delegate (object x)
             {
                 return (((Material)x).PartLink?.Price ?? 0) * (byte)numMult.Value;
             };
-            olvcAvailable.AspectGetter = delegate(object x)
+            olvcAvailable.AspectGetter = delegate (object x)
             {
                 bool isAvailable =
                     (((Material)x).Quantity * (byte)numMult.Value)
@@ -938,6 +940,97 @@ namespace StockManagerDB
 
         #region Actions
 
+        private bool ImportDigikeyList()
+        {
+            if (selectedProjectVersion == null)
+            {
+                throw new InvalidOperationException("No project version selected");
+            }
+
+            // Ask file
+            OpenFileDialog ofd = new OpenFileDialog()
+            {
+                Filter = "Excel (*.csv)|*.csv|All files|*.*",
+            };
+            if (ofd.ShowDialog() != DialogResult.OK)
+            {
+                return false;
+            }
+
+            LoggerClass.Write($"Loading Digikey list...", Logger.LogLevels.Debug);
+
+            string file = ofd.FileName;
+            int processedParts = 0;
+            // Read lines
+            using (var reader = new StreamReader(file))
+            {
+                // Skip first 2 lines
+                _ = reader.ReadLine();
+                _ = reader.ReadLine();
+
+                using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+                {
+                    var records = new List<CsvPartImport>();
+                    csv.Read();
+                    csv.ReadHeader();
+
+                    while (csv.Read())
+                    {
+                        var record = new CsvPartImport
+                        {
+                            MPN = csv.GetField("Manufacturer Part Number"),
+                            Quantity = csv.GetField("Requested Quantity 1"),
+                        };
+
+                        records.Add(record);
+                    }
+
+                    processedParts = ActionDigikeyListProcessParts(records);
+                }
+            }
+
+            // Ask update of part list
+            MaterialsHaveChanged();
+            return true;
+        }
+
+        /// <summary>
+        /// Process the list of selected part from the list. Parts already present will have their current stock updated
+        /// </summary>
+        private int ActionDigikeyListProcessParts(List<CsvPartImport> records)
+        {
+            LoggerClass.Write($"{records.Count} part(s) found to process...");
+
+            int processedParts = 0;
+            foreach (CsvPartImport item in records)
+            {
+                if (item == null)
+                {
+                    LoggerClass.Write(
+                        "Null row found... Should not happen",
+                        Logger.LogLevels.Error
+                    );
+                    continue;
+                }
+
+                if (string.IsNullOrEmpty(item.MPN))
+                {
+                    continue;
+                }
+
+                processedParts++;
+                Material newMaterial = new Material()
+                {
+                    MPN = item.MPN,
+                    QuantityStr = item.Quantity,
+                    Note = "__imported",
+                };
+                AddMaterial(newMaterial);
+            }
+
+            return processedParts;
+        }
+
         public bool ActionExportProjects()
         {
             // Ask save path
@@ -1311,6 +1404,11 @@ namespace StockManagerDB
 
             mat.PartLink.OpenSupplierUrl();
             SetStatus("Web page openned...");
+        }
+
+        private void btnImportDigikeyList_Click(object sender, EventArgs e)
+        {
+            ImportDigikeyList();
         }
 
         #endregion
