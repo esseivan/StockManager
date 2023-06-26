@@ -1123,6 +1123,8 @@ namespace StockManagerDB
                 Logger.LogLevels.Debug
             );
 
+            UpdateRecentFileList();
+
             return true;
         }
 
@@ -1438,7 +1440,6 @@ namespace StockManagerDB
             // Select parts with current stock lower than lowStock limit
             IEnumerable<Part> selected = parts.Where((part) => (part.Stock < part.LowStock));
 
-            // TODO : Actually make order
             LoggerClass.Write(
                 $"{selected.Count()} part(s) found for automatic order",
                 Logger.LogLevels.Debug
@@ -1448,6 +1449,38 @@ namespace StockManagerDB
             // update order form
             orderForm.SetSuppliers(Parts.Select((x) => x.Value.Supplier).Distinct());
             ShowForm(orderForm);
+
+            return true;
+        }
+
+        private bool AddSelectionToProject()
+        {
+            if (!IsFileLoaded)
+            {
+                LoggerClass.Write(
+                    "Unable to process action. No file is loaded.",
+                    Logger.LogLevels.Debug
+                );
+                MessageBox.Show(
+                    "No file loaded ! Open or create a new one",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+                return false;
+            }
+
+            LoggerClass.Write($"Adding parts to order...", Logger.LogLevels.Debug);
+            List<Part> parts = GetPartForProcess();
+
+            LoggerClass.Write(
+                $"{parts.Count} part(s) found to add to project",
+                Logger.LogLevels.Debug
+            );
+
+            // TODO : show form to add to projects
+
+            //ShowForm(orderForm);
 
             return true;
         }
@@ -2185,6 +2218,8 @@ namespace StockManagerDB
 
         private void frmMain_Shown(object sender, EventArgs e)
         {
+            UpdateRecentFileList();
+            
             try
             {
                 GetApiAccess();
@@ -2227,7 +2262,7 @@ namespace StockManagerDB
 
         private Dictionary<int, ToolStripMenuItem> pairs = null;
 
-        private void openRecentToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
+        private void UpdateRecentFileList()
         {
             if (pairs == null)
             {
@@ -2245,16 +2280,23 @@ namespace StockManagerDB
             int count = AppSettings.Settings.RecentFiles.Count;
             for (int i = 0; i < pairs.Count; i++)
             {
+                pairs[i].Click -= toolStripMenuItemRecentFile_Click;
                 if (i < count)
                 {
                     pairs[i].Visible = true;
                     pairs[i].Text = AppSettings.Settings.RecentFiles[i];
+                    pairs[i].Click += toolStripMenuItemRecentFile_Click;
                 }
                 else
                 {
                     pairs[i].Visible = false;
                 }
             }
+        }
+
+        private void openRecentToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
+        {
+            UpdateRecentFileList();
         }
 
         private void toolStripMenuItemRecentFile_Click(object sender, EventArgs e)
@@ -2267,8 +2309,6 @@ namespace StockManagerDB
             bool result = OpenFile(file);
             SetSuccessStatus(result);
         }
-
-        #endregion
 
         private void sourceCodeGithubToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -2312,6 +2352,7 @@ namespace StockManagerDB
             part.CopyMPNToClipboard();
             SetStatus("Copied to clipboard...");
         }
+
 
         private async void GetApiAccess()
         {
@@ -2454,5 +2495,13 @@ namespace StockManagerDB
             AppSettings.Settings.ProcessActionOnCheckedOnly = onlyAffectCheckedPartsToolStripMenuItem.Checked;
             AppSettings.Save();
         }
+
+        private void addToProjectToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AddSelectionToProject();
+        }
+
+        #endregion
+
     }
 }
