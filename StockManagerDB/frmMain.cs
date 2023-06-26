@@ -322,6 +322,8 @@ namespace StockManagerDB
             LoggerClass.Write(DateTime.Now.ToString("yyyy.MM.dd HH:mm:ss"), Logger.LogLevels.Info);
             SettingsManager.MyPublisherName = "ESN";
             SettingsManager.MyAppName = "StockManager";
+            ApiClientSettings.SetFilePath("ESN", "StockManager");
+            ApiClientSettings.GetInstance();
 
             // Load app settings
             string settingsPath = SettingsManager.GetDefaultSettingFilePath(false);
