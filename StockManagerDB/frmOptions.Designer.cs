@@ -37,6 +37,7 @@
             this.numDecimals = new System.Windows.Forms.NumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.btnClearDigikey = new System.Windows.Forms.Button();
             this.checkBoxDigikeyAPIEnabled = new System.Windows.Forms.CheckBox();
             this.label7 = new System.Windows.Forms.Label();
             this.btnRefresh = new System.Windows.Forms.Button();
@@ -51,7 +52,6 @@
             this.label4 = new System.Windows.Forms.Label();
             this.txtboxClientId = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.btnClearDigikey = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.numDecimals)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -167,6 +167,16 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Digikey API";
             // 
+            // btnClearDigikey
+            // 
+            this.btnClearDigikey.Location = new System.Drawing.Point(72, 159);
+            this.btnClearDigikey.Name = "btnClearDigikey";
+            this.btnClearDigikey.Size = new System.Drawing.Size(75, 23);
+            this.btnClearDigikey.TabIndex = 10;
+            this.btnClearDigikey.Text = "Clear tokens";
+            this.btnClearDigikey.UseVisualStyleBackColor = true;
+            this.btnClearDigikey.Click += new System.EventHandler(this.btnClearDigikey_Click);
+            // 
             // checkBoxDigikeyAPIEnabled
             // 
             this.checkBoxDigikeyAPIEnabled.AutoSize = true;
@@ -176,6 +186,7 @@
             this.checkBoxDigikeyAPIEnabled.TabIndex = 9;
             this.checkBoxDigikeyAPIEnabled.Text = "Enabled";
             this.checkBoxDigikeyAPIEnabled.UseVisualStyleBackColor = true;
+            this.checkBoxDigikeyAPIEnabled.CheckedChanged += new System.EventHandler(this.checkBoxDigikeyAPIEnabled_CheckedChanged);
             // 
             // label7
             // 
@@ -317,16 +328,6 @@
             this.label2.Size = new System.Drawing.Size(42, 13);
             this.label2.TabIndex = 7;
             this.label2.Text = "ClientId";
-            // 
-            // btnClearDigikey
-            // 
-            this.btnClearDigikey.Location = new System.Drawing.Point(72, 159);
-            this.btnClearDigikey.Name = "btnClearDigikey";
-            this.btnClearDigikey.Size = new System.Drawing.Size(75, 23);
-            this.btnClearDigikey.TabIndex = 10;
-            this.btnClearDigikey.Text = "Clear tokens";
-            this.btnClearDigikey.UseVisualStyleBackColor = true;
-            this.btnClearDigikey.Click += new System.EventHandler(this.btnClearDigikey_Click);
             // 
             // frmOptions
             // 
