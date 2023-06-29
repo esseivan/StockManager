@@ -314,12 +314,19 @@ namespace StockManagerDB
             InitializeComponent();
 
             string[] args = Environment.GetCommandLineArgs();
+            string[] clickOnceArgs = AppDomain.CurrentDomain.SetupInformation.ActivationArguments?.ActivationData ?? new string[0];
+
+            if ((args.Length == 1) && (clickOnceArgs.Length != 0))
+            {
+                args = clickOnceArgs;
+            }
 
             ApiClientSettings.SetProductionMode();
 
             LoggerClass.Init();
             LoggerClass.Write("Application started...", Logger.LogLevels.Info);
             LoggerClass.Write(DateTime.Now.ToString("yyyy.MM.dd HH:mm:ss"), Logger.LogLevels.Info);
+            LoggerClass.Write($"Arguments : {string.Join(" ", args)}", Logger.LogLevels.Info);
             SettingsManager.MyPublisherName = "ESN";
             SettingsManager.MyAppName = "StockManager";
             ApiClientSettings.SetFilePath("ESN", "StockManager");
@@ -358,6 +365,7 @@ namespace StockManagerDB
             }
             else
             {
+                LoggerClass.Write($"Openning most recent file...", Logger.LogLevels.Info);
                 // Open most recent
                 if (AppSettings.Settings.OpenRecentOnLaunch)
                 {
