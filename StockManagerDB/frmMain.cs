@@ -313,13 +313,10 @@ namespace StockManagerDB
         {
             InitializeComponent();
 
-            string[] args = Environment.GetCommandLineArgs();
+            string[] cmdLineArgs = Environment.GetCommandLineArgs().Skip(1).ToArray(); // Skip executable path
             string[] clickOnceArgs = AppDomain.CurrentDomain.SetupInformation.ActivationArguments?.ActivationData ?? new string[0];
 
-            if ((args.Length == 1) && (clickOnceArgs.Length != 0))
-            {
-                args = clickOnceArgs;
-            }
+            string[] args = clickOnceArgs.Length > 0 ? clickOnceArgs : cmdLineArgs;
 
             ApiClientSettings.SetProductionMode();
 
@@ -355,9 +352,12 @@ namespace StockManagerDB
             SetStatus("Idle...");
 
             // Get open arguments
-            if (args.Length == 2)
+            if (args.Length == 1)
             {
-                string file = args[1];
+                string file = args[0];
+                if (file.StartsWith("file:///"))
+                    file = file.Remove(0, 8);
+
                 // Open file
                 SetWorkingStatus();
                 bool result = OpenFile(file);
