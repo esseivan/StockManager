@@ -55,6 +55,9 @@
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.copyMPNToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openSupplierUrlToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.btnCopy = new System.Windows.Forms.Button();
+            this.label2 = new System.Windows.Forms.Label();
+            this.statusTimeoutTimer = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.listviewMaterials)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
@@ -203,7 +206,7 @@
             this.textBulkAdd.Location = new System.Drawing.Point(519, 49);
             this.textBulkAdd.Margin = new System.Windows.Forms.Padding(2);
             this.textBulkAdd.Name = "textBulkAdd";
-            this.textBulkAdd.Size = new System.Drawing.Size(201, 334);
+            this.textBulkAdd.Size = new System.Drawing.Size(201, 301);
             this.textBulkAdd.TabIndex = 9;
             this.textBulkAdd.Text = "";
             // 
@@ -300,11 +303,38 @@
             this.openSupplierUrlToolStripMenuItem.Text = "Open Supplier url...";
             this.openSupplierUrlToolStripMenuItem.Click += new System.EventHandler(this.openSupplierUrlToolStripMenuItem_Click);
             // 
+            // btnCopy
+            // 
+            this.btnCopy.Location = new System.Drawing.Point(640, 355);
+            this.btnCopy.Name = "btnCopy";
+            this.btnCopy.Size = new System.Drawing.Size(75, 23);
+            this.btnCopy.TabIndex = 13;
+            this.btnCopy.Text = "Copy";
+            this.btnCopy.UseVisualStyleBackColor = true;
+            this.btnCopy.Click += new System.EventHandler(this.btnCopy_Click);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(586, 360);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(48, 13);
+            this.label2.TabIndex = 14;
+            this.label2.Text = "Success";
+            // 
+            // statusTimeoutTimer
+            // 
+            this.statusTimeoutTimer.Enabled = true;
+            this.statusTimeoutTimer.Interval = 2500;
+            this.statusTimeoutTimer.Tick += new System.EventHandler(this.statusTimeoutTimer_Tick);
+            // 
             // frmOrder
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(727, 390);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.btnCopy);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.cbbSuppliers);
             this.Controls.Add(this.textBulkAdd);
@@ -354,5 +384,8 @@
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem copyMPNToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem openSupplierUrlToolStripMenuItem;
+        private System.Windows.Forms.Button btnCopy;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Timer statusTimeoutTimer;
     }
 }

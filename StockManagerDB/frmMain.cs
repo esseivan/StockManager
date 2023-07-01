@@ -2645,7 +2645,7 @@ namespace StockManagerDB
 
 
                 // Add to history
-                data.ManualEditPart(part, oldPart);
+                data.DigikeyUpdatePart(part, oldPart);
             }
 
             PartsHaveChanged();

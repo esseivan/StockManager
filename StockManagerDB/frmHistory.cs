@@ -371,5 +371,22 @@ namespace StockManagerDB
 
             part.OpenSupplierUrl();
         }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            string helpText = @"Each line is a change made to a part, and is a clone of that part before the change.
+The new (and present) state is not in this list as it is the valid one.
+
+There are some more columns to give more informations :
+    'Valid From' and 'Valid Until' : Indicate the date span at which this line was valid
+    'Status' : Indicate additional information for the part. 
+        'Inserted' when the part is new
+        'Deleted' when the part was deleted
+        'MPN Changed to ...' when the MPN of the part has changed
+    'Version' : Indicate the version (revision) of the line (part)
+    'Note' : Indicate what made a change to this part. Empty for manual change.";
+
+            MessageBox.Show(helpText, "Information");
+        }
     }
 }

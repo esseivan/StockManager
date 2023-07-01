@@ -75,7 +75,7 @@ namespace StockManagerDB
             }
 
             Parts.Remove(part.MPN);
-            part.note += note;
+            ApplyNote(part, note);
 
             if (!__disable_history)
                 DataHolderHistorySingleton.AddDeleteEvent(part);
@@ -92,7 +92,7 @@ namespace StockManagerDB
 
             Part part = Parts[MPN];
             Parts.Remove(MPN);
-            part.note += note;
+            ApplyNote(part, note);
 
             if (!__disable_history)
                 DataHolderHistorySingleton.AddDeleteEvent(part);
@@ -108,7 +108,7 @@ namespace StockManagerDB
             }
 
             Parts.Add(part.MPN, part);
-            part.note += note;
+            ApplyNote(part, note);
 
             if (!__disable_history)
                 DataHolderHistorySingleton.AddInsertEvent(part);
@@ -131,6 +131,44 @@ namespace StockManagerDB
             return true;
         }
 
+        /// <summary>
+        /// Same as <see cref="ManualEditPart(Part, Part)"/> but add a note for the history.
+        /// </summary>
+        /// <param name="newPart"></param>
+        /// <param name="oldPart"></param>
+        /// <returns></returns>
+        public bool DigikeyUpdatePart(Part newPart, Part oldPart)
+        {
+            ApplyNote(oldPart, "Digikey update");
+            // Update event to history
+            if (!__disable_history)
+                DataHolderHistorySingleton.AddUpdateEvent(oldPart, newPart);
+
+            return true;
+        }
+
+        /// <summary>
+        /// Add a note the the part for history
+        /// </summary>
+        public void ApplyNote(Part oldPart, string note)
+        {
+            if (string.IsNullOrEmpty(note))
+            {
+                return;
+            }
+
+            note = $"{note.Trim()} ";
+            oldPart.note += note;
+        }
+
+        /// <summary>
+        /// Add a note the the part for history
+        /// </summary>
+        public void RemoveNote(Part part)
+        {
+            part.note = "";
+        }
+
         public bool EditPart(string MPN, Part.Parameter param, string value, string note = "")
         {
             if (!Parts.ContainsKey(MPN))
@@ -146,8 +184,8 @@ namespace StockManagerDB
         {
             // Update event, clone the part beforehand
             Part oldPart = newPart.CloneForHistory();
-            oldPart.note += note;
-            newPart.note = "";
+            ApplyNote(oldPart, note);
+            RemoveNote(newPart);
 
             switch (param)
             {
