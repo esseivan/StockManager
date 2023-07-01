@@ -578,6 +578,8 @@ namespace StockManagerDB
                     );
                     break;
             }
+
+            MaterialsHaveChanged();
         }
 
         #endregion
