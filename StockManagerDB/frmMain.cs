@@ -316,6 +316,12 @@ namespace StockManagerDB
             string[] cmdLineArgs = Environment.GetCommandLineArgs().Skip(1).ToArray(); // Skip executable path
             string[] clickOnceArgs = AppDomain.CurrentDomain.SetupInformation.ActivationArguments?.ActivationData ?? new string[0];
 
+            for (int i = 0; i < clickOnceArgs.Length; i++)
+            {
+                // Convert special characters (e.g. %20 to a space)
+                clickOnceArgs[i] = System.Web.HttpUtility.UrlDecode(clickOnceArgs[i]);
+            }
+
             string[] args = clickOnceArgs.Length > 0 ? clickOnceArgs : cmdLineArgs;
 
             ApiClientSettings.SetProductionMode();
