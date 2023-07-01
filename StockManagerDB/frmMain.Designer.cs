@@ -48,6 +48,7 @@
             this.importFromExcelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importOrderFromDigikeyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importOrderFromDigikeyFromClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.importListFromDigikeyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.quitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.actionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -116,7 +117,7 @@
             this.copyMPNToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openSupplierUrlToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.filterHighlightRenderer = new BrightIdeasSoftware.HighlightTextRenderer();
-            this.importListFromDigikeyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -170,6 +171,7 @@
             this.newDatabaseToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
             this.newDatabaseToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.newDatabaseToolStripMenuItem.Text = "New";
+            this.newDatabaseToolStripMenuItem.ToolTipText = "Create a empty new \'.smd\' stock";
             this.newDatabaseToolStripMenuItem.Click += new System.EventHandler(this.newDatabaseToolStripMenuItem_Click);
             // 
             // openDatabaseToolStripMenuItem
@@ -178,6 +180,7 @@
             this.openDatabaseToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
             this.openDatabaseToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.openDatabaseToolStripMenuItem.Text = "Open";
+            this.openDatabaseToolStripMenuItem.ToolTipText = "Open a \'.smd\' stock file";
             this.openDatabaseToolStripMenuItem.Click += new System.EventHandler(this.openDatabaseToolStripMenuItem_Click);
             // 
             // openRecentToolStripMenuItem
@@ -197,7 +200,7 @@
             // 
             this.toolStripMenuItem2.Name = "toolStripMenuItem2";
             this.toolStripMenuItem2.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.D1)));
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(116, 22);
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(180, 22);
             this.toolStripMenuItem2.Text = "1";
             this.toolStripMenuItem2.Click += new System.EventHandler(this.toolStripMenuItemRecentFile_Click);
             // 
@@ -205,26 +208,26 @@
             // 
             this.toolStripMenuItem3.Name = "toolStripMenuItem3";
             this.toolStripMenuItem3.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.D2)));
-            this.toolStripMenuItem3.Size = new System.Drawing.Size(116, 22);
+            this.toolStripMenuItem3.Size = new System.Drawing.Size(180, 22);
             this.toolStripMenuItem3.Text = "2";
             // 
             // toolStripMenuItem4
             // 
             this.toolStripMenuItem4.Name = "toolStripMenuItem4";
             this.toolStripMenuItem4.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.D3)));
-            this.toolStripMenuItem4.Size = new System.Drawing.Size(116, 22);
+            this.toolStripMenuItem4.Size = new System.Drawing.Size(180, 22);
             this.toolStripMenuItem4.Text = "3";
             // 
             // toolStripMenuItem5
             // 
             this.toolStripMenuItem5.Name = "toolStripMenuItem5";
-            this.toolStripMenuItem5.Size = new System.Drawing.Size(116, 22);
+            this.toolStripMenuItem5.Size = new System.Drawing.Size(180, 22);
             this.toolStripMenuItem5.Text = "4";
             // 
             // toolStripMenuItem6
             // 
             this.toolStripMenuItem6.Name = "toolStripMenuItem6";
-            this.toolStripMenuItem6.Size = new System.Drawing.Size(116, 22);
+            this.toolStripMenuItem6.Size = new System.Drawing.Size(180, 22);
             this.toolStripMenuItem6.Text = "5";
             // 
             // seeInExplorerToolStripMenuItem
@@ -232,6 +235,7 @@
             this.seeInExplorerToolStripMenuItem.Name = "seeInExplorerToolStripMenuItem";
             this.seeInExplorerToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.seeInExplorerToolStripMenuItem.Text = "See in explorer";
+            this.seeInExplorerToolStripMenuItem.ToolTipText = "Open the directory of the current stock file";
             this.seeInExplorerToolStripMenuItem.Click += new System.EventHandler(this.seeInExplorerToolStripMenuItem_Click);
             // 
             // closeDatabaseToolStripMenuItem
@@ -240,6 +244,7 @@
             this.closeDatabaseToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.W)));
             this.closeDatabaseToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.closeDatabaseToolStripMenuItem.Text = "Close";
+            this.closeDatabaseToolStripMenuItem.ToolTipText = "Close the current stock file";
             this.closeDatabaseToolStripMenuItem.Click += new System.EventHandler(this.closeDatabaseToolStripMenuItem_Click);
             // 
             // toolStripSeparator4
@@ -253,6 +258,8 @@
             this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
             this.saveToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.saveToolStripMenuItem.Text = "Save";
+            this.saveToolStripMenuItem.ToolTipText = "Save the changes made. Note that the save is automatic for almost every change yo" +
+    "u make. This is just to force a new save.";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
             // importsToolStripMenuItem
@@ -265,6 +272,7 @@
             this.importsToolStripMenuItem.Name = "importsToolStripMenuItem";
             this.importsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.importsToolStripMenuItem.Text = "Import...";
+            this.importsToolStripMenuItem.ToolTipText = "Import from various locations.";
             // 
             // importFromExcelToolStripMenuItem
             // 
@@ -273,6 +281,7 @@
             | System.Windows.Forms.Keys.O)));
             this.importFromExcelToolStripMenuItem.Size = new System.Drawing.Size(296, 22);
             this.importFromExcelToolStripMenuItem.Text = "Import from Excel";
+            this.importFromExcelToolStripMenuItem.ToolTipText = "Import the stock saved in an Excel file.";
             this.importFromExcelToolStripMenuItem.Click += new System.EventHandler(this.importFromExcelToolStripMenuItem_Click);
             // 
             // importOrderFromDigikeyToolStripMenuItem
@@ -280,6 +289,8 @@
             this.importOrderFromDigikeyToolStripMenuItem.Name = "importOrderFromDigikeyToolStripMenuItem";
             this.importOrderFromDigikeyToolStripMenuItem.Size = new System.Drawing.Size(296, 22);
             this.importOrderFromDigikeyToolStripMenuItem.Text = "Import order from Digikey";
+            this.importOrderFromDigikeyToolStripMenuItem.ToolTipText = "Process a Digikey \'.csv\' order file. The corresponding parts in your stock will b" +
+    "e updated. If a part is not present in your stock, it will be created.";
             this.importOrderFromDigikeyToolStripMenuItem.Click += new System.EventHandler(this.importOrderFromDigikeyToolStripMenuItem_Click);
             // 
             // importOrderFromDigikeyFromClipboardToolStripMenuItem
@@ -287,7 +298,20 @@
             this.importOrderFromDigikeyFromClipboardToolStripMenuItem.Name = "importOrderFromDigikeyFromClipboardToolStripMenuItem";
             this.importOrderFromDigikeyFromClipboardToolStripMenuItem.Size = new System.Drawing.Size(296, 22);
             this.importOrderFromDigikeyFromClipboardToolStripMenuItem.Text = "Import order from Digikey from Clipboard";
+            this.importOrderFromDigikeyFromClipboardToolStripMenuItem.ToolTipText = "Process a Digikey order file contained in your clipboard. The corresponding parts" +
+    " in your stock will be updated. If a part is not present in your stock, it will " +
+    "be created.";
             this.importOrderFromDigikeyFromClipboardToolStripMenuItem.Click += new System.EventHandler(this.importOrderFromDigikeyFromClipboardToolStripMenuItem_Click);
+            // 
+            // importListFromDigikeyToolStripMenuItem
+            // 
+            this.importListFromDigikeyToolStripMenuItem.Name = "importListFromDigikeyToolStripMenuItem";
+            this.importListFromDigikeyToolStripMenuItem.Size = new System.Drawing.Size(296, 22);
+            this.importListFromDigikeyToolStripMenuItem.Text = "Import List from Digikey";
+            this.importListFromDigikeyToolStripMenuItem.ToolTipText = "Import a BOM List from Digikey. This is used to populate your part list easily. N" +
+    "ote that no project is created with this import, you have a specific import in t" +
+    "he project window for that matter.";
+            this.importListFromDigikeyToolStripMenuItem.Click += new System.EventHandler(this.importListFromDigikeyToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
@@ -300,6 +324,7 @@
             this.quitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Q)));
             this.quitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.quitToolStripMenuItem.Text = "Quit";
+            this.quitToolStripMenuItem.ToolTipText = "This will close all sub-windows";
             this.quitToolStripMenuItem.Click += new System.EventHandler(this.quitToolStripMenuItem_Click);
             // 
             // actionsToolStripMenuItem
@@ -325,6 +350,8 @@
             this.onlyAffectCheckedPartsToolStripMenuItem.Name = "onlyAffectCheckedPartsToolStripMenuItem";
             this.onlyAffectCheckedPartsToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
             this.onlyAffectCheckedPartsToolStripMenuItem.Text = "Only affect checked parts";
+            this.onlyAffectCheckedPartsToolStripMenuItem.ToolTipText = "If checked, the actions will only target the checked parts (the list at the botto" +
+    "m).\r\nIf unchecked, the actions will target ALL the parts (the list at the top).";
             this.onlyAffectCheckedPartsToolStripMenuItem.Click += new System.EventHandler(this.onlyAffectCheckedPartsToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
@@ -337,6 +364,9 @@
             this.makeOrderToolStripMenuItem.Name = "makeOrderToolStripMenuItem";
             this.makeOrderToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
             this.makeOrderToolStripMenuItem.Text = "Make Order";
+            this.makeOrderToolStripMenuItem.ToolTipText = "Make automatic order according to the LowStock parameters for the parts. The diff" +
+    "erence between the actual stock and the low stock will be added to the order for" +
+    "m.";
             this.makeOrderToolStripMenuItem.Click += new System.EventHandler(this.makeOrderToolStripMenuItem_Click);
             // 
             // updateFromDigikeyToolStripMenuItem
@@ -344,6 +374,8 @@
             this.updateFromDigikeyToolStripMenuItem.Name = "updateFromDigikeyToolStripMenuItem";
             this.updateFromDigikeyToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
             this.updateFromDigikeyToolStripMenuItem.Text = "Update from Digikey";
+            this.updateFromDigikeyToolStripMenuItem.ToolTipText = "Update the parts using the Digikey API. (Manufacturer, Description, Price, Suppli" +
+    "er and SPN will be updated)";
             this.updateFromDigikeyToolStripMenuItem.Click += new System.EventHandler(this.updateFromDigikeyToolStripMenuItem_Click);
             // 
             // addToProjectToolStripMenuItem
@@ -351,6 +383,7 @@
             this.addToProjectToolStripMenuItem.Name = "addToProjectToolStripMenuItem";
             this.addToProjectToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
             this.addToProjectToolStripMenuItem.Text = "Add to project...";
+            this.addToProjectToolStripMenuItem.ToolTipText = "Add the parts to a project that you will select";
             this.addToProjectToolStripMenuItem.Click += new System.EventHandler(this.addToProjectToolStripMenuItem_Click);
             // 
             // toolStripSeparator3
@@ -363,6 +396,7 @@
             this.exportPartsToolStripMenuItem.Name = "exportPartsToolStripMenuItem";
             this.exportPartsToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
             this.exportPartsToolStripMenuItem.Text = "Export parts";
+            this.exportPartsToolStripMenuItem.ToolTipText = "Export the parts to a \'.smd\' file. You can then use or share this file.\r\n";
             this.exportPartsToolStripMenuItem.Click += new System.EventHandler(this.exportPartsToolStripMenuItem_Click);
             // 
             // importPartsToolStripMenuItem
@@ -370,6 +404,7 @@
             this.importPartsToolStripMenuItem.Name = "importPartsToolStripMenuItem";
             this.importPartsToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
             this.importPartsToolStripMenuItem.Text = "Import parts";
+            this.importPartsToolStripMenuItem.ToolTipText = "Import all the parts from a \'.smd\' file.";
             this.importPartsToolStripMenuItem.Click += new System.EventHandler(this.importPartsToolStripMenuItem_Click);
             // 
             // viewToolStripMenuItem
@@ -390,6 +425,7 @@
             this.resizeColumnsToolStripMenuItem.Name = "resizeColumnsToolStripMenuItem";
             this.resizeColumnsToolStripMenuItem.Size = new System.Drawing.Size(249, 22);
             this.resizeColumnsToolStripMenuItem.Text = "Resize columns";
+            this.resizeColumnsToolStripMenuItem.ToolTipText = "Resize the columns on both lists.";
             this.resizeColumnsToolStripMenuItem.Click += new System.EventHandler(this.resizeColumnsToolStripMenuItem_Click);
             // 
             // toolStripSeparator5
@@ -404,6 +440,7 @@
             | System.Windows.Forms.Keys.A)));
             this.checkAllInViewToolStripMenuItem.Size = new System.Drawing.Size(249, 22);
             this.checkAllInViewToolStripMenuItem.Text = "Check all in view";
+            this.checkAllInViewToolStripMenuItem.ToolTipText = "Check all the parts in the view (currently in the top list).";
             this.checkAllInViewToolStripMenuItem.Click += new System.EventHandler(this.checkAllInViewToolStripMenuItem_Click);
             // 
             // uncheckAllInViewToolStripMenuItem
@@ -413,6 +450,7 @@
             | System.Windows.Forms.Keys.D)));
             this.uncheckAllInViewToolStripMenuItem.Size = new System.Drawing.Size(249, 22);
             this.uncheckAllInViewToolStripMenuItem.Text = "Uncheck all in view";
+            this.uncheckAllInViewToolStripMenuItem.ToolTipText = "Uncheck all the part in the view (currently in the top list).";
             this.uncheckAllInViewToolStripMenuItem.Click += new System.EventHandler(this.uncheckAllInViewToolStripMenuItem_Click);
             // 
             // toolStripSeparator6
@@ -426,6 +464,7 @@
             this.advancedSearchToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.K)));
             this.advancedSearchToolStripMenuItem.Size = new System.Drawing.Size(249, 22);
             this.advancedSearchToolStripMenuItem.Text = "Advanced search";
+            this.advancedSearchToolStripMenuItem.ToolTipText = "Open the advanced search window. The current filters will be overwritten.";
             this.advancedSearchToolStripMenuItem.Click += new System.EventHandler(this.advancedSearchToolStripMenuItem_Click);
             // 
             // toolsToolStripMenuItem
@@ -439,8 +478,9 @@
             // optionsToolStripMenuItem
             // 
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
+            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.optionsToolStripMenuItem.Text = "Options";
+            this.optionsToolStripMenuItem.ToolTipText = "Open the options.";
             this.optionsToolStripMenuItem.Click += new System.EventHandler(this.optionsToolStripMenuItem_Click);
             // 
             // projectsToolStripMenuItem
@@ -449,6 +489,7 @@
             this.projectsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
             this.projectsToolStripMenuItem.Size = new System.Drawing.Size(93, 22);
             this.projectsToolStripMenuItem.Text = "Open Projects";
+            this.projectsToolStripMenuItem.ToolTipText = "Open the project window";
             this.projectsToolStripMenuItem.Click += new System.EventHandler(this.projectsToolStripMenuItem_Click);
             // 
             // openHistoryToolStripMenuItem
@@ -456,6 +497,7 @@
             this.openHistoryToolStripMenuItem.Name = "openHistoryToolStripMenuItem";
             this.openHistoryToolStripMenuItem.Size = new System.Drawing.Size(89, 22);
             this.openHistoryToolStripMenuItem.Text = "Open History";
+            this.openHistoryToolStripMenuItem.ToolTipText = "Open the history window";
             this.openHistoryToolStripMenuItem.Click += new System.EventHandler(this.openHistoryToolStripMenuItem_Click);
             // 
             // openOrderToolStripMenuItem
@@ -463,6 +505,7 @@
             this.openOrderToolStripMenuItem.Name = "openOrderToolStripMenuItem";
             this.openOrderToolStripMenuItem.Size = new System.Drawing.Size(81, 22);
             this.openOrderToolStripMenuItem.Text = "Open Order";
+            this.openOrderToolStripMenuItem.ToolTipText = "Open the order window";
             this.openOrderToolStripMenuItem.Click += new System.EventHandler(this.openOrderToolStripMenuItem_Click);
             // 
             // helpToolStripMenuItem
@@ -481,6 +524,7 @@
             this.seeBackupsToolStripMenuItem.Name = "seeBackupsToolStripMenuItem";
             this.seeBackupsToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
             this.seeBackupsToolStripMenuItem.Text = "See backups...";
+            this.seeBackupsToolStripMenuItem.ToolTipText = "Open the backup directory";
             this.seeBackupsToolStripMenuItem.Click += new System.EventHandler(this.seeBackupsToolStripMenuItem_Click);
             // 
             // seeLogsToolStripMenuItem
@@ -488,6 +532,7 @@
             this.seeLogsToolStripMenuItem.Name = "seeLogsToolStripMenuItem";
             this.seeLogsToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
             this.seeLogsToolStripMenuItem.Text = "See logs...";
+            this.seeLogsToolStripMenuItem.ToolTipText = "Open the log directory";
             this.seeLogsToolStripMenuItem.Click += new System.EventHandler(this.seeLogsToolStripMenuItem_Click);
             // 
             // sourceCodeGithubToolStripMenuItem
@@ -495,6 +540,7 @@
             this.sourceCodeGithubToolStripMenuItem.Name = "sourceCodeGithubToolStripMenuItem";
             this.sourceCodeGithubToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
             this.sourceCodeGithubToolStripMenuItem.Text = "Source Code (Github)...";
+            this.sourceCodeGithubToolStripMenuItem.ToolTipText = "Visit the Github project page";
             this.sourceCodeGithubToolStripMenuItem.Click += new System.EventHandler(this.sourceCodeGithubToolStripMenuItem_Click);
             // 
             // aboutToolStripMenuItem
@@ -502,6 +548,7 @@
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
             this.aboutToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
             this.aboutToolStripMenuItem.Text = "About";
+            this.aboutToolStripMenuItem.ToolTipText = "About the app and this build";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
             // cbboxFilterType
@@ -517,6 +564,7 @@
             this.cbboxFilterType.Name = "cbboxFilterType";
             this.cbboxFilterType.Size = new System.Drawing.Size(94, 21);
             this.cbboxFilterType.TabIndex = 1;
+            this.toolTip1.SetToolTip(this.cbboxFilterType, resources.GetString("cbboxFilterType.ToolTip"));
             this.cbboxFilterType.SelectedIndexChanged += new System.EventHandler(this.cbboxFilterType_SelectedIndexChanged);
             // 
             // txtboxFilter
@@ -570,6 +618,7 @@
             this.btnPartAdd.Name = "btnPartAdd";
             this.btnPartAdd.Size = new System.Drawing.Size(23, 23);
             this.btnPartAdd.TabIndex = 11;
+            this.toolTip1.SetToolTip(this.btnPartAdd, "Add new part");
             this.btnPartAdd.UseVisualStyleBackColor = true;
             this.btnPartAdd.Click += new System.EventHandler(this.btnPartAdd_Click);
             // 
@@ -581,6 +630,7 @@
             this.btnPartDup.Name = "btnPartDup";
             this.btnPartDup.Size = new System.Drawing.Size(23, 23);
             this.btnPartDup.TabIndex = 13;
+            this.toolTip1.SetToolTip(this.btnPartDup, "Duplicate selected part (only one must be selected)");
             this.btnPartDup.UseVisualStyleBackColor = true;
             this.btnPartDup.Click += new System.EventHandler(this.btnPartDup_Click);
             // 
@@ -749,6 +799,7 @@
             this.btnCheckedPartDel.Name = "btnCheckedPartDel";
             this.btnCheckedPartDel.Size = new System.Drawing.Size(23, 23);
             this.btnCheckedPartDel.TabIndex = 14;
+            this.toolTip1.SetToolTip(this.btnCheckedPartDel, "DELETE ALL CHECKED parts");
             this.btnCheckedPartDel.UseVisualStyleBackColor = true;
             this.btnCheckedPartDel.Click += new System.EventHandler(this.btnCheckedPartDel_Click);
             // 
@@ -928,13 +979,6 @@
             this.openSupplierUrlToolStripMenuItem.Text = "Open Supplier url...";
             this.openSupplierUrlToolStripMenuItem.Click += new System.EventHandler(this.openSupplierUrlToolStripMenuItem_Click);
             // 
-            // importListFromDigikeyToolStripMenuItem
-            // 
-            this.importListFromDigikeyToolStripMenuItem.Name = "importListFromDigikeyToolStripMenuItem";
-            this.importListFromDigikeyToolStripMenuItem.Size = new System.Drawing.Size(296, 22);
-            this.importListFromDigikeyToolStripMenuItem.Text = "Import List from Digikey";
-            this.importListFromDigikeyToolStripMenuItem.Click += new System.EventHandler(this.importListFromDigikeyToolStripMenuItem_Click);
-            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1056,6 +1100,7 @@
         private System.Windows.Forms.ToolStripMenuItem updateFromDigikeyToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addToProjectToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem importListFromDigikeyToolStripMenuItem;
+        private System.Windows.Forms.ToolTip toolTip1;
     }
 }
 

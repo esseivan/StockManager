@@ -55,6 +55,8 @@
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.copyMPNToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openSupplierUrlToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.button2 = new System.Windows.Forms.Button();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.listviewParts)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -245,11 +247,11 @@
             // btnAdv
             // 
             this.btnAdv.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnAdv.Location = new System.Drawing.Point(592, 10);
+            this.btnAdv.Location = new System.Drawing.Point(549, 10);
             this.btnAdv.Name = "btnAdv";
-            this.btnAdv.Size = new System.Drawing.Size(75, 23);
+            this.btnAdv.Size = new System.Drawing.Size(118, 23);
             this.btnAdv.TabIndex = 14;
-            this.btnAdv.Text = "Advanced";
+            this.btnAdv.Text = "Advanced Search";
             this.btnAdv.UseVisualStyleBackColor = true;
             this.btnAdv.Click += new System.EventHandler(this.btnAdv_Click);
             // 
@@ -285,11 +287,23 @@
             this.openSupplierUrlToolStripMenuItem.Text = "Open Supplier url...";
             this.openSupplierUrlToolStripMenuItem.Click += new System.EventHandler(this.openSupplierUrlToolStripMenuItem_Click);
             // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(142, 10);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(29, 23);
+            this.button2.TabIndex = 16;
+            this.button2.Text = "?";
+            this.toolTip1.SetToolTip(this.button2, "Explain what you are seeing in this list");
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
             // frmHistory
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(953, 450);
+            this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.btnAdv);
             this.Controls.Add(this.label4);
@@ -334,5 +348,7 @@
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem copyMPNToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem openSupplierUrlToolStripMenuItem;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.ToolTip toolTip1;
     }
 }
