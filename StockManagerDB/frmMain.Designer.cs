@@ -169,7 +169,7 @@
             // 
             this.newDatabaseToolStripMenuItem.Name = "newDatabaseToolStripMenuItem";
             this.newDatabaseToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
-            this.newDatabaseToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.newDatabaseToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
             this.newDatabaseToolStripMenuItem.Text = "New";
             this.newDatabaseToolStripMenuItem.ToolTipText = "Create a empty new \'.smd\' stock";
             this.newDatabaseToolStripMenuItem.Click += new System.EventHandler(this.newDatabaseToolStripMenuItem_Click);
@@ -178,7 +178,7 @@
             // 
             this.openDatabaseToolStripMenuItem.Name = "openDatabaseToolStripMenuItem";
             this.openDatabaseToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-            this.openDatabaseToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.openDatabaseToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
             this.openDatabaseToolStripMenuItem.Text = "Open";
             this.openDatabaseToolStripMenuItem.ToolTipText = "Open a \'.smd\' stock file";
             this.openDatabaseToolStripMenuItem.Click += new System.EventHandler(this.openDatabaseToolStripMenuItem_Click);
@@ -192,7 +192,7 @@
             this.toolStripMenuItem5,
             this.toolStripMenuItem6});
             this.openRecentToolStripMenuItem.Name = "openRecentToolStripMenuItem";
-            this.openRecentToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.openRecentToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
             this.openRecentToolStripMenuItem.Text = "Open recent...";
             this.openRecentToolStripMenuItem.DropDownOpening += new System.EventHandler(this.openRecentToolStripMenuItem_DropDownOpening);
             // 
@@ -200,7 +200,7 @@
             // 
             this.toolStripMenuItem2.Name = "toolStripMenuItem2";
             this.toolStripMenuItem2.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.D1)));
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(180, 22);
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(116, 22);
             this.toolStripMenuItem2.Text = "1";
             this.toolStripMenuItem2.Click += new System.EventHandler(this.toolStripMenuItemRecentFile_Click);
             // 
@@ -208,32 +208,32 @@
             // 
             this.toolStripMenuItem3.Name = "toolStripMenuItem3";
             this.toolStripMenuItem3.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.D2)));
-            this.toolStripMenuItem3.Size = new System.Drawing.Size(180, 22);
+            this.toolStripMenuItem3.Size = new System.Drawing.Size(116, 22);
             this.toolStripMenuItem3.Text = "2";
             // 
             // toolStripMenuItem4
             // 
             this.toolStripMenuItem4.Name = "toolStripMenuItem4";
             this.toolStripMenuItem4.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.D3)));
-            this.toolStripMenuItem4.Size = new System.Drawing.Size(180, 22);
+            this.toolStripMenuItem4.Size = new System.Drawing.Size(116, 22);
             this.toolStripMenuItem4.Text = "3";
             // 
             // toolStripMenuItem5
             // 
             this.toolStripMenuItem5.Name = "toolStripMenuItem5";
-            this.toolStripMenuItem5.Size = new System.Drawing.Size(180, 22);
+            this.toolStripMenuItem5.Size = new System.Drawing.Size(116, 22);
             this.toolStripMenuItem5.Text = "4";
             // 
             // toolStripMenuItem6
             // 
             this.toolStripMenuItem6.Name = "toolStripMenuItem6";
-            this.toolStripMenuItem6.Size = new System.Drawing.Size(180, 22);
+            this.toolStripMenuItem6.Size = new System.Drawing.Size(116, 22);
             this.toolStripMenuItem6.Text = "5";
             // 
             // seeInExplorerToolStripMenuItem
             // 
             this.seeInExplorerToolStripMenuItem.Name = "seeInExplorerToolStripMenuItem";
-            this.seeInExplorerToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.seeInExplorerToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
             this.seeInExplorerToolStripMenuItem.Text = "See in explorer";
             this.seeInExplorerToolStripMenuItem.ToolTipText = "Open the directory of the current stock file";
             this.seeInExplorerToolStripMenuItem.Click += new System.EventHandler(this.seeInExplorerToolStripMenuItem_Click);
@@ -242,7 +242,7 @@
             // 
             this.closeDatabaseToolStripMenuItem.Name = "closeDatabaseToolStripMenuItem";
             this.closeDatabaseToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.W)));
-            this.closeDatabaseToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.closeDatabaseToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
             this.closeDatabaseToolStripMenuItem.Text = "Close";
             this.closeDatabaseToolStripMenuItem.ToolTipText = "Close the current stock file";
             this.closeDatabaseToolStripMenuItem.Click += new System.EventHandler(this.closeDatabaseToolStripMenuItem_Click);
@@ -250,13 +250,13 @@
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator4.Size = new System.Drawing.Size(148, 6);
             // 
             // saveToolStripMenuItem
             // 
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
             this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
             this.saveToolStripMenuItem.Text = "Save";
             this.saveToolStripMenuItem.ToolTipText = "Save the changes made. Note that the save is automatic for almost every change yo" +
     "u make. This is just to force a new save.";
@@ -270,7 +270,7 @@
             this.importOrderFromDigikeyFromClipboardToolStripMenuItem,
             this.importListFromDigikeyToolStripMenuItem});
             this.importsToolStripMenuItem.Name = "importsToolStripMenuItem";
-            this.importsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.importsToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
             this.importsToolStripMenuItem.Text = "Import...";
             this.importsToolStripMenuItem.ToolTipText = "Import from various locations.";
             // 
@@ -316,13 +316,13 @@
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(148, 6);
             // 
             // quitToolStripMenuItem
             // 
             this.quitToolStripMenuItem.Name = "quitToolStripMenuItem";
             this.quitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Q)));
-            this.quitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.quitToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
             this.quitToolStripMenuItem.Text = "Quit";
             this.quitToolStripMenuItem.ToolTipText = "This will close all sub-windows";
             this.quitToolStripMenuItem.Click += new System.EventHandler(this.quitToolStripMenuItem_Click);
@@ -425,7 +425,7 @@
             this.resizeColumnsToolStripMenuItem.Name = "resizeColumnsToolStripMenuItem";
             this.resizeColumnsToolStripMenuItem.Size = new System.Drawing.Size(249, 22);
             this.resizeColumnsToolStripMenuItem.Text = "Resize columns";
-            this.resizeColumnsToolStripMenuItem.ToolTipText = "Resize the columns on both lists.";
+            this.resizeColumnsToolStripMenuItem.ToolTipText = "Resize the columns on both lists";
             this.resizeColumnsToolStripMenuItem.Click += new System.EventHandler(this.resizeColumnsToolStripMenuItem_Click);
             // 
             // toolStripSeparator5
@@ -440,7 +440,7 @@
             | System.Windows.Forms.Keys.A)));
             this.checkAllInViewToolStripMenuItem.Size = new System.Drawing.Size(249, 22);
             this.checkAllInViewToolStripMenuItem.Text = "Check all in view";
-            this.checkAllInViewToolStripMenuItem.ToolTipText = "Check all the parts in the view (currently in the top list).";
+            this.checkAllInViewToolStripMenuItem.ToolTipText = "Check all the parts in the view (currently in the top list)";
             this.checkAllInViewToolStripMenuItem.Click += new System.EventHandler(this.checkAllInViewToolStripMenuItem_Click);
             // 
             // uncheckAllInViewToolStripMenuItem
@@ -450,7 +450,7 @@
             | System.Windows.Forms.Keys.D)));
             this.uncheckAllInViewToolStripMenuItem.Size = new System.Drawing.Size(249, 22);
             this.uncheckAllInViewToolStripMenuItem.Text = "Uncheck all in view";
-            this.uncheckAllInViewToolStripMenuItem.ToolTipText = "Uncheck all the part in the view (currently in the top list).";
+            this.uncheckAllInViewToolStripMenuItem.ToolTipText = "Unchek all the part in the view (currently in the top list)";
             this.uncheckAllInViewToolStripMenuItem.Click += new System.EventHandler(this.uncheckAllInViewToolStripMenuItem_Click);
             // 
             // toolStripSeparator6
@@ -464,7 +464,7 @@
             this.advancedSearchToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.K)));
             this.advancedSearchToolStripMenuItem.Size = new System.Drawing.Size(249, 22);
             this.advancedSearchToolStripMenuItem.Text = "Advanced search";
-            this.advancedSearchToolStripMenuItem.ToolTipText = "Open the advanced search window. The current filters will be overwritten.";
+            this.advancedSearchToolStripMenuItem.ToolTipText = "Open the advanced search window.\r\nThe current filters will be overwritten.";
             this.advancedSearchToolStripMenuItem.Click += new System.EventHandler(this.advancedSearchToolStripMenuItem_Click);
             // 
             // toolsToolStripMenuItem
@@ -478,7 +478,7 @@
             // optionsToolStripMenuItem
             // 
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
             this.optionsToolStripMenuItem.Text = "Options";
             this.optionsToolStripMenuItem.ToolTipText = "Open the options.";
             this.optionsToolStripMenuItem.Click += new System.EventHandler(this.optionsToolStripMenuItem_Click);

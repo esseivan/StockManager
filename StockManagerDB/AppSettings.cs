@@ -107,6 +107,25 @@ namespace StockManagerDB
             }
         }
 
+        public AppSettings Clone()
+        {
+            AppSettings cloned = new AppSettings
+            {
+                _appFont = new SerializableFont(AppFont),
+                RecentFiles = new List<string>(this.RecentFiles),
+                OpenRecentOnLaunch = this.OpenRecentOnLaunch,
+                EditCellDecimalPlaces = this.EditCellDecimalPlaces,
+                LastMatchKindUsed = this.LastMatchKindUsed,
+                Order_ShowInfos = this.Order_ShowInfos,
+                Order_ShowMoreInfos = this.Order_ShowMoreInfos,
+                ProcessActionOnCheckedOnly = this.ProcessActionOnCheckedOnly,
+                IsDigikeyAPIEnabled = this.IsDigikeyAPIEnabled,
+            };
+
+            return cloned;
+        }
+
+
         public static AppSettings SetDefaultAppSettings(Form frmMain)
         {
             _defaultSettings = new AppSettings(frmMain);

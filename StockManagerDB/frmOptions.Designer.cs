@@ -52,6 +52,7 @@
             this.label4 = new System.Windows.Forms.Label();
             this.txtboxClientId = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
+            this.btnClearRecent = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.numDecimals)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -329,11 +330,22 @@
             this.label2.TabIndex = 7;
             this.label2.Text = "ClientId";
             // 
+            // btnClearRecent
+            // 
+            this.btnClearRecent.Location = new System.Drawing.Point(207, 37);
+            this.btnClearRecent.Name = "btnClearRecent";
+            this.btnClearRecent.Size = new System.Drawing.Size(75, 23);
+            this.btnClearRecent.TabIndex = 7;
+            this.btnClearRecent.Text = "Clear recent";
+            this.btnClearRecent.UseVisualStyleBackColor = true;
+            this.btnClearRecent.Click += new System.EventHandler(this.btnClearRecent_Click);
+            // 
             // frmOptions
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.btnClearRecent);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.numDecimals);
@@ -379,5 +391,6 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.CheckBox checkBoxDigikeyAPIEnabled;
         private System.Windows.Forms.Button btnClearDigikey;
+        private System.Windows.Forms.Button btnClearRecent;
     }
 }

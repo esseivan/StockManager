@@ -24,12 +24,25 @@ namespace StockManagerDB
         /// <summary>
         /// The new app settings class
         /// </summary>
-        public AppSettings NewAppSettings { get; set; } = null;
+        public AppSettings NewAppSettings
+        {
+            get
+            {
+                if (!ChangedAccepted)
+                    return null;
+                return notApprovedNewSettings;
+            }
+        }
 
         /// <summary>
         /// Set to 'true' when a change is made by the user
         /// </summary>
         public bool ChangesMade { get; private set; } = false;
+
+        /// <summary>
+        /// Are the changes accepted (is 'OK' button pressed)
+        /// </summary>
+        public bool ChangedAccepted { get; private set; } = false;
 
         private AppSettings _referenceNewSettings;
 
@@ -41,7 +54,8 @@ namespace StockManagerDB
             get { return _referenceNewSettings; }
             set
             {
-                notApprovedNewSettings = _referenceNewSettings = value;
+                ChangesMade = false;
+                notApprovedNewSettings = _referenceNewSettings = value.Clone();
                 SyncControls();
             }
         }
@@ -86,7 +100,7 @@ namespace StockManagerDB
         /// </summary>
         private void SetNewAppSettings()
         {
-            NewAppSettings = notApprovedNewSettings;
+            ChangedAccepted = true;
 
             // Apply api settings
             ApiClientSettings apiSettings = ApiClientSettings.GetInstance();
@@ -134,6 +148,7 @@ namespace StockManagerDB
         /// </summary>
         private void btnReset_Click(object sender, EventArgs e)
         {
+            ChangesMade = true;
             notApprovedNewSettings = AppSettings.GetDefaultSettings();
         }
 
@@ -250,6 +265,12 @@ namespace StockManagerDB
 
             ChangesMade = true;
             AppSettings.Settings.IsDigikeyAPIEnabled = checkBoxDigikeyAPIEnabled.Checked;
+        }
+
+        private void btnClearRecent_Click(object sender, EventArgs e)
+        {
+            ChangesMade = true;
+            notApprovedNewSettings.RecentFiles.Clear();
         }
     }
 }
