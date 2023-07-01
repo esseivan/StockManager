@@ -940,6 +940,45 @@ namespace StockManagerDB
 
         #region Actions
 
+        /// <summary>
+        /// Ask the user for a multiplier
+        /// </summary>
+        /// <param name="n"></param>
+        /// <returns></returns>
+        private bool AskUserMultiplier(string text, out int n)
+        {
+            Dialog.DialogConfig dc = new Dialog.DialogConfig()
+            {
+                Message = text,
+                Title = "Enter input",
+                Button1 = Dialog.ButtonType.OK,
+                Button2 = Dialog.ButtonType.Cancel,
+                DefaultInput = "1",
+                Input = true,
+                Icon = Dialog.DialogIcon.Question,
+            };
+            Dialog.ShowDialogResult res = Dialog.ShowDialog(dc);
+            if (res.DialogResult != Dialog.DialogResult.OK)
+            {
+                n = 0;
+                return false;
+            }
+
+            // Parse input
+            if (!int.TryParse(res.UserInput, out n))
+            {
+                MessageBox.Show(
+                    $"Unable to parse your input : '{res.UserInput}'\nAborting...",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+                return false;
+            }
+
+            return true;
+        }
+
         private bool ImportDigikeyList()
         {
             if (selectedProjectVersion == null)
@@ -1131,33 +1170,10 @@ namespace StockManagerDB
 
             // For all the checked parts, remove the quantity for the project from the part list (general one)
             // First, ask to confirm the multiplier, negative number to add allowed
-            Dialog.DialogConfig dc = new Dialog.DialogConfig()
+            string text = "Please enter the number of time to remove the project's BOM from the part list\n(Note that a negative number is allowed)";
+            if (!AskUserMultiplier(text, out int n))
             {
-                Message =
-                    "Please enter the number of time to remove the project's BOM from the part list\n(Note that a negative number is allowed)",
-                Title = "Enter input",
-                Button1 = Dialog.ButtonType.OK,
-                Button2 = Dialog.ButtonType.Cancel,
-                DefaultInput = "1",
-                Input = true,
-                Icon = Dialog.DialogIcon.Question,
-            };
-            Dialog.ShowDialogResult res = Dialog.ShowDialog(dc);
-            if (res.DialogResult != Dialog.DialogResult.OK)
-            {
-                return;
-            }
-
-            // Parse input
-            if (!int.TryParse(res.UserInput, out int n))
-            {
-                MessageBox.Show(
-                    $"Unable to parse your input : '{res.UserInput}'\nAborting...",
-                    "Error",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error
-                );
-                return;
+                return; // Cancelled or error
             }
 
             // Ask confirmation
@@ -1346,17 +1362,23 @@ namespace StockManagerDB
             statusTimeoutTimer.Stop();
             labelStatus.ForeColor = SystemColors.ControlText;
             labelStatus.Text = string.Empty;
-        }
+        }   
 
         private void orderTheSelectedProjectToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            string text = "Please enter the number of time to add the project's BOM to the order list\n(Note that a negative number is allowed)";
+            if (!AskUserMultiplier(text, out int n))
+            {
+                return;
+            }
+
             var selected = listviewMaterials.CheckedObjects.Cast<Material>();
             OnProjectOrder?.Invoke(
                 this,
                 new ProjectProcessRequestedEventArgs()
                 {
                     materials = selected,
-                    numberOfTimes = (byte)numMult.Value,
+                    numberOfTimes = n,
                     projectName = selectedProjectVersion.Project,
                 }
             );

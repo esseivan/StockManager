@@ -39,6 +39,8 @@
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.quitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.actionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.actionsOnCheckedPartsOnlyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.orderTheSelectedProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.processProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -80,6 +82,7 @@
             this.btnVerDup = new System.Windows.Forms.Button();
             this.btnVerRen = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.btnImportDigikeyList = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.numMult = new System.Windows.Forms.NumericUpDown();
             this.statusTimeoutTimer = new System.Windows.Forms.Timer(this.components);
@@ -87,7 +90,6 @@
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.copyMPNToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openSupplierUrlToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.btnImportDigikeyList = new System.Windows.Forms.Button();
             this.statusStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.listviewMaterials)).BeginInit();
@@ -143,44 +145,64 @@
             // importProjectsToolStripMenuItem
             // 
             this.importProjectsToolStripMenuItem.Name = "importProjectsToolStripMenuItem";
-            this.importProjectsToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
+            this.importProjectsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.importProjectsToolStripMenuItem.Text = "Import projects";
+            this.importProjectsToolStripMenuItem.ToolTipText = "Import the projects from a \'.smd\' stock file";
             this.importProjectsToolStripMenuItem.Click += new System.EventHandler(this.importProjectsToolStripMenuItem_Click);
             // 
             // exportAllProjectsToolStripMenuItem
             // 
             this.exportAllProjectsToolStripMenuItem.Name = "exportAllProjectsToolStripMenuItem";
-            this.exportAllProjectsToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
+            this.exportAllProjectsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.exportAllProjectsToolStripMenuItem.Text = "Export all projects";
+            this.exportAllProjectsToolStripMenuItem.ToolTipText = "Export all the projects into a \'.smd\' file";
             this.exportAllProjectsToolStripMenuItem.Click += new System.EventHandler(this.exportAllProjectsToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(165, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
             // 
             // quitToolStripMenuItem
             // 
             this.quitToolStripMenuItem.Name = "quitToolStripMenuItem";
             this.quitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Q)));
-            this.quitToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
+            this.quitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.quitToolStripMenuItem.Text = "Close";
+            this.quitToolStripMenuItem.ToolTipText = "Close this project window only";
             this.quitToolStripMenuItem.Click += new System.EventHandler(this.quitToolStripMenuItem_Click);
             // 
             // actionsToolStripMenuItem
             // 
             this.actionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.actionsOnCheckedPartsOnlyToolStripMenuItem,
+            this.toolStripSeparator3,
             this.orderTheSelectedProjectToolStripMenuItem,
             this.processProjectToolStripMenuItem});
             this.actionsToolStripMenuItem.Name = "actionsToolStripMenuItem";
             this.actionsToolStripMenuItem.Size = new System.Drawing.Size(59, 22);
             this.actionsToolStripMenuItem.Text = "Actions";
             // 
+            // actionsOnCheckedPartsOnlyToolStripMenuItem
+            // 
+            this.actionsOnCheckedPartsOnlyToolStripMenuItem.Checked = true;
+            this.actionsOnCheckedPartsOnlyToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.actionsOnCheckedPartsOnlyToolStripMenuItem.Enabled = false;
+            this.actionsOnCheckedPartsOnlyToolStripMenuItem.Name = "actionsOnCheckedPartsOnlyToolStripMenuItem";
+            this.actionsOnCheckedPartsOnlyToolStripMenuItem.Size = new System.Drawing.Size(238, 22);
+            this.actionsOnCheckedPartsOnlyToolStripMenuItem.Text = "Actions on Checked parts only";
+            // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(235, 6);
+            // 
             // orderTheSelectedProjectToolStripMenuItem
             // 
             this.orderTheSelectedProjectToolStripMenuItem.Name = "orderTheSelectedProjectToolStripMenuItem";
             this.orderTheSelectedProjectToolStripMenuItem.Size = new System.Drawing.Size(238, 22);
             this.orderTheSelectedProjectToolStripMenuItem.Text = "Order the selected project";
+            this.orderTheSelectedProjectToolStripMenuItem.ToolTipText = "Add the BOM to the order form.\r\nYou will be asked for a multiplier.";
             this.orderTheSelectedProjectToolStripMenuItem.Click += new System.EventHandler(this.orderTheSelectedProjectToolStripMenuItem_Click);
             // 
             // processProjectToolStripMenuItem
@@ -188,8 +210,7 @@
             this.processProjectToolStripMenuItem.Name = "processProjectToolStripMenuItem";
             this.processProjectToolStripMenuItem.Size = new System.Drawing.Size(238, 22);
             this.processProjectToolStripMenuItem.Text = "Process project\'s checked parts";
-            this.processProjectToolStripMenuItem.ToolTipText = "For each checked part in the project, remove the quantity of this part from the c" +
-    "urrent stock";
+            this.processProjectToolStripMenuItem.ToolTipText = "Remove the BOM from the current stock.\r\nYou will be asked for a multiplier.";
             this.processProjectToolStripMenuItem.Click += new System.EventHandler(this.processProjectToolStripMenuItem_Click);
             // 
             // viewToolStripMenuItem
@@ -206,27 +227,30 @@
             // resizeColumnsToolStripMenuItem
             // 
             this.resizeColumnsToolStripMenuItem.Name = "resizeColumnsToolStripMenuItem";
-            this.resizeColumnsToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
+            this.resizeColumnsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.resizeColumnsToolStripMenuItem.Text = "Resize columns";
+            this.resizeColumnsToolStripMenuItem.ToolTipText = "Resize the columns on the BOM list";
             this.resizeColumnsToolStripMenuItem.Click += new System.EventHandler(this.resizeColumnsToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(152, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
             // 
             // checkAllToolStripMenuItem
             // 
             this.checkAllToolStripMenuItem.Name = "checkAllToolStripMenuItem";
-            this.checkAllToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
+            this.checkAllToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.checkAllToolStripMenuItem.Text = "Check all";
+            this.checkAllToolStripMenuItem.ToolTipText = "Check all the parts in the BOM";
             this.checkAllToolStripMenuItem.Click += new System.EventHandler(this.checkAllToolStripMenuItem_Click);
             // 
             // uncheckAllToolStripMenuItem
             // 
             this.uncheckAllToolStripMenuItem.Name = "uncheckAllToolStripMenuItem";
-            this.uncheckAllToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
+            this.uncheckAllToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.uncheckAllToolStripMenuItem.Text = "Uncheck all";
+            this.uncheckAllToolStripMenuItem.ToolTipText = "Uncheck all the parts in the BOM";
             this.uncheckAllToolStripMenuItem.Click += new System.EventHandler(this.uncheckAllToolStripMenuItem_Click);
             // 
             // listviewMaterials
@@ -440,6 +464,7 @@
             this.btnMatDup.Name = "btnMatDup";
             this.btnMatDup.Size = new System.Drawing.Size(23, 23);
             this.btnMatDup.TabIndex = 10;
+            this.tooltip1.SetToolTip(this.btnMatDup, "Duplicate the selected item (only one must be selected)");
             this.btnMatDup.UseVisualStyleBackColor = true;
             this.btnMatDup.Click += new System.EventHandler(this.btnMatDup_Click);
             // 
@@ -451,6 +476,7 @@
             this.btnMatDel.Name = "btnMatDel";
             this.btnMatDel.Size = new System.Drawing.Size(23, 23);
             this.btnMatDel.TabIndex = 10;
+            this.tooltip1.SetToolTip(this.btnMatDel, "Delete the selected item (only one must be selected)");
             this.btnMatDel.UseVisualStyleBackColor = true;
             this.btnMatDel.Click += new System.EventHandler(this.btnMatDel_Click);
             // 
@@ -462,6 +488,7 @@
             this.btnMatAdd.Name = "btnMatAdd";
             this.btnMatAdd.Size = new System.Drawing.Size(23, 23);
             this.btnMatAdd.TabIndex = 10;
+            this.tooltip1.SetToolTip(this.btnMatAdd, "Create a new item");
             this.btnMatAdd.UseVisualStyleBackColor = true;
             this.btnMatAdd.Click += new System.EventHandler(this.btnMatAdd_Click);
             // 
@@ -492,6 +519,7 @@
             this.btnProAdd.Name = "btnProAdd";
             this.btnProAdd.Size = new System.Drawing.Size(23, 23);
             this.btnProAdd.TabIndex = 10;
+            this.tooltip1.SetToolTip(this.btnProAdd, "Add a new project");
             this.btnProAdd.UseVisualStyleBackColor = true;
             this.btnProAdd.Click += new System.EventHandler(this.btnProAdd_Click);
             // 
@@ -504,6 +532,7 @@
             this.btnProDel.Name = "btnProDel";
             this.btnProDel.Size = new System.Drawing.Size(23, 23);
             this.btnProDel.TabIndex = 10;
+            this.tooltip1.SetToolTip(this.btnProDel, "Delete the selected project");
             this.btnProDel.UseVisualStyleBackColor = true;
             this.btnProDel.Click += new System.EventHandler(this.btnProDel_Click);
             // 
@@ -516,6 +545,7 @@
             this.btnProDup.Name = "btnProDup";
             this.btnProDup.Size = new System.Drawing.Size(23, 23);
             this.btnProDup.TabIndex = 10;
+            this.tooltip1.SetToolTip(this.btnProDup, "Duplicate the selected project");
             this.btnProDup.UseVisualStyleBackColor = true;
             this.btnProDup.Click += new System.EventHandler(this.btnProDup_Click);
             // 
@@ -528,6 +558,7 @@
             this.btnProRen.Name = "btnProRen";
             this.btnProRen.Size = new System.Drawing.Size(23, 23);
             this.btnProRen.TabIndex = 10;
+            this.tooltip1.SetToolTip(this.btnProRen, "Rename the selected project");
             this.btnProRen.UseVisualStyleBackColor = true;
             this.btnProRen.Click += new System.EventHandler(this.btnProRen_Click);
             // 
@@ -557,6 +588,7 @@
             this.btnVerAdd.Name = "btnVerAdd";
             this.btnVerAdd.Size = new System.Drawing.Size(23, 23);
             this.btnVerAdd.TabIndex = 10;
+            this.tooltip1.SetToolTip(this.btnVerAdd, "Add a new version");
             this.btnVerAdd.UseVisualStyleBackColor = true;
             this.btnVerAdd.Click += new System.EventHandler(this.btnVerAdd_Click);
             // 
@@ -569,6 +601,7 @@
             this.btnVerDel.Name = "btnVerDel";
             this.btnVerDel.Size = new System.Drawing.Size(23, 23);
             this.btnVerDel.TabIndex = 10;
+            this.tooltip1.SetToolTip(this.btnVerDel, "Delete the selected version");
             this.btnVerDel.UseVisualStyleBackColor = true;
             this.btnVerDel.Click += new System.EventHandler(this.btnVerDel_Click);
             // 
@@ -581,6 +614,7 @@
             this.btnVerDup.Name = "btnVerDup";
             this.btnVerDup.Size = new System.Drawing.Size(23, 23);
             this.btnVerDup.TabIndex = 10;
+            this.tooltip1.SetToolTip(this.btnVerDup, "Duplicate the selected version");
             this.btnVerDup.UseVisualStyleBackColor = true;
             this.btnVerDup.Click += new System.EventHandler(this.btnVerDup_Click);
             // 
@@ -593,6 +627,7 @@
             this.btnVerRen.Name = "btnVerRen";
             this.btnVerRen.Size = new System.Drawing.Size(23, 23);
             this.btnVerRen.TabIndex = 10;
+            this.tooltip1.SetToolTip(this.btnVerRen, "Rename the selected version");
             this.btnVerRen.UseVisualStyleBackColor = true;
             this.btnVerRen.Click += new System.EventHandler(this.btnVerRen_Click);
             // 
@@ -614,6 +649,17 @@
             this.groupBox3.TabIndex = 13;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Bill Of Materials";
+            // 
+            // btnImportDigikeyList
+            // 
+            this.btnImportDigikeyList.Location = new System.Drawing.Point(93, 19);
+            this.btnImportDigikeyList.Name = "btnImportDigikeyList";
+            this.btnImportDigikeyList.Size = new System.Drawing.Size(75, 23);
+            this.btnImportDigikeyList.TabIndex = 13;
+            this.btnImportDigikeyList.Text = "Import List";
+            this.tooltip1.SetToolTip(this.btnImportDigikeyList, "Import a BOM List from Digikey into this selected version\'s BOM");
+            this.btnImportDigikeyList.UseVisualStyleBackColor = true;
+            this.btnImportDigikeyList.Click += new System.EventHandler(this.btnImportDigikeyList_Click);
             // 
             // label1
             // 
@@ -637,6 +683,8 @@
             this.numMult.Name = "numMult";
             this.numMult.Size = new System.Drawing.Size(78, 20);
             this.numMult.TabIndex = 11;
+            this.tooltip1.SetToolTip(this.numMult, "Global multiplier for the BOM (Total Quantity, Available, Total Price).\r\nNo actio" +
+        "n will use this multiplier.");
             this.numMult.Value = new decimal(new int[] {
             1,
             0,
@@ -671,16 +719,6 @@
             this.openSupplierUrlToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
             this.openSupplierUrlToolStripMenuItem.Text = "Open Supplier url...";
             this.openSupplierUrlToolStripMenuItem.Click += new System.EventHandler(this.openSupplierUrlToolStripMenuItem_Click);
-            // 
-            // btnImportDigikeyList
-            // 
-            this.btnImportDigikeyList.Location = new System.Drawing.Point(93, 19);
-            this.btnImportDigikeyList.Name = "btnImportDigikeyList";
-            this.btnImportDigikeyList.Size = new System.Drawing.Size(75, 23);
-            this.btnImportDigikeyList.TabIndex = 13;
-            this.btnImportDigikeyList.Text = "Import List";
-            this.btnImportDigikeyList.UseVisualStyleBackColor = true;
-            this.btnImportDigikeyList.Click += new System.EventHandler(this.btnImportDigikeyList_Click);
             // 
             // frmProjects
             // 
@@ -772,5 +810,7 @@
         private System.Windows.Forms.ToolStripMenuItem copyMPNToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem openSupplierUrlToolStripMenuItem;
         private System.Windows.Forms.Button btnImportDigikeyList;
+        private System.Windows.Forms.ToolStripMenuItem actionsOnCheckedPartsOnlyToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
     }
 }
