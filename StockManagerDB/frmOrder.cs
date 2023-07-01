@@ -33,6 +33,7 @@ namespace StockManagerDB
         public frmOrder()
         {
             InitializeComponent();
+            label2.Visible = false;
 
             ApplySettings();
             ListViewSetColumns();
@@ -235,6 +236,12 @@ namespace StockManagerDB
 
         private void clearToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            // Ask confirmation
+            if (MessageBox.Show("Confirm that you want to clear ALL this list.\nClear all ?", "Warning", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning) != DialogResult.Yes)
+            {
+                return;
+            }
+
             PartsToOrder.Clear();
             PartsHaveChanged();
         }
@@ -339,6 +346,23 @@ namespace StockManagerDB
             }
 
             contextMenuStrip1.Show(Cursor.Position);
+        }
+
+        private void btnCopy_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(textBulkAdd.Text))
+            {
+                return;
+            }
+            Clipboard.SetText(textBulkAdd.Text);
+            label2.Visible = true;
+            statusTimeoutTimer.Start();
+        }
+
+        private void statusTimeoutTimer_Tick(object sender, EventArgs e)
+        {
+            statusTimeoutTimer.Stop();
+            label2.Visible = false;
         }
     }
 }

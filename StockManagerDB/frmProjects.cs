@@ -1179,10 +1179,10 @@ namespace StockManagerDB
             // Ask confirmation
             if (
                 MessageBox.Show(
-                    $"Confirm the process of '{n}' time(s) for the selected project '{selectedProjectVersion.Project}'\n{checkedParts.Count()} out of {BOM.Count} checked part in BOM",
+                    $"Confirm the process of '{n}' time(s) for the selected project '{selectedProjectVersion.Project}'\n{checkedParts.Count()} out of {BOM.Count} checked part in BOM.\nThe BOM will be substracted from your current stock !",
                     "Confirmation",
                     MessageBoxButtons.OKCancel,
-                    MessageBoxIcon.Question
+                    MessageBoxIcon.Warning
                 ) != DialogResult.OK
             )
             {
@@ -1362,7 +1362,7 @@ namespace StockManagerDB
             statusTimeoutTimer.Stop();
             labelStatus.ForeColor = SystemColors.ControlText;
             labelStatus.Text = string.Empty;
-        }   
+        }
 
         private void orderTheSelectedProjectToolStripMenuItem_Click(object sender, EventArgs e)
         {
