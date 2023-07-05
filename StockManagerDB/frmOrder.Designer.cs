@@ -46,9 +46,13 @@
             this.textBulkAdd = new System.Windows.Forms.RichTextBox();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.clearToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.refreshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.showHideInfosToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.showHideMoreInfosToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.viweToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.showInfosToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.showMoreInfosToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.resizeColumnsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.refreshToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteSelectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cbbSuppliers = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -84,6 +88,8 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.listviewMaterials.AutoGenerateColumns = false;
+            this.listviewMaterials.CellEditActivation = BrightIdeasSoftware.ObjectListView.CellEditActivateMode.DoubleClick;
+            this.listviewMaterials.CellEditEnterChangesRows = true;
             this.listviewMaterials.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.olvcMPN,
             this.olvcSupplier,
@@ -123,10 +129,12 @@
             this.listviewMaterials.UseTranslucentHotItem = true;
             this.listviewMaterials.View = System.Windows.Forms.View.Details;
             this.listviewMaterials.VirtualMode = true;
+            this.listviewMaterials.CellEditFinished += new BrightIdeasSoftware.CellEditEventHandler(this.listviewMaterials_CellEditFinished);
             this.listviewMaterials.CellRightClick += new System.EventHandler<BrightIdeasSoftware.CellRightClickEventArgs>(this.listviewMaterials_CellRightClick);
             // 
             // olvcMPN
             // 
+            this.olvcMPN.IsEditable = false;
             this.olvcMPN.Text = "Manufacturer PN";
             this.olvcMPN.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -156,6 +164,7 @@
             // 
             // olvcCat
             // 
+            this.olvcCat.IsEditable = false;
             this.olvcCat.Text = "Category";
             this.olvcCat.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -175,6 +184,7 @@
             // 
             // olvcLowStock
             // 
+            this.olvcLowStock.IsEditable = false;
             this.olvcLowStock.MinimumWidth = 75;
             this.olvcLowStock.Text = "LowStock";
             this.olvcLowStock.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -195,6 +205,7 @@
             // 
             // olvcTotalPrice
             // 
+            this.olvcTotalPrice.IsEditable = false;
             this.olvcTotalPrice.Text = "Total Price";
             this.olvcTotalPrice.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -215,9 +226,7 @@
             this.menuStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.clearToolStripMenuItem,
-            this.refreshToolStripMenuItem,
-            this.showHideInfosToolStripMenuItem,
-            this.showHideMoreInfosToolStripMenuItem,
+            this.viweToolStripMenuItem,
             this.deleteSelectionToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
@@ -233,26 +242,58 @@
             this.clearToolStripMenuItem.Text = "Clear";
             this.clearToolStripMenuItem.Click += new System.EventHandler(this.clearToolStripMenuItem_Click);
             // 
-            // refreshToolStripMenuItem
+            // viweToolStripMenuItem
             // 
-            this.refreshToolStripMenuItem.Name = "refreshToolStripMenuItem";
-            this.refreshToolStripMenuItem.Size = new System.Drawing.Size(58, 22);
-            this.refreshToolStripMenuItem.Text = "Refresh";
-            this.refreshToolStripMenuItem.Click += new System.EventHandler(this.refreshToolStripMenuItem_Click);
+            this.viweToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.showInfosToolStripMenuItem,
+            this.showMoreInfosToolStripMenuItem,
+            this.toolStripSeparator1,
+            this.resizeColumnsToolStripMenuItem,
+            this.toolStripSeparator2,
+            this.refreshToolStripMenuItem1});
+            this.viweToolStripMenuItem.Name = "viweToolStripMenuItem";
+            this.viweToolStripMenuItem.Size = new System.Drawing.Size(44, 22);
+            this.viweToolStripMenuItem.Text = "View";
             // 
-            // showHideInfosToolStripMenuItem
+            // showInfosToolStripMenuItem
             // 
-            this.showHideInfosToolStripMenuItem.Name = "showHideInfosToolStripMenuItem";
-            this.showHideInfosToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
-            this.showHideInfosToolStripMenuItem.Text = "Show/Hide infos";
-            this.showHideInfosToolStripMenuItem.Click += new System.EventHandler(this.showHideInfosToolStripMenuItem_Click);
+            this.showInfosToolStripMenuItem.CheckOnClick = true;
+            this.showInfosToolStripMenuItem.Name = "showInfosToolStripMenuItem";
+            this.showInfosToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.showInfosToolStripMenuItem.Text = "Show infos";
+            this.showInfosToolStripMenuItem.CheckedChanged += new System.EventHandler(this.showInfosToolStripMenuItem_CheckedChanged);
             // 
-            // showHideMoreInfosToolStripMenuItem
+            // showMoreInfosToolStripMenuItem
             // 
-            this.showHideMoreInfosToolStripMenuItem.Name = "showHideMoreInfosToolStripMenuItem";
-            this.showHideMoreInfosToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
-            this.showHideMoreInfosToolStripMenuItem.Text = "Show/Hide more infos";
-            this.showHideMoreInfosToolStripMenuItem.Click += new System.EventHandler(this.showHideMoreInfosToolStripMenuItem_Click);
+            this.showMoreInfosToolStripMenuItem.CheckOnClick = true;
+            this.showMoreInfosToolStripMenuItem.Name = "showMoreInfosToolStripMenuItem";
+            this.showMoreInfosToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.showMoreInfosToolStripMenuItem.Text = "Show more infos";
+            this.showMoreInfosToolStripMenuItem.Click += new System.EventHandler(this.showMoreInfosToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
+            // 
+            // resizeColumnsToolStripMenuItem
+            // 
+            this.resizeColumnsToolStripMenuItem.Name = "resizeColumnsToolStripMenuItem";
+            this.resizeColumnsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.resizeColumnsToolStripMenuItem.Text = "Resize columns";
+            this.resizeColumnsToolStripMenuItem.Click += new System.EventHandler(this.resizeColumnsToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
+            // 
+            // refreshToolStripMenuItem1
+            // 
+            this.refreshToolStripMenuItem1.Name = "refreshToolStripMenuItem1";
+            this.refreshToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.refreshToolStripMenuItem1.Text = "Refresh";
+            this.refreshToolStripMenuItem1.Click += new System.EventHandler(this.refreshToolStripMenuItem1_Click);
             // 
             // deleteSelectionToolStripMenuItem
             // 
@@ -305,6 +346,7 @@
             // 
             // btnCopy
             // 
+            this.btnCopy.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCopy.Location = new System.Drawing.Point(640, 355);
             this.btnCopy.Name = "btnCopy";
             this.btnCopy.Size = new System.Drawing.Size(75, 23);
@@ -315,6 +357,7 @@
             // 
             // label2
             // 
+            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(586, 360);
             this.label2.Name = "label2";
@@ -374,11 +417,8 @@
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem clearToolStripMenuItem;
         private BrightIdeasSoftware.OLVColumn olvcTotalPrice;
-        private System.Windows.Forms.ToolStripMenuItem showHideInfosToolStripMenuItem;
         private BrightIdeasSoftware.OLVColumn olvcCat;
-        private System.Windows.Forms.ToolStripMenuItem showHideMoreInfosToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem deleteSelectionToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem refreshToolStripMenuItem;
         private System.Windows.Forms.ComboBox cbbSuppliers;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
@@ -387,5 +427,12 @@
         private System.Windows.Forms.Button btnCopy;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Timer statusTimeoutTimer;
+        private System.Windows.Forms.ToolStripMenuItem viweToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem showInfosToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem showMoreInfosToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripMenuItem resizeColumnsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        private System.Windows.Forms.ToolStripMenuItem refreshToolStripMenuItem1;
     }
 }

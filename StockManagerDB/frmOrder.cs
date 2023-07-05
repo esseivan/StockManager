@@ -169,7 +169,6 @@ namespace StockManagerDB
         {
             Cursor = Cursors.WaitCursor;
             listviewMaterials.DataSource = PartsToOrder.Values.ToList();
-            listviewMaterials.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
             UpdateBulkAddText();
             Cursor = Cursors.Default;
         }
@@ -246,20 +245,6 @@ namespace StockManagerDB
             PartsHaveChanged();
         }
 
-        private void showHideInfosToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            InfosVisible = !InfosVisible;
-            olvcMAN.IsVisible = olvcLocation.IsVisible = olvcCat.IsVisible = InfosVisible;
-            listviewMaterials.RebuildColumns();
-        }
-
-        private void showHideMoreInfosToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            MoreInfosVisible = !MoreInfosVisible;
-            olvcDesc.IsVisible = olvcMPN.IsVisible = MoreInfosVisible;
-            listviewMaterials.RebuildColumns();
-        }
-
         private void frmOrder_Load(object sender, EventArgs e)
         {
             olvcMAN.IsVisible = olvcLocation.IsVisible = olvcCat.IsVisible = InfosVisible;
@@ -288,11 +273,6 @@ namespace StockManagerDB
         private void deleteSelectionToolStripMenuItem_Click(object sender, EventArgs e)
         {
             deleteSelection();
-        }
-
-        private void refreshToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            PartsHaveChanged();
         }
 
         private void cbbSuppliers_SelectedIndexChanged(object sender, EventArgs e)
@@ -363,6 +343,60 @@ namespace StockManagerDB
         {
             statusTimeoutTimer.Stop();
             label2.Visible = false;
+        }
+
+
+        /// <summary>
+        /// Called when a cell is edited
+        /// </summary>
+        private void ApplyEdit(CellEditEventArgs e)
+        {
+            // Get the unedited part version
+            Material item = e.RowObject as Material;
+            // Get the edited parameter and value
+            string newValue = e.NewValue.ToString();
+
+            item.QuantityStr = newValue;
+
+            PartsHaveChanged();
+        }
+
+        private void UpdateInfos()
+        {
+            InfosVisible = !InfosVisible;
+            olvcMAN.IsVisible = olvcLocation.IsVisible = olvcCat.IsVisible = InfosVisible;
+            listviewMaterials.RebuildColumns();
+        }
+        private void UpdateMoreInfos()
+        {
+            MoreInfosVisible = showInfosToolStripMenuItem.Checked;
+            olvcDesc.IsVisible = olvcMPN.IsVisible = MoreInfosVisible;
+            listviewMaterials.RebuildColumns();
+        }
+
+        private void listviewMaterials_CellEditFinished(object sender, CellEditEventArgs e)
+        {
+            ApplyEdit(e);
+        }
+
+        private void resizeColumnsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            listviewMaterials.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+        }
+
+        private void showInfosToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateInfos();
+        }
+
+        private void showMoreInfosToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            UpdateMoreInfos();
+        }
+
+        private void refreshToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            PartsHaveChanged();
         }
     }
 }
