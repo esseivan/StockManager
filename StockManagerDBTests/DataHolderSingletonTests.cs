@@ -60,6 +60,7 @@ namespace StockManagerDB.Tests
                 return path;
             }
         }
+
         private dhs d => dhs.Instance;
 
         [TestMethod()]

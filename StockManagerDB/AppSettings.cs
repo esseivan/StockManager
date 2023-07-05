@@ -74,6 +74,36 @@ namespace StockManagerDB
         /// </summary>
         public bool IsDigikeyAPIEnabled { get; set; } = false;
 
+        /// <summary>
+        /// Are More Infos columns shown in order form
+        /// </summary>
+        public bool OrderDoNotExceedLowStock { get; set; } = true;
+
+        /// <summary>
+        /// Are More Infos columns shown in order form
+        /// </summary>
+        public bool OrderMoreUntilLowStockMinimum { get; set; } = false;
+
+        public AppSettings Clone()
+        {
+            AppSettings cloned = new AppSettings
+            {
+                _appFont = new SerializableFont(AppFont),
+                RecentFiles = new List<string>(this.RecentFiles),
+                OpenRecentOnLaunch = this.OpenRecentOnLaunch,
+                EditCellDecimalPlaces = this.EditCellDecimalPlaces,
+                LastMatchKindUsed = this.LastMatchKindUsed,
+                Order_ShowInfos = this.Order_ShowInfos,
+                Order_ShowMoreInfos = this.Order_ShowMoreInfos,
+                ProcessActionOnCheckedOnly = this.ProcessActionOnCheckedOnly,
+                IsDigikeyAPIEnabled = this.IsDigikeyAPIEnabled,
+                OrderDoNotExceedLowStock = this.OrderDoNotExceedLowStock,
+                OrderMoreUntilLowStockMinimum = this.OrderMoreUntilLowStockMinimum,
+            };
+
+            return cloned;
+        }
+
         #endregion
 
         /// <summary>
@@ -106,25 +136,6 @@ namespace StockManagerDB
                 UpdateSettings(value);
             }
         }
-
-        public AppSettings Clone()
-        {
-            AppSettings cloned = new AppSettings
-            {
-                _appFont = new SerializableFont(AppFont),
-                RecentFiles = new List<string>(this.RecentFiles),
-                OpenRecentOnLaunch = this.OpenRecentOnLaunch,
-                EditCellDecimalPlaces = this.EditCellDecimalPlaces,
-                LastMatchKindUsed = this.LastMatchKindUsed,
-                Order_ShowInfos = this.Order_ShowInfos,
-                Order_ShowMoreInfos = this.Order_ShowMoreInfos,
-                ProcessActionOnCheckedOnly = this.ProcessActionOnCheckedOnly,
-                IsDigikeyAPIEnabled = this.IsDigikeyAPIEnabled,
-            };
-
-            return cloned;
-        }
-
 
         public static AppSettings SetDefaultAppSettings(Form frmMain)
         {

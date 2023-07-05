@@ -27,7 +27,7 @@ namespace StockManagerDB
 
         public event EventHandler<PartEditEventArgs> OnPartEditRequested;
         public event EventHandler<ProjectProcessRequestedEventArgs> OnProjectProcessRequested;
-        public event EventHandler<ProjectProcessRequestedEventArgs> OnProjectOrder;
+        public event EventHandler<ProjectOrderRequestedEventArgs> OnProjectOrder;
 
         public void ApplySettings()
         {
@@ -1377,11 +1377,12 @@ namespace StockManagerDB
             var selected = listviewMaterials.CheckedObjects.Cast<Material>();
             OnProjectOrder?.Invoke(
                 this,
-                new ProjectProcessRequestedEventArgs()
+                new ProjectOrderRequestedEventArgs()
                 {
                     materials = selected,
                     numberOfTimes = n,
                     projectName = selectedProjectVersion.Project,
+                    OrderIfRequired = false, // Order no matter what
                 }
             );
         }
@@ -1435,6 +1436,28 @@ namespace StockManagerDB
             ImportDigikeyList();
         }
 
+        private void orderMissingForTheSelectedProjectToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string text = "Please enter the number of time to add the project's BOM to the order list\n(Note that a negative number is allowed)";
+            if (!AskUserMultiplier(text, out int n))
+            {
+                return;
+            }
+
+            var selected = listviewMaterials.CheckedObjects.Cast<Material>();
+            OnProjectOrder?.Invoke(
+                this,
+                new ProjectOrderRequestedEventArgs()
+                {
+                    materials = selected,
+                    numberOfTimes = n,
+                    projectName = selectedProjectVersion.Project,
+                    OrderIfRequired = true, // Order only if required, according to current stock
+                    GuaranteeLowStock = true, // Do not go under the lowStock set value
+                }
+            );
+        }
+
         #endregion
     }
 
@@ -1450,5 +1473,14 @@ namespace StockManagerDB
         public int numberOfTimes;
         public IEnumerable<Material> materials;
         public string projectName;
+    }
+
+    public class ProjectOrderRequestedEventArgs : EventArgs
+    {
+        public int numberOfTimes;
+        public IEnumerable<Material> materials;
+        public string projectName;
+        public bool OrderIfRequired;
+        public bool GuaranteeLowStock;
     }
 }

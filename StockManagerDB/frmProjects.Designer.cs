@@ -42,6 +42,7 @@
             this.actionsOnCheckedPartsOnlyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.orderTheSelectedProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.orderMissingForTheSelectedProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.processProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.resizeColumnsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -178,6 +179,7 @@
             this.actionsOnCheckedPartsOnlyToolStripMenuItem,
             this.toolStripSeparator3,
             this.orderTheSelectedProjectToolStripMenuItem,
+            this.orderMissingForTheSelectedProjectToolStripMenuItem,
             this.processProjectToolStripMenuItem});
             this.actionsToolStripMenuItem.Name = "actionsToolStripMenuItem";
             this.actionsToolStripMenuItem.Size = new System.Drawing.Size(59, 22);
@@ -189,27 +191,38 @@
             this.actionsOnCheckedPartsOnlyToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.actionsOnCheckedPartsOnlyToolStripMenuItem.Enabled = false;
             this.actionsOnCheckedPartsOnlyToolStripMenuItem.Name = "actionsOnCheckedPartsOnlyToolStripMenuItem";
-            this.actionsOnCheckedPartsOnlyToolStripMenuItem.Size = new System.Drawing.Size(238, 22);
+            this.actionsOnCheckedPartsOnlyToolStripMenuItem.Size = new System.Drawing.Size(235, 22);
             this.actionsOnCheckedPartsOnlyToolStripMenuItem.Text = "Actions on Checked parts only";
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(235, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(232, 6);
             // 
             // orderTheSelectedProjectToolStripMenuItem
             // 
             this.orderTheSelectedProjectToolStripMenuItem.Name = "orderTheSelectedProjectToolStripMenuItem";
-            this.orderTheSelectedProjectToolStripMenuItem.Size = new System.Drawing.Size(238, 22);
-            this.orderTheSelectedProjectToolStripMenuItem.Text = "Order the selected project";
-            this.orderTheSelectedProjectToolStripMenuItem.ToolTipText = "Add the BOM to the order form.\r\nYou will be asked for a multiplier.";
+            this.orderTheSelectedProjectToolStripMenuItem.Size = new System.Drawing.Size(235, 22);
+            this.orderTheSelectedProjectToolStripMenuItem.Text = "Order exact";
+            this.orderTheSelectedProjectToolStripMenuItem.ToolTipText = "Add the BOM to the order form with the exact quantities that are listed.\r\nYou wil" +
+    "l be asked for a multiplier.";
             this.orderTheSelectedProjectToolStripMenuItem.Click += new System.EventHandler(this.orderTheSelectedProjectToolStripMenuItem_Click);
+            // 
+            // orderMissingForTheSelectedProjectToolStripMenuItem
+            // 
+            this.orderMissingForTheSelectedProjectToolStripMenuItem.Name = "orderMissingForTheSelectedProjectToolStripMenuItem";
+            this.orderMissingForTheSelectedProjectToolStripMenuItem.Size = new System.Drawing.Size(235, 22);
+            this.orderMissingForTheSelectedProjectToolStripMenuItem.Text = "Order missing materials";
+            this.orderMissingForTheSelectedProjectToolStripMenuItem.ToolTipText = "Add the missing materials from the BOM to the order form.\r\nThis will be compared " +
+    "to current stock. \r\nMore options are available in the Option form.\r\nYou will be " +
+    "asked for a multiplier.\r\n";
+            this.orderMissingForTheSelectedProjectToolStripMenuItem.Click += new System.EventHandler(this.orderMissingForTheSelectedProjectToolStripMenuItem_Click);
             // 
             // processProjectToolStripMenuItem
             // 
             this.processProjectToolStripMenuItem.Name = "processProjectToolStripMenuItem";
-            this.processProjectToolStripMenuItem.Size = new System.Drawing.Size(238, 22);
-            this.processProjectToolStripMenuItem.Text = "Process project\'s checked parts";
+            this.processProjectToolStripMenuItem.Size = new System.Drawing.Size(235, 22);
+            this.processProjectToolStripMenuItem.Text = "Deduct BOM from part list";
             this.processProjectToolStripMenuItem.ToolTipText = "Remove the BOM from the current stock.\r\nYou will be asked for a multiplier.";
             this.processProjectToolStripMenuItem.Click += new System.EventHandler(this.processProjectToolStripMenuItem_Click);
             // 
@@ -812,5 +825,6 @@
         private System.Windows.Forms.Button btnImportDigikeyList;
         private System.Windows.Forms.ToolStripMenuItem actionsOnCheckedPartsOnlyToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+        private System.Windows.Forms.ToolStripMenuItem orderMissingForTheSelectedProjectToolStripMenuItem;
     }
 }

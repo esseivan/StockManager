@@ -1490,7 +1490,7 @@ namespace StockManagerDB
             LoggerClass.Write($"Adding to order...", Logger.LogLevels.Debug);
             List<Part> parts = GetPartForProcess();
             // For each part, create a material (includes a quantity)
-            IEnumerable<Material> material = parts.Select((part) => new Material() { MPN = part.MPN, Quantity = 0, Note = "New"});
+            IEnumerable<Material> material = parts.Select((part) => new Material() { MPN = part.MPN, Quantity = 0, Note = "New" });
 
             LoggerClass.Write(
                 $"{material.Count()} material(s) created...",
@@ -2188,11 +2188,27 @@ namespace StockManagerDB
             Cursor.Current = Cursors.Default;
         }
 
-        private void FrmProjects_OnProjectOrder(object sender, ProjectProcessRequestedEventArgs e)
+        private void FrmProjects_OnProjectOrder(object sender, ProjectOrderRequestedEventArgs e)
         {
-            orderForm.AddPartsToOrder(e.materials);
+            // MUST clone otherwise quantities changements are reported to the BOM
+            List<Material> materials = e.materials.Select((x) => (Material)x.Clone()).ToList();
+            // Apply number of times
+            materials.ForEach((x) => x.Quantity *= e.numberOfTimes);
+
+            // Edit quantity according to actual stock
+            materials.ForEach((x) => x.Quantity = PartUtils.GetActualOrderQuantity(x,
+                e.OrderIfRequired,
+                e.GuaranteeLowStock && AppSettings.Settings.OrderDoNotExceedLowStock,
+                e.GuaranteeLowStock && AppSettings.Settings.OrderMoreUntilLowStockMinimum)
+            );
+
+            // Remove all 0 quantities
+            materials = materials.Where((x) => x.Quantity > 0).ToList();
+
+            orderForm.AddPartsToOrder(materials);
+
             // update order form
-            orderForm.SetSuppliers(Parts.Select((x) => x.Value.Supplier).Distinct());
+            orderForm.SetSuppliers(Parts.Values.Select((x) => x.Supplier).Distinct()); // update suppliers
             ShowForm(orderForm);
         }
 
