@@ -97,6 +97,7 @@
   <ItemGroup>
     <Compile Include="DataHolderHistorySingletonTests.cs" />
     <Compile Include="DataHolderSingletonTests.cs" />
+    <Compile Include="Libraries\PartUtilsTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

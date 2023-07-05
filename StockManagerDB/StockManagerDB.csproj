@@ -169,12 +169,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppSettings.cs" />
-    <Compile Include="CsvPartImport.cs" />
-    <Compile Include="DataExportClass.cs" />
-    <Compile Include="DataHolderHistorySingleton.cs" />
-    <Compile Include="DataHolderSingleton.cs" />
-    <Compile Include="ExcelManager.cs" />
-    <Compile Include="ExcelWrapperV2.cs" />
+    <Compile Include="Libraries\CsvPartImport.cs" />
+    <Compile Include="Libraries\DataExportClass.cs" />
+    <Compile Include="Libraries\DataHolderHistorySingleton.cs" />
+    <Compile Include="Libraries\DataHolderSingleton.cs" />
+    <Compile Include="Libraries\ExcelManager.cs" />
+    <Compile Include="Libraries\ExcelWrapperV2.cs" />
     <Compile Include="frmHistory.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -211,13 +211,14 @@
     <Compile Include="frmSearch.Designer.cs">
       <DependentUpon>frmSearch.cs</DependentUpon>
     </Compile>
-    <Compile Include="ListPlus.cs" />
+    <Compile Include="Libraries\ListPlus.cs" />
+    <Compile Include="Libraries\PartUtils.cs" />
     <Compile Include="LoggerClass.cs" />
-    <Compile Include="Material.cs" />
-    <Compile Include="Part.cs" />
+    <Compile Include="Libraries\Material.cs" />
+    <Compile Include="Libraries\Part.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="Project.cs" />
-    <Compile Include="ProjectVersion.cs" />
+    <Compile Include="Libraries\Project.cs" />
+    <Compile Include="Libraries\ProjectVersion.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="frmHistory.resx">
       <DependentUpon>frmHistory.cs</DependentUpon>
