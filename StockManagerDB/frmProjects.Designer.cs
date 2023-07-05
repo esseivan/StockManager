@@ -145,7 +145,7 @@
             // importProjectsToolStripMenuItem
             // 
             this.importProjectsToolStripMenuItem.Name = "importProjectsToolStripMenuItem";
-            this.importProjectsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.importProjectsToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
             this.importProjectsToolStripMenuItem.Text = "Import projects";
             this.importProjectsToolStripMenuItem.ToolTipText = "Import the projects from a \'.smd\' stock file";
             this.importProjectsToolStripMenuItem.Click += new System.EventHandler(this.importProjectsToolStripMenuItem_Click);
@@ -153,7 +153,7 @@
             // exportAllProjectsToolStripMenuItem
             // 
             this.exportAllProjectsToolStripMenuItem.Name = "exportAllProjectsToolStripMenuItem";
-            this.exportAllProjectsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.exportAllProjectsToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
             this.exportAllProjectsToolStripMenuItem.Text = "Export all projects";
             this.exportAllProjectsToolStripMenuItem.ToolTipText = "Export all the projects into a \'.smd\' file";
             this.exportAllProjectsToolStripMenuItem.Click += new System.EventHandler(this.exportAllProjectsToolStripMenuItem_Click);
@@ -161,13 +161,13 @@
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(165, 6);
             // 
             // quitToolStripMenuItem
             // 
             this.quitToolStripMenuItem.Name = "quitToolStripMenuItem";
             this.quitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Q)));
-            this.quitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.quitToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
             this.quitToolStripMenuItem.Text = "Close";
             this.quitToolStripMenuItem.ToolTipText = "Close this project window only";
             this.quitToolStripMenuItem.Click += new System.EventHandler(this.quitToolStripMenuItem_Click);
@@ -227,7 +227,7 @@
             // resizeColumnsToolStripMenuItem
             // 
             this.resizeColumnsToolStripMenuItem.Name = "resizeColumnsToolStripMenuItem";
-            this.resizeColumnsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.resizeColumnsToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
             this.resizeColumnsToolStripMenuItem.Text = "Resize columns";
             this.resizeColumnsToolStripMenuItem.ToolTipText = "Resize the columns on the BOM list";
             this.resizeColumnsToolStripMenuItem.Click += new System.EventHandler(this.resizeColumnsToolStripMenuItem_Click);
@@ -235,12 +235,12 @@
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(152, 6);
             // 
             // checkAllToolStripMenuItem
             // 
             this.checkAllToolStripMenuItem.Name = "checkAllToolStripMenuItem";
-            this.checkAllToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.checkAllToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
             this.checkAllToolStripMenuItem.Text = "Check all";
             this.checkAllToolStripMenuItem.ToolTipText = "Check all the parts in the BOM";
             this.checkAllToolStripMenuItem.Click += new System.EventHandler(this.checkAllToolStripMenuItem_Click);
@@ -248,7 +248,7 @@
             // uncheckAllToolStripMenuItem
             // 
             this.uncheckAllToolStripMenuItem.Name = "uncheckAllToolStripMenuItem";
-            this.uncheckAllToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.uncheckAllToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
             this.uncheckAllToolStripMenuItem.Text = "Uncheck all";
             this.uncheckAllToolStripMenuItem.ToolTipText = "Uncheck all the parts in the BOM";
             this.uncheckAllToolStripMenuItem.Click += new System.EventHandler(this.uncheckAllToolStripMenuItem_Click);
