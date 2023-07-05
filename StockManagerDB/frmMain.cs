@@ -1490,7 +1490,7 @@ namespace StockManagerDB
             LoggerClass.Write($"Adding to order...", Logger.LogLevels.Debug);
             List<Part> parts = GetPartForProcess();
             // For each part, create a material (includes a quantity)
-            IEnumerable<Material> material = parts.Select((part) => new Material() { MPN = part.MPN, Quantity = 0, Note = "New"});
+            IEnumerable<Material> material = parts.Select((part) => new Material() { MPN = part.MPN, Quantity = 0, Note = "New" });
 
             LoggerClass.Write(
                 $"{material.Count()} material(s) created...",
@@ -2195,9 +2195,12 @@ namespace StockManagerDB
             // Apply number of times
             materials.ForEach((x) => x.Quantity *= e.numberOfTimes);
 
-            if (e.OrderIfRequired)
-            {
-            }
+            // Edit quantity according to actual stock
+            materials.ForEach((x) => x.Quantity = PartUtils.GetActualOrderQuantity(x,
+                e.OrderIfRequired,
+                e.GuaranteeLowStock && AppSettings.Settings.OrderDoNotExceedLowStock,
+                e.GuaranteeLowStock && AppSettings.Settings.OrderMoreUntilLowStockMinimum)
+            );
 
             // Remove all 0 quantities
             materials = materials.Where((x) => x.Quantity > 0).ToList();

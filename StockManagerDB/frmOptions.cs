@@ -76,6 +76,8 @@ namespace StockManagerDB
             fontDialog1.Font = ReferenceNewSettings.AppFont;
             checkboxRecent.Checked = ReferenceNewSettings.OpenRecentOnLaunch;
             numDecimals.Value = ReferenceNewSettings.EditCellDecimalPlaces;
+            checkboxDoNotExceedLowStock.Checked = ReferenceNewSettings.OrderDoNotExceedLowStock;
+            checkboxOrderMore.Checked = ReferenceNewSettings.OrderMoreUntilLowStockMinimum;
 
             checkBoxDigikeyAPIEnabled.Checked = AppSettings.Settings.IsDigikeyAPIEnabled;
             try
@@ -269,8 +271,29 @@ namespace StockManagerDB
 
         private void btnClearRecent_Click(object sender, EventArgs e)
         {
+            if (syncing)
+                return;
+
             ChangesMade = true;
             notApprovedNewSettings.RecentFiles.Clear();
+        }
+
+        private void checkboxDoNotExceedLowStock_CheckedChanged(object sender, EventArgs e)
+        {
+            if (syncing)
+                return;
+
+            ChangesMade = true;
+            notApprovedNewSettings.OrderDoNotExceedLowStock = checkboxDoNotExceedLowStock.Checked;
+        }
+
+        private void checkboxOrderMore_CheckedChanged(object sender, EventArgs e)
+        {
+            if (syncing)
+                return;
+
+            ChangesMade = true;
+            notApprovedNewSettings.OrderMoreUntilLowStockMinimum = checkboxOrderMore.Checked;
         }
     }
 }

@@ -12,92 +12,67 @@ namespace StockManagerDB
         /// Get the quantity to order for the selected material
         /// </summary>
         /// <param name="material">material to order</param>
-        /// <param name="takeFromStock">Use the material from stock</param>
-        /// <param name="guaranteeLowStock">Is the lowstock guaranteed. If true and stock greater than lowstock, it will no go under lowstock</param>
-        /// <param name="targetStockIsLowStock">Is the lowstock the (minimum) target for the stock. If true and stock is lower than lowstock, it will add quantity to target lowstock</param>
+        /// <param name="takeMaterialFromStock">Use the material from stock</param>
+        /// <param name="doNotExceedLowStock">Is the lowstock guaranteed. If true and stock greater than lowstock, it will no go under lowstock</param>
+        /// <param name="orderMoreWhenBelowLowStock">Is the lowstock the (minimum) target for the stock. If true and stock is lower than lowstock, it will add quantity to target lowstock</param>
         /// <returns>The quantity to order, <paramref name="material"/> is not modified</returns>
-        public static float GetActualOrderQuantity(Material material, bool takeFromStock, bool guaranteeLowStock, bool targetStockIsLowStock)
+        public static float GetActualOrderQuantity(Material material, bool takeMaterialFromStock, bool doNotExceedLowStock, bool orderMoreWhenBelowLowStock)
         {
-            float quantity = material.Quantity;
-
             if (!material.HasPartLink)
-            {
-                return quantity;
-            }
-
-            float currentStock = material.PartLink.Stock;
-            float currentLowStock = material.PartLink.LowStock;
-
-            if (takeFromStock)
-            {
-                // Order only what is not in actual stock
-                quantity = Math.Min(currentStock - quantity, 0);
-            }
-
-            if (targetStockIsLowStock)
-            {
-
-            }
-
-            // We don't take from stock, so order what is requested
-            if (!takeFromStock)
             {
                 return material.Quantity;
             }
 
-            // Do not go under lowstock but don't order more than initially
-            if (guaranteeLowStock)
-            {
+            float baseQuantity = material.Quantity;
+            float currentStock = material.PartLink.Stock;
+            float currentLowStock = material.PartLink.LowStock;
 
+            float orderQuantity;
+
+            // Not taking from current stock
+            if (!takeMaterialFromStock)
+            {
+                orderQuantity = baseQuantity;
+
+                if (currentStock < currentLowStock)
+                {
+                    if (orderMoreWhenBelowLowStock)
+                    {
+                        orderQuantity += (currentLowStock - currentStock); // Adding difference
+                    }
+                }
+                else // currentStock >= currentLowStock
+                {
+                    // No change
+                }
+            }
+            // Taking from current stock
+            else
+            {
+                orderQuantity = Math.Max(baseQuantity - currentStock, 0);
+
+                if (currentStock < currentLowStock)
+                {
+                    if (orderMoreWhenBelowLowStock)
+                    {
+                        orderQuantity = baseQuantity + (currentLowStock - currentStock); // Adding difference
+                    }
+                    else if (doNotExceedLowStock)
+                    {
+                        // In this case, we just don't use the current stock
+                        orderQuantity = baseQuantity;
+                    }
+                }
+                else // currentStock >= currentLowStock
+                {
+                    if (doNotExceedLowStock)
+                    {
+                        orderQuantity = Math.Max(baseQuantity - (currentStock - currentLowStock), 0);
+                    }
+                }
             }
 
-            //        Material mat = materials[i];
-
-            //        // If no partlink, keep as is
-            //        if (!mat.HasPartLink)
-            //        {
-            //            continue;
-            //        }
-
-            //    if (e.GuaranteeLowStock)
-            //    {
-            //        // We are not authorized to go under the LowStock value
-            //        // If the current stock already is under the lowStock, we will not order more.
-            //        // Only if the stock is lower than 0 (e.g. -2), we will order to go to 0
-            //        float availableStock = (mat.PartLink.Stock >= mat.PartLink.LowStock) ? (mat.PartLink.Stock - mat.PartLink.LowStock) : 0;
-            //        if (availableStock >= mat.Quantity)
-            //        {
-            //            // Enough stock
-            //            mat.Quantity = 0;
-            //        }
-            //        else
-            //        {
-            //            // Order what is required
-            //            mat.Quantity -= availableStock;
-            //            if (mat.PartLink.Stock < 0)
-            //            {
-            //                mat.Quantity += -(mat.PartLink.Stock); // Add quantity for stock to go to 0, if negative
-            //            }
-            //        }
-            //    }
-            //    else
-            //    {
-            //        // We do not guarantee the LowStock value
-
-            //        // Just check according to actual stock
-            //        if (mat.PartLink.Stock >= mat.Quantity)
-            //        {
-            //            // Enough stock, order nothing
-            //            mat.Quantity = 0;
-            //        }
-            //        else
-            //        {
-            //            // Order just the necessary
-            //            mat.Quantity -= mat.PartLink.Stock;
-            //        }
-            //    }
-
-            return 0;
+            return orderQuantity;
         }
 
 

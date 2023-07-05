@@ -110,5 +110,152 @@ namespace StockManagerDB.Tests
             q = PartUtils.GetActualOrderQuantity(m, false, true, true);
             Assert.AreEqual(15, q);
         }
+
+        [TestMethod()]
+        public void GetActualOrderQuantityTest2()
+        {
+            FileClass f = new FileClass(2);
+            dhs.LoadNew(f);
+            d.Load();
+
+            Assert.IsNotNull(d);
+
+            Part p = new Part()
+            {
+                MPN = "p1",
+                Stock = 20,
+                LowStock = 0,
+            };
+            Material m = new Material()
+            {
+                MPN = "p1",
+                Quantity = 15,
+            };
+            d.Parts.Add(p.MPN, p);
+
+            Assert.AreEqual(1, d.Parts.Count);
+
+            float q = PartUtils.GetActualOrderQuantity(m, false, false, false);
+            Assert.AreEqual(15, q);
+
+            q = PartUtils.GetActualOrderQuantity(m, true, false, false);
+            Assert.AreEqual(0, q);
+
+            q = PartUtils.GetActualOrderQuantity(m, true, true, false);
+            Assert.AreEqual(0, q);
+
+            q = PartUtils.GetActualOrderQuantity(m, true, true, true);
+            Assert.AreEqual(0, q);
+
+            q = PartUtils.GetActualOrderQuantity(m, true, false, true);
+            Assert.AreEqual(0, q);
+
+            q = PartUtils.GetActualOrderQuantity(m, false, true, false);
+            Assert.AreEqual(15, q);
+
+            q = PartUtils.GetActualOrderQuantity(m, false, false, true);
+            Assert.AreEqual(15, q);
+
+            q = PartUtils.GetActualOrderQuantity(m, false, true, true);
+            Assert.AreEqual(15, q);
+        }
+
+        [TestMethod()]
+        public void GetActualOrderQuantityTest3()
+        {
+            FileClass f = new FileClass(3);
+            dhs.LoadNew(f);
+            d.Load();
+
+            Assert.IsNotNull(d);
+
+            Part p = new Part()
+            {
+                MPN = "p1",
+                Stock = 10,
+                LowStock = 0,
+            };
+            Material m = new Material()
+            {
+                MPN = "p1",
+                Quantity = 15,
+            };
+            d.Parts.Add(p.MPN, p);
+
+            Assert.AreEqual(1, d.Parts.Count);
+
+            float q = PartUtils.GetActualOrderQuantity(m, false, false, false);
+            Assert.AreEqual(15, q);
+
+            q = PartUtils.GetActualOrderQuantity(m, true, false, false);
+            Assert.AreEqual(5, q);
+
+            q = PartUtils.GetActualOrderQuantity(m, true, true, false);
+            Assert.AreEqual(5, q);
+
+            q = PartUtils.GetActualOrderQuantity(m, true, true, true);
+            Assert.AreEqual(5, q);
+
+            q = PartUtils.GetActualOrderQuantity(m, true, false, true);
+            Assert.AreEqual(5, q);
+
+            q = PartUtils.GetActualOrderQuantity(m, false, true, false);
+            Assert.AreEqual(15, q);
+
+            q = PartUtils.GetActualOrderQuantity(m, false, false, true);
+            Assert.AreEqual(15, q);
+
+            q = PartUtils.GetActualOrderQuantity(m, false, true, true);
+            Assert.AreEqual(15, q);
+        }
+
+        [TestMethod()]
+        public void GetActualOrderQuantityTest4()
+        {
+            FileClass f = new FileClass(4);
+            dhs.LoadNew(f);
+            d.Load();
+
+            Assert.IsNotNull(d);
+
+            Part p = new Part()
+            {
+                MPN = "p1",
+                Stock = 10,
+                LowStock = 20,
+            };
+            Material m = new Material()
+            {
+                MPN = "p1",
+                Quantity = 15,
+            };
+            d.Parts.Add(p.MPN, p);
+
+            Assert.AreEqual(1, d.Parts.Count);
+
+            float q = PartUtils.GetActualOrderQuantity(m, false, false, false);
+            Assert.AreEqual(15, q);
+
+            q = PartUtils.GetActualOrderQuantity(m, true, false, false);
+            Assert.AreEqual(5, q);
+
+            q = PartUtils.GetActualOrderQuantity(m, true, true, false);
+            Assert.AreEqual(15, q);
+
+            q = PartUtils.GetActualOrderQuantity(m, true, true, true);
+            Assert.AreEqual(25, q);
+
+            q = PartUtils.GetActualOrderQuantity(m, true, false, true);
+            Assert.AreEqual(25, q);
+
+            q = PartUtils.GetActualOrderQuantity(m, false, true, false);
+            Assert.AreEqual(15, q);
+
+            q = PartUtils.GetActualOrderQuantity(m, false, false, true);
+            Assert.AreEqual(25, q);
+
+            q = PartUtils.GetActualOrderQuantity(m, false, true, true);
+            Assert.AreEqual(25, q);
+        }
     }
 }

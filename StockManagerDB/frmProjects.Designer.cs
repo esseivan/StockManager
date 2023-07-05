@@ -42,6 +42,7 @@
             this.actionsOnCheckedPartsOnlyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.orderTheSelectedProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.orderMissingForTheSelectedProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.processProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.resizeColumnsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -90,7 +91,6 @@
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.copyMPNToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openSupplierUrlToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.orderMissingForTheSelectedProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.listviewMaterials)).BeginInit();
@@ -203,9 +203,20 @@
             // 
             this.orderTheSelectedProjectToolStripMenuItem.Name = "orderTheSelectedProjectToolStripMenuItem";
             this.orderTheSelectedProjectToolStripMenuItem.Size = new System.Drawing.Size(235, 22);
-            this.orderTheSelectedProjectToolStripMenuItem.Text = "Order all";
-            this.orderTheSelectedProjectToolStripMenuItem.ToolTipText = "Add the BOM (all of it) to the order form.\r\nYou will be asked for a multiplier.";
+            this.orderTheSelectedProjectToolStripMenuItem.Text = "Order exact";
+            this.orderTheSelectedProjectToolStripMenuItem.ToolTipText = "Add the BOM to the order form with the exact quantities that are listed.\r\nYou wil" +
+    "l be asked for a multiplier.";
             this.orderTheSelectedProjectToolStripMenuItem.Click += new System.EventHandler(this.orderTheSelectedProjectToolStripMenuItem_Click);
+            // 
+            // orderMissingForTheSelectedProjectToolStripMenuItem
+            // 
+            this.orderMissingForTheSelectedProjectToolStripMenuItem.Name = "orderMissingForTheSelectedProjectToolStripMenuItem";
+            this.orderMissingForTheSelectedProjectToolStripMenuItem.Size = new System.Drawing.Size(235, 22);
+            this.orderMissingForTheSelectedProjectToolStripMenuItem.Text = "Order missing materials";
+            this.orderMissingForTheSelectedProjectToolStripMenuItem.ToolTipText = "Add the missing materials from the BOM to the order form.\r\nThis will be compared " +
+    "to current stock. \r\nMore options are available in the Option form.\r\nYou will be " +
+    "asked for a multiplier.\r\n";
+            this.orderMissingForTheSelectedProjectToolStripMenuItem.Click += new System.EventHandler(this.orderMissingForTheSelectedProjectToolStripMenuItem_Click);
             // 
             // processProjectToolStripMenuItem
             // 
@@ -721,15 +732,6 @@
             this.openSupplierUrlToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
             this.openSupplierUrlToolStripMenuItem.Text = "Open Supplier url...";
             this.openSupplierUrlToolStripMenuItem.Click += new System.EventHandler(this.openSupplierUrlToolStripMenuItem_Click);
-            // 
-            // orderMissingForTheSelectedProjectToolStripMenuItem
-            // 
-            this.orderMissingForTheSelectedProjectToolStripMenuItem.Name = "orderMissingForTheSelectedProjectToolStripMenuItem";
-            this.orderMissingForTheSelectedProjectToolStripMenuItem.Size = new System.Drawing.Size(235, 22);
-            this.orderMissingForTheSelectedProjectToolStripMenuItem.Text = "Order missing materials";
-            this.orderMissingForTheSelectedProjectToolStripMenuItem.ToolTipText = "Add the missing materials from the BOM to the order form.\r\nYou will be asked for " +
-    "a multiplier.\r\n";
-            this.orderMissingForTheSelectedProjectToolStripMenuItem.Click += new System.EventHandler(this.orderMissingForTheSelectedProjectToolStripMenuItem_Click);
             // 
             // frmProjects
             // 

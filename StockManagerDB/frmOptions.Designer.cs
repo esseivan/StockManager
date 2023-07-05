@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.fontDialog1 = new System.Windows.Forms.FontDialog();
             this.btnFont = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
@@ -53,8 +54,13 @@
             this.txtboxClientId = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.btnClearRecent = new System.Windows.Forms.Button();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.checkboxOrderMore = new System.Windows.Forms.CheckBox();
+            this.checkboxDoNotExceedLowStock = new System.Windows.Forms.CheckBox();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.numDecimals)).BeginInit();
             this.groupBox1.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnFont
@@ -64,6 +70,7 @@
             this.btnFont.Size = new System.Drawing.Size(75, 23);
             this.btnFont.TabIndex = 0;
             this.btnFont.Text = "Change font";
+            this.toolTip1.SetToolTip(this.btnFont, "Change the font of the app (most of the text, not all)");
             this.btnFont.UseVisualStyleBackColor = true;
             this.btnFont.Click += new System.EventHandler(this.btnFont_Click);
             // 
@@ -125,6 +132,7 @@
             this.numDecimals.Name = "numDecimals";
             this.numDecimals.Size = new System.Drawing.Size(41, 20);
             this.numDecimals.TabIndex = 4;
+            this.toolTip1.SetToolTip(this.numDecimals, "When editing floating point number, how many decimals to display");
             this.numDecimals.Value = new decimal(new int[] {
             1,
             0,
@@ -186,6 +194,7 @@
             this.checkBoxDigikeyAPIEnabled.Size = new System.Drawing.Size(65, 17);
             this.checkBoxDigikeyAPIEnabled.TabIndex = 9;
             this.checkBoxDigikeyAPIEnabled.Text = "Enabled";
+            this.toolTip1.SetToolTip(this.checkBoxDigikeyAPIEnabled, "Enable Digikey API");
             this.checkBoxDigikeyAPIEnabled.UseVisualStyleBackColor = true;
             this.checkBoxDigikeyAPIEnabled.CheckedChanged += new System.EventHandler(this.checkBoxDigikeyAPIEnabled_CheckedChanged);
             // 
@@ -337,14 +346,52 @@
             this.btnClearRecent.Size = new System.Drawing.Size(75, 23);
             this.btnClearRecent.TabIndex = 7;
             this.btnClearRecent.Text = "Clear recent";
+            this.toolTip1.SetToolTip(this.btnClearRecent, "Clear recent file list");
             this.btnClearRecent.UseVisualStyleBackColor = true;
             this.btnClearRecent.Click += new System.EventHandler(this.btnClearRecent_Click);
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.checkboxOrderMore);
+            this.groupBox2.Controls.Add(this.checkboxDoNotExceedLowStock);
+            this.groupBox2.Location = new System.Drawing.Point(288, 12);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(288, 100);
+            this.groupBox2.TabIndex = 8;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Project Form";
+            // 
+            // checkboxOrderMore
+            // 
+            this.checkboxOrderMore.AutoSize = true;
+            this.checkboxOrderMore.Location = new System.Drawing.Point(6, 42);
+            this.checkboxOrderMore.Name = "checkboxOrderMore";
+            this.checkboxOrderMore.Size = new System.Drawing.Size(277, 17);
+            this.checkboxOrderMore.TabIndex = 0;
+            this.checkboxOrderMore.Text = "Order missing : Order more to have at least LowStock";
+            this.toolTip1.SetToolTip(this.checkboxOrderMore, "When ordering missing material, order more when necessary to have at least LowSto" +
+        "ck");
+            this.checkboxOrderMore.UseVisualStyleBackColor = true;
+            this.checkboxOrderMore.CheckedChanged += new System.EventHandler(this.checkboxOrderMore_CheckedChanged);
+            // 
+            // checkboxDoNotExceedLowStock
+            // 
+            this.checkboxDoNotExceedLowStock.AutoSize = true;
+            this.checkboxDoNotExceedLowStock.Location = new System.Drawing.Point(6, 19);
+            this.checkboxDoNotExceedLowStock.Name = "checkboxDoNotExceedLowStock";
+            this.checkboxDoNotExceedLowStock.Size = new System.Drawing.Size(219, 17);
+            this.checkboxDoNotExceedLowStock.TabIndex = 0;
+            this.checkboxDoNotExceedLowStock.Text = "Order missing : Do not exceed LowStock";
+            this.toolTip1.SetToolTip(this.checkboxDoNotExceedLowStock, "When ordering missing material, do not go under the LowStock limit");
+            this.checkboxDoNotExceedLowStock.UseVisualStyleBackColor = true;
+            this.checkboxDoNotExceedLowStock.CheckedChanged += new System.EventHandler(this.checkboxDoNotExceedLowStock_CheckedChanged);
             // 
             // frmOptions
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.btnClearRecent);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.label1);
@@ -360,6 +407,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.numDecimals)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -392,5 +441,9 @@
         private System.Windows.Forms.CheckBox checkBoxDigikeyAPIEnabled;
         private System.Windows.Forms.Button btnClearDigikey;
         private System.Windows.Forms.Button btnClearRecent;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.CheckBox checkboxOrderMore;
+        private System.Windows.Forms.CheckBox checkboxDoNotExceedLowStock;
+        private System.Windows.Forms.ToolTip toolTip1;
     }
 }
