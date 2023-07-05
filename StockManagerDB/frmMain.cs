@@ -2188,11 +2188,71 @@ namespace StockManagerDB
             Cursor.Current = Cursors.Default;
         }
 
-        private void FrmProjects_OnProjectOrder(object sender, ProjectProcessRequestedEventArgs e)
+        private void FrmProjects_OnProjectOrder(object sender, ProjectOrderRequestedEventArgs e)
         {
-            orderForm.AddPartsToOrder(e.materials);
+            List<Material> materials = e.materials.ToList();
+
+
+            if (e.OrderIfRequired)
+            {
+                // Get the difference from actual stock
+                for (int i = 0; i < materials.Count; i++)
+                {
+                    Material mat = materials[i];
+
+                    // If no partlink, keep as is
+                    if (!mat.HasPartLink)
+                    {
+                        continue;
+                    }
+
+                    if(e.GuaranteeLowStock)
+                    {
+                        // We are not authorized to go under the LowStock value
+                        // If the current stock already is under the lowStock, we will not order more.
+                        // Only if the stock is lower than 0 (e.g. -2), we will order to go to 0
+                        float availableStock = (mat.PartLink.Stock >= mat.PartLink.LowStock) ? (mat.PartLink.Stock - mat.PartLink.LowStock) : 0;
+                        if (availableStock >= mat.Quantity)
+                        {
+                            // Enough stock
+                            mat.Quantity = 0;
+                        }
+                        else
+                        {
+                            // Order what is required
+                            mat.Quantity -= availableStock;
+                            if (mat.PartLink.Stock < 0)
+                            {
+                                mat.Quantity += -(mat.PartLink.Stock); // Add quantity for stock to go to 0, if negative
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // We do not guarantee the LowStock value
+
+                        // Just check according to actual stock
+                        if (mat.PartLink.Stock >= mat.Quantity)
+                        {
+                            // Enough stock, order nothing
+                            mat.Quantity = 0;
+                        }
+                        else
+                        {
+                            // Order just the necessary
+                            mat.Quantity -= mat.PartLink.Stock;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                // Add all as the BOM says
+                orderForm.AddPartsToOrder(e.materials);
+            }
+
             // update order form
-            orderForm.SetSuppliers(Parts.Select((x) => x.Value.Supplier).Distinct());
+            orderForm.SetSuppliers(Parts.Values.Select((x) => x.Supplier).Distinct()); // update suppliers
             ShowForm(orderForm);
         }
 
