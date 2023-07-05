@@ -1470,6 +1470,41 @@ namespace StockManagerDB
             return true;
         }
 
+        private bool ActionAddPartsToOrder()
+        {
+            if (!IsFileLoaded)
+            {
+                LoggerClass.Write(
+                    "Unable to process action. No file is loaded.",
+                    Logger.LogLevels.Debug
+                );
+                MessageBox.Show(
+                    "No file loaded ! Open or create a new one",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+                return false;
+            }
+
+            LoggerClass.Write($"Adding to order...", Logger.LogLevels.Debug);
+            List<Part> parts = GetPartForProcess();
+            // For each part, create a material (includes a quantity)
+            IEnumerable<Material> material = parts.Select((part) => new Material() { MPN = part.MPN, Quantity = 0, Note = "New"});
+
+            LoggerClass.Write(
+                $"{material.Count()} material(s) created...",
+                Logger.LogLevels.Debug
+            );
+
+            orderForm.AddPartsToOrder(material);
+            // update order form
+            orderForm.SetSuppliers(Parts.Select((x) => x.Value.Supplier).Distinct());
+            ShowForm(orderForm);
+
+            return true;
+        }
+
         private bool AddSelectionToProject()
         {
             if (!IsFileLoaded)
@@ -2687,6 +2722,11 @@ namespace StockManagerDB
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information
             );
+        }
+
+        private void addPartsToOrderToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ActionAddPartsToOrder();
         }
     }
 }

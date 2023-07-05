@@ -55,6 +55,7 @@
             this.onlyAffectCheckedPartsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.makeOrderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.addPartsToOrderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.updateFromDigikeyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addToProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
@@ -333,6 +334,7 @@
             this.onlyAffectCheckedPartsToolStripMenuItem,
             this.toolStripSeparator1,
             this.makeOrderToolStripMenuItem,
+            this.addPartsToOrderToolStripMenuItem,
             this.updateFromDigikeyToolStripMenuItem,
             this.addToProjectToolStripMenuItem,
             this.toolStripSeparator3,
@@ -363,11 +365,19 @@
             // 
             this.makeOrderToolStripMenuItem.Name = "makeOrderToolStripMenuItem";
             this.makeOrderToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
-            this.makeOrderToolStripMenuItem.Text = "Make Order";
+            this.makeOrderToolStripMenuItem.Text = "Make LowStock Order";
             this.makeOrderToolStripMenuItem.ToolTipText = "Make automatic order according to the LowStock parameters for the parts. The diff" +
     "erence between the actual stock and the low stock will be added to the order for" +
     "m.";
             this.makeOrderToolStripMenuItem.Click += new System.EventHandler(this.makeOrderToolStripMenuItem_Click);
+            // 
+            // addPartsToOrderToolStripMenuItem
+            // 
+            this.addPartsToOrderToolStripMenuItem.Name = "addPartsToOrderToolStripMenuItem";
+            this.addPartsToOrderToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
+            this.addPartsToOrderToolStripMenuItem.Text = "Add parts to order";
+            this.addPartsToOrderToolStripMenuItem.ToolTipText = "Add the parts to the order form with a quantity of 0.";
+            this.addPartsToOrderToolStripMenuItem.Click += new System.EventHandler(this.addPartsToOrderToolStripMenuItem_Click);
             // 
             // updateFromDigikeyToolStripMenuItem
             // 
@@ -1101,6 +1111,7 @@
         private System.Windows.Forms.ToolStripMenuItem addToProjectToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem importListFromDigikeyToolStripMenuItem;
         private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.ToolStripMenuItem addPartsToOrderToolStripMenuItem;
     }
 }
 
