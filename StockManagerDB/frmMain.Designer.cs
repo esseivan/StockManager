@@ -350,7 +350,7 @@
             this.onlyAffectCheckedPartsToolStripMenuItem.CheckOnClick = true;
             this.onlyAffectCheckedPartsToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.onlyAffectCheckedPartsToolStripMenuItem.Name = "onlyAffectCheckedPartsToolStripMenuItem";
-            this.onlyAffectCheckedPartsToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
+            this.onlyAffectCheckedPartsToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
             this.onlyAffectCheckedPartsToolStripMenuItem.Text = "Only affect checked parts";
             this.onlyAffectCheckedPartsToolStripMenuItem.ToolTipText = "If checked, the actions will only target the checked parts (the list at the botto" +
     "m).\r\nIf unchecked, the actions will target ALL the parts (the list at the top).";
@@ -359,12 +359,12 @@
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(205, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(231, 6);
             // 
             // makeOrderToolStripMenuItem
             // 
             this.makeOrderToolStripMenuItem.Name = "makeOrderToolStripMenuItem";
-            this.makeOrderToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
+            this.makeOrderToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
             this.makeOrderToolStripMenuItem.Text = "Make LowStock Order";
             this.makeOrderToolStripMenuItem.ToolTipText = "Make automatic order according to the LowStock parameters for the parts. The diff" +
     "erence between the actual stock and the low stock will be added to the order for" +
@@ -374,15 +374,16 @@
             // addPartsToOrderToolStripMenuItem
             // 
             this.addPartsToOrderToolStripMenuItem.Name = "addPartsToOrderToolStripMenuItem";
-            this.addPartsToOrderToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
-            this.addPartsToOrderToolStripMenuItem.Text = "Add parts to order";
+            this.addPartsToOrderToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
+            this.addPartsToOrderToolStripMenuItem.Text = "Add parts to order (for user edit)";
+            this.addPartsToOrderToolStripMenuItem.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.addPartsToOrderToolStripMenuItem.ToolTipText = "Add the parts to the order form with a quantity of 0.";
             this.addPartsToOrderToolStripMenuItem.Click += new System.EventHandler(this.addPartsToOrderToolStripMenuItem_Click);
             // 
             // updateFromDigikeyToolStripMenuItem
             // 
             this.updateFromDigikeyToolStripMenuItem.Name = "updateFromDigikeyToolStripMenuItem";
-            this.updateFromDigikeyToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
+            this.updateFromDigikeyToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
             this.updateFromDigikeyToolStripMenuItem.Text = "Update from Digikey";
             this.updateFromDigikeyToolStripMenuItem.ToolTipText = "Update the parts using the Digikey API. (Manufacturer, Description, Price, Suppli" +
     "er and SPN will be updated)";
@@ -391,7 +392,7 @@
             // addToProjectToolStripMenuItem
             // 
             this.addToProjectToolStripMenuItem.Name = "addToProjectToolStripMenuItem";
-            this.addToProjectToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
+            this.addToProjectToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
             this.addToProjectToolStripMenuItem.Text = "Add to project...";
             this.addToProjectToolStripMenuItem.ToolTipText = "Add the parts to a project that you will select";
             this.addToProjectToolStripMenuItem.Click += new System.EventHandler(this.addToProjectToolStripMenuItem_Click);
@@ -399,12 +400,12 @@
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(205, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(231, 6);
             // 
             // exportPartsToolStripMenuItem
             // 
             this.exportPartsToolStripMenuItem.Name = "exportPartsToolStripMenuItem";
-            this.exportPartsToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
+            this.exportPartsToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
             this.exportPartsToolStripMenuItem.Text = "Export parts";
             this.exportPartsToolStripMenuItem.ToolTipText = "Export the parts to a \'.smd\' file. You can then use or share this file.\r\n";
             this.exportPartsToolStripMenuItem.Click += new System.EventHandler(this.exportPartsToolStripMenuItem_Click);
@@ -412,7 +413,7 @@
             // importPartsToolStripMenuItem
             // 
             this.importPartsToolStripMenuItem.Name = "importPartsToolStripMenuItem";
-            this.importPartsToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
+            this.importPartsToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
             this.importPartsToolStripMenuItem.Text = "Import parts";
             this.importPartsToolStripMenuItem.ToolTipText = "Import all the parts from a \'.smd\' file.";
             this.importPartsToolStripMenuItem.Click += new System.EventHandler(this.importPartsToolStripMenuItem_Click);

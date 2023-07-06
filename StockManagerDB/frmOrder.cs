@@ -14,6 +14,21 @@ namespace StockManagerDB
 {
     public partial class frmOrder : Form
     {
+        private class ProjectOrderClass
+        {
+            public string name = null;
+            public int n = 1;
+            public bool exactOrder = false;
+            public Dictionary<string, Material> materials = new Dictionary<string, Material>();
+        }
+
+        private Dictionary<string, ProjectOrderClass> ProjectsToOrder = new Dictionary<string, ProjectOrderClass>();
+
+
+        private const string CustomPartsProjectName = "CustomParts",
+            LowStockOrderProjectName = "LowStock Order";
+
+
         private readonly Dictionary<string, Material> PartsToOrder =
             new Dictionary<string, Material>();
 
@@ -131,6 +146,11 @@ namespace StockManagerDB
             };
         }
 
+        private void UpdateProjectList()
+        {
+            textboxProjects.Text = string.Join("\n", ProjectsToOrder.Select((x) => $"{x.Key} - {x.Value.n}"));
+        }
+
         private void UpdateBulkAddText()
         {
             if (cbbSuppliers.SelectedIndex == -1)
@@ -165,10 +185,95 @@ namespace StockManagerDB
             textBulkAdd.Text = bulkText;
         }
 
+        /// <summary>
+        /// Calculate the parts to order according to current projects and app settings
+        /// </summary>
+        private void RecalculatePartToOrder()
+        {
+            // The following projects are not affected
+            string[] unaffectedProjectsName = new string[]
+            {
+                //CustomPartsProjectName, // Custom user parts
+                LowStockOrderProjectName, // Low stock order
+            };
+
+            PartsToOrder.Clear();
+            List<ProjectOrderClass> IgnoredMaterial = new List<ProjectOrderClass>();
+
+            // Add all materials to a list
+            foreach (KeyValuePair<string, ProjectOrderClass> item in ProjectsToOrder)
+            {
+                ProjectOrderClass poc = item.Value;
+
+                if (unaffectedProjectsName.Contains(item.Key)) // Ignore projects
+                {
+                    IgnoredMaterial.Add(poc);
+                    continue;
+                }
+
+                if (poc.exactOrder) // Constant quantities
+                {
+                    IgnoredMaterial.Add(poc);
+                    continue;
+                }
+
+                foreach (Material m in poc.materials.Values)
+                {
+                    // Add to existing
+                    if (PartsToOrder.ContainsKey(m.MPN))
+                    {
+                        PartsToOrder[m.MPN].Quantity += m.Quantity * poc.n;
+                    }
+                    // New material
+                    else
+                    {
+                        PartsToOrder.Add(m.MPN, new Material()
+                        {
+                            MPN = m.MPN,
+                            Quantity = m.Quantity * poc.n,
+                        });
+                    }
+                }
+            }
+
+            // Edit quantities according to actual stock
+            foreach (Material m in PartsToOrder.Values)
+            {
+                m.Quantity = PartUtils.GetActualOrderQuantity(m,
+                true,
+                AppSettings.Settings.OrderDoNotExceedLowStock,
+                AppSettings.Settings.OrderMoreUntilLowStockMinimum);
+            }
+
+            // Add previously ignored materials
+            foreach (ProjectOrderClass poc in IgnoredMaterial)
+            {
+                foreach (Material m in poc.materials.Values)
+                {
+                    // Add to existing
+                    if (PartsToOrder.ContainsKey(m.MPN))
+                    {
+                        PartsToOrder[m.MPN].Quantity += m.Quantity * poc.n;
+                    }
+                    // New material
+                    else
+                    {
+                        PartsToOrder.Add(m.MPN, new Material()
+                        {
+                            MPN = m.MPN,
+                            Quantity = m.Quantity * poc.n,
+                        });
+                    }
+                }
+            }
+        }
+
         private void PartsHaveChanged()
         {
             Cursor = Cursors.WaitCursor;
+            RecalculatePartToOrder();
             listviewMaterials.DataSource = PartsToOrder.Values.ToList();
+            UpdateProjectList();
             UpdateBulkAddText();
             Cursor = Cursors.Default;
         }
@@ -189,48 +294,126 @@ namespace StockManagerDB
         /// <summary>
         /// Add parts to order to the list according to lowstock and stock parameters
         /// </summary>
-        /// <param name="parts"></param>
-        public void AddPartsToOrder(IEnumerable<Part> parts)
+        /// <param name="parts">List of parts to order if necessary</param>
+        public bool AddPartsToOrder(IEnumerable<Part> parts)
         {
+            if (ProjectsToOrder.ContainsKey(LowStockOrderProjectName))
+            {
+                // Delete current and make a new one
+                ProjectsToOrder.Remove(LowStockOrderProjectName);
+            }
+
+            // Create material list
+            List<Material> mList = new List<Material>();
+
             foreach (Part part in parts)
             {
                 float qty = part.LowStock - part.Stock;
                 if (qty < 0)
+                {
                     continue; // No order to do for this part
+                }
 
-                if (PartsToOrder.ContainsKey(part.MPN))
-                {
-                    // Add to existing
-                    PartsToOrder[part.MPN].Quantity += qty;
-                }
-                else
-                {
-                    PartsToOrder[part.MPN] = new Material() { MPN = part.MPN, Quantity = qty, };
-                }
+                mList.Add(new Material() { MPN = part.MPN, Quantity = qty, });
             }
+
+            // Add to projects
+            ProjectsToOrder[LowStockOrderProjectName] = new ProjectOrderClass()
+            {
+                name = LowStockOrderProjectName,
+                n = 1,
+                materials = mList.ToDictionary((x) => x.MPN),
+            };
+
             PartsHaveChanged();
+
+            return true;
         }
 
         /// <summary>
-        /// Add materials to order according to quantites
+        /// Add a project to the order list. If already in, update ONLY the multiplier by adding the new and the old ones.
         /// </summary>
-        /// <param name="parts"></param>
-        public void AddPartsToOrder(IEnumerable<Material> materials)
+        /// <param name="projectName">Name of the project displayed to the user</param>
+        /// <param name="multiplier">How many time (more) to order the project</param>
+        /// <param name="projectMaterial">List of material for the project. Only used for the first time the project is added</param>
+        /// <param name="orderExactly">If set to true, nothing is taken from current stock</param>
+        /// <returns>True if <paramref name="projectMaterial"/> and <paramref name="orderExactly"/> are used. False otherwise</returns>
+        public bool AddProjectToOrder(string projectName, int multiplier, bool orderExactly, IEnumerable<Material> projectMaterial)
         {
-            foreach (Material mat in materials)
+            bool result;
+            ProjectOrderClass poc;
+            if (ProjectsToOrder.ContainsKey(projectName))
             {
-                float qty = mat.Quantity;
-                if (PartsToOrder.ContainsKey(mat.MPN))
+                // Project already in list. Not updating projectMaterial
+                poc = ProjectsToOrder[projectName];
+                poc.n += multiplier;
+
+                result = false;
+            }
+            else
+            {
+                ProjectsToOrder[projectName] = poc = new ProjectOrderClass()
                 {
-                    // Add to existing
-                    PartsToOrder[mat.MPN].Quantity += qty;
+                    name = projectName,
+                    n = multiplier,
+                    materials = projectMaterial.Select((m) => (Material)m.Clone()).ToDictionary((x) => x.MPN),
+                    exactOrder = orderExactly,
+                };
+
+                Dictionary<string, Material> materials = new Dictionary<string, Material>();
+                foreach (Material m in projectMaterial)
+                {
+                    if(materials.ContainsKey(m.MPN))
+                    {
+                        materials[m.MPN].Quantityn += m.Quantity;
+                    }    
                 }
-                else
+
+                result = true;
+            }
+
+            PartsHaveChanged();
+
+            return result;
+        }
+
+        /// <summary>
+        /// Add custom parts with 0 as starting quantities.
+        /// </summary>
+        /// <param name="parts">List of parts</param>
+        /// <returns>true everytime</returns>
+        public bool AddCustomPartsToOrder(IEnumerable<Part> parts)
+        {
+            ProjectOrderClass poc;
+            if (ProjectsToOrder.ContainsKey(CustomPartsProjectName))
+            {
+                poc = ProjectsToOrder[CustomPartsProjectName];
+            }
+            else
+            {
+                ProjectsToOrder[CustomPartsProjectName] = poc = new ProjectOrderClass()
                 {
-                    PartsToOrder[mat.MPN] = new Material() { MPN = mat.MPN, Quantity = qty, };
+                    name = CustomPartsProjectName,
+                    n = 1,
+                };
+            }
+
+            // Merge parts. If part not present, add with 0 as the quantity
+            foreach (Part p in parts)
+            {
+                if (!poc.materials.ContainsKey(p.MPN))
+                {
+                    poc.materials.Add(p.MPN, new Material()
+                    {
+                        MPN = p.MPN,
+                        Quantity = 0,
+                    });
                 }
             }
+
             PartsHaveChanged();
+
+            return true;
         }
 
         private void clearToolStripMenuItem_Click(object sender, EventArgs e)
@@ -241,6 +424,7 @@ namespace StockManagerDB
                 return;
             }
 
+            ProjectsToOrder.Clear();
             PartsToOrder.Clear();
             PartsHaveChanged();
         }
