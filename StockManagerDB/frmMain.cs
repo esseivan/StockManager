@@ -2195,6 +2195,12 @@ namespace StockManagerDB
             // MUST clone otherwise quantities changements are reported to the BOM
             IEnumerable<Material> materials = e.materials;
 
+            if (materials == null)
+            {
+                orderForm.RemoveProjectToOrder(e.projectName);
+                return;
+            }
+
             // Remove all 0 quantities
             materials = materials.Where((x) => x.Quantity > 0).ToList();
 

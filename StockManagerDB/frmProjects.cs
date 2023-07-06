@@ -333,6 +333,7 @@ namespace StockManagerDB
 
             BOM.Add(material);
             MaterialsHaveChanged();
+            listviewMaterials.CheckAll();
         }
 
         /// <summary>
@@ -1454,6 +1455,19 @@ namespace StockManagerDB
                     projectName = selectedProjectVersion.Project,
                     OrderIfRequired = true, // Order only if required, according to current stock
                     GuaranteeLowStock = true, // Do not go under the lowStock set value
+                }
+            );
+        }
+
+        private void removeFromOrderFormToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OnProjectOrder?.Invoke(
+                this,
+                new ProjectOrderRequestedEventArgs()
+                {
+                    materials = null,
+                    numberOfTimes = 0,
+                    projectName = selectedProjectVersion.Project,
                 }
             );
         }

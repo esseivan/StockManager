@@ -91,6 +91,7 @@
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.copyMPNToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openSupplierUrlToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.removeFromOrderFormToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.listviewMaterials)).BeginInit();
@@ -180,7 +181,8 @@
             this.toolStripSeparator3,
             this.orderTheSelectedProjectToolStripMenuItem,
             this.orderMissingForTheSelectedProjectToolStripMenuItem,
-            this.processProjectToolStripMenuItem});
+            this.processProjectToolStripMenuItem,
+            this.removeFromOrderFormToolStripMenuItem});
             this.actionsToolStripMenuItem.Name = "actionsToolStripMenuItem";
             this.actionsToolStripMenuItem.Size = new System.Drawing.Size(59, 22);
             this.actionsToolStripMenuItem.Text = "Actions";
@@ -733,6 +735,13 @@
             this.openSupplierUrlToolStripMenuItem.Text = "Open Supplier url...";
             this.openSupplierUrlToolStripMenuItem.Click += new System.EventHandler(this.openSupplierUrlToolStripMenuItem_Click);
             // 
+            // removeFromOrderFormToolStripMenuItem
+            // 
+            this.removeFromOrderFormToolStripMenuItem.Name = "removeFromOrderFormToolStripMenuItem";
+            this.removeFromOrderFormToolStripMenuItem.Size = new System.Drawing.Size(235, 22);
+            this.removeFromOrderFormToolStripMenuItem.Text = "Remove from order form";
+            this.removeFromOrderFormToolStripMenuItem.Click += new System.EventHandler(this.removeFromOrderFormToolStripMenuItem_Click);
+            // 
             // frmProjects
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -826,5 +835,6 @@
         private System.Windows.Forms.ToolStripMenuItem actionsOnCheckedPartsOnlyToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripMenuItem orderMissingForTheSelectedProjectToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem removeFromOrderFormToolStripMenuItem;
     }
 }

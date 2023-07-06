@@ -148,7 +148,7 @@ namespace StockManagerDB
 
         private void UpdateProjectList()
         {
-            textboxProjects.Text = string.Join("\n", ProjectsToOrder.Select((x) => $"{x.Key} - {x.Value.n}"));
+            textboxProjects.Text = string.Join("\n", ProjectsToOrder.Select((x) => $"{x.Value.n}{(x.Value.exactOrder ? "*": "" )}x {x.Key}"));
         }
 
         private void UpdateBulkAddText()
@@ -169,10 +169,10 @@ namespace StockManagerDB
                 filteredParts = PartsToOrder
                     .Where(
                         (x) =>
-                            x.Value.PartLink?.Supplier.Equals(
+                            ((x.Value.PartLink?.Supplier?.Equals(
                                 supplier,
                                 StringComparison.InvariantCultureIgnoreCase
-                            ) ?? false
+                            ) ?? false) && !string.IsNullOrEmpty(x.Value.PartLink?.Supplier))
                     )
                     .Select((x) => x.Value);
             }
@@ -266,6 +266,16 @@ namespace StockManagerDB
                     }
                 }
             }
+
+            // Remove all 0 quantity materials
+            for (int i = 0; i < PartsToOrder.Count; i++)
+            {
+                if (PartsToOrder.ElementAt(i).Value.Quantity == 0)
+                {
+                    PartsToOrder.Remove(PartsToOrder.ElementAt(i).Key);
+                    i--;
+                }
+            }
         }
 
         private void PartsHaveChanged()
@@ -283,7 +293,7 @@ namespace StockManagerDB
             init = true;
             cbbSuppliers.Items.Clear();
             cbbSuppliers.Items.Add("All");
-            cbbSuppliers.Items.AddRange(suppliers.ToArray());
+            cbbSuppliers.Items.AddRange(suppliers.Where((x) => !string.IsNullOrEmpty(x)).ToArray());
             if (cbbSuppliers.Items.Count > 0)
                 cbbSuppliers.SelectedIndex = 1;
             init = false;
@@ -330,6 +340,20 @@ namespace StockManagerDB
             return true;
         }
 
+        public bool RemoveProjectToOrder(string projectName)
+        {
+            bool result = false;
+            if (ProjectsToOrder.ContainsKey(projectName))
+            {
+                ProjectsToOrder.Remove(projectName);
+                result = true;
+            }
+
+            PartsHaveChanged();
+
+            return result;
+        }
+
         /// <summary>
         /// Add a project to the order list. If already in, update ONLY the multiplier by adding the new and the old ones.
         /// </summary>
@@ -356,18 +380,27 @@ namespace StockManagerDB
                 {
                     name = projectName,
                     n = multiplier,
-                    materials = projectMaterial.Select((m) => (Material)m.Clone()).ToDictionary((x) => x.MPN),
                     exactOrder = orderExactly,
                 };
 
                 Dictionary<string, Material> materials = new Dictionary<string, Material>();
                 foreach (Material m in projectMaterial)
                 {
-                    if(materials.ContainsKey(m.MPN))
+                    if (materials.ContainsKey(m.MPN))
                     {
-                        materials[m.MPN].Quantityn += m.Quantity;
-                    }    
+                        materials[m.MPN].Quantity += m.Quantity;
+                    }
+                    else
+                    {
+                        materials[m.MPN] = new Material()
+                        {
+                            MPN = m.MPN,
+                            Quantity = m.Quantity,
+                        };
+                    }
                 }
+
+                poc.materials = materials;
 
                 result = true;
             }
@@ -451,7 +484,8 @@ namespace StockManagerDB
                 }
             }
 
-            PartsHaveChanged();
+            listviewMaterials.DataSource = PartsToOrder.Values.ToList();
+            UpdateBulkAddText();
         }
 
         private void deleteSelectionToolStripMenuItem_Click(object sender, EventArgs e)

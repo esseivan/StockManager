@@ -373,10 +373,11 @@
             this.statusTimeoutTimer.Interval = 2500;
             this.statusTimeoutTimer.Tick += new System.EventHandler(this.statusTimeoutTimer_Tick);
             // 
-            // richTextBox1
+            // textboxProjects
             // 
             this.textboxProjects.Location = new System.Drawing.Point(12, 49);
-            this.textboxProjects.Name = "richTextBox1";
+            this.textboxProjects.Name = "textboxProjects";
+            this.textboxProjects.ReadOnly = true;
             this.textboxProjects.Size = new System.Drawing.Size(110, 334);
             this.textboxProjects.TabIndex = 15;
             this.textboxProjects.Text = "";
