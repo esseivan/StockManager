@@ -58,6 +58,7 @@
             this.checkboxOrderMore = new System.Windows.Forms.CheckBox();
             this.checkboxDoNotExceedLowStock = new System.Windows.Forms.CheckBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.label8 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.numDecimals)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -352,6 +353,7 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.label8);
             this.groupBox2.Controls.Add(this.checkboxOrderMore);
             this.groupBox2.Controls.Add(this.checkboxDoNotExceedLowStock);
             this.groupBox2.Location = new System.Drawing.Point(288, 12);
@@ -385,6 +387,15 @@
             this.toolTip1.SetToolTip(this.checkboxDoNotExceedLowStock, "When ordering missing material, do not go under the LowStock limit");
             this.checkboxDoNotExceedLowStock.UseVisualStyleBackColor = true;
             this.checkboxDoNotExceedLowStock.CheckedChanged += new System.EventHandler(this.checkboxDoNotExceedLowStock_CheckedChanged);
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(40, 62);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(205, 26);
+            this.label8.TabIndex = 1;
+            this.label8.Text = "Using this option is not recommended with\r\nthe use of automatic lowStock order";
             // 
             // frmOptions
             // 
@@ -445,5 +456,6 @@
         private System.Windows.Forms.CheckBox checkboxOrderMore;
         private System.Windows.Forms.CheckBox checkboxDoNotExceedLowStock;
         private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.Label label8;
     }
 }
