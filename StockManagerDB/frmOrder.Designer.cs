@@ -62,6 +62,8 @@
             this.btnCopy = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.statusTimeoutTimer = new System.Windows.Forms.Timer(this.components);
+            this.textboxProjects = new System.Windows.Forms.RichTextBox();
+            this.label3 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.listviewMaterials)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
@@ -109,14 +111,14 @@
             this.listviewMaterials.FullRowSelect = true;
             this.listviewMaterials.GridLines = true;
             this.listviewMaterials.HideSelection = false;
-            this.listviewMaterials.Location = new System.Drawing.Point(8, 23);
+            this.listviewMaterials.Location = new System.Drawing.Point(127, 49);
             this.listviewMaterials.Margin = new System.Windows.Forms.Padding(2);
             this.listviewMaterials.Name = "listviewMaterials";
             this.listviewMaterials.SelectColumnsOnRightClickBehaviour = BrightIdeasSoftware.ObjectListView.ColumnSelectBehaviour.Submenu;
             this.listviewMaterials.ShowCommandMenuOnRightClick = true;
             this.listviewMaterials.ShowGroups = false;
             this.listviewMaterials.ShowImagesOnSubItems = true;
-            this.listviewMaterials.Size = new System.Drawing.Size(509, 360);
+            this.listviewMaterials.Size = new System.Drawing.Size(394, 334);
             this.listviewMaterials.SortGroupItemsByPrimaryColumn = false;
             this.listviewMaterials.TabIndex = 8;
             this.listviewMaterials.TintSortColumn = true;
@@ -214,10 +216,10 @@
             this.textBulkAdd.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBulkAdd.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBulkAdd.Location = new System.Drawing.Point(519, 49);
+            this.textBulkAdd.Location = new System.Drawing.Point(525, 49);
             this.textBulkAdd.Margin = new System.Windows.Forms.Padding(2);
             this.textBulkAdd.Name = "textBulkAdd";
-            this.textBulkAdd.Size = new System.Drawing.Size(201, 301);
+            this.textBulkAdd.Size = new System.Drawing.Size(195, 301);
             this.textBulkAdd.TabIndex = 9;
             this.textBulkAdd.Text = "";
             // 
@@ -259,7 +261,7 @@
             // 
             this.showInfosToolStripMenuItem.CheckOnClick = true;
             this.showInfosToolStripMenuItem.Name = "showInfosToolStripMenuItem";
-            this.showInfosToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.showInfosToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
             this.showInfosToolStripMenuItem.Text = "Show infos";
             this.showInfosToolStripMenuItem.CheckedChanged += new System.EventHandler(this.showInfosToolStripMenuItem_CheckedChanged);
             // 
@@ -267,31 +269,31 @@
             // 
             this.showMoreInfosToolStripMenuItem.CheckOnClick = true;
             this.showMoreInfosToolStripMenuItem.Name = "showMoreInfosToolStripMenuItem";
-            this.showMoreInfosToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.showMoreInfosToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
             this.showMoreInfosToolStripMenuItem.Text = "Show more infos";
             this.showMoreInfosToolStripMenuItem.Click += new System.EventHandler(this.showMoreInfosToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(160, 6);
             // 
             // resizeColumnsToolStripMenuItem
             // 
             this.resizeColumnsToolStripMenuItem.Name = "resizeColumnsToolStripMenuItem";
-            this.resizeColumnsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.resizeColumnsToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
             this.resizeColumnsToolStripMenuItem.Text = "Resize columns";
             this.resizeColumnsToolStripMenuItem.Click += new System.EventHandler(this.resizeColumnsToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(160, 6);
             // 
             // refreshToolStripMenuItem1
             // 
             this.refreshToolStripMenuItem1.Name = "refreshToolStripMenuItem1";
-            this.refreshToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.refreshToolStripMenuItem1.Size = new System.Drawing.Size(163, 22);
             this.refreshToolStripMenuItem1.Text = "Refresh";
             this.refreshToolStripMenuItem1.Click += new System.EventHandler(this.refreshToolStripMenuItem1_Click);
             // 
@@ -371,11 +373,31 @@
             this.statusTimeoutTimer.Interval = 2500;
             this.statusTimeoutTimer.Tick += new System.EventHandler(this.statusTimeoutTimer_Tick);
             // 
+            // textboxProjects
+            // 
+            this.textboxProjects.Location = new System.Drawing.Point(12, 49);
+            this.textboxProjects.Name = "textboxProjects";
+            this.textboxProjects.ReadOnly = true;
+            this.textboxProjects.Size = new System.Drawing.Size(110, 334);
+            this.textboxProjects.TabIndex = 15;
+            this.textboxProjects.Text = "";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(12, 26);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(55, 13);
+            this.label3.TabIndex = 16;
+            this.label3.Text = "Project list";
+            // 
             // frmOrder
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(727, 390);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.textboxProjects);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.btnCopy);
             this.Controls.Add(this.label1);
@@ -434,5 +456,7 @@
         private System.Windows.Forms.ToolStripMenuItem resizeColumnsToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripMenuItem refreshToolStripMenuItem1;
+        private System.Windows.Forms.RichTextBox textboxProjects;
+        private System.Windows.Forms.Label label3;
     }
 }

@@ -1470,6 +1470,10 @@ namespace StockManagerDB
             return true;
         }
 
+        /// <summary>
+        /// Add empty parts to the order form. This is so the user will then input the quantities
+        /// </summary>
+        /// <returns>Succes if true</returns>
         private bool ActionAddPartsToOrder()
         {
             if (!IsFileLoaded)
@@ -1489,15 +1493,13 @@ namespace StockManagerDB
 
             LoggerClass.Write($"Adding to order...", Logger.LogLevels.Debug);
             List<Part> parts = GetPartForProcess();
-            // For each part, create a material (includes a quantity)
-            IEnumerable<Material> material = parts.Select((part) => new Material() { MPN = part.MPN, Quantity = 0, Note = "New" });
 
             LoggerClass.Write(
-                $"{material.Count()} material(s) created...",
+                $"{parts.Count()} part(s) to be added to order form...",
                 Logger.LogLevels.Debug
             );
 
-            orderForm.AddPartsToOrder(material);
+            orderForm.AddCustomPartsToOrder(parts);
             // update order form
             orderForm.SetSuppliers(Parts.Select((x) => x.Value.Supplier).Distinct());
             ShowForm(orderForm);
@@ -2191,21 +2193,18 @@ namespace StockManagerDB
         private void FrmProjects_OnProjectOrder(object sender, ProjectOrderRequestedEventArgs e)
         {
             // MUST clone otherwise quantities changements are reported to the BOM
-            List<Material> materials = e.materials.Select((x) => (Material)x.Clone()).ToList();
-            // Apply number of times
-            materials.ForEach((x) => x.Quantity *= e.numberOfTimes);
+            IEnumerable<Material> materials = e.materials;
 
-            // Edit quantity according to actual stock
-            materials.ForEach((x) => x.Quantity = PartUtils.GetActualOrderQuantity(x,
-                e.OrderIfRequired,
-                e.GuaranteeLowStock && AppSettings.Settings.OrderDoNotExceedLowStock,
-                e.GuaranteeLowStock && AppSettings.Settings.OrderMoreUntilLowStockMinimum)
-            );
+            if (materials == null)
+            {
+                orderForm.RemoveProjectToOrder(e.projectName);
+                return;
+            }
 
             // Remove all 0 quantities
             materials = materials.Where((x) => x.Quantity > 0).ToList();
 
-            orderForm.AddPartsToOrder(materials);
+            orderForm.AddProjectToOrder(e.projectName, e.numberOfTimes, !e.OrderIfRequired, materials);
 
             // update order form
             orderForm.SetSuppliers(Parts.Values.Select((x) => x.Supplier).Distinct()); // update suppliers
@@ -2266,7 +2265,7 @@ namespace StockManagerDB
             // Open projects form
             frm.StartPosition = FormStartPosition.CenterParent;
             frm.Show();
-            frm.SetDesktopLocation(DesktopLocation.X + 20, DesktopLocation.Y + 20);
+            //frm.SetDesktopLocation(DesktopLocation.X + 20, DesktopLocation.Y + 20);
             frm.BringToFront();
         }
 
