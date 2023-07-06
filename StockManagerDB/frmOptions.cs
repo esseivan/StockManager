@@ -266,7 +266,7 @@ namespace StockManagerDB
                 return;
 
             ChangesMade = true;
-            AppSettings.Settings.IsDigikeyAPIEnabled = checkBoxDigikeyAPIEnabled.Checked;
+            notApprovedNewSettings.IsDigikeyAPIEnabled = checkBoxDigikeyAPIEnabled.Checked;
         }
 
         private void btnClearRecent_Click(object sender, EventArgs e)
