@@ -392,11 +392,12 @@
             this.label3.TabIndex = 16;
             this.label3.Text = "Project list";
             // 
-            // checkBox1
+            // checkboxUseMpn
             // 
+            this.checkboxUseMpn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.checkboxUseMpn.AutoSize = true;
             this.checkboxUseMpn.Location = new System.Drawing.Point(526, 49);
-            this.checkboxUseMpn.Name = "checkBox1";
+            this.checkboxUseMpn.Name = "checkboxUseMpn";
             this.checkboxUseMpn.Size = new System.Drawing.Size(72, 17);
             this.checkboxUseMpn.TabIndex = 17;
             this.checkboxUseMpn.Text = "Use MPN";
