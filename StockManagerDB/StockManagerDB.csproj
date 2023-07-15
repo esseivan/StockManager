@@ -219,6 +219,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Libraries\Project.cs" />
     <Compile Include="Libraries\ProjectVersion.cs" />
+    <Compile Include="ProjectOrderInfos.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="frmHistory.resx">
       <DependentUpon>frmHistory.cs</DependentUpon>

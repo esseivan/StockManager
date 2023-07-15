@@ -64,6 +64,7 @@
             this.statusTimeoutTimer = new System.Windows.Forms.Timer(this.components);
             this.textboxProjects = new System.Windows.Forms.RichTextBox();
             this.label3 = new System.Windows.Forms.Label();
+            this.checkboxUseMpn = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.listviewMaterials)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
@@ -216,10 +217,10 @@
             this.textBulkAdd.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBulkAdd.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBulkAdd.Location = new System.Drawing.Point(525, 49);
+            this.textBulkAdd.Location = new System.Drawing.Point(525, 66);
             this.textBulkAdd.Margin = new System.Windows.Forms.Padding(2);
             this.textBulkAdd.Name = "textBulkAdd";
-            this.textBulkAdd.Size = new System.Drawing.Size(195, 301);
+            this.textBulkAdd.Size = new System.Drawing.Size(195, 284);
             this.textBulkAdd.TabIndex = 9;
             this.textBulkAdd.Text = "";
             // 
@@ -391,11 +392,23 @@
             this.label3.TabIndex = 16;
             this.label3.Text = "Project list";
             // 
+            // checkBox1
+            // 
+            this.checkboxUseMpn.AutoSize = true;
+            this.checkboxUseMpn.Location = new System.Drawing.Point(526, 49);
+            this.checkboxUseMpn.Name = "checkBox1";
+            this.checkboxUseMpn.Size = new System.Drawing.Size(72, 17);
+            this.checkboxUseMpn.TabIndex = 17;
+            this.checkboxUseMpn.Text = "Use MPN";
+            this.checkboxUseMpn.UseVisualStyleBackColor = true;
+            this.checkboxUseMpn.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+            // 
             // frmOrder
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(727, 390);
+            this.Controls.Add(this.checkboxUseMpn);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.textboxProjects);
             this.Controls.Add(this.label2);
@@ -458,5 +471,6 @@
         private System.Windows.Forms.ToolStripMenuItem refreshToolStripMenuItem1;
         private System.Windows.Forms.RichTextBox textboxProjects;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.CheckBox checkboxUseMpn;
     }
 }

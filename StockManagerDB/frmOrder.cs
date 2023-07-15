@@ -14,21 +14,12 @@ namespace StockManagerDB
 {
     public partial class frmOrder : Form
     {
-        private class ProjectOrderClass
-        {
-            public string name = null;
-            public int n = 1;
-            public bool exactOrder = false;
-            public Dictionary<string, Material> materials = new Dictionary<string, Material>();
-        }
-
-        private Dictionary<string, ProjectOrderClass> ProjectsToOrder = new Dictionary<string, ProjectOrderClass>();
-
-
         private const string CustomPartsProjectName = "CustomParts",
             LowStockOrderProjectName = "LowStock Order";
 
-
+        /// <summary>
+        /// The actual parts to order refering to project list  
+        /// </summary>
         private readonly Dictionary<string, Material> PartsToOrder =
             new Dictionary<string, Material>();
 
@@ -148,7 +139,7 @@ namespace StockManagerDB
 
         private void UpdateProjectList()
         {
-            textboxProjects.Text = string.Join("\n", ProjectsToOrder.Select((x) => $"{x.Value.n}{(x.Value.exactOrder ? "*": "" )}x {x.Key}"));
+            textboxProjects.Text = string.Join("\n", AppSettings.Settings.ProjectsToOrder.Select((x) => $"{x.Value.n}{(x.Value.exactOrder ? "*" : "")}x {x.Key}"));
         }
 
         private void UpdateBulkAddText()
@@ -177,9 +168,10 @@ namespace StockManagerDB
                     .Select((x) => x.Value);
             }
 
+            bool useMpn = checkboxUseMpn.Checked;
             string bulkText = string.Join(
                 "\n",
-                filteredParts.Select((m) => $"{m.QuantityStr}, {m.PartLink?.SPN ?? "Undefined"}")
+                filteredParts.Select((m) => $"{m.QuantityStr}, {(useMpn ? m.MPN : (m.PartLink?.SPN ?? "Undefined"))}")
             );
 
             textBulkAdd.Text = bulkText;
@@ -198,12 +190,12 @@ namespace StockManagerDB
             };
 
             PartsToOrder.Clear();
-            List<ProjectOrderClass> IgnoredMaterial = new List<ProjectOrderClass>();
+            List<ProjectOrderInfos> IgnoredMaterial = new List<ProjectOrderInfos>();
 
             // Add all materials to a list
-            foreach (KeyValuePair<string, ProjectOrderClass> item in ProjectsToOrder)
+            foreach (KeyValuePair<string, ProjectOrderInfos> item in AppSettings.Settings.ProjectsToOrder)
             {
-                ProjectOrderClass poc = item.Value;
+                ProjectOrderInfos poc = item.Value;
 
                 if (unaffectedProjectsName.Contains(item.Key)) // Ignore projects
                 {
@@ -246,7 +238,7 @@ namespace StockManagerDB
             }
 
             // Add previously ignored materials
-            foreach (ProjectOrderClass poc in IgnoredMaterial)
+            foreach (ProjectOrderInfos poc in IgnoredMaterial)
             {
                 foreach (Material m in poc.materials.Values)
                 {
@@ -307,10 +299,10 @@ namespace StockManagerDB
         /// <param name="parts">List of parts to order if necessary</param>
         public bool AddPartsToOrder(IEnumerable<Part> parts)
         {
-            if (ProjectsToOrder.ContainsKey(LowStockOrderProjectName))
+            if (AppSettings.Settings.ProjectsToOrder.ContainsKey(LowStockOrderProjectName))
             {
                 // Delete current and make a new one
-                ProjectsToOrder.Remove(LowStockOrderProjectName);
+                AppSettings.Settings.ProjectsToOrder.Remove(LowStockOrderProjectName);
             }
 
             // Create material list
@@ -328,13 +320,14 @@ namespace StockManagerDB
             }
 
             // Add to projects
-            ProjectsToOrder[LowStockOrderProjectName] = new ProjectOrderClass()
+            AppSettings.Settings.ProjectsToOrder[LowStockOrderProjectName] = new ProjectOrderInfos()
             {
                 name = LowStockOrderProjectName,
                 n = 1,
                 materials = mList.ToDictionary((x) => x.MPN),
             };
 
+            AppSettings.Save();
             PartsHaveChanged();
 
             return true;
@@ -343,12 +336,13 @@ namespace StockManagerDB
         public bool RemoveProjectToOrder(string projectName)
         {
             bool result = false;
-            if (ProjectsToOrder.ContainsKey(projectName))
+            if (AppSettings.Settings.ProjectsToOrder.ContainsKey(projectName))
             {
-                ProjectsToOrder.Remove(projectName);
+                AppSettings.Settings.ProjectsToOrder.Remove(projectName);
                 result = true;
             }
 
+            AppSettings.Save();
             PartsHaveChanged();
 
             return result;
@@ -365,18 +359,18 @@ namespace StockManagerDB
         public bool AddProjectToOrder(string projectName, int multiplier, bool orderExactly, IEnumerable<Material> projectMaterial)
         {
             bool result;
-            ProjectOrderClass poc;
-            if (ProjectsToOrder.ContainsKey(projectName))
+            ProjectOrderInfos poc;
+            if (AppSettings.Settings.ProjectsToOrder.ContainsKey(projectName))
             {
                 // Project already in list. Not updating projectMaterial
-                poc = ProjectsToOrder[projectName];
+                poc = AppSettings.Settings.ProjectsToOrder[projectName];
                 poc.n += multiplier;
 
                 result = false;
             }
             else
             {
-                ProjectsToOrder[projectName] = poc = new ProjectOrderClass()
+                AppSettings.Settings.ProjectsToOrder[projectName] = poc = new ProjectOrderInfos()
                 {
                     name = projectName,
                     n = multiplier,
@@ -405,6 +399,7 @@ namespace StockManagerDB
                 result = true;
             }
 
+            AppSettings.Save();
             PartsHaveChanged();
 
             return result;
@@ -417,14 +412,14 @@ namespace StockManagerDB
         /// <returns>true everytime</returns>
         public bool AddCustomPartsToOrder(IEnumerable<Part> parts)
         {
-            ProjectOrderClass poc;
-            if (ProjectsToOrder.ContainsKey(CustomPartsProjectName))
+            ProjectOrderInfos poc;
+            if (AppSettings.Settings.ProjectsToOrder.ContainsKey(CustomPartsProjectName))
             {
-                poc = ProjectsToOrder[CustomPartsProjectName];
+                poc = AppSettings.Settings.ProjectsToOrder[CustomPartsProjectName];
             }
             else
             {
-                ProjectsToOrder[CustomPartsProjectName] = poc = new ProjectOrderClass()
+                AppSettings.Settings.ProjectsToOrder[CustomPartsProjectName] = poc = new ProjectOrderInfos()
                 {
                     name = CustomPartsProjectName,
                     n = 1,
@@ -444,6 +439,7 @@ namespace StockManagerDB
                 }
             }
 
+            AppSettings.Save();
             PartsHaveChanged();
 
             return true;
@@ -457,8 +453,9 @@ namespace StockManagerDB
                 return;
             }
 
-            ProjectsToOrder.Clear();
+            AppSettings.Settings.ProjectsToOrder.Clear();
             PartsToOrder.Clear();
+            AppSettings.Save();
             PartsHaveChanged();
         }
 
@@ -467,6 +464,13 @@ namespace StockManagerDB
             olvcMAN.IsVisible = olvcLocation.IsVisible = olvcCat.IsVisible = InfosVisible;
             olvcDesc.IsVisible = olvcMPN.IsVisible = MoreInfosVisible;
             listviewMaterials.RebuildColumns();
+
+            // Apply current settings
+            if(AppSettings.Settings.ProjectsToOrder == null)
+            {
+                AppSettings.Settings.ProjectsToOrder = new Dictionary<string, ProjectOrderInfos>();
+            }
+            PartsHaveChanged();
         }
 
         /// <summary>
@@ -610,6 +614,11 @@ namespace StockManagerDB
         private void showMoreInfosToolStripMenuItem_Click(object sender, EventArgs e)
         {
             UpdateMoreInfos();
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateBulkAddText();
         }
 
         private void refreshToolStripMenuItem1_Click(object sender, EventArgs e)
