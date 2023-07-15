@@ -231,13 +231,12 @@ namespace StockManagerDB
                 comboboxVersions.DataSource = null;
                 return;
             }
-
-            string selVer = comboboxVersions.SelectedItem?.ToString() ?? null;
-
             comboboxVersions.DataSource = data.Projects[project].Versions.Keys.ToList();
 
-            if ((selVer != null) && (comboboxVersions.Items.Contains(selVer)))
-                comboboxVersions.SelectedItem = selVer;
+            if(comboboxVersions.Items.Count > 0)
+            {
+                comboboxVersions.SelectedIndex = 0;
+            }
         }
 
         /// <summary>
