@@ -1,7 +1,9 @@
 ﻿using ESNLib.Tools;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
+using static StockManagerDB.Project;
 
 namespace StockManagerDB
 {
@@ -234,6 +236,7 @@ namespace StockManagerDB
             SettingsManager.LoadFrom(Filepath, out DataExportClass data);
             Parts = data?.GetParts() ?? new Dictionary<string, Part>();
             Projects = data?.GetProjects() ?? new Dictionary<string, Project>();
+            Projects.Values.ToList().ForEach((p) => p.Versions = new SortedDictionary<string, ProjectVersion>(p.Versions, new CompareVersion())); ;
         }
 
         /// <summary>

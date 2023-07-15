@@ -1406,12 +1406,7 @@ namespace StockManagerDB
                 return;
             }
 
-            if (!mat.HasPartLink)
-            {
-                return;
-            }
-
-            mat.PartLink.CopyMPNToClipboard();
+            Clipboard.SetText(mat.MPN);
             SetStatus("Copied to clipboard...");
         }
 

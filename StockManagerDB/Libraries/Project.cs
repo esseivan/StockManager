@@ -52,7 +52,8 @@ namespace StockManagerDB
             {
                 Version vx = Version.Parse(x);
                 Version vy = Version.Parse(y);
-                return vx.CompareTo(vy);
+                // Sort in descending order (most recent at the top)
+                return vy.CompareTo(vx);
             }
         }
     }
