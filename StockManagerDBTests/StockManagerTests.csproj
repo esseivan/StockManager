@@ -105,9 +105,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\StockManagerDB\StockManagerDB.csproj">
+    <ProjectReference Include="..\StockManagerDB\StockManager.csproj">
       <Project>{C84CCFAA-21D9-4EC3-8A22-A9EC86BBB255}</Project>
-      <Name>StockManagerDB</Name>
+      <Name>StockManager</Name>
     </ProjectReference>
   </ItemGroup>
   <Choose>
