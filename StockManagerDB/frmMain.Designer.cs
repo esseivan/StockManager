@@ -119,6 +119,7 @@
             this.openSupplierUrlToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.filterHighlightRenderer = new BrightIdeasSoftware.HighlightTextRenderer();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.copySPNToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -350,7 +351,7 @@
             this.onlyAffectCheckedPartsToolStripMenuItem.CheckOnClick = true;
             this.onlyAffectCheckedPartsToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.onlyAffectCheckedPartsToolStripMenuItem.Name = "onlyAffectCheckedPartsToolStripMenuItem";
-            this.onlyAffectCheckedPartsToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
+            this.onlyAffectCheckedPartsToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
             this.onlyAffectCheckedPartsToolStripMenuItem.Text = "Only affect checked parts";
             this.onlyAffectCheckedPartsToolStripMenuItem.ToolTipText = "If checked, the actions will only target the checked parts (the list at the botto" +
     "m).\r\nIf unchecked, the actions will target ALL the parts (the list at the top).";
@@ -359,12 +360,12 @@
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(231, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(241, 6);
             // 
             // makeOrderToolStripMenuItem
             // 
             this.makeOrderToolStripMenuItem.Name = "makeOrderToolStripMenuItem";
-            this.makeOrderToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
+            this.makeOrderToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
             this.makeOrderToolStripMenuItem.Text = "Make LowStock Order";
             this.makeOrderToolStripMenuItem.ToolTipText = "Make automatic order according to the LowStock parameters for the parts. The diff" +
     "erence between the actual stock and the low stock will be added to the order for" +
@@ -383,7 +384,7 @@
             // updateFromDigikeyToolStripMenuItem
             // 
             this.updateFromDigikeyToolStripMenuItem.Name = "updateFromDigikeyToolStripMenuItem";
-            this.updateFromDigikeyToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
+            this.updateFromDigikeyToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
             this.updateFromDigikeyToolStripMenuItem.Text = "Update from Digikey";
             this.updateFromDigikeyToolStripMenuItem.ToolTipText = "Update the parts using the Digikey API. (Manufacturer, Description, Price, Suppli" +
     "er and SPN will be updated)";
@@ -392,7 +393,7 @@
             // addToProjectToolStripMenuItem
             // 
             this.addToProjectToolStripMenuItem.Name = "addToProjectToolStripMenuItem";
-            this.addToProjectToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
+            this.addToProjectToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
             this.addToProjectToolStripMenuItem.Text = "Add to project...";
             this.addToProjectToolStripMenuItem.ToolTipText = "Add the parts to a project that you will select";
             this.addToProjectToolStripMenuItem.Click += new System.EventHandler(this.addToProjectToolStripMenuItem_Click);
@@ -400,12 +401,12 @@
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(231, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(241, 6);
             // 
             // exportPartsToolStripMenuItem
             // 
             this.exportPartsToolStripMenuItem.Name = "exportPartsToolStripMenuItem";
-            this.exportPartsToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
+            this.exportPartsToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
             this.exportPartsToolStripMenuItem.Text = "Export parts";
             this.exportPartsToolStripMenuItem.ToolTipText = "Export the parts to a \'.smd\' file. You can then use or share this file.\r\n";
             this.exportPartsToolStripMenuItem.Click += new System.EventHandler(this.exportPartsToolStripMenuItem_Click);
@@ -413,7 +414,7 @@
             // importPartsToolStripMenuItem
             // 
             this.importPartsToolStripMenuItem.Name = "importPartsToolStripMenuItem";
-            this.importPartsToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
+            this.importPartsToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
             this.importPartsToolStripMenuItem.Text = "Import parts";
             this.importPartsToolStripMenuItem.ToolTipText = "Import all the parts from a \'.smd\' file.";
             this.importPartsToolStripMenuItem.Click += new System.EventHandler(this.importPartsToolStripMenuItem_Click);
@@ -972,23 +973,31 @@
             this.contextMenuStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.copyMPNToolStripMenuItem,
+            this.copySPNToolStripMenuItem,
             this.openSupplierUrlToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(176, 48);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(181, 92);
             // 
             // copyMPNToolStripMenuItem
             // 
             this.copyMPNToolStripMenuItem.Name = "copyMPNToolStripMenuItem";
-            this.copyMPNToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.copyMPNToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.copyMPNToolStripMenuItem.Text = "Copy MPN";
             this.copyMPNToolStripMenuItem.Click += new System.EventHandler(this.copyMPNToolStripMenuItem_Click);
             // 
             // openSupplierUrlToolStripMenuItem
             // 
             this.openSupplierUrlToolStripMenuItem.Name = "openSupplierUrlToolStripMenuItem";
-            this.openSupplierUrlToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.openSupplierUrlToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.openSupplierUrlToolStripMenuItem.Text = "Open Supplier url...";
             this.openSupplierUrlToolStripMenuItem.Click += new System.EventHandler(this.openSupplierUrlToolStripMenuItem_Click);
+            // 
+            // copySPNToolStripMenuItem
+            // 
+            this.copySPNToolStripMenuItem.Name = "copySPNToolStripMenuItem";
+            this.copySPNToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.copySPNToolStripMenuItem.Text = "Copy SPN";
+            this.copySPNToolStripMenuItem.Click += new System.EventHandler(this.copySPNToolStripMenuItem_Click);
             // 
             // frmMain
             // 
@@ -1113,6 +1122,7 @@
         private System.Windows.Forms.ToolStripMenuItem importListFromDigikeyToolStripMenuItem;
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.ToolStripMenuItem addPartsToOrderToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem copySPNToolStripMenuItem;
     }
 }
 

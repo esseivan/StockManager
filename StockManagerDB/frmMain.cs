@@ -33,15 +33,22 @@ namespace StockManagerDB
             get => _filepath;
             set
             {
-                _filepath = value;
-                if (!string.IsNullOrEmpty(value))
+                if (string.IsNullOrEmpty(value))
                 {
-                    if (AppSettings.Settings.RecentFiles.Contains(value))
+                    _filepath = value;
+                }
+                else
+                {
+                    // Get the same pattern for each filepath
+                    FileInfo fi = new FileInfo(value);
+                    _filepath = fi.FullName;
+
+                    if (AppSettings.Settings.RecentFiles.Contains(_filepath))
                     {
                         // Move it to #1
-                        AppSettings.Settings.RecentFiles.Remove(value);
+                        AppSettings.Settings.RecentFiles.Remove(_filepath);
                     }
-                    AppSettings.Settings.RecentFiles.Insert(0, value);
+                    AppSettings.Settings.RecentFiles.Insert(0, _filepath);
                     if (AppSettings.Settings.RecentFiles.Count > 5)
                     {
                         AppSettings.Settings.RecentFiles = AppSettings.Settings.RecentFiles
@@ -1464,12 +1471,38 @@ namespace StockManagerDB
                 Logger.LogLevels.Debug
             );
 
+            string message = $"Confirm the process of ordering {parts.Count()} part(s) according to current stock\nContinue ?";
+            if (!AskUserConfirmation(message, "Confirmation"))
+            {
+                return false;
+            }
+
             orderForm.AddPartsToOrder(selected);
             // update order form
             orderForm.SetSuppliers(Parts.Select((x) => x.Value.Supplier).Distinct());
             ShowForm(orderForm);
 
             return true;
+        }
+
+        /// <summary>
+        /// Ask the user if he wants to continue. Include YesNoCancel buttons
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="title"></param>
+        /// <returns>True if yes clicked</returns>
+        private bool AskUserConfirmation(string message, string title)
+        {
+            Dialog.DialogConfig dc = new Dialog.DialogConfig(message, title)
+            {
+                Button1 = Dialog.ButtonType.Yes,
+                Button2 = Dialog.ButtonType.No,
+                Button3 = Dialog.ButtonType.Cancel,
+                Icon = Dialog.DialogIcon.Question,
+            };
+
+            var result = Dialog.ShowDialog(dc);
+            return result.DialogResult == Dialog.DialogResult.Yes;
         }
 
         /// <summary>
@@ -1500,6 +1533,12 @@ namespace StockManagerDB
                 $"{parts.Count()} part(s) to be added to order form...",
                 Logger.LogLevels.Debug
             );
+
+            string message = $"Confirm the process of adding {parts.Count()} part(s) to the order form (with 0 quantity)\nContinue ?";
+            if (!AskUserConfirmation(message, "Confirmation"))
+            {
+                return false;
+            }
 
             orderForm.AddCustomPartsToOrder(parts);
             // update order form
@@ -1536,7 +1575,14 @@ namespace StockManagerDB
 
             // TODO : show form to add to projects
 
-            //ShowForm(orderForm);
+            //ShowForm(...);
+
+
+            string message = $"Confirm the process of adding {parts.Count()} part(s) to the selected project : '{"Undefined"}'\nContinue ?";
+            if (!AskUserConfirmation(message, "Confirmation"))
+            {
+                return false;
+            }
 
             return true;
         }
@@ -2744,6 +2790,18 @@ namespace StockManagerDB
         private void addPartsToOrderToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ActionAddPartsToOrder();
+        }
+
+        private void copySPNToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Get the selected part
+            if (!(listviewParts.SelectedObject is Part part))
+            {
+                return;
+            }
+
+            part.CopySPNToClipboard();
+            SetStatus("Copied to clipboard...");
         }
     }
 }

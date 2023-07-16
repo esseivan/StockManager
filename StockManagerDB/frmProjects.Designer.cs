@@ -44,6 +44,7 @@
             this.orderTheSelectedProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.orderMissingForTheSelectedProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.processProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.removeFromOrderFormToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.resizeColumnsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
@@ -90,8 +91,10 @@
             this.tooltip1 = new System.Windows.Forms.ToolTip(this.components);
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.copyMPNToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.copySPNToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openSupplierUrlToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.removeFromOrderFormToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.label2 = new System.Windows.Forms.Label();
+            this.txtboxTotalPrice = new System.Windows.Forms.TextBox();
             this.statusStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.listviewMaterials)).BeginInit();
@@ -228,6 +231,13 @@
             this.processProjectToolStripMenuItem.ToolTipText = "Remove the BOM from the current stock.\r\nYou will be asked for a multiplier.";
             this.processProjectToolStripMenuItem.Click += new System.EventHandler(this.processProjectToolStripMenuItem_Click);
             // 
+            // removeFromOrderFormToolStripMenuItem
+            // 
+            this.removeFromOrderFormToolStripMenuItem.Name = "removeFromOrderFormToolStripMenuItem";
+            this.removeFromOrderFormToolStripMenuItem.Size = new System.Drawing.Size(235, 22);
+            this.removeFromOrderFormToolStripMenuItem.Text = "Remove from order form";
+            this.removeFromOrderFormToolStripMenuItem.Click += new System.EventHandler(this.removeFromOrderFormToolStripMenuItem_Click);
+            // 
             // viewToolStripMenuItem
             // 
             this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -327,7 +337,7 @@
             this.listviewMaterials.ShowCommandMenuOnRightClick = true;
             this.listviewMaterials.ShowGroups = false;
             this.listviewMaterials.ShowImagesOnSubItems = true;
-            this.listviewMaterials.Size = new System.Drawing.Size(818, 384);
+            this.listviewMaterials.Size = new System.Drawing.Size(818, 358);
             this.listviewMaterials.SortGroupItemsByPrimaryColumn = false;
             this.listviewMaterials.TabIndex = 7;
             this.listviewMaterials.TintSortColumn = true;
@@ -342,6 +352,7 @@
             this.listviewMaterials.VirtualMode = true;
             this.listviewMaterials.CellEditFinished += new BrightIdeasSoftware.CellEditEventHandler(this.listviewComponents_CellEditFinished);
             this.listviewMaterials.CellRightClick += new System.EventHandler<BrightIdeasSoftware.CellRightClickEventArgs>(this.listviewMaterials_CellRightClick);
+            this.listviewMaterials.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.listviewMaterials_ItemChecked);
             // 
             // olvcSelect
             // 
@@ -588,7 +599,7 @@
             this.groupBox2.Location = new System.Drawing.Point(2, 314);
             this.groupBox2.Margin = new System.Windows.Forms.Padding(3, 1, 3, 3);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(156, 149);
+            this.groupBox2.Size = new System.Drawing.Size(159, 149);
             this.groupBox2.TabIndex = 12;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Versions";
@@ -660,7 +671,7 @@
             this.groupBox3.Controls.Add(this.btnMatDup);
             this.groupBox3.Location = new System.Drawing.Point(167, 27);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(828, 436);
+            this.groupBox3.Size = new System.Drawing.Size(828, 404);
             this.groupBox3.TabIndex = 13;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Bill Of Materials";
@@ -717,9 +728,10 @@
             // 
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.copyMPNToolStripMenuItem,
+            this.copySPNToolStripMenuItem,
             this.openSupplierUrlToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(176, 48);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(176, 70);
             // 
             // copyMPNToolStripMenuItem
             // 
@@ -728,6 +740,13 @@
             this.copyMPNToolStripMenuItem.Text = "Copy MPN";
             this.copyMPNToolStripMenuItem.Click += new System.EventHandler(this.copyMPNToolStripMenuItem_Click);
             // 
+            // copySPNToolStripMenuItem
+            // 
+            this.copySPNToolStripMenuItem.Name = "copySPNToolStripMenuItem";
+            this.copySPNToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.copySPNToolStripMenuItem.Text = "Copy SPN";
+            this.copySPNToolStripMenuItem.Click += new System.EventHandler(this.copySPNToolStripMenuItem_Click);
+            // 
             // openSupplierUrlToolStripMenuItem
             // 
             this.openSupplierUrlToolStripMenuItem.Name = "openSupplierUrlToolStripMenuItem";
@@ -735,18 +754,33 @@
             this.openSupplierUrlToolStripMenuItem.Text = "Open Supplier url...";
             this.openSupplierUrlToolStripMenuItem.Click += new System.EventHandler(this.openSupplierUrlToolStripMenuItem_Click);
             // 
-            // removeFromOrderFormToolStripMenuItem
+            // label2
             // 
-            this.removeFromOrderFormToolStripMenuItem.Name = "removeFromOrderFormToolStripMenuItem";
-            this.removeFromOrderFormToolStripMenuItem.Size = new System.Drawing.Size(235, 22);
-            this.removeFromOrderFormToolStripMenuItem.Text = "Remove from order form";
-            this.removeFromOrderFormToolStripMenuItem.Click += new System.EventHandler(this.removeFromOrderFormToolStripMenuItem_Click);
+            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(170, 440);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(230, 13);
+            this.label2.TabIndex = 14;
+            this.label2.Text = "Total price for the project (only checked parts) :";
+            // 
+            // txtboxTotalPrice
+            // 
+            this.txtboxTotalPrice.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.txtboxTotalPrice.Location = new System.Drawing.Point(406, 437);
+            this.txtboxTotalPrice.Name = "txtboxTotalPrice";
+            this.txtboxTotalPrice.ReadOnly = true;
+            this.txtboxTotalPrice.Size = new System.Drawing.Size(100, 20);
+            this.txtboxTotalPrice.TabIndex = 15;
+            this.tooltip1.SetToolTip(this.txtboxTotalPrice, "Total price for a single unit of this project");
             // 
             // frmProjects
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(995, 488);
+            this.Controls.Add(this.txtboxTotalPrice);
+            this.Controls.Add(this.label2);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
@@ -836,5 +870,8 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripMenuItem orderMissingForTheSelectedProjectToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem removeFromOrderFormToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem copySPNToolStripMenuItem;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.TextBox txtboxTotalPrice;
     }
 }

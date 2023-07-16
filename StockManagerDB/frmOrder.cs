@@ -466,7 +466,7 @@ namespace StockManagerDB
             listviewMaterials.RebuildColumns();
 
             // Apply current settings
-            if(AppSettings.Settings.ProjectsToOrder == null)
+            if (AppSettings.Settings.ProjectsToOrder == null)
             {
                 AppSettings.Settings.ProjectsToOrder = new Dictionary<string, ProjectOrderInfos>();
             }
@@ -511,11 +511,6 @@ namespace StockManagerDB
         {
             // Get the selected part
             if (!(listviewMaterials.SelectedObject is Material mat))
-            {
-                return;
-            }
-
-            if (!mat.HasPartLink)
             {
                 return;
             }
@@ -591,7 +586,7 @@ namespace StockManagerDB
         }
         private void UpdateMoreInfos()
         {
-            MoreInfosVisible = showInfosToolStripMenuItem.Checked;
+            MoreInfosVisible = !MoreInfosVisible;
             olvcDesc.IsVisible = olvcMPN.IsVisible = MoreInfosVisible;
             listviewMaterials.RebuildColumns();
         }
@@ -611,7 +606,7 @@ namespace StockManagerDB
             UpdateInfos();
         }
 
-        private void showMoreInfosToolStripMenuItem_Click(object sender, EventArgs e)
+        private void showMoreInfosToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
         {
             UpdateMoreInfos();
         }
@@ -619,6 +614,17 @@ namespace StockManagerDB
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
             UpdateBulkAddText();
+        }
+
+        private void copySPNToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Get the selected part
+            if (!(listviewMaterials.SelectedObject is Part part))
+            {
+                return;
+            }
+
+            part.CopySPNToClipboard();
         }
 
         private void refreshToolStripMenuItem1_Click(object sender, EventArgs e)
