@@ -478,7 +478,7 @@
             this.comboboxVersions.FormattingEnabled = true;
             this.comboboxVersions.Location = new System.Drawing.Point(3, 19);
             this.comboboxVersions.Name = "comboboxVersions";
-            this.comboboxVersions.Size = new System.Drawing.Size(156, 98);
+            this.comboboxVersions.Size = new System.Drawing.Size(153, 98);
             this.comboboxVersions.TabIndex = 8;
             this.comboboxVersions.SelectedIndexChanged += new System.EventHandler(this.comboboxVersions_SelectedIndexChanged);
             // 
