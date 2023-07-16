@@ -247,6 +247,43 @@ namespace StockManagerDB
             }
         }
 
+        private frmActionProject _actionProjectForm = null;
+
+        /// <summary>
+        /// The form that displays projects
+        /// </summary>
+        private frmActionProject actionProjectForm
+        {
+            get
+            {
+                if (IsFileLoaded)
+                {
+                    if (_actionProjectForm == null)
+                    {
+                        _actionProjectForm = new frmActionProject();
+                        _actionProjectForm.FormClosed += _searchForm_FormClosed;
+                    }
+                }
+                else
+                {
+                    if (_actionProjectForm != null)
+                    {
+                        _actionProjectForm.Close();
+                        _actionProjectForm = null;
+                    }
+                }
+                return _actionProjectForm;
+            }
+            set
+            {
+                if (_actionProjectForm != null)
+                {
+                    _actionProjectForm.Close();
+                }
+                _actionProjectForm = value;
+            }
+        }
+
         private frmOptions _optionsForm = null;
 
         /// <summary>
@@ -1575,14 +1612,28 @@ namespace StockManagerDB
 
             // TODO : show form to add to projects
 
-            //ShowForm(...);
+            var result = ShowFormDialog(actionProjectForm);
+            if (result != DialogResult.OK)
+            {
+                return false;
+            }
+            ProjectVersion pv = actionProjectForm.GetSelectedProjectVersion();
+            string name = actionProjectForm.GetSelectedProjectName();
 
-
-            string message = $"Confirm the process of adding {parts.Count()} part(s) to the selected project : '{"Undefined"}'\nContinue ?";
+            string message = $"Confirm the process of adding {parts.Count()} part(s) to the selected project (with 0 quantity) : '{name}'\nContinue ?";
             if (!AskUserConfirmation(message, "Confirmation"))
             {
                 return false;
             }
+
+            // Generate material list
+            List<Material> materials = parts.Select((x) => new Material() { MPN = x.MPN, Quantity = 0, Note = "_add_action" }).ToList(); ;
+
+            // Actually add to project
+            pv.BOM.AddRange(materials);
+
+            // Update projectForm
+            projectForm.MaterialsHaveChanged();
 
             return true;
         }
@@ -2315,6 +2366,13 @@ namespace StockManagerDB
             frm.Show();
             //frm.SetDesktopLocation(DesktopLocation.X + 20, DesktopLocation.Y + 20);
             frm.BringToFront();
+        }
+
+        private DialogResult ShowFormDialog(Form frm)
+        {
+            // Open projects form
+            frm.StartPosition = FormStartPosition.CenterParent;
+            return frm.ShowDialog();
         }
 
         private void projectsToolStripMenuItem_Click(object sender, EventArgs e)

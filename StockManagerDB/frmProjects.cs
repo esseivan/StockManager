@@ -55,19 +55,19 @@ namespace StockManagerDB
 
         #region ListView Init
 
-        private void ProjectsHaveChanged()
+        public void ProjectsHaveChanged()
         {
             data.InvokeOnProjectsListModified(EventArgs.Empty);
             UpdateProjectList();
         }
 
-        private void VersionsHaveChanged()
+        public void VersionsHaveChanged()
         {
             data.InvokeOnProjectsListModified(EventArgs.Empty);
             UpdateVersionList();
         }
 
-        private void MaterialsHaveChanged()
+        public void MaterialsHaveChanged()
         {
             data.InvokeOnProjectsListModified(EventArgs.Empty);
             UpdateMaterialList();
