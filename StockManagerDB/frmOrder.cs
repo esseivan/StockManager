@@ -515,11 +515,6 @@ namespace StockManagerDB
                 return;
             }
 
-            if (!mat.HasPartLink)
-            {
-                return;
-            }
-
             mat.PartLink.CopyMPNToClipboard();
         }
 
@@ -619,6 +614,17 @@ namespace StockManagerDB
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
             UpdateBulkAddText();
+        }
+
+        private void copySPNToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Get the selected part
+            if (!(listviewMaterials.SelectedObject is Part part))
+            {
+                return;
+            }
+
+            part.CopySPNToClipboard();
         }
 
         private void refreshToolStripMenuItem1_Click(object sender, EventArgs e)

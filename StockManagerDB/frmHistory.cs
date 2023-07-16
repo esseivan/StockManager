@@ -388,5 +388,16 @@ There are some more columns to give more informations :
 
             MessageBox.Show(helpText, "Information");
         }
+
+        private void copySPNToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Get the selected part
+            if (!(listviewParts.SelectedObject is Part part))
+            {
+                return;
+            }
+
+            part.CopySPNToClipboard();
+        }
     }
 }

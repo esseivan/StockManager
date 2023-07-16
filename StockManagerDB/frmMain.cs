@@ -2745,5 +2745,17 @@ namespace StockManagerDB
         {
             ActionAddPartsToOrder();
         }
+
+        private void copySPNToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Get the selected part
+            if (!(listviewParts.SelectedObject is Part part))
+            {
+                return;
+            }
+
+            part.CopySPNToClipboard();
+            SetStatus("Copied to clipboard...");
+        }
     }
 }

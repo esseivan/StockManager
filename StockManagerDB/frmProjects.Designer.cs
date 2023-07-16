@@ -44,6 +44,7 @@
             this.orderTheSelectedProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.orderMissingForTheSelectedProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.processProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.removeFromOrderFormToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.resizeColumnsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
@@ -91,7 +92,7 @@
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.copyMPNToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openSupplierUrlToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.removeFromOrderFormToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.copySPNToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.listviewMaterials)).BeginInit();
@@ -227,6 +228,13 @@
             this.processProjectToolStripMenuItem.Text = "Deduct BOM from part list";
             this.processProjectToolStripMenuItem.ToolTipText = "Remove the BOM from the current stock.\r\nYou will be asked for a multiplier.";
             this.processProjectToolStripMenuItem.Click += new System.EventHandler(this.processProjectToolStripMenuItem_Click);
+            // 
+            // removeFromOrderFormToolStripMenuItem
+            // 
+            this.removeFromOrderFormToolStripMenuItem.Name = "removeFromOrderFormToolStripMenuItem";
+            this.removeFromOrderFormToolStripMenuItem.Size = new System.Drawing.Size(235, 22);
+            this.removeFromOrderFormToolStripMenuItem.Text = "Remove from order form";
+            this.removeFromOrderFormToolStripMenuItem.Click += new System.EventHandler(this.removeFromOrderFormToolStripMenuItem_Click);
             // 
             // viewToolStripMenuItem
             // 
@@ -717,30 +725,31 @@
             // 
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.copyMPNToolStripMenuItem,
+            this.copySPNToolStripMenuItem,
             this.openSupplierUrlToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(176, 48);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(181, 92);
             // 
             // copyMPNToolStripMenuItem
             // 
             this.copyMPNToolStripMenuItem.Name = "copyMPNToolStripMenuItem";
-            this.copyMPNToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.copyMPNToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.copyMPNToolStripMenuItem.Text = "Copy MPN";
             this.copyMPNToolStripMenuItem.Click += new System.EventHandler(this.copyMPNToolStripMenuItem_Click);
             // 
             // openSupplierUrlToolStripMenuItem
             // 
             this.openSupplierUrlToolStripMenuItem.Name = "openSupplierUrlToolStripMenuItem";
-            this.openSupplierUrlToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.openSupplierUrlToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.openSupplierUrlToolStripMenuItem.Text = "Open Supplier url...";
             this.openSupplierUrlToolStripMenuItem.Click += new System.EventHandler(this.openSupplierUrlToolStripMenuItem_Click);
             // 
-            // removeFromOrderFormToolStripMenuItem
+            // copySPNToolStripMenuItem
             // 
-            this.removeFromOrderFormToolStripMenuItem.Name = "removeFromOrderFormToolStripMenuItem";
-            this.removeFromOrderFormToolStripMenuItem.Size = new System.Drawing.Size(235, 22);
-            this.removeFromOrderFormToolStripMenuItem.Text = "Remove from order form";
-            this.removeFromOrderFormToolStripMenuItem.Click += new System.EventHandler(this.removeFromOrderFormToolStripMenuItem_Click);
+            this.copySPNToolStripMenuItem.Name = "copySPNToolStripMenuItem";
+            this.copySPNToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.copySPNToolStripMenuItem.Text = "Copy SPN";
+            this.copySPNToolStripMenuItem.Click += new System.EventHandler(this.copySPNToolStripMenuItem_Click);
             // 
             // frmProjects
             // 
@@ -836,5 +845,6 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripMenuItem orderMissingForTheSelectedProjectToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem removeFromOrderFormToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem copySPNToolStripMenuItem;
     }
 }

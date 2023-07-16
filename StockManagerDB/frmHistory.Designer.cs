@@ -57,6 +57,7 @@
             this.openSupplierUrlToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.button2 = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.copySPNToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.listviewParts)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -269,21 +270,22 @@
             // 
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.copyMPNToolStripMenuItem,
+            this.copySPNToolStripMenuItem,
             this.openSupplierUrlToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(176, 48);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(181, 92);
             // 
             // copyMPNToolStripMenuItem
             // 
             this.copyMPNToolStripMenuItem.Name = "copyMPNToolStripMenuItem";
-            this.copyMPNToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.copyMPNToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.copyMPNToolStripMenuItem.Text = "Copy MPN";
             this.copyMPNToolStripMenuItem.Click += new System.EventHandler(this.copyMPNToolStripMenuItem_Click);
             // 
             // openSupplierUrlToolStripMenuItem
             // 
             this.openSupplierUrlToolStripMenuItem.Name = "openSupplierUrlToolStripMenuItem";
-            this.openSupplierUrlToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.openSupplierUrlToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.openSupplierUrlToolStripMenuItem.Text = "Open Supplier url...";
             this.openSupplierUrlToolStripMenuItem.Click += new System.EventHandler(this.openSupplierUrlToolStripMenuItem_Click);
             // 
@@ -297,6 +299,13 @@
             this.toolTip1.SetToolTip(this.button2, "Explain what you are seeing in this list");
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // copySPNToolStripMenuItem
+            // 
+            this.copySPNToolStripMenuItem.Name = "copySPNToolStripMenuItem";
+            this.copySPNToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.copySPNToolStripMenuItem.Text = "Copy SPN";
+            this.copySPNToolStripMenuItem.Click += new System.EventHandler(this.copySPNToolStripMenuItem_Click);
             // 
             // frmHistory
             // 
@@ -350,5 +359,6 @@
         private System.Windows.Forms.ToolStripMenuItem openSupplierUrlToolStripMenuItem;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.ToolStripMenuItem copySPNToolStripMenuItem;
     }
 }
