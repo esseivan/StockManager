@@ -1237,6 +1237,23 @@ namespace StockManagerDB
             );
         }
 
+        private void listviewMaterials_ItemChecked(object sender, ItemCheckedEventArgs e)
+        {
+            // Update total price
+            IEnumerable<Material> selected = listviewMaterials.CheckedObjects.Cast<Material>();
+
+            float totalPrice = 0;
+            foreach (Material mat in selected)
+            {
+                if(!mat.HasPartLink)
+                    continue;
+
+                totalPrice += mat.Quantity * mat.PartLink.Price;
+            }
+
+            txtboxTotalPrice.Text = totalPrice.ToString();
+        }
+
         private void quitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.Close();
@@ -1479,6 +1496,7 @@ namespace StockManagerDB
         }
 
         #endregion
+
     }
 
     public class PartEditEventArgs : EventArgs
