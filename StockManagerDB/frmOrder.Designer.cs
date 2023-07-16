@@ -58,6 +58,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.copyMPNToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.copySPNToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openSupplierUrlToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.btnCopy = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
@@ -65,7 +66,6 @@
             this.textboxProjects = new System.Windows.Forms.RichTextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.checkboxUseMpn = new System.Windows.Forms.CheckBox();
-            this.copySPNToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.listviewMaterials)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
@@ -263,7 +263,7 @@
             // 
             this.showInfosToolStripMenuItem.CheckOnClick = true;
             this.showInfosToolStripMenuItem.Name = "showInfosToolStripMenuItem";
-            this.showInfosToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
+            this.showInfosToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.showInfosToolStripMenuItem.Text = "Show infos";
             this.showInfosToolStripMenuItem.CheckedChanged += new System.EventHandler(this.showInfosToolStripMenuItem_CheckedChanged);
             // 
@@ -271,31 +271,31 @@
             // 
             this.showMoreInfosToolStripMenuItem.CheckOnClick = true;
             this.showMoreInfosToolStripMenuItem.Name = "showMoreInfosToolStripMenuItem";
-            this.showMoreInfosToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
+            this.showMoreInfosToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.showMoreInfosToolStripMenuItem.Text = "Show more infos";
-            this.showMoreInfosToolStripMenuItem.Click += new System.EventHandler(this.showMoreInfosToolStripMenuItem_Click);
+            this.showMoreInfosToolStripMenuItem.CheckedChanged += new System.EventHandler(this.showMoreInfosToolStripMenuItem_CheckedChanged);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(160, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
             // 
             // resizeColumnsToolStripMenuItem
             // 
             this.resizeColumnsToolStripMenuItem.Name = "resizeColumnsToolStripMenuItem";
-            this.resizeColumnsToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
+            this.resizeColumnsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.resizeColumnsToolStripMenuItem.Text = "Resize columns";
             this.resizeColumnsToolStripMenuItem.Click += new System.EventHandler(this.resizeColumnsToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(160, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
             // 
             // refreshToolStripMenuItem1
             // 
             this.refreshToolStripMenuItem1.Name = "refreshToolStripMenuItem1";
-            this.refreshToolStripMenuItem1.Size = new System.Drawing.Size(163, 22);
+            this.refreshToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
             this.refreshToolStripMenuItem1.Text = "Refresh";
             this.refreshToolStripMenuItem1.Click += new System.EventHandler(this.refreshToolStripMenuItem1_Click);
             // 
@@ -333,19 +333,26 @@
             this.copySPNToolStripMenuItem,
             this.openSupplierUrlToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(181, 92);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(176, 70);
             // 
             // copyMPNToolStripMenuItem
             // 
             this.copyMPNToolStripMenuItem.Name = "copyMPNToolStripMenuItem";
-            this.copyMPNToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.copyMPNToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
             this.copyMPNToolStripMenuItem.Text = "Copy MPN";
             this.copyMPNToolStripMenuItem.Click += new System.EventHandler(this.copyMPNToolStripMenuItem_Click);
+            // 
+            // copySPNToolStripMenuItem
+            // 
+            this.copySPNToolStripMenuItem.Name = "copySPNToolStripMenuItem";
+            this.copySPNToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.copySPNToolStripMenuItem.Text = "Copy SPN";
+            this.copySPNToolStripMenuItem.Click += new System.EventHandler(this.copySPNToolStripMenuItem_Click);
             // 
             // openSupplierUrlToolStripMenuItem
             // 
             this.openSupplierUrlToolStripMenuItem.Name = "openSupplierUrlToolStripMenuItem";
-            this.openSupplierUrlToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.openSupplierUrlToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
             this.openSupplierUrlToolStripMenuItem.Text = "Open Supplier url...";
             this.openSupplierUrlToolStripMenuItem.Click += new System.EventHandler(this.openSupplierUrlToolStripMenuItem_Click);
             // 
@@ -405,13 +412,6 @@
             this.checkboxUseMpn.Text = "Use MPN";
             this.checkboxUseMpn.UseVisualStyleBackColor = true;
             this.checkboxUseMpn.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
-            // 
-            // copySPNToolStripMenuItem
-            // 
-            this.copySPNToolStripMenuItem.Name = "copySPNToolStripMenuItem";
-            this.copySPNToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.copySPNToolStripMenuItem.Text = "Copy SPN";
-            this.copySPNToolStripMenuItem.Click += new System.EventHandler(this.copySPNToolStripMenuItem_Click);
             // 
             // frmOrder
             // 

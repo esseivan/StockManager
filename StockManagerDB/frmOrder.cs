@@ -466,7 +466,7 @@ namespace StockManagerDB
             listviewMaterials.RebuildColumns();
 
             // Apply current settings
-            if(AppSettings.Settings.ProjectsToOrder == null)
+            if (AppSettings.Settings.ProjectsToOrder == null)
             {
                 AppSettings.Settings.ProjectsToOrder = new Dictionary<string, ProjectOrderInfos>();
             }
@@ -586,7 +586,7 @@ namespace StockManagerDB
         }
         private void UpdateMoreInfos()
         {
-            MoreInfosVisible = showInfosToolStripMenuItem.Checked;
+            MoreInfosVisible = !MoreInfosVisible;
             olvcDesc.IsVisible = olvcMPN.IsVisible = MoreInfosVisible;
             listviewMaterials.RebuildColumns();
         }
@@ -606,7 +606,7 @@ namespace StockManagerDB
             UpdateInfos();
         }
 
-        private void showMoreInfosToolStripMenuItem_Click(object sender, EventArgs e)
+        private void showMoreInfosToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
         {
             UpdateMoreInfos();
         }
