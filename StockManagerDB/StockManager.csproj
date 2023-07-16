@@ -169,6 +169,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppSettings.cs" />
+    <Compile Include="frmActionProject.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmActionProject.Designer.cs">
+      <DependentUpon>frmActionProject.cs</DependentUpon>
+    </Compile>
     <Compile Include="Libraries\CsvPartImport.cs" />
     <Compile Include="Libraries\DataExportClass.cs" />
     <Compile Include="Libraries\DataHolderHistorySingleton.cs" />
@@ -221,6 +227,9 @@
     <Compile Include="Libraries\ProjectVersion.cs" />
     <Compile Include="ProjectOrderInfos.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="frmActionProject.resx">
+      <DependentUpon>frmActionProject.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmHistory.resx">
       <DependentUpon>frmHistory.cs</DependentUpon>
     </EmbeddedResource>
