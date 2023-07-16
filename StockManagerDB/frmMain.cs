@@ -1471,6 +1471,12 @@ namespace StockManagerDB
                 Logger.LogLevels.Debug
             );
 
+            string message = $"Confirm the process of ordering {parts.Count()} part(s) according to current stock\nContinue ?";
+            if (!AskUserConfirmation(message, "Confirmation"))
+            {
+                return false;
+            }
+
             orderForm.AddPartsToOrder(selected);
             // update order form
             orderForm.SetSuppliers(Parts.Select((x) => x.Value.Supplier).Distinct());
