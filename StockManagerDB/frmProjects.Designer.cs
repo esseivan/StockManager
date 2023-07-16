@@ -772,6 +772,7 @@
             this.txtboxTotalPrice.ReadOnly = true;
             this.txtboxTotalPrice.Size = new System.Drawing.Size(100, 20);
             this.txtboxTotalPrice.TabIndex = 15;
+            this.tooltip1.SetToolTip(this.txtboxTotalPrice, "Total price for a single unit of this project");
             // 
             // frmProjects
             // 

@@ -71,6 +71,7 @@ namespace StockManagerDB
         {
             data.InvokeOnProjectsListModified(EventArgs.Empty);
             UpdateMaterialList();
+            UpdateTotalPrice();
         }
 
         private void Dhs_OnListModified(object sender, EventArgs e)
@@ -1237,7 +1238,7 @@ namespace StockManagerDB
             );
         }
 
-        private void listviewMaterials_ItemChecked(object sender, ItemCheckedEventArgs e)
+        private void UpdateTotalPrice()
         {
             // Update total price
             IEnumerable<Material> selected = listviewMaterials.CheckedObjects.Cast<Material>();
@@ -1245,13 +1246,20 @@ namespace StockManagerDB
             float totalPrice = 0;
             foreach (Material mat in selected)
             {
-                if(!mat.HasPartLink)
+                if (!mat.HasPartLink)
                     continue;
 
                 totalPrice += mat.Quantity * mat.PartLink.Price;
             }
 
+            totalPrice = (float)Math.Round(totalPrice, 2);
+
             txtboxTotalPrice.Text = totalPrice.ToString();
+        }
+
+        private void listviewMaterials_ItemChecked(object sender, ItemCheckedEventArgs e)
+        {
+            UpdateTotalPrice();
         }
 
         private void quitToolStripMenuItem_Click(object sender, EventArgs e)
