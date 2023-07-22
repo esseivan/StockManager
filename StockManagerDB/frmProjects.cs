@@ -55,22 +55,23 @@ namespace StockManagerDB
 
         #region ListView Init
 
-        private void ProjectsHaveChanged()
+        public void ProjectsHaveChanged()
         {
             data.InvokeOnProjectsListModified(EventArgs.Empty);
             UpdateProjectList();
         }
 
-        private void VersionsHaveChanged()
+        public void VersionsHaveChanged()
         {
             data.InvokeOnProjectsListModified(EventArgs.Empty);
             UpdateVersionList();
         }
 
-        private void MaterialsHaveChanged()
+        public void MaterialsHaveChanged()
         {
             data.InvokeOnProjectsListModified(EventArgs.Empty);
             UpdateMaterialList();
+            UpdateTotalPrice();
         }
 
         private void Dhs_OnListModified(object sender, EventArgs e)
@@ -1238,6 +1239,30 @@ namespace StockManagerDB
             );
         }
 
+        private void UpdateTotalPrice()
+        {
+            // Update total price
+            IEnumerable<Material> selected = listviewMaterials.CheckedObjects.Cast<Material>();
+
+            float totalPrice = 0;
+            foreach (Material mat in selected)
+            {
+                if (!mat.HasPartLink)
+                    continue;
+
+                totalPrice += mat.Quantity * mat.PartLink.Price;
+            }
+
+            totalPrice = (float)Math.Round(totalPrice, 2);
+
+            txtboxTotalPrice.Text = totalPrice.ToString();
+        }
+
+        private void listviewMaterials_ItemChecked(object sender, ItemCheckedEventArgs e)
+        {
+            UpdateTotalPrice();
+        }
+
         private void quitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.Close();
@@ -1472,7 +1497,20 @@ namespace StockManagerDB
             );
         }
 
+        private void copySPNToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Get the selected part
+            if (!(listviewMaterials.SelectedObject is Part part))
+            {
+                return;
+            }
+
+            part.CopySPNToClipboard();
+            SetStatus("Copied to clipboard...");
+        }
+
         #endregion
+
     }
 
     public class PartEditEventArgs : EventArgs

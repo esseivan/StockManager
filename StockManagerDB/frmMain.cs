@@ -33,15 +33,22 @@ namespace StockManagerDB
             get => _filepath;
             set
             {
-                _filepath = value;
-                if (!string.IsNullOrEmpty(value))
+                if (string.IsNullOrEmpty(value))
                 {
-                    if (AppSettings.Settings.RecentFiles.Contains(value))
+                    _filepath = value;
+                }
+                else
+                {
+                    // Get the same pattern for each filepath
+                    FileInfo fi = new FileInfo(value);
+                    _filepath = fi.FullName;
+
+                    if (AppSettings.Settings.RecentFiles.Contains(_filepath))
                     {
                         // Move it to #1
-                        AppSettings.Settings.RecentFiles.Remove(value);
+                        AppSettings.Settings.RecentFiles.Remove(_filepath);
                     }
-                    AppSettings.Settings.RecentFiles.Insert(0, value);
+                    AppSettings.Settings.RecentFiles.Insert(0, _filepath);
                     if (AppSettings.Settings.RecentFiles.Count > 5)
                     {
                         AppSettings.Settings.RecentFiles = AppSettings.Settings.RecentFiles
@@ -237,6 +244,43 @@ namespace StockManagerDB
                     _searchForm.Close();
                 }
                 _searchForm = value;
+            }
+        }
+
+        private frmActionProject _actionProjectForm = null;
+
+        /// <summary>
+        /// The form that displays projects
+        /// </summary>
+        private frmActionProject actionProjectForm
+        {
+            get
+            {
+                if (IsFileLoaded)
+                {
+                    if (_actionProjectForm == null)
+                    {
+                        _actionProjectForm = new frmActionProject();
+                        _actionProjectForm.FormClosed += _searchForm_FormClosed;
+                    }
+                }
+                else
+                {
+                    if (_actionProjectForm != null)
+                    {
+                        _actionProjectForm.Close();
+                        _actionProjectForm = null;
+                    }
+                }
+                return _actionProjectForm;
+            }
+            set
+            {
+                if (_actionProjectForm != null)
+                {
+                    _actionProjectForm.Close();
+                }
+                _actionProjectForm = value;
             }
         }
 
@@ -1648,12 +1692,38 @@ namespace StockManagerDB
                 Logger.LogLevels.Debug
             );
 
+            string message = $"Confirm the process of ordering {parts.Count()} part(s) according to current stock\nContinue ?";
+            if (!AskUserConfirmation(message, "Confirmation"))
+            {
+                return false;
+            }
+
             orderForm.AddPartsToOrder(selected);
             // update order form
             orderForm.SetSuppliers(Parts.Select((x) => x.Value.Supplier).Distinct());
             ShowForm(orderForm);
 
             return true;
+        }
+
+        /// <summary>
+        /// Ask the user if he wants to continue. Include YesNoCancel buttons
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="title"></param>
+        /// <returns>True if yes clicked</returns>
+        private bool AskUserConfirmation(string message, string title)
+        {
+            Dialog.DialogConfig dc = new Dialog.DialogConfig(message, title)
+            {
+                Button1 = Dialog.ButtonType.Yes,
+                Button2 = Dialog.ButtonType.No,
+                Button3 = Dialog.ButtonType.Cancel,
+                Icon = Dialog.DialogIcon.Question,
+            };
+
+            var result = Dialog.ShowDialog(dc);
+            return result.DialogResult == Dialog.DialogResult.Yes;
         }
 
         /// <summary>
@@ -1684,6 +1754,12 @@ namespace StockManagerDB
                 $"{parts.Count()} part(s) to be added to order form...",
                 Logger.LogLevels.Debug
             );
+
+            string message = $"Confirm the process of adding {parts.Count()} part(s) to the order form (with 0 quantity)\nContinue ?";
+            if (!AskUserConfirmation(message, "Confirmation"))
+            {
+                return false;
+            }
 
             orderForm.AddCustomPartsToOrder(parts);
             // update order form
@@ -1720,7 +1796,28 @@ namespace StockManagerDB
 
             // TODO : show form to add to projects
 
-            //ShowForm(orderForm);
+            var result = ShowFormDialog(actionProjectForm);
+            if (result != DialogResult.OK)
+            {
+                return false;
+            }
+            ProjectVersion pv = actionProjectForm.GetSelectedProjectVersion();
+            string name = actionProjectForm.GetSelectedProjectName();
+
+            string message = $"Confirm the process of adding {parts.Count()} part(s) to the selected project (with 0 quantity) : '{name}'\nContinue ?";
+            if (!AskUserConfirmation(message, "Confirmation"))
+            {
+                return false;
+            }
+
+            // Generate material list
+            List<Material> materials = parts.Select((x) => new Material() { MPN = x.MPN, Quantity = 0, Note = "_add_action" }).ToList(); ;
+
+            // Actually add to project
+            pv.BOM.AddRange(materials);
+
+            // Update projectForm
+            projectForm.MaterialsHaveChanged();
 
             return true;
         }
@@ -2441,6 +2538,13 @@ namespace StockManagerDB
             frm.BringToFront();
         }
 
+        private DialogResult ShowFormDialog(Form frm)
+        {
+            // Open projects form
+            frm.StartPosition = FormStartPosition.CenterParent;
+            return frm.ShowDialog();
+        }
+
         private void projectsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             LoggerClass.Write($"Openning project window...", Logger.LogLevels.Debug);
@@ -2970,6 +3074,18 @@ namespace StockManagerDB
             SetWorkingStatus();
             bool result = ImportOrderFromExcel();
             SetSuccessStatus(result);
+        }
+
+        private void copySPNToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Get the selected part
+            if (!(listviewParts.SelectedObject is Part part))
+            {
+                return;
+            }
+
+            part.CopySPNToClipboard();
+            SetStatus("Copied to clipboard...");
         }
     }
 }

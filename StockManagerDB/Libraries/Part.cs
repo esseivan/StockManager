@@ -301,6 +301,19 @@ namespace StockManagerDB
         }
 
         /// <summary>
+        /// Copy the SPN to the clipboard
+        /// </summary>
+        public void CopySPNToClipboard()
+        {
+            if(string.IsNullOrEmpty(SPN))
+            {
+                return;
+            }
+
+            Clipboard.SetText(SPN);
+        }
+
+        /// <summary>
         /// Class to compare the price of two Parts
         /// </summary>
         public class ComparePrice : IComparer<Part>
