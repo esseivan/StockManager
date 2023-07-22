@@ -58,7 +58,12 @@ namespace StockManagerDB.Tests
 
             private string GetFile(int index)
             {
-                string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ESN", "Defaults", "ut_h_" + index + ".smd");
+                string path = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                    "ESN",
+                    "Defaults",
+                    "ut_h_" + index + ".smd"
+                );
                 string path2 = path + "h";
                 Console.WriteLine($"Path is : '{path}'");
                 if (File.Exists(path))

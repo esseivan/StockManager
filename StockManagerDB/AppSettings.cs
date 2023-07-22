@@ -87,7 +87,14 @@ namespace StockManagerDB
         /// <summary>
         /// List in order form
         /// </summary>
-        public Dictionary<string, ProjectOrderInfos> ProjectsToOrder { get; set; } = new Dictionary<string, ProjectOrderInfos>();
+        public Dictionary<string, ProjectOrderInfos> ProjectsToOrder { get; set; } =
+            new Dictionary<string, ProjectOrderInfos>();
+
+        /// <summary>
+        /// Last CSV Headers links used
+        /// </summary>
+        public Dictionary<string, string> lastCsvLinks { get; set; } =
+            new Dictionary<string, string>();
 
         public AppSettings Clone()
         {
@@ -115,10 +122,7 @@ namespace StockManagerDB
         /// <summary>
         /// Empty settings
         /// </summary>
-        public AppSettings()
-        {
-
-        }
+        public AppSettings() { }
 
         /// <summary>
         /// Default settings creation
@@ -130,6 +134,7 @@ namespace StockManagerDB
 
         private static AppSettings _defaultSettings = null;
         private static AppSettings _settings = null;
+
         /// <summary>
         /// The current app settings
         /// </summary>
@@ -137,10 +142,7 @@ namespace StockManagerDB
         public static AppSettings Settings
         {
             get => _settings;
-            set
-            {
-                UpdateSettings(value);
-            }
+            set { UpdateSettings(value); }
         }
 
         public static AppSettings SetDefaultAppSettings(Form frmMain)
@@ -159,7 +161,7 @@ namespace StockManagerDB
 
             _settings = loadedSettings;
 
-            if(_settings.ProjectsToOrder == null)
+            if (_settings.ProjectsToOrder == null)
             {
                 _settings.ProjectsToOrder = new Dictionary<string, ProjectOrderInfos>();
             }
@@ -169,7 +171,13 @@ namespace StockManagerDB
 
         public static void Save()
         {
-            SettingsManager.SaveToDefault(Settings, SettingsManager.BackupMode.dotBak, indent: true, hide: false, zipFile: false);
+            SettingsManager.SaveToDefault(
+                Settings,
+                SettingsManager.BackupMode.dotBak,
+                indent: true,
+                hide: false,
+                zipFile: false
+            );
         }
 
         public static void UpdateSettings(AppSettings newSettings)
@@ -199,10 +207,7 @@ namespace StockManagerDB
         public float Size { get; set; }
         public GraphicsUnit Unit { get; set; }
 
-        public SerializableFont()
-        {
-
-        }
+        public SerializableFont() { }
 
         public SerializableFont(Font font)
         {

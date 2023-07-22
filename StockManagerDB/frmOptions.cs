@@ -89,10 +89,7 @@ namespace StockManagerDB
                 txtboxRedirectUri.Text = apiclientsettings.RedirectUri;
                 txtboxListenUri.Text = apiclientsettings.ListenUri;
             }
-            catch (Exception)
-            {
-
-            }
+            catch (Exception) { }
 
             syncing = false;
         }
@@ -173,6 +170,7 @@ namespace StockManagerDB
         }
 
         bool isClientSecretShown = false;
+
         private void btnShowHide_Click(object sender, EventArgs e)
         {
             isClientSecretShown = !isClientSecretShown;
@@ -182,7 +180,8 @@ namespace StockManagerDB
 
         private void txtboxClientId_TextChanged(object sender, EventArgs e)
         {
-            if (syncing) return;
+            if (syncing)
+                return;
         }
 
         private void UpdateApiAccessStatus(bool status)
@@ -219,17 +218,27 @@ namespace StockManagerDB
             {
                 if (!MiscTools.HasAdminPrivileges())
                 {
-                    MessageBox.Show("Unable to get API access... Pleasy try running the app with Admin privileges.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(
+                        "Unable to get API access... Pleasy try running the app with Admin privileges.",
+                        "Error",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error
+                    );
                 }
                 else
                 {
-                    var res = ESNLib.Controls.Dialog.ShowDialog(new ESNLib.Controls.Dialog.DialogConfig("Unable to get access token... Check the config and the logs", "Error")
-                    {
-                        Button1 = ESNLib.Controls.Dialog.ButtonType.Ignore,
-                        Button2 = ESNLib.Controls.Dialog.ButtonType.Custom1,
-                        CustomButton1Text = "Open log",
-                        Icon = ESNLib.Controls.Dialog.DialogIcon.Error,
-                    });
+                    var res = ESNLib.Controls.Dialog.ShowDialog(
+                        new ESNLib.Controls.Dialog.DialogConfig(
+                            "Unable to get access token... Check the config and the logs",
+                            "Error"
+                        )
+                        {
+                            Button1 = ESNLib.Controls.Dialog.ButtonType.Ignore,
+                            Button2 = ESNLib.Controls.Dialog.ButtonType.Custom1,
+                            CustomButton1Text = "Open log",
+                            Icon = ESNLib.Controls.Dialog.DialogIcon.Error,
+                        }
+                    );
                     if (res.DialogResult == ESNLib.Controls.Dialog.DialogResult.Custom1)
                     {
                         Process.Start(Logger.Instance.FileOutputPath);
@@ -237,7 +246,6 @@ namespace StockManagerDB
                 }
             }
         }
-
 
         private void btnRefresh_Click(object sender, EventArgs e)
         {

@@ -374,7 +374,8 @@ namespace StockManagerDB
 
         private void button2_Click(object sender, EventArgs e)
         {
-            string helpText = @"Each line is a change made to a part, and is a clone of that part before the change.
+            string helpText =
+                @"Each line is a change made to a part, and is a clone of that part before the change.
 The new (and present) state is not in this list as it is the valid one.
 
 There are some more columns to give more informations :
