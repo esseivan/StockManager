@@ -69,12 +69,20 @@ namespace StockManagerDB
                 && DataHolderSingleton.Instance.Parts.ContainsKey(MPN)
             );
 
+        public Material() { }
+
+        public Material(OrderMaterial mat)
+        {
+            this.MPN = mat.MPN;
+            this.QuantityStr = mat.QuantityStr;
+        }
+
         public object Clone()
         {
             Material newMaterial = new Material()
             {
                 MPN = MPN,
-                Quantity = Quantity,
+                QuantityStr = QuantityStr,
                 Reference = Reference
             };
 
