@@ -658,84 +658,84 @@ namespace StockManagerDB
         private void ListViewSetColumns()
         {
             // Setup columns
-            olvcMPN.AspectGetter = delegate(object x)
+            olvcMPN.AspectGetter = delegate (object x)
             {
                 return ((Part)x).MPN;
             };
-            olvcMAN.AspectGetter = delegate(object x)
+            olvcMAN.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Manufacturer;
             };
-            olvcDesc.AspectGetter = delegate(object x)
+            olvcDesc.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Description;
             };
-            olvcCat.AspectGetter = delegate(object x)
+            olvcCat.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Category;
             };
-            olvcLocation.AspectGetter = delegate(object x)
+            olvcLocation.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Location;
             };
-            olvcStock.AspectGetter = delegate(object x)
+            olvcStock.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Stock;
             };
-            olvcLowStock.AspectGetter = delegate(object x)
+            olvcLowStock.AspectGetter = delegate (object x)
             {
                 return ((Part)x).LowStock;
             };
-            olvcPrice.AspectGetter = delegate(object x)
+            olvcPrice.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Price;
             };
-            olvcSupplier.AspectGetter = delegate(object x)
+            olvcSupplier.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Supplier;
             };
-            olvcSPN.AspectGetter = delegate(object x)
+            olvcSPN.AspectGetter = delegate (object x)
             {
                 return ((Part)x).SPN;
             };
 
-            olvcMPN2.AspectGetter = delegate(object x)
+            olvcMPN2.AspectGetter = delegate (object x)
             {
                 return ((Part)x).MPN;
             };
-            olvcMAN2.AspectGetter = delegate(object x)
+            olvcMAN2.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Manufacturer;
             };
-            olvcDesc2.AspectGetter = delegate(object x)
+            olvcDesc2.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Description;
             };
-            olvcCat2.AspectGetter = delegate(object x)
+            olvcCat2.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Category;
             };
-            olvcLocation2.AspectGetter = delegate(object x)
+            olvcLocation2.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Location;
             };
-            olvcStock2.AspectGetter = delegate(object x)
+            olvcStock2.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Stock;
             };
-            olvcLowStock2.AspectGetter = delegate(object x)
+            olvcLowStock2.AspectGetter = delegate (object x)
             {
                 return ((Part)x).LowStock;
             };
-            olvcPrice2.AspectGetter = delegate(object x)
+            olvcPrice2.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Price;
             };
-            olvcSupplier2.AspectGetter = delegate(object x)
+            olvcSupplier2.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Supplier;
             };
-            olvcSPN2.AspectGetter = delegate(object x)
+            olvcSPN2.AspectGetter = delegate (object x)
             {
                 return ((Part)x).SPN;
             };
@@ -990,55 +990,73 @@ namespace StockManagerDB
             string data = ExcelWrapperV2.ReadSheetCSV(ofd.FileName);
 
             CsvImportAs<Part> importer = new CsvImportAs<Part>();
-            var links = importer.AskUserHeadersLinks(data);
-            importer.ImportData(data, links);
+            var links = importer.AskUserHeadersLinks(
+                data,
+                AppSettings.Settings.lastCsvPartsLinks
+            );
 
-            //ExcelManager em = new ExcelManager(ofd.FileName);
-            //List<Part> importedParts = em.GetParts();
+            if (links == null) // User cancelled
+            {
+                return false;
+            }
 
-            //Cursor = Cursors.Default;
+            // Save to settings : Convert to string,string
+            Dictionary<string, string> converted = new Dictionary<string, string>();
+            foreach (var item in links)
+            {
+                if (item.Value == null)
+                    continue;
+                converted.Add(item.Key, item.Value.Name);
+            }
+            AppSettings.Settings.lastCsvPartsLinks = converted;
+            AppSettings.Save();
 
-            //if ((null == importedParts) || (0 == importedParts.Count))
-            //{
-            //    LoggerClass.Write("No part found in that file");
-            //    return false;
-            //}
+            List<Part> importedItems = importer.ImportData(data, AppSettings.Settings.lastCsvPartsLinks);
+            Cursor = Cursors.Default;
 
-            //// Confirmation
-            //LoggerClass.Write(
-            //    $"{importedParts.Count} part(s) found in that file",
-            //    Logger.LogLevels.Debug
-            //);
-            //if (
-            //    MessageBox.Show(
-            //        $"Please confirm the additions of '{importedParts.Count}' parts to the current databse. This cannot be undone\nContinue ?",
-            //        "Warning",
-            //        MessageBoxButtons.YesNoCancel,
-            //        MessageBoxIcon.Warning
-            //    ) != DialogResult.Yes
-            //)
-            //    return false;
+            if ((null == importedItems) || (0 == importedItems.Count))
+            {
+                LoggerClass.Write("No part found in that file");
+                return false;
+            }
 
-            //string note = $"Imported Excel ";
-            //LoggerClass.Write($"Import confirmed. Processing...", Logger.LogLevels.Debug);
-            //// Add the parts to the list
-            //Cursor = Cursors.WaitCursor;
-            //foreach (Part importedPart in importedParts)
-            //{
-            //    if (Parts.ContainsKey(importedPart.MPN))
-            //    {
-            //        LoggerClass.Write(
-            //            $"Duplicate part found : MPN={importedPart.MPN}. Skipping this part...",
-            //            Logger.LogLevels.Warn
-            //        );
-            //        continue;
-            //    }
+            // Confirmation
+            LoggerClass.Write(
+                $"{importedItems.Count} part(s) found in that file",
+                Logger.LogLevels.Debug
+            );
+            if (
+                MessageBox.Show(
+                    $"Please confirm the additions of '{importedItems.Count}' parts to the current stock. This cannot be undone\nContinue ?",
+                    "Warning",
+                    MessageBoxButtons.YesNoCancel,
+                    MessageBoxIcon.Warning
+                ) != DialogResult.Yes
+            )
+            {
+                return false;
+            }
 
-            //    data.AddPart(importedPart, note);
-            //}
-            //Cursor = Cursors.Default;
-            //LoggerClass.Write($"Import finished", Logger.LogLevels.Debug);
-            //PartsHaveChanged();
+            string note = $"Imported Excel ";
+            LoggerClass.Write($"Import confirmed. Processing...", Logger.LogLevels.Debug);
+            // Add the parts to the list
+            Cursor = Cursors.WaitCursor;
+            foreach (Part item in importedItems)
+            {
+                if (Parts.ContainsKey(item.MPN))
+                {
+                    LoggerClass.Write(
+                        $"Duplicate part found : MPN={item.MPN}. Skipping this part...",
+                        Logger.LogLevels.Warn
+                    );
+                    continue;
+                }
+
+                this.data.AddPart(item, note);
+            }
+            Cursor = Cursors.Default;
+            LoggerClass.Write($"Import finished", Logger.LogLevels.Debug);
+            PartsHaveChanged();
 
             return true;
         }
@@ -1083,15 +1101,29 @@ namespace StockManagerDB
             // Read file
             string data = ExcelWrapperV2.ReadSheetCSV(ofd.FileName);
 
-            File.WriteAllText(@"C:\Users\nicol\Downloads\test.csv", data);
-
             CsvImportAs<OrderMaterial> importer = new CsvImportAs<OrderMaterial>();
-            AppSettings.Settings.lastCsvLinks = importer.AskUserHeadersLinks(
+            var links = importer.AskUserHeadersLinks(
                 data,
-                AppSettings.Settings.lastCsvLinks
+                AppSettings.Settings.lastCsvOrderLinks
             );
+
+            if (links == null) // User cancelled
+            {
+                return false;
+            }
+
+            // Save to settings : Convert to string,string
+            Dictionary<string, string> converted = new Dictionary<string, string>();
+            foreach (var item in links)
+            {
+                if (item.Value == null)
+                    continue;
+                converted.Add(item.Key, item.Value.Name);
+            }
+            AppSettings.Settings.lastCsvOrderLinks = converted;
             AppSettings.Save();
-            var importedItems = importer.ImportData(data, AppSettings.Settings.lastCsvLinks);
+
+            List<OrderMaterial> importedItems = importer.ImportData(data, AppSettings.Settings.lastCsvOrderLinks);
             Cursor = Cursors.Default;
 
             if ((null == importedItems) || (0 == importedItems.Count))
@@ -1107,7 +1139,7 @@ namespace StockManagerDB
             );
             if (
                 MessageBox.Show(
-                    $"Please confirm the additions of '{importedItems.Count}' parts to the current databse. This cannot be undone\nContinue ?",
+                    $"Please confirm the process of '{importedItems.Count}' items from the order to the current stock. This cannot be undone\nContinue ?",
                     "Warning",
                     MessageBoxButtons.YesNoCancel,
                     MessageBoxIcon.Warning
@@ -1115,26 +1147,12 @@ namespace StockManagerDB
             )
                 return false;
 
-            string note = $"Imported Excel ";
+            string note = $"Imported Excel Order ";
             LoggerClass.Write($"Import confirmed. Processing...", Logger.LogLevels.Debug);
             // Add the parts to the list
             Cursor = Cursors.WaitCursor;
 
-            List<Material> processingList = new List<Material>();
-            foreach (OrderMaterial item in importedItems)
-            {
-                if (Parts.ContainsKey(item.MPN))
-                {
-                    LoggerClass.Write(
-                        $"Duplicate part found : MPN={item.MPN}. Skipping this part...",
-                        Logger.LogLevels.Warn
-                    );
-                    continue;
-                }
-
-                Material mat = new Material(item);
-                processingList.Add(mat);
-            }
+            List<Material> processingList = importedItems.Select((x) => new Material(x)).ToList();
 
             // -1 to add the elements
             this.ApplyOrder(processingList, -1, "Order process from import ");
@@ -1499,10 +1517,17 @@ namespace StockManagerDB
                 // Get partlink
                 if (material.PartLink == null)
                 {
+                    // Create the part
                     LoggerClass.Write(
-                        $"Unable to process MPN='{material.MPN}', part not found...",
-                        Logger.LogLevels.Error
+                        $"Part MPN='{material.MPN}' not available in present list. Creating new part..."
                     );
+                    Part p = new Part()
+                    {
+                        MPN = material.MPN,
+                        Category = "__auto_from_order",
+                        Stock = material.Quantity,
+                    };
+                    data.AddPart(p, note);
                     continue;
                 }
 

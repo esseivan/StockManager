@@ -91,9 +91,14 @@ namespace StockManagerDB
             new Dictionary<string, ProjectOrderInfos>();
 
         /// <summary>
-        /// Last CSV Headers links used
+        /// Last CSV Headers links used for order
         /// </summary>
-        public Dictionary<string, string> lastCsvLinks { get; set; } =
+        public Dictionary<string, string> lastCsvPartsLinks { get; set; } =
+            new Dictionary<string, string>();
+        /// <summary>
+        /// Last CSV Headers links used for part import
+        /// </summary>
+        public Dictionary<string, string> lastCsvOrderLinks { get; set; } =
             new Dictionary<string, string>();
 
         public AppSettings Clone()
