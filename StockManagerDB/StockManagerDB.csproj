@@ -94,13 +94,13 @@
       <HintPath>..\packages\DigikeyApiWrapper.1.0.8.3\lib\net472\DigikeyApiWrapper.dll</HintPath>
     </Reference>
     <Reference Include="ESNLib.Controls, Version=1.0.6.6, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESNLib.Controls.1.0.11\lib\net472\ESNLib.Controls.dll</HintPath>
+      <HintPath>..\packages\ESNLib.Controls.1.0.12\lib\net472\ESNLib.Controls.dll</HintPath>
     </Reference>
     <Reference Include="ESNLib.Tools, Version=1.0.6.6, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESNLib.Tools.1.0.11\lib\net472\ESNLib.Tools.dll</HintPath>
+      <HintPath>..\packages\ESNLib.Tools.1.0.12\lib\net472\ESNLib.Tools.dll</HintPath>
     </Reference>
     <Reference Include="ESNLib.Tools.WinForms, Version=1.0.6.6, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESNLib.Tools.WinForms.1.0.11\lib\net472\ESNLib.Tools.WinForms.dll</HintPath>
+      <HintPath>..\packages\ESNLib.Tools.WinForms.1.0.12\lib\net472\ESNLib.Tools.WinForms.dll</HintPath>
     </Reference>
     <Reference Include="ExcelDataReader, Version=3.6.0.0, Culture=neutral, PublicKeyToken=93517dbe6a4012fa, processorArchitecture=MSIL">
       <HintPath>..\packages\ExcelDataReader.3.6.0\lib\net45\ExcelDataReader.dll</HintPath>

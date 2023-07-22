@@ -994,6 +994,7 @@ namespace StockManagerDB
 
             if (links == null) // User cancelled
             {
+                Cursor = Cursors.Default;
                 return false;
             }
 
@@ -1012,11 +1013,11 @@ namespace StockManagerDB
                 data,
                 AppSettings.Settings.lastCsvPartsLinks
             );
-            Cursor = Cursors.Default;
 
             if ((null == importedItems) || (0 == importedItems.Count))
             {
                 LoggerClass.Write("No part found in that file");
+                Cursor = Cursors.Default;
                 return false;
             }
 
@@ -1034,6 +1035,7 @@ namespace StockManagerDB
                 ) != DialogResult.Yes
             )
             {
+                Cursor = Cursors.Default;
                 return false;
             }
 
@@ -1106,6 +1108,7 @@ namespace StockManagerDB
 
             if (links == null) // User cancelled
             {
+                Cursor = Cursors.Default;
                 return false;
             }
 
@@ -1129,6 +1132,7 @@ namespace StockManagerDB
             if ((null == importedItems) || (0 == importedItems.Count))
             {
                 LoggerClass.Write("No part found in that file");
+                Cursor = Cursors.Default;
                 return false;
             }
 
@@ -1145,7 +1149,10 @@ namespace StockManagerDB
                     MessageBoxIcon.Warning
                 ) != DialogResult.Yes
             )
+            {
+                Cursor = Cursors.Default;
                 return false;
+            }
 
             string note = $"Imported Excel Order ";
             LoggerClass.Write($"Import confirmed. Processing...", Logger.LogLevels.Debug);
