@@ -95,6 +95,7 @@ namespace StockManagerDB
         /// </summary>
         public Dictionary<string, string> lastCsvPartsLinks { get; set; } =
             new Dictionary<string, string>();
+
         /// <summary>
         /// Last CSV Headers links used for part import
         /// </summary>
