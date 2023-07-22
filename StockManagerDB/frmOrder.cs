@@ -18,7 +18,7 @@ namespace StockManagerDB
             LowStockOrderProjectName = "LowStock Order";
 
         /// <summary>
-        /// The actual parts to order refering to project list  
+        /// The actual parts to order refering to project list
         /// </summary>
         private readonly Dictionary<string, Material> PartsToOrder =
             new Dictionary<string, Material>();
@@ -56,7 +56,11 @@ namespace StockManagerDB
                 AppSettings.ResetToDefault();
             }
             Font newFontNormal = AppSettings.Settings.AppFont; // If user has set bold for all, then set bold for all
-            this.Font = this.label1.Font = this.cbbSuppliers.Font = this.textBulkAdd.Font = newFontNormal;
+            this.Font =
+                this.label1.Font =
+                this.cbbSuppliers.Font =
+                this.textBulkAdd.Font =
+                    newFontNormal;
             //this.menuStrip1.Font = this.statusStrip1.Font = newFontNormal;
             // Apply bold fonts
             Font newFontBold = new Font(
@@ -72,51 +76,51 @@ namespace StockManagerDB
         private void ListViewSetColumns()
         {
             // Setup columns
-            olvcMPN.AspectGetter = delegate (object x)
+            olvcMPN.AspectGetter = delegate(object x)
             {
                 return ((Material)x).MPN;
             };
-            olvcQuantity.AspectGetter = delegate (object x)
+            olvcQuantity.AspectGetter = delegate(object x)
             {
                 return ((Material)x).Quantity;
             };
-            olvcMAN.AspectGetter = delegate (object x)
+            olvcMAN.AspectGetter = delegate(object x)
             {
                 return ((Material)x).PartLink?.Manufacturer;
             };
-            olvcDesc.AspectGetter = delegate (object x)
+            olvcDesc.AspectGetter = delegate(object x)
             {
                 return ((Material)x).PartLink?.Description;
             };
-            olvcCat.AspectGetter = delegate (object x)
+            olvcCat.AspectGetter = delegate(object x)
             {
                 return ((Material)x).PartLink?.Category;
             };
-            olvcLocation.AspectGetter = delegate (object x)
+            olvcLocation.AspectGetter = delegate(object x)
             {
                 return ((Material)x).PartLink?.Location;
             };
-            olvcStock.AspectGetter = delegate (object x)
+            olvcStock.AspectGetter = delegate(object x)
             {
                 return ((Material)x).PartLink?.Stock;
             };
-            olvcLowStock.AspectGetter = delegate (object x)
+            olvcLowStock.AspectGetter = delegate(object x)
             {
                 return ((Material)x).PartLink?.LowStock;
             };
-            olvcPrice.AspectGetter = delegate (object x)
+            olvcPrice.AspectGetter = delegate(object x)
             {
                 return ((Material)x).PartLink?.Price;
             };
-            olvcSupplier.AspectGetter = delegate (object x)
+            olvcSupplier.AspectGetter = delegate(object x)
             {
                 return ((Material)x).PartLink?.Supplier;
             };
-            olvcSPN.AspectGetter = delegate (object x)
+            olvcSPN.AspectGetter = delegate(object x)
             {
                 return ((Material)x).PartLink?.SPN;
             };
-            olvcTotalPrice.AspectGetter = delegate (object x)
+            olvcTotalPrice.AspectGetter = delegate(object x)
             {
                 return ((Material)x).PartLink?.Price * ((Material)x).Quantity;
             };
@@ -139,7 +143,12 @@ namespace StockManagerDB
 
         private void UpdateProjectList()
         {
-            textboxProjects.Text = string.Join("\n", AppSettings.Settings.ProjectsToOrder.Select((x) => $"{x.Value.n}{(x.Value.exactOrder ? "*" : "")}x {x.Key}"));
+            textboxProjects.Text = string.Join(
+                "\n",
+                AppSettings.Settings.ProjectsToOrder.Select(
+                    (x) => $"{x.Value.n}{(x.Value.exactOrder ? "*" : "")}x {x.Key}"
+                )
+            );
         }
 
         private void UpdateBulkAddText()
@@ -160,10 +169,14 @@ namespace StockManagerDB
                 filteredParts = PartsToOrder
                     .Where(
                         (x) =>
-                            ((x.Value.PartLink?.Supplier?.Equals(
-                                supplier,
-                                StringComparison.InvariantCultureIgnoreCase
-                            ) ?? false) && !string.IsNullOrEmpty(x.Value.PartLink?.Supplier))
+                            (
+                                (
+                                    x.Value.PartLink?.Supplier?.Equals(
+                                        supplier,
+                                        StringComparison.InvariantCultureIgnoreCase
+                                    ) ?? false
+                                ) && !string.IsNullOrEmpty(x.Value.PartLink?.Supplier)
+                            )
                     )
                     .Select((x) => x.Value);
             }
@@ -171,7 +184,9 @@ namespace StockManagerDB
             bool useMpn = checkboxUseMpn.Checked;
             string bulkText = string.Join(
                 "\n",
-                filteredParts.Select((m) => $"{m.QuantityStr}, {(useMpn ? m.MPN : (m.PartLink?.SPN ?? "Undefined"))}")
+                filteredParts.Select(
+                    (m) => $"{m.QuantityStr}, {(useMpn ? m.MPN : (m.PartLink?.SPN ?? "Undefined"))}"
+                )
             );
 
             textBulkAdd.Text = bulkText;
@@ -193,7 +208,9 @@ namespace StockManagerDB
             List<ProjectOrderInfos> IgnoredMaterial = new List<ProjectOrderInfos>();
 
             // Add all materials to a list
-            foreach (KeyValuePair<string, ProjectOrderInfos> item in AppSettings.Settings.ProjectsToOrder)
+            foreach (
+                KeyValuePair<string, ProjectOrderInfos> item in AppSettings.Settings.ProjectsToOrder
+            )
             {
                 ProjectOrderInfos poc = item.Value;
 
@@ -219,11 +236,10 @@ namespace StockManagerDB
                     // New material
                     else
                     {
-                        PartsToOrder.Add(m.MPN, new Material()
-                        {
-                            MPN = m.MPN,
-                            Quantity = m.Quantity * poc.n,
-                        });
+                        PartsToOrder.Add(
+                            m.MPN,
+                            new Material() { MPN = m.MPN, Quantity = m.Quantity * poc.n, }
+                        );
                     }
                 }
             }
@@ -231,10 +247,12 @@ namespace StockManagerDB
             // Edit quantities according to actual stock
             foreach (Material m in PartsToOrder.Values)
             {
-                m.Quantity = PartUtils.GetActualOrderQuantity(m,
-                true,
-                AppSettings.Settings.OrderDoNotExceedLowStock,
-                AppSettings.Settings.OrderMoreUntilLowStockMinimum);
+                m.Quantity = PartUtils.GetActualOrderQuantity(
+                    m,
+                    true,
+                    AppSettings.Settings.OrderDoNotExceedLowStock,
+                    AppSettings.Settings.OrderMoreUntilLowStockMinimum
+                );
             }
 
             // Add previously ignored materials
@@ -250,11 +268,10 @@ namespace StockManagerDB
                     // New material
                     else
                     {
-                        PartsToOrder.Add(m.MPN, new Material()
-                        {
-                            MPN = m.MPN,
-                            Quantity = m.Quantity * poc.n,
-                        });
+                        PartsToOrder.Add(
+                            m.MPN,
+                            new Material() { MPN = m.MPN, Quantity = m.Quantity * poc.n, }
+                        );
                     }
                 }
             }
@@ -356,7 +373,12 @@ namespace StockManagerDB
         /// <param name="projectMaterial">List of material for the project. Only used for the first time the project is added</param>
         /// <param name="orderExactly">If set to true, nothing is taken from current stock</param>
         /// <returns>True if <paramref name="projectMaterial"/> and <paramref name="orderExactly"/> are used. False otherwise</returns>
-        public bool AddProjectToOrder(string projectName, int multiplier, bool orderExactly, IEnumerable<Material> projectMaterial)
+        public bool AddProjectToOrder(
+            string projectName,
+            int multiplier,
+            bool orderExactly,
+            IEnumerable<Material> projectMaterial
+        )
         {
             bool result;
             ProjectOrderInfos poc;
@@ -386,11 +408,7 @@ namespace StockManagerDB
                     }
                     else
                     {
-                        materials[m.MPN] = new Material()
-                        {
-                            MPN = m.MPN,
-                            Quantity = m.Quantity,
-                        };
+                        materials[m.MPN] = new Material() { MPN = m.MPN, Quantity = m.Quantity, };
                     }
                 }
 
@@ -419,11 +437,8 @@ namespace StockManagerDB
             }
             else
             {
-                AppSettings.Settings.ProjectsToOrder[CustomPartsProjectName] = poc = new ProjectOrderInfos()
-                {
-                    name = CustomPartsProjectName,
-                    n = 1,
-                };
+                AppSettings.Settings.ProjectsToOrder[CustomPartsProjectName] = poc =
+                    new ProjectOrderInfos() { name = CustomPartsProjectName, n = 1, };
             }
 
             // Merge parts. If part not present, add with 0 as the quantity
@@ -431,11 +446,7 @@ namespace StockManagerDB
             {
                 if (!poc.materials.ContainsKey(p.MPN))
                 {
-                    poc.materials.Add(p.MPN, new Material()
-                    {
-                        MPN = p.MPN,
-                        Quantity = 0,
-                    });
+                    poc.materials.Add(p.MPN, new Material() { MPN = p.MPN, Quantity = 0, });
                 }
             }
 
@@ -448,7 +459,14 @@ namespace StockManagerDB
         private void clearToolStripMenuItem_Click(object sender, EventArgs e)
         {
             // Ask confirmation
-            if (MessageBox.Show("Confirm that you want to clear ALL this list.\nClear all ?", "Warning", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning) != DialogResult.Yes)
+            if (
+                MessageBox.Show(
+                    "Confirm that you want to clear ALL this list.\nClear all ?",
+                    "Warning",
+                    MessageBoxButtons.YesNoCancel,
+                    MessageBoxIcon.Warning
+                ) != DialogResult.Yes
+            )
             {
                 return;
             }
@@ -562,7 +580,6 @@ namespace StockManagerDB
             label2.Visible = false;
         }
 
-
         /// <summary>
         /// Called when a cell is edited
         /// </summary>
@@ -584,6 +601,7 @@ namespace StockManagerDB
             olvcMAN.IsVisible = olvcLocation.IsVisible = olvcCat.IsVisible = InfosVisible;
             listviewMaterials.RebuildColumns();
         }
+
         private void UpdateMoreInfos()
         {
             MoreInfosVisible = !MoreInfosVisible;

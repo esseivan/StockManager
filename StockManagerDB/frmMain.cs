@@ -358,7 +358,9 @@ namespace StockManagerDB
             InitializeComponent();
 
             string[] cmdLineArgs = Environment.GetCommandLineArgs().Skip(1).ToArray(); // Skip executable path
-            string[] clickOnceArgs = AppDomain.CurrentDomain.SetupInformation.ActivationArguments?.ActivationData ?? new string[0];
+            string[] clickOnceArgs =
+                AppDomain.CurrentDomain.SetupInformation.ActivationArguments?.ActivationData
+                ?? new string[0];
 
             for (int i = 0; i < clickOnceArgs.Length; i++)
             {
@@ -455,7 +457,9 @@ namespace StockManagerDB
             this.label1.Font = this.label2.Font = newFontBold;
 
             /**** States ****/
-            onlyAffectCheckedPartsToolStripMenuItem.Checked = AppSettings.Settings.ProcessActionOnCheckedOnly;
+            onlyAffectCheckedPartsToolStripMenuItem.Checked = AppSettings
+                .Settings
+                .ProcessActionOnCheckedOnly;
 
             updateFromDigikeyToolStripMenuItem.Enabled = AppSettings.Settings.IsDigikeyAPIEnabled;
         }
@@ -698,84 +702,84 @@ namespace StockManagerDB
         private void ListViewSetColumns()
         {
             // Setup columns
-            olvcMPN.AspectGetter = delegate (object x)
+            olvcMPN.AspectGetter = delegate(object x)
             {
                 return ((Part)x).MPN;
             };
-            olvcMAN.AspectGetter = delegate (object x)
+            olvcMAN.AspectGetter = delegate(object x)
             {
                 return ((Part)x).Manufacturer;
             };
-            olvcDesc.AspectGetter = delegate (object x)
+            olvcDesc.AspectGetter = delegate(object x)
             {
                 return ((Part)x).Description;
             };
-            olvcCat.AspectGetter = delegate (object x)
+            olvcCat.AspectGetter = delegate(object x)
             {
                 return ((Part)x).Category;
             };
-            olvcLocation.AspectGetter = delegate (object x)
+            olvcLocation.AspectGetter = delegate(object x)
             {
                 return ((Part)x).Location;
             };
-            olvcStock.AspectGetter = delegate (object x)
+            olvcStock.AspectGetter = delegate(object x)
             {
                 return ((Part)x).Stock;
             };
-            olvcLowStock.AspectGetter = delegate (object x)
+            olvcLowStock.AspectGetter = delegate(object x)
             {
                 return ((Part)x).LowStock;
             };
-            olvcPrice.AspectGetter = delegate (object x)
+            olvcPrice.AspectGetter = delegate(object x)
             {
                 return ((Part)x).Price;
             };
-            olvcSupplier.AspectGetter = delegate (object x)
+            olvcSupplier.AspectGetter = delegate(object x)
             {
                 return ((Part)x).Supplier;
             };
-            olvcSPN.AspectGetter = delegate (object x)
+            olvcSPN.AspectGetter = delegate(object x)
             {
                 return ((Part)x).SPN;
             };
 
-            olvcMPN2.AspectGetter = delegate (object x)
+            olvcMPN2.AspectGetter = delegate(object x)
             {
                 return ((Part)x).MPN;
             };
-            olvcMAN2.AspectGetter = delegate (object x)
+            olvcMAN2.AspectGetter = delegate(object x)
             {
                 return ((Part)x).Manufacturer;
             };
-            olvcDesc2.AspectGetter = delegate (object x)
+            olvcDesc2.AspectGetter = delegate(object x)
             {
                 return ((Part)x).Description;
             };
-            olvcCat2.AspectGetter = delegate (object x)
+            olvcCat2.AspectGetter = delegate(object x)
             {
                 return ((Part)x).Category;
             };
-            olvcLocation2.AspectGetter = delegate (object x)
+            olvcLocation2.AspectGetter = delegate(object x)
             {
                 return ((Part)x).Location;
             };
-            olvcStock2.AspectGetter = delegate (object x)
+            olvcStock2.AspectGetter = delegate(object x)
             {
                 return ((Part)x).Stock;
             };
-            olvcLowStock2.AspectGetter = delegate (object x)
+            olvcLowStock2.AspectGetter = delegate(object x)
             {
                 return ((Part)x).LowStock;
             };
-            olvcPrice2.AspectGetter = delegate (object x)
+            olvcPrice2.AspectGetter = delegate(object x)
             {
                 return ((Part)x).Price;
             };
-            olvcSupplier2.AspectGetter = delegate (object x)
+            olvcSupplier2.AspectGetter = delegate(object x)
             {
                 return ((Part)x).Supplier;
             };
-            olvcSPN2.AspectGetter = delegate (object x)
+            olvcSPN2.AspectGetter = delegate(object x)
             {
                 return ((Part)x).SPN;
             };
@@ -992,9 +996,10 @@ namespace StockManagerDB
         /// <summary>
         /// Import parts from excel file into the database
         /// </summary>
-        private bool ImportFromExcel()
+        private bool ImportPartsFromExcel()
         {
-            LoggerClass.Write($"Importing Excel file...", Logger.LogLevels.Debug);
+            LoggerClass.Write($"Importing Parts Excel file...", Logger.LogLevels.Debug);
+
             // A file must be loaded prior to importing.
             if (!IsFileLoaded)
             {
@@ -1021,51 +1026,188 @@ namespace StockManagerDB
                 $"File selected for Excel import : {ofd.FileName}",
                 Logger.LogLevels.Debug
             );
+
             // Extract the parts. This is a hardcoded way
             Cursor = Cursors.WaitCursor;
-            ExcelManager em = new ExcelManager(ofd.FileName);
-            List<Part> importedParts = em.GetParts();
 
-            Cursor = Cursors.Default;
+            // Read file
+            string data = ExcelWrapperV2.ReadSheetCSV(ofd.FileName);
 
-            if ((null == importedParts) || (0 == importedParts.Count))
+            CsvImportAs<Part> importer = new CsvImportAs<Part>();
+            var links = importer.AskUserHeadersLinks(data, AppSettings.Settings.lastCsvPartsLinks);
+
+            if (links == null) // User cancelled
+            {
+                Cursor = Cursors.Default;
+                return false;
+            }
+
+            // Save to settings : Convert to string,string
+            Dictionary<string, string> converted = new Dictionary<string, string>();
+            foreach (var item in links)
+            {
+                if (item.Value == null)
+                    continue;
+                converted.Add(item.Key, item.Value.Name);
+            }
+            AppSettings.Settings.lastCsvPartsLinks = converted;
+            AppSettings.Save();
+
+            List<Part> importedItems = importer.ImportData(
+                data,
+                AppSettings.Settings.lastCsvPartsLinks
+            );
+
+            if ((null == importedItems) || (0 == importedItems.Count))
             {
                 LoggerClass.Write("No part found in that file");
+                Cursor = Cursors.Default;
                 return false;
             }
 
             // Confirmation
             LoggerClass.Write(
-                $"{importedParts.Count} part(s) found in that file",
+                $"{importedItems.Count} part(s) found in that file",
                 Logger.LogLevels.Debug
             );
             if (
                 MessageBox.Show(
-                    $"Please confirm the additions of '{importedParts.Count}' parts to the current databse. This cannot be undone\nContinue ?",
+                    $"Please confirm the additions of '{importedItems.Count}' parts to the current stock. This cannot be undone\nContinue ?",
                     "Warning",
                     MessageBoxButtons.YesNoCancel,
                     MessageBoxIcon.Warning
                 ) != DialogResult.Yes
             )
+            {
+                Cursor = Cursors.Default;
                 return false;
+            }
 
             string note = $"Imported Excel ";
             LoggerClass.Write($"Import confirmed. Processing...", Logger.LogLevels.Debug);
             // Add the parts to the list
             Cursor = Cursors.WaitCursor;
-            foreach (Part importedPart in importedParts)
+            foreach (Part item in importedItems)
             {
-                if (Parts.ContainsKey(importedPart.MPN))
+                if (Parts.ContainsKey(item.MPN))
                 {
                     LoggerClass.Write(
-                        $"Duplicate part found : MPN={importedPart.MPN}. Skipping this part...",
+                        $"Duplicate part found : MPN={item.MPN}. Skipping this part...",
                         Logger.LogLevels.Warn
                     );
                     continue;
                 }
 
-                data.AddPart(importedPart, note);
+                this.data.AddPart(item, note);
             }
+            Cursor = Cursors.Default;
+            LoggerClass.Write($"Import finished", Logger.LogLevels.Debug);
+            PartsHaveChanged();
+
+            return true;
+        }
+
+        /// <summary>
+        /// Import parts from excel file into the database
+        /// </summary>
+        private bool ImportOrderFromExcel()
+        {
+            LoggerClass.Write($"Importing Order Excel file...", Logger.LogLevels.Debug);
+
+            // A file must be loaded prior to importing.
+            if (!IsFileLoaded)
+            {
+                LoggerClass.Write(
+                    "Unable to load Excel file when no Data file is loaded",
+                    Logger.LogLevels.Debug
+                );
+                MessageBox.Show(
+                    "No file loaded ! Open or create a new one",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+                return false;
+            }
+
+            // Ask to open the excel file
+            OpenFileDialog ofd = new OpenFileDialog() { Filter = "All files|*.*", };
+            if (ofd.ShowDialog() != DialogResult.OK)
+            {
+                return false;
+            }
+            LoggerClass.Write(
+                $"File selected for Excel import : {ofd.FileName}",
+                Logger.LogLevels.Debug
+            );
+
+            // Extract the parts. This is a hardcoded way
+            Cursor = Cursors.WaitCursor;
+
+            // Read file
+            string data = ExcelWrapperV2.ReadSheetCSV(ofd.FileName);
+
+            CsvImportAs<OrderMaterial> importer = new CsvImportAs<OrderMaterial>();
+            var links = importer.AskUserHeadersLinks(data, AppSettings.Settings.lastCsvOrderLinks);
+
+            if (links == null) // User cancelled
+            {
+                Cursor = Cursors.Default;
+                return false;
+            }
+
+            // Save to settings : Convert to string,string
+            Dictionary<string, string> converted = new Dictionary<string, string>();
+            foreach (var item in links)
+            {
+                if (item.Value == null)
+                    continue;
+                converted.Add(item.Key, item.Value.Name);
+            }
+            AppSettings.Settings.lastCsvOrderLinks = converted;
+            AppSettings.Save();
+
+            List<OrderMaterial> importedItems = importer.ImportData(
+                data,
+                AppSettings.Settings.lastCsvOrderLinks
+            );
+            Cursor = Cursors.Default;
+
+            if ((null == importedItems) || (0 == importedItems.Count))
+            {
+                LoggerClass.Write("No part found in that file");
+                Cursor = Cursors.Default;
+                return false;
+            }
+
+            // Confirmation
+            LoggerClass.Write(
+                $"{importedItems.Count} part(s) found in that file",
+                Logger.LogLevels.Debug
+            );
+            if (
+                MessageBox.Show(
+                    $"Please confirm the process of '{importedItems.Count}' items from the order to the current stock. This cannot be undone\nContinue ?",
+                    "Warning",
+                    MessageBoxButtons.YesNoCancel,
+                    MessageBoxIcon.Warning
+                ) != DialogResult.Yes
+            )
+            {
+                Cursor = Cursors.Default;
+                return false;
+            }
+
+            string note = $"Imported Excel Order ";
+            LoggerClass.Write($"Import confirmed. Processing...", Logger.LogLevels.Debug);
+            // Add the parts to the list
+            Cursor = Cursors.WaitCursor;
+
+            List<Material> processingList = importedItems.Select((x) => new Material(x)).ToList();
+
+            // -1 to add the elements
+            this.ApplyOrder(processingList, -1, "Order process from import ");
+
             Cursor = Cursors.Default;
             LoggerClass.Write($"Import finished", Logger.LogLevels.Debug);
             PartsHaveChanged();
@@ -1408,6 +1550,48 @@ namespace StockManagerDB
                 listviewParts.Invalidate();
                 listviewParts.PauseAnimations(false);
             }
+        }
+
+        /// <summary>
+        /// Process an order of materials
+        /// </summary>
+        public bool ApplyOrder(IEnumerable<Material> materials, int multiplier, string note)
+        {
+            if (materials == null || materials.Count() == 0)
+            {
+                return false;
+            }
+
+            // Process project : remove quantity from parts
+            foreach (Material material in materials)
+            {
+                // Get partlink
+                if (material.PartLink == null)
+                {
+                    // Create the part
+                    LoggerClass.Write(
+                        $"Part MPN='{material.MPN}' not available in present list. Creating new part..."
+                    );
+                    Part p = new Part()
+                    {
+                        MPN = material.MPN,
+                        Category = "__auto_from_order",
+                        Stock = material.Quantity,
+                    };
+                    data.AddPart(p, note);
+                    continue;
+                }
+
+                // Apply edit
+                ApplyEdit(
+                    material.PartLink,
+                    Part.Parameter.Stock,
+                    (material.PartLink.Stock - (material.Quantity * multiplier)).ToString(),
+                    note
+                );
+            }
+
+            return true;
         }
 
         /// <summary>
@@ -2197,7 +2381,7 @@ namespace StockManagerDB
         private void importFromExcelToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SetWorkingStatus();
-            bool result = ImportFromExcel();
+            bool result = ImportPartsFromExcel();
             SetSuccessStatus(result);
         }
 
@@ -2263,29 +2447,10 @@ namespace StockManagerDB
         )
         {
             Cursor.Current = Cursors.WaitCursor;
+
             string note = $"Project processed '{e.projectName}'";
+            ApplyOrder(e.materials, e.numberOfTimes, note);
 
-            // Process project : remove quantity from parts
-            foreach (Material material in e.materials)
-            {
-                // Get partlink
-                if (material.PartLink == null)
-                {
-                    LoggerClass.Write(
-                        $"Unable to process MPN='{material.MPN}', part not found...",
-                        Logger.LogLevels.Error
-                    );
-                    continue;
-                }
-
-                // Apply edit
-                ApplyEdit(
-                    material.PartLink,
-                    Part.Parameter.Stock,
-                    (material.PartLink.Stock - (material.Quantity * e.numberOfTimes)).ToString(),
-                    note
-                );
-            }
             Cursor.Current = Cursors.Default;
         }
 
@@ -2303,7 +2468,12 @@ namespace StockManagerDB
             // Remove all 0 quantities
             materials = materials.Where((x) => x.Quantity > 0).ToList();
 
-            orderForm.AddProjectToOrder(e.projectName, e.numberOfTimes, !e.OrderIfRequired, materials);
+            orderForm.AddProjectToOrder(
+                e.projectName,
+                e.numberOfTimes,
+                !e.OrderIfRequired,
+                materials
+            );
 
             // update order form
             orderForm.SetSuppliers(Parts.Values.Select((x) => x.Supplier).Distinct()); // update suppliers
@@ -2550,7 +2720,10 @@ namespace StockManagerDB
             }
             catch (Exception ex)
             {
-                LoggerClass.Write($"Unable to get API Access : {ex.Message}", Logger.LogLevels.Error);
+                LoggerClass.Write(
+                    $"Unable to get API Access : {ex.Message}",
+                    Logger.LogLevels.Error
+                );
             }
         }
 
@@ -2676,7 +2849,6 @@ namespace StockManagerDB
             SetStatus("Copied to clipboard...");
         }
 
-
         private async void GetApiAccess()
         {
             if (!AppSettings.Settings.IsDigikeyAPIEnabled)
@@ -2687,25 +2859,32 @@ namespace StockManagerDB
             var client = new ApiClientWrapper();
             var result = await client.GetAccess();
 
-            if (result.Success)
-            {
-
-            }
+            if (result.Success) { }
             else
             {
                 if (!MiscTools.HasAdminPrivileges())
                 {
-                    MessageBox.Show("Unable to get API access... Pleasy try running the app with Admin privileges.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(
+                        "Unable to get API access... Pleasy try running the app with Admin privileges.",
+                        "Error",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error
+                    );
                 }
                 else
                 {
-                    var res = Dialog.ShowDialog(new Dialog.DialogConfig("Unable to get access token... Check the config and the logs", "Error")
-                    {
-                        Button1 = Dialog.ButtonType.Ignore,
-                        Button2 = Dialog.ButtonType.Custom1,
-                        CustomButton1Text = "Open log",
-                        Icon = Dialog.DialogIcon.Error,
-                    });
+                    var res = Dialog.ShowDialog(
+                        new Dialog.DialogConfig(
+                            "Unable to get access token... Check the config and the logs",
+                            "Error"
+                        )
+                        {
+                            Button1 = Dialog.ButtonType.Ignore,
+                            Button2 = Dialog.ButtonType.Custom1,
+                            CustomButton1Text = "Open log",
+                            Icon = Dialog.DialogIcon.Error,
+                        }
+                    );
                     if (res.DialogResult == Dialog.DialogResult.Custom1)
                     {
                         Process.Start(Logger.Instance.FileOutputPath);
@@ -2726,7 +2905,19 @@ namespace StockManagerDB
             List<Part> selectedParts = GetPartForProcess();
 
             // For safety, only update part with no supplier or Digikey as a supplier
-            selectedParts = selectedParts.Where((p) => (string.IsNullOrEmpty(p.Supplier) || string.Equals("digikey", p.Supplier, StringComparison.InvariantCultureIgnoreCase))).ToList();
+            selectedParts = selectedParts
+                .Where(
+                    (p) =>
+                        (
+                            string.IsNullOrEmpty(p.Supplier)
+                            || string.Equals(
+                                "digikey",
+                                p.Supplier,
+                                StringComparison.InvariantCultureIgnoreCase
+                            )
+                        )
+                )
+                .ToList();
 
             if (selectedParts.Count == 0)
             {
@@ -2763,7 +2954,10 @@ namespace StockManagerDB
                     var read = await ps.ProductDetails_Essentials(part.MPN);
                     if (string.IsNullOrEmpty(read))
                     {
-                        LoggerClass.Write($"[DigikeyUpdate] No data found for this MPN...", Logger.LogLevels.Error);
+                        LoggerClass.Write(
+                            $"[DigikeyUpdate] No data found for this MPN...",
+                            Logger.LogLevels.Error
+                        );
                         continue;
                     }
                     received = PartSearch.DeserializeProductDetails(read);
@@ -2771,34 +2965,51 @@ namespace StockManagerDB
                 catch (Exception)
                 {
                     Cursor = Cursors.Default;
-                    LoggerClass.Write($"[DigikeyUpdate] Unable to retrieve data...", Logger.LogLevels.Error);
+                    LoggerClass.Write(
+                        $"[DigikeyUpdate] Unable to retrieve data...",
+                        Logger.LogLevels.Error
+                    );
                     continue;
                 }
 
                 if (received == null)
                 {
-                    LoggerClass.Write($"[DigikeyUpdate] Unable to convert data...", Logger.LogLevels.Error);
+                    LoggerClass.Write(
+                        $"[DigikeyUpdate] Unable to convert data...",
+                        Logger.LogLevels.Error
+                    );
                     continue;
                 }
 
                 // Verify that the MPN is exactly the same
                 if (!part.MPN.Equals(received.ManufacturerPartNumber))
                 {
-                    LoggerClass.Write($"[DigikeyUpdate] Unable to validate MPN '{part.MPN}' expected, '{received.ManufacturerPartNumber}' received", Logger.LogLevels.Info);
+                    LoggerClass.Write(
+                        $"[DigikeyUpdate] Unable to validate MPN '{part.MPN}' expected, '{received.ManufacturerPartNumber}' received",
+                        Logger.LogLevels.Info
+                    );
                     continue;
                 }
 
-                LoggerClass.Write($"[DigikeyUpdate] Updating MPN '{received.ManufacturerPartNumber}'...", Logger.LogLevels.Info);
+                LoggerClass.Write(
+                    $"[DigikeyUpdate] Updating MPN '{received.ManufacturerPartNumber}'...",
+                    Logger.LogLevels.Info
+                );
                 // Update part
                 Part oldPart = part.CloneForHistory();
-                LoggerClass.Write($"[DigikeyUpdate] OLD :\t{oldPart.ToLongString()}", Logger.LogLevels.Debug);
+                LoggerClass.Write(
+                    $"[DigikeyUpdate] OLD :\t{oldPart.ToLongString()}",
+                    Logger.LogLevels.Debug
+                );
                 part.Supplier = "Digikey";
                 part.Manufacturer = received.ManufacturerString;
                 part.SPN = received.DigiKeyPartNumber;
                 part.Price = received.UnitPrice;
                 part.Description = received.DetailedDescription;
-                LoggerClass.Write($"[DigikeyUpdate] NEW :\t{part.ToLongString()}", Logger.LogLevels.Debug);
-
+                LoggerClass.Write(
+                    $"[DigikeyUpdate] NEW :\t{part.ToLongString()}",
+                    Logger.LogLevels.Debug
+                );
 
                 // Add to history
                 data.DigikeyUpdatePart(part, oldPart);
@@ -2821,7 +3032,8 @@ namespace StockManagerDB
                 return;
             }
 
-            AppSettings.Settings.ProcessActionOnCheckedOnly = onlyAffectCheckedPartsToolStripMenuItem.Checked;
+            AppSettings.Settings.ProcessActionOnCheckedOnly =
+                onlyAffectCheckedPartsToolStripMenuItem.Checked;
             AppSettings.Save();
         }
 
@@ -2848,6 +3060,20 @@ namespace StockManagerDB
         private void addPartsToOrderToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ActionAddPartsToOrder();
+        }
+
+        private void importPartsFromExcelToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SetWorkingStatus();
+            bool result = ImportPartsFromExcel();
+            SetSuccessStatus(result);
+        }
+
+        private void importOrderFromExcelToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SetWorkingStatus();
+            bool result = ImportOrderFromExcel();
+            SetSuccessStatus(result);
         }
 
         private void copySPNToolStripMenuItem_Click(object sender, EventArgs e)

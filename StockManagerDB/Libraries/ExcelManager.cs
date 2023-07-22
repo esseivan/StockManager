@@ -16,7 +16,6 @@ namespace StockManagerDB
 
         private readonly string File;
 
-
         /// <summary>
         /// Retrieve the parts
         /// </summary>
@@ -56,7 +55,7 @@ namespace StockManagerDB
         public bool PopulateParts()
         {
             // Read parts sheet
-            string[,] output = ExcelWrapperV2.ReadSheet(File, "Articles");
+            string[,] output = ExcelWrapperV2.ReadSheet(File);
 
             // Generate new parts list
             Parts = new List<Part>();

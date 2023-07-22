@@ -45,10 +45,12 @@
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.importFromExcelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.importPartsFromExcelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.importOrderFromExcelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
+            this.importListFromDigikeyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importOrderFromDigikeyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importOrderFromDigikeyFromClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.importListFromDigikeyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.quitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.actionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -171,7 +173,7 @@
             // 
             this.newDatabaseToolStripMenuItem.Name = "newDatabaseToolStripMenuItem";
             this.newDatabaseToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
-            this.newDatabaseToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
+            this.newDatabaseToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.newDatabaseToolStripMenuItem.Text = "New";
             this.newDatabaseToolStripMenuItem.ToolTipText = "Create a empty new \'.smd\' stock";
             this.newDatabaseToolStripMenuItem.Click += new System.EventHandler(this.newDatabaseToolStripMenuItem_Click);
@@ -180,7 +182,7 @@
             // 
             this.openDatabaseToolStripMenuItem.Name = "openDatabaseToolStripMenuItem";
             this.openDatabaseToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-            this.openDatabaseToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
+            this.openDatabaseToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.openDatabaseToolStripMenuItem.Text = "Open";
             this.openDatabaseToolStripMenuItem.ToolTipText = "Open a \'.smd\' stock file";
             this.openDatabaseToolStripMenuItem.Click += new System.EventHandler(this.openDatabaseToolStripMenuItem_Click);
@@ -194,7 +196,7 @@
             this.toolStripMenuItem5,
             this.toolStripMenuItem6});
             this.openRecentToolStripMenuItem.Name = "openRecentToolStripMenuItem";
-            this.openRecentToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
+            this.openRecentToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.openRecentToolStripMenuItem.Text = "Open recent...";
             this.openRecentToolStripMenuItem.DropDownOpening += new System.EventHandler(this.openRecentToolStripMenuItem_DropDownOpening);
             // 
@@ -235,7 +237,7 @@
             // seeInExplorerToolStripMenuItem
             // 
             this.seeInExplorerToolStripMenuItem.Name = "seeInExplorerToolStripMenuItem";
-            this.seeInExplorerToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
+            this.seeInExplorerToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.seeInExplorerToolStripMenuItem.Text = "See in explorer";
             this.seeInExplorerToolStripMenuItem.ToolTipText = "Open the directory of the current stock file";
             this.seeInExplorerToolStripMenuItem.Click += new System.EventHandler(this.seeInExplorerToolStripMenuItem_Click);
@@ -244,7 +246,7 @@
             // 
             this.closeDatabaseToolStripMenuItem.Name = "closeDatabaseToolStripMenuItem";
             this.closeDatabaseToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.W)));
-            this.closeDatabaseToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
+            this.closeDatabaseToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.closeDatabaseToolStripMenuItem.Text = "Close";
             this.closeDatabaseToolStripMenuItem.ToolTipText = "Close the current stock file";
             this.closeDatabaseToolStripMenuItem.Click += new System.EventHandler(this.closeDatabaseToolStripMenuItem_Click);
@@ -252,13 +254,13 @@
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(148, 6);
+            this.toolStripSeparator4.Size = new System.Drawing.Size(177, 6);
             // 
             // saveToolStripMenuItem
             // 
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
             this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.saveToolStripMenuItem.Text = "Save";
             this.saveToolStripMenuItem.ToolTipText = "Save the changes made. Note that the save is automatic for almost every change yo" +
     "u make. This is just to force a new save.";
@@ -267,24 +269,49 @@
             // importsToolStripMenuItem
             // 
             this.importsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.importFromExcelToolStripMenuItem,
+            this.importPartsFromExcelToolStripMenuItem,
+            this.importOrderFromExcelToolStripMenuItem,
+            this.toolStripSeparator7,
+            this.importListFromDigikeyToolStripMenuItem,
             this.importOrderFromDigikeyToolStripMenuItem,
-            this.importOrderFromDigikeyFromClipboardToolStripMenuItem,
-            this.importListFromDigikeyToolStripMenuItem});
+            this.importOrderFromDigikeyFromClipboardToolStripMenuItem});
             this.importsToolStripMenuItem.Name = "importsToolStripMenuItem";
-            this.importsToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
+            this.importsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.importsToolStripMenuItem.Text = "Import...";
             this.importsToolStripMenuItem.ToolTipText = "Import from various locations.";
             // 
-            // importFromExcelToolStripMenuItem
+            // importPartsFromExcelToolStripMenuItem
             // 
-            this.importFromExcelToolStripMenuItem.Name = "importFromExcelToolStripMenuItem";
-            this.importFromExcelToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            this.importPartsFromExcelToolStripMenuItem.Name = "importPartsFromExcelToolStripMenuItem";
+            this.importPartsFromExcelToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            | System.Windows.Forms.Keys.I)));
+            this.importPartsFromExcelToolStripMenuItem.Size = new System.Drawing.Size(296, 22);
+            this.importPartsFromExcelToolStripMenuItem.Text = "Import parts from Excel";
+            this.importPartsFromExcelToolStripMenuItem.Click += new System.EventHandler(this.importPartsFromExcelToolStripMenuItem_Click);
+            // 
+            // importOrderFromExcelToolStripMenuItem
+            // 
+            this.importOrderFromExcelToolStripMenuItem.Name = "importOrderFromExcelToolStripMenuItem";
+            this.importOrderFromExcelToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.O)));
-            this.importFromExcelToolStripMenuItem.Size = new System.Drawing.Size(296, 22);
-            this.importFromExcelToolStripMenuItem.Text = "Import from Excel";
-            this.importFromExcelToolStripMenuItem.ToolTipText = "Import the stock saved in an Excel file.";
-            this.importFromExcelToolStripMenuItem.Click += new System.EventHandler(this.importFromExcelToolStripMenuItem_Click);
+            this.importOrderFromExcelToolStripMenuItem.Size = new System.Drawing.Size(296, 22);
+            this.importOrderFromExcelToolStripMenuItem.Text = "Import order from Excel";
+            this.importOrderFromExcelToolStripMenuItem.Click += new System.EventHandler(this.importOrderFromExcelToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator7
+            // 
+            this.toolStripSeparator7.Name = "toolStripSeparator7";
+            this.toolStripSeparator7.Size = new System.Drawing.Size(293, 6);
+            // 
+            // importListFromDigikeyToolStripMenuItem
+            // 
+            this.importListFromDigikeyToolStripMenuItem.Name = "importListFromDigikeyToolStripMenuItem";
+            this.importListFromDigikeyToolStripMenuItem.Size = new System.Drawing.Size(296, 22);
+            this.importListFromDigikeyToolStripMenuItem.Text = "Import List as parts from Digikey";
+            this.importListFromDigikeyToolStripMenuItem.ToolTipText = "Import a BOM List from Digikey. This is used to populate your part list easily. N" +
+    "ote that no project is created with this import, you have a specific import in t" +
+    "he project window for that matter.";
+            this.importListFromDigikeyToolStripMenuItem.Click += new System.EventHandler(this.importListFromDigikeyToolStripMenuItem_Click);
             // 
             // importOrderFromDigikeyToolStripMenuItem
             // 
@@ -305,26 +332,16 @@
     "be created.";
             this.importOrderFromDigikeyFromClipboardToolStripMenuItem.Click += new System.EventHandler(this.importOrderFromDigikeyFromClipboardToolStripMenuItem_Click);
             // 
-            // importListFromDigikeyToolStripMenuItem
-            // 
-            this.importListFromDigikeyToolStripMenuItem.Name = "importListFromDigikeyToolStripMenuItem";
-            this.importListFromDigikeyToolStripMenuItem.Size = new System.Drawing.Size(296, 22);
-            this.importListFromDigikeyToolStripMenuItem.Text = "Import List from Digikey";
-            this.importListFromDigikeyToolStripMenuItem.ToolTipText = "Import a BOM List from Digikey. This is used to populate your part list easily. N" +
-    "ote that no project is created with this import, you have a specific import in t" +
-    "he project window for that matter.";
-            this.importListFromDigikeyToolStripMenuItem.Click += new System.EventHandler(this.importListFromDigikeyToolStripMenuItem_Click);
-            // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(148, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
             // 
             // quitToolStripMenuItem
             // 
             this.quitToolStripMenuItem.Name = "quitToolStripMenuItem";
             this.quitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Q)));
-            this.quitToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
+            this.quitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.quitToolStripMenuItem.Text = "Quit";
             this.quitToolStripMenuItem.ToolTipText = "This will close all sub-windows";
             this.quitToolStripMenuItem.Click += new System.EventHandler(this.quitToolStripMenuItem_Click);
@@ -1091,7 +1108,6 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripMenuItem importPartsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem importsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem importFromExcelToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem importOrderFromDigikeyToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem importOrderFromDigikeyFromClipboardToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
@@ -1123,6 +1139,9 @@
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.ToolStripMenuItem addPartsToOrderToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem copySPNToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem importPartsFromExcelToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem importOrderFromExcelToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
     }
 }
 

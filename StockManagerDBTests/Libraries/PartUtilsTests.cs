@@ -52,7 +52,12 @@ namespace StockManagerDB.Tests
                 // Disable history for this test. Every test must call this method
                 dhs.__disable_history = true;
 
-                string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ESN", "Defaults", "ut_pu_" + index + ".smd");
+                string path = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                    "ESN",
+                    "Defaults",
+                    "ut_pu_" + index + ".smd"
+                );
                 Console.WriteLine($"Path is : '{path}'");
                 if (File.Exists(path))
                     File.Delete(path);
@@ -77,11 +82,7 @@ namespace StockManagerDB.Tests
                 Stock = 20,
                 LowStock = 10,
             };
-            Material m = new Material()
-            {
-                MPN = "p1",
-                Quantity = 15,
-            };
+            Material m = new Material() { MPN = "p1", Quantity = 15, };
             d.Parts.Add(p.MPN, p);
 
             Assert.AreEqual(1, d.Parts.Count);
@@ -126,11 +127,7 @@ namespace StockManagerDB.Tests
                 Stock = 20,
                 LowStock = 0,
             };
-            Material m = new Material()
-            {
-                MPN = "p1",
-                Quantity = 15,
-            };
+            Material m = new Material() { MPN = "p1", Quantity = 15, };
             d.Parts.Add(p.MPN, p);
 
             Assert.AreEqual(1, d.Parts.Count);
@@ -175,11 +172,7 @@ namespace StockManagerDB.Tests
                 Stock = 10,
                 LowStock = 0,
             };
-            Material m = new Material()
-            {
-                MPN = "p1",
-                Quantity = 15,
-            };
+            Material m = new Material() { MPN = "p1", Quantity = 15, };
             d.Parts.Add(p.MPN, p);
 
             Assert.AreEqual(1, d.Parts.Count);
@@ -224,11 +217,7 @@ namespace StockManagerDB.Tests
                 Stock = 10,
                 LowStock = 20,
             };
-            Material m = new Material()
-            {
-                MPN = "p1",
-                Quantity = 15,
-            };
+            Material m = new Material() { MPN = "p1", Quantity = 15, };
             d.Parts.Add(p.MPN, p);
 
             Assert.AreEqual(1, d.Parts.Count);

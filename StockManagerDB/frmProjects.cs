@@ -86,68 +86,68 @@ namespace StockManagerDB
         private void ListViewSetColumns()
         {
             // Setup columns
-            olvcMPN.AspectGetter = delegate (object x)
+            olvcMPN.AspectGetter = delegate(object x)
             {
                 return ((Material)x).MPN;
             };
-            olvcQuantity.AspectGetter = delegate (object x)
+            olvcQuantity.AspectGetter = delegate(object x)
             {
                 return ((Material)x).Quantity;
             };
-            olvcReference.AspectGetter = delegate (object x)
+            olvcReference.AspectGetter = delegate(object x)
             {
                 return ((Material)x).Reference;
             };
-            olvcNote.AspectGetter = delegate (object x)
+            olvcNote.AspectGetter = delegate(object x)
             {
                 return ((Material)x).Note;
             };
-            olvcMAN.AspectGetter = delegate (object x)
+            olvcMAN.AspectGetter = delegate(object x)
             {
                 return ((Material)x).PartLink?.Manufacturer;
             };
-            olvcDesc.AspectGetter = delegate (object x)
+            olvcDesc.AspectGetter = delegate(object x)
             {
                 return ((Material)x).PartLink?.Description;
             };
-            olvcCat.AspectGetter = delegate (object x)
+            olvcCat.AspectGetter = delegate(object x)
             {
                 return ((Material)x).PartLink?.Category;
             };
-            olvcLocation.AspectGetter = delegate (object x)
+            olvcLocation.AspectGetter = delegate(object x)
             {
                 return ((Material)x).PartLink?.Location;
             };
-            olvcStock.AspectGetter = delegate (object x)
+            olvcStock.AspectGetter = delegate(object x)
             {
                 return ((Material)x).PartLink?.Stock;
             };
-            olvcLowStock.AspectGetter = delegate (object x)
+            olvcLowStock.AspectGetter = delegate(object x)
             {
                 return ((Material)x).PartLink?.LowStock;
             };
-            olvcPrice.AspectGetter = delegate (object x)
+            olvcPrice.AspectGetter = delegate(object x)
             {
                 return ((Material)x).PartLink?.Price;
             };
-            olvcSupplier.AspectGetter = delegate (object x)
+            olvcSupplier.AspectGetter = delegate(object x)
             {
                 return ((Material)x).PartLink?.Supplier;
             };
-            olvcSPN.AspectGetter = delegate (object x)
+            olvcSPN.AspectGetter = delegate(object x)
             {
                 return ((Material)x).PartLink?.SPN;
             };
 
-            olvcTotalQuantity.AspectGetter = delegate (object x)
+            olvcTotalQuantity.AspectGetter = delegate(object x)
             {
                 return ((Material)x).Quantity * (byte)numMult.Value;
             };
-            olvcTotalPrice.AspectGetter = delegate (object x)
+            olvcTotalPrice.AspectGetter = delegate(object x)
             {
                 return (((Material)x).PartLink?.Price ?? 0) * (byte)numMult.Value;
             };
-            olvcAvailable.AspectGetter = delegate (object x)
+            olvcAvailable.AspectGetter = delegate(object x)
             {
                 bool isAvailable =
                     (((Material)x).Quantity * (byte)numMult.Value)
@@ -234,7 +234,7 @@ namespace StockManagerDB
             }
             comboboxVersions.DataSource = data.Projects[project].Versions.Keys.ToList();
 
-            if(comboboxVersions.Items.Count > 0)
+            if (comboboxVersions.Items.Count > 0)
             {
                 comboboxVersions.SelectedIndex = 0;
             }
@@ -1173,7 +1173,8 @@ namespace StockManagerDB
 
             // For all the checked parts, remove the quantity for the project from the part list (general one)
             // First, ask to confirm the multiplier, negative number to add allowed
-            string text = "Please enter the number of time to remove the project's BOM from the part list\n(Note that a negative number is allowed)";
+            string text =
+                "Please enter the number of time to remove the project's BOM from the part list\n(Note that a negative number is allowed)";
             if (!AskUserMultiplier(text, out int n))
             {
                 return; // Cancelled or error
@@ -1393,7 +1394,8 @@ namespace StockManagerDB
 
         private void orderTheSelectedProjectToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            string text = "Please enter the number of time to add the project's BOM to the order list\n(Note that a negative number is allowed)";
+            string text =
+                "Please enter the number of time to add the project's BOM to the order list\n(Note that a negative number is allowed)";
             if (!AskUserMultiplier(text, out int n))
             {
                 return;
@@ -1456,9 +1458,13 @@ namespace StockManagerDB
             ImportDigikeyList();
         }
 
-        private void orderMissingForTheSelectedProjectToolStripMenuItem_Click(object sender, EventArgs e)
+        private void orderMissingForTheSelectedProjectToolStripMenuItem_Click(
+            object sender,
+            EventArgs e
+        )
         {
-            string text = "Please enter the number of time to add the project's BOM to the order list\n(Note that a negative number is allowed)";
+            string text =
+                "Please enter the number of time to add the project's BOM to the order list\n(Note that a negative number is allowed)";
             if (!AskUserMultiplier(text, out int n))
             {
                 return;

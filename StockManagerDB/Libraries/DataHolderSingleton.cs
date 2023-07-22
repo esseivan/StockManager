@@ -159,6 +159,7 @@ namespace StockManagerDB
                 return;
             }
 
+            // Ensure only 1 space after the note
             note = $"{note.Trim()} ";
             oldPart.note += note;
         }
@@ -236,7 +237,16 @@ namespace StockManagerDB
             SettingsManager.LoadFrom(Filepath, out DataExportClass data);
             Parts = data?.GetParts() ?? new Dictionary<string, Part>();
             Projects = data?.GetProjects() ?? new Dictionary<string, Project>();
-            Projects.Values.ToList().ForEach((p) => p.Versions = new SortedDictionary<string, ProjectVersion>(p.Versions, new CompareVersion())); ;
+            Projects.Values
+                .ToList()
+                .ForEach(
+                    (p) =>
+                        p.Versions = new SortedDictionary<string, ProjectVersion>(
+                            p.Versions,
+                            new CompareVersion()
+                        )
+                );
+            ;
         }
 
         /// <summary>

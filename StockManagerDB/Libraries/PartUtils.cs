@@ -16,7 +16,12 @@ namespace StockManagerDB
         /// <param name="doNotExceedLowStock">Is the lowstock guaranteed. If true and stock greater than lowstock, it will no go under lowstock</param>
         /// <param name="orderMoreWhenBelowLowStock">Is the lowstock the (minimum) target for the stock. If true and stock is lower than lowstock, it will add quantity to target lowstock</param>
         /// <returns>The quantity to order, <paramref name="material"/> is not modified</returns>
-        public static float GetActualOrderQuantity(Material material, bool takeMaterialFromStock, bool doNotExceedLowStock, bool orderMoreWhenBelowLowStock)
+        public static float GetActualOrderQuantity(
+            Material material,
+            bool takeMaterialFromStock,
+            bool doNotExceedLowStock,
+            bool orderMoreWhenBelowLowStock
+        )
         {
             if (!material.HasPartLink)
             {
@@ -67,15 +72,15 @@ namespace StockManagerDB
                 {
                     if (doNotExceedLowStock)
                     {
-                        orderQuantity = Math.Max(baseQuantity - (currentStock - currentLowStock), 0);
+                        orderQuantity = Math.Max(
+                            baseQuantity - (currentStock - currentLowStock),
+                            0
+                        );
                     }
                 }
             }
 
             return orderQuantity;
         }
-
-
-
     }
 }
