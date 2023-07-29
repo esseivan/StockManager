@@ -128,7 +128,9 @@ namespace StockManagerDB
             };
             olvcPrice.AspectGetter = delegate(object x)
             {
-                return ((Material)x).PartLink?.Price;
+                if (!((Material)x).HasPartLink)
+                    return 0;
+                return ((Material)x).PartLink.Price * ((Material)x).Quantity;
             };
             olvcSupplier.AspectGetter = delegate(object x)
             {
@@ -145,7 +147,9 @@ namespace StockManagerDB
             };
             olvcTotalPrice.AspectGetter = delegate(object x)
             {
-                return (((Material)x).PartLink?.Price ?? 0) * (byte)numMult.Value;
+                if (!((Material)x).HasPartLink)
+                    return 0;
+                return ((Material)x).PartLink.Price * ((Material)x).Quantity * (byte)numMult.Value;
             };
             olvcAvailable.AspectGetter = delegate(object x)
             {
