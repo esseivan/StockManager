@@ -76,51 +76,51 @@ namespace StockManagerDB
         private void ListViewSetColumns()
         {
             // Setup columns
-            olvcMPN.AspectGetter = delegate(object x)
+            olvcMPN.AspectGetter = delegate (object x)
             {
                 return ((Material)x).MPN;
             };
-            olvcQuantity.AspectGetter = delegate(object x)
+            olvcQuantity.AspectGetter = delegate (object x)
             {
                 return ((Material)x).Quantity;
             };
-            olvcMAN.AspectGetter = delegate(object x)
+            olvcMAN.AspectGetter = delegate (object x)
             {
                 return ((Material)x).PartLink?.Manufacturer;
             };
-            olvcDesc.AspectGetter = delegate(object x)
+            olvcDesc.AspectGetter = delegate (object x)
             {
                 return ((Material)x).PartLink?.Description;
             };
-            olvcCat.AspectGetter = delegate(object x)
+            olvcCat.AspectGetter = delegate (object x)
             {
                 return ((Material)x).PartLink?.Category;
             };
-            olvcLocation.AspectGetter = delegate(object x)
+            olvcLocation.AspectGetter = delegate (object x)
             {
                 return ((Material)x).PartLink?.Location;
             };
-            olvcStock.AspectGetter = delegate(object x)
+            olvcStock.AspectGetter = delegate (object x)
             {
                 return ((Material)x).PartLink?.Stock;
             };
-            olvcLowStock.AspectGetter = delegate(object x)
+            olvcLowStock.AspectGetter = delegate (object x)
             {
                 return ((Material)x).PartLink?.LowStock;
             };
-            olvcPrice.AspectGetter = delegate(object x)
+            olvcPrice.AspectGetter = delegate (object x)
             {
                 return ((Material)x).PartLink?.Price;
             };
-            olvcSupplier.AspectGetter = delegate(object x)
+            olvcSupplier.AspectGetter = delegate (object x)
             {
                 return ((Material)x).PartLink?.Supplier;
             };
-            olvcSPN.AspectGetter = delegate(object x)
+            olvcSPN.AspectGetter = delegate (object x)
             {
                 return ((Material)x).PartLink?.SPN;
             };
-            olvcTotalPrice.AspectGetter = delegate(object x)
+            olvcTotalPrice.AspectGetter = delegate (object x)
             {
                 return ((Material)x).PartLink?.Price * ((Material)x).Quantity;
             };
@@ -292,20 +292,21 @@ namespace StockManagerDB
             }
 
             // Remove all 0 quantity materials
-            for (int i = 0; i < PartsToOrder.Count; i++)
-            {
-                if (PartsToOrder.ElementAt(i).Value.Quantity == 0)
-                {
-                    PartsToOrder.Remove(PartsToOrder.ElementAt(i).Key);
-                    i--;
-                }
-            }
+            //for (int i = 0; i < PartsToOrder.Count; i++)
+            //{
+            //    if (PartsToOrder.ElementAt(i).Value.Quantity == 0)
+            //    {
+            //        PartsToOrder.Remove(PartsToOrder.ElementAt(i).Key);
+            //        i--;
+            //    }
+            //}
         }
 
-        private void PartsHaveChanged()
+        private void PartsHaveChanged(bool recalculate = true)
         {
             Cursor = Cursors.WaitCursor;
-            RecalculatePartToOrder();
+            if (recalculate)
+                RecalculatePartToOrder();
             listviewMaterials.DataSource = PartsToOrder.Values.ToList();
             UpdateProjectList();
             UpdateBulkAddText();
@@ -607,7 +608,7 @@ namespace StockManagerDB
 
             item.QuantityStr = newValue;
 
-            PartsHaveChanged();
+            PartsHaveChanged(false);
         }
 
         private void UpdateInfos()
