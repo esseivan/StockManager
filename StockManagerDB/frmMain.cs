@@ -1402,6 +1402,7 @@ namespace StockManagerDB
             // Create empty part with the specified MPN
             Part pc = new Part() { MPN = result.UserInput, };
             // Apply filter
+            cbboxFilterType.SelectedIndex = 0;
             txtboxFilter.Text = $"\"{pc.MPN}\"";
 
             // Add to list
