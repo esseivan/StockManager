@@ -182,12 +182,27 @@ namespace StockManagerDB
             }
 
             bool useMpn = checkboxUseMpn.Checked;
-            string bulkText = string.Join(
-                "\n",
-                filteredParts.Select(
-                    (m) => $"{m.QuantityStr}, {(useMpn ? m.MPN : (m.PartLink?.SPN ?? "Undefined"))}"
-                )
-            );
+            bool invertCol = checkboxInvertCol.Checked;
+
+            string bulkText;
+            if (!invertCol)
+            {
+                bulkText = string.Join(
+                    "\n",
+                    filteredParts.Select(
+                        (m) => $"{m.QuantityStr}, {(useMpn ? m.MPN : (m.PartLink?.SPN ?? "Undefined"))}"
+                    )
+                );
+            }
+            else
+            {
+                bulkText = string.Join(
+                    "\n",
+                    filteredParts.Select(
+                        (m) => $"{(useMpn ? m.MPN : (m.PartLink?.SPN ?? "Undefined"))}, {m.QuantityStr}"
+                    )
+                );
+            }
 
             textBulkAdd.Text = bulkText;
         }
@@ -304,7 +319,7 @@ namespace StockManagerDB
             cbbSuppliers.Items.Add("All");
             cbbSuppliers.Items.AddRange(suppliers.Where((x) => !string.IsNullOrEmpty(x)).ToArray());
             if (cbbSuppliers.Items.Count > 0)
-                cbbSuppliers.SelectedIndex = 1;
+                cbbSuppliers.SelectedIndex = 0;
             init = false;
 
             UpdateBulkAddText();
@@ -629,7 +644,7 @@ namespace StockManagerDB
             UpdateMoreInfos();
         }
 
-        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        private void checkboxUseMPN_CheckedChanged(object sender, EventArgs e)
         {
             UpdateBulkAddText();
         }
@@ -643,6 +658,11 @@ namespace StockManagerDB
             }
 
             part.CopySPNToClipboard();
+        }
+
+        private void checkboxInvertCol_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateBulkAddText();
         }
 
         private void refreshToolStripMenuItem1_Click(object sender, EventArgs e)

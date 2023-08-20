@@ -66,6 +66,7 @@
             this.textboxProjects = new System.Windows.Forms.RichTextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.checkboxUseMpn = new System.Windows.Forms.CheckBox();
+            this.checkboxInvertCol = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.listviewMaterials)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
@@ -411,13 +412,26 @@
             this.checkboxUseMpn.TabIndex = 17;
             this.checkboxUseMpn.Text = "Use MPN";
             this.checkboxUseMpn.UseVisualStyleBackColor = true;
-            this.checkboxUseMpn.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+            this.checkboxUseMpn.CheckedChanged += new System.EventHandler(this.checkboxUseMPN_CheckedChanged);
+            // 
+            // checkboxInvertCol
+            // 
+            this.checkboxInvertCol.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.checkboxInvertCol.AutoSize = true;
+            this.checkboxInvertCol.Location = new System.Drawing.Point(625, 49);
+            this.checkboxInvertCol.Name = "checkboxInvertCol";
+            this.checkboxInvertCol.Size = new System.Drawing.Size(95, 17);
+            this.checkboxInvertCol.TabIndex = 17;
+            this.checkboxInvertCol.Text = "Invert columns";
+            this.checkboxInvertCol.UseVisualStyleBackColor = true;
+            this.checkboxInvertCol.CheckedChanged += new System.EventHandler(this.checkboxInvertCol_CheckedChanged);
             // 
             // frmOrder
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(727, 390);
+            this.Controls.Add(this.checkboxInvertCol);
             this.Controls.Add(this.checkboxUseMpn);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.textboxProjects);
@@ -482,5 +496,6 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.CheckBox checkboxUseMpn;
         private System.Windows.Forms.ToolStripMenuItem copySPNToolStripMenuItem;
+        private System.Windows.Forms.CheckBox checkboxInvertCol;
     }
 }

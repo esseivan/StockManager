@@ -674,6 +674,9 @@ namespace StockManagerDB
             UpdateNumberLabel();
             // Update the checked listview
             UpdateCheckedListview();
+            // Set orderForm suppliers
+            orderForm.SetSuppliers(Parts.Select((x) => x.Value.Supplier).Distinct());
+
             LoggerClass.Write($"Updating part listview finished", Logger.LogLevels.Trace);
         }
 
