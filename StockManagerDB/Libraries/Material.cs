@@ -83,7 +83,8 @@ namespace StockManagerDB
             {
                 MPN = MPN,
                 QuantityStr = QuantityStr,
-                Reference = Reference
+                Reference = Reference,
+                Note = Note,
             };
 
             return newMaterial;
