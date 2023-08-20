@@ -85,12 +85,6 @@ namespace StockManagerDB
         public bool OrderMoreUntilLowStockMinimum { get; set; } = false;
 
         /// <summary>
-        /// List in order form
-        /// </summary>
-        public Dictionary<string, ProjectOrderInfos> ProjectsToOrder { get; set; } =
-            new Dictionary<string, ProjectOrderInfos>();
-
-        /// <summary>
         /// Last CSV Headers links used for order
         /// </summary>
         public Dictionary<string, string> lastCsvPartsLinks { get; set; } =
@@ -117,7 +111,6 @@ namespace StockManagerDB
                 IsDigikeyAPIEnabled = this.IsDigikeyAPIEnabled,
                 OrderDoNotExceedLowStock = this.OrderDoNotExceedLowStock,
                 OrderMoreUntilLowStockMinimum = this.OrderMoreUntilLowStockMinimum,
-                ProjectsToOrder = this.ProjectsToOrder,
             };
 
             return cloned;
@@ -166,11 +159,6 @@ namespace StockManagerDB
             }
 
             _settings = loadedSettings;
-
-            if (_settings.ProjectsToOrder == null)
-            {
-                _settings.ProjectsToOrder = new Dictionary<string, ProjectOrderInfos>();
-            }
 
             return true;
         }

@@ -23,6 +23,12 @@ namespace StockManagerDB
         private readonly Dictionary<string, Material> PartsToOrder =
             new Dictionary<string, Material>();
 
+        private Dictionary<string, ProjectOrderInfos> ProjectsToOrder
+        {
+            get => DataHolderSingleton.Instance.OrderList;
+            set => DataHolderSingleton.Instance.OrderList = value;
+        }
+
         private bool InfosVisible
         {
             get => AppSettings.Settings.Order_ShowInfos;
@@ -145,7 +151,7 @@ namespace StockManagerDB
         {
             textboxProjects.Text = string.Join(
                 "\n",
-                AppSettings.Settings.ProjectsToOrder.Select(
+                ProjectsToOrder.Select(
                     (x) => $"{x.Value.n}{(x.Value.exactOrder ? "*" : "")}x {x.Key}"
                 )
             );
@@ -224,7 +230,7 @@ namespace StockManagerDB
 
             // Add all materials to a list
             foreach (
-                KeyValuePair<string, ProjectOrderInfos> item in AppSettings.Settings.ProjectsToOrder
+                KeyValuePair<string, ProjectOrderInfos> item in ProjectsToOrder
             )
             {
                 ProjectOrderInfos poc = item.Value;
@@ -332,10 +338,10 @@ namespace StockManagerDB
         /// <param name="parts">List of parts to order if necessary</param>
         public bool AddPartsToOrder(IEnumerable<Part> parts)
         {
-            if (AppSettings.Settings.ProjectsToOrder.ContainsKey(LowStockOrderProjectName))
+            if (ProjectsToOrder.ContainsKey(LowStockOrderProjectName))
             {
                 // Delete current and make a new one
-                AppSettings.Settings.ProjectsToOrder.Remove(LowStockOrderProjectName);
+                ProjectsToOrder.Remove(LowStockOrderProjectName);
             }
 
             // Create material list
@@ -353,14 +359,14 @@ namespace StockManagerDB
             }
 
             // Add to projects
-            AppSettings.Settings.ProjectsToOrder[LowStockOrderProjectName] = new ProjectOrderInfos()
+            ProjectsToOrder[LowStockOrderProjectName] = new ProjectOrderInfos()
             {
                 name = LowStockOrderProjectName,
                 n = 1,
                 materials = mList.ToDictionary((x) => x.MPN),
             };
 
-            AppSettings.Save();
+            DataHolderSingleton.Instance.Save();
             PartsHaveChanged();
 
             return true;
@@ -369,13 +375,13 @@ namespace StockManagerDB
         public bool RemoveProjectToOrder(string projectName)
         {
             bool result = false;
-            if (AppSettings.Settings.ProjectsToOrder.ContainsKey(projectName))
+            if (ProjectsToOrder.ContainsKey(projectName))
             {
-                AppSettings.Settings.ProjectsToOrder.Remove(projectName);
+                ProjectsToOrder.Remove(projectName);
                 result = true;
             }
 
-            AppSettings.Save();
+            DataHolderSingleton.Instance.Save();
             PartsHaveChanged();
 
             return result;
@@ -398,17 +404,17 @@ namespace StockManagerDB
         {
             bool result;
             ProjectOrderInfos poc;
-            if (AppSettings.Settings.ProjectsToOrder.ContainsKey(projectName))
+            if (ProjectsToOrder.ContainsKey(projectName))
             {
                 // Project already in list. Not updating projectMaterial
-                poc = AppSettings.Settings.ProjectsToOrder[projectName];
+                poc = ProjectsToOrder[projectName];
                 poc.n += multiplier;
 
                 result = false;
             }
             else
             {
-                AppSettings.Settings.ProjectsToOrder[projectName] = poc = new ProjectOrderInfos()
+                ProjectsToOrder[projectName] = poc = new ProjectOrderInfos()
                 {
                     name = projectName,
                     n = multiplier,
@@ -433,7 +439,7 @@ namespace StockManagerDB
                 result = true;
             }
 
-            AppSettings.Save();
+            DataHolderSingleton.Instance.Save();
             PartsHaveChanged();
 
             return result;
@@ -447,13 +453,13 @@ namespace StockManagerDB
         public bool AddCustomPartsToOrder(IEnumerable<Part> parts)
         {
             ProjectOrderInfos poc;
-            if (AppSettings.Settings.ProjectsToOrder.ContainsKey(CustomPartsProjectName))
+            if (ProjectsToOrder.ContainsKey(CustomPartsProjectName))
             {
-                poc = AppSettings.Settings.ProjectsToOrder[CustomPartsProjectName];
+                poc = ProjectsToOrder[CustomPartsProjectName];
             }
             else
             {
-                AppSettings.Settings.ProjectsToOrder[CustomPartsProjectName] = poc =
+                ProjectsToOrder[CustomPartsProjectName] = poc =
                     new ProjectOrderInfos() { name = CustomPartsProjectName, n = 1, };
             }
 
@@ -466,7 +472,7 @@ namespace StockManagerDB
                 }
             }
 
-            AppSettings.Save();
+            DataHolderSingleton.Instance.Save();
             PartsHaveChanged();
 
             return true;
@@ -487,9 +493,9 @@ namespace StockManagerDB
                 return;
             }
 
-            AppSettings.Settings.ProjectsToOrder.Clear();
+            ProjectsToOrder.Clear();
             PartsToOrder.Clear();
-            AppSettings.Save();
+            DataHolderSingleton.Instance.Save();
             PartsHaveChanged();
         }
 
@@ -500,9 +506,9 @@ namespace StockManagerDB
             listviewMaterials.RebuildColumns();
 
             // Apply current settings
-            if (AppSettings.Settings.ProjectsToOrder == null)
+            if (ProjectsToOrder == null)
             {
-                AppSettings.Settings.ProjectsToOrder = new Dictionary<string, ProjectOrderInfos>();
+                ProjectsToOrder = new Dictionary<string, ProjectOrderInfos>();
             }
             PartsHaveChanged();
         }

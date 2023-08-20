@@ -126,10 +126,7 @@ namespace StockManagerDB
             }
             set
             {
-                if (_projectForm != null)
-                {
-                    _projectForm.Close();
-                }
+                _projectForm?.Close();
                 _projectForm = value;
             }
         }
@@ -163,10 +160,7 @@ namespace StockManagerDB
             }
             set
             {
-                if (_historyForm != null)
-                {
-                    _historyForm.Close();
-                }
+                _historyForm?.Close();
                 _historyForm = value;
             }
         }
@@ -200,10 +194,7 @@ namespace StockManagerDB
             }
             set
             {
-                if (_orderForm != null)
-                {
-                    _orderForm.Close();
-                }
+                _orderForm?.Close();
                 _orderForm = value;
             }
         }
@@ -239,10 +230,7 @@ namespace StockManagerDB
             }
             set
             {
-                if (_searchForm != null)
-                {
-                    _searchForm.Close();
-                }
+                _searchForm?.Close();
                 _searchForm = value;
             }
         }
@@ -276,10 +264,7 @@ namespace StockManagerDB
             }
             set
             {
-                if (_actionProjectForm != null)
-                {
-                    _actionProjectForm.Close();
-                }
+                _actionProjectForm?.Close();
                 _actionProjectForm = value;
             }
         }
@@ -302,10 +287,7 @@ namespace StockManagerDB
             }
             set
             {
-                if (_optionsForm != null)
-                {
-                    _optionsForm.Close();
-                }
+                _optionsForm?.Close();
                 _optionsForm = value;
             }
         }
@@ -576,10 +558,7 @@ namespace StockManagerDB
             UpdateListviews();
 
             // Update history if open
-            if (historyForm != null)
-            {
-                historyForm.UpdateList();
-            }
+            historyForm?.UpdateList();
         }
 
         /// <summary>
@@ -1331,6 +1310,7 @@ namespace StockManagerDB
 
             UpdateRecentFileList();
 
+
             return true;
         }
 
@@ -1340,18 +1320,12 @@ namespace StockManagerDB
         private bool CloseFile()
         {
             LoggerClass.Write($"Closing file : {filepath}", Logger.LogLevels.Debug);
-            if (_searchForm != null)
-            {
-                _searchForm.Close();
-            }
-            if (_projectForm != null)
-            {
-                _projectForm.Close();
-            }
-            if (_historyForm != null)
-            {
-                _historyForm.Close();
-            }
+            _searchForm?.Close();
+            _projectForm?.Close();
+            _historyForm?.Close();
+            _orderForm?.Close();
+            _actionProjectForm?.Close();
+            _optionsForm?.Close();
             data.Close();
             filepath = null;
             SetTitle();
@@ -2246,7 +2220,7 @@ namespace StockManagerDB
 
             Dictionary<string, Part> exportParts = new Dictionary<string, Part>();
             parts.ForEach((p) => exportParts.Add(p.MPN, p));
-            DataExportClass dec = new DataExportClass(exportParts, null);
+            DataExportClass dec = new DataExportClass(exportParts, null, null);
 
             SettingsManager.SaveTo(
                 fsd.FileName,
@@ -2596,10 +2570,9 @@ namespace StockManagerDB
 
         private void _orderForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            // When the order form is closing, just hide it
-            e.Cancel = true;
-            orderForm.Hide();
+            // When the order form is closing, bring to fron the main form
             this.BringToFront();
+            _orderForm = null;
         }
 
         private void _searchForm_FormClosed(object sender, FormClosedEventArgs e)

@@ -1113,7 +1113,7 @@ namespace StockManagerDB
                 Logger.LogLevels.Debug
             );
 
-            DataExportClass dec = new DataExportClass(null, projects);
+            DataExportClass dec = new DataExportClass(null, projects, null);
 
             SettingsManager.SaveTo(
                 fsd.FileName,
