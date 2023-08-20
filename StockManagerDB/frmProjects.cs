@@ -675,6 +675,7 @@ namespace StockManagerDB
 
             Project p = data.Projects[currentName];
             p.Name = newName;
+            p.Versions.Values.ToList().ForEach((v) => v.Project = newName); // Update versions' project name
             data.Projects.Remove(currentName);
             data.Projects.Add(p.Name, p);
 
