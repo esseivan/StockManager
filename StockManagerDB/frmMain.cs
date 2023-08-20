@@ -674,6 +674,9 @@ namespace StockManagerDB
             UpdateNumberLabel();
             // Update the checked listview
             UpdateCheckedListview();
+            // Set orderForm suppliers
+            orderForm.SetSuppliers(Parts.Select((x) => x.Value.Supplier).Distinct());
+
             LoggerClass.Write($"Updating part listview finished", Logger.LogLevels.Trace);
         }
 
@@ -1402,6 +1405,7 @@ namespace StockManagerDB
             // Create empty part with the specified MPN
             Part pc = new Part() { MPN = result.UserInput, };
             // Apply filter
+            cbboxFilterType.SelectedIndex = 0;
             txtboxFilter.Text = $"\"{pc.MPN}\"";
 
             // Add to list

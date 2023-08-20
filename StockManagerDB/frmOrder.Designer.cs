@@ -66,6 +66,7 @@
             this.textboxProjects = new System.Windows.Forms.RichTextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.checkboxUseMpn = new System.Windows.Forms.CheckBox();
+            this.checkboxInvertCol = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.listviewMaterials)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
@@ -263,7 +264,7 @@
             // 
             this.showInfosToolStripMenuItem.CheckOnClick = true;
             this.showInfosToolStripMenuItem.Name = "showInfosToolStripMenuItem";
-            this.showInfosToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.showInfosToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
             this.showInfosToolStripMenuItem.Text = "Show infos";
             this.showInfosToolStripMenuItem.CheckedChanged += new System.EventHandler(this.showInfosToolStripMenuItem_CheckedChanged);
             // 
@@ -271,31 +272,31 @@
             // 
             this.showMoreInfosToolStripMenuItem.CheckOnClick = true;
             this.showMoreInfosToolStripMenuItem.Name = "showMoreInfosToolStripMenuItem";
-            this.showMoreInfosToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.showMoreInfosToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
             this.showMoreInfosToolStripMenuItem.Text = "Show more infos";
             this.showMoreInfosToolStripMenuItem.CheckedChanged += new System.EventHandler(this.showMoreInfosToolStripMenuItem_CheckedChanged);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(160, 6);
             // 
             // resizeColumnsToolStripMenuItem
             // 
             this.resizeColumnsToolStripMenuItem.Name = "resizeColumnsToolStripMenuItem";
-            this.resizeColumnsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.resizeColumnsToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
             this.resizeColumnsToolStripMenuItem.Text = "Resize columns";
             this.resizeColumnsToolStripMenuItem.Click += new System.EventHandler(this.resizeColumnsToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(160, 6);
             // 
             // refreshToolStripMenuItem1
             // 
             this.refreshToolStripMenuItem1.Name = "refreshToolStripMenuItem1";
-            this.refreshToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.refreshToolStripMenuItem1.Size = new System.Drawing.Size(163, 22);
             this.refreshToolStripMenuItem1.Text = "Refresh";
             this.refreshToolStripMenuItem1.Click += new System.EventHandler(this.refreshToolStripMenuItem1_Click);
             // 
@@ -411,13 +412,26 @@
             this.checkboxUseMpn.TabIndex = 17;
             this.checkboxUseMpn.Text = "Use MPN";
             this.checkboxUseMpn.UseVisualStyleBackColor = true;
-            this.checkboxUseMpn.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+            this.checkboxUseMpn.CheckedChanged += new System.EventHandler(this.checkboxUseMPN_CheckedChanged);
+            // 
+            // checkboxInvertCol
+            // 
+            this.checkboxInvertCol.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.checkboxInvertCol.AutoSize = true;
+            this.checkboxInvertCol.Location = new System.Drawing.Point(625, 49);
+            this.checkboxInvertCol.Name = "checkboxInvertCol";
+            this.checkboxInvertCol.Size = new System.Drawing.Size(95, 17);
+            this.checkboxInvertCol.TabIndex = 17;
+            this.checkboxInvertCol.Text = "Invert columns";
+            this.checkboxInvertCol.UseVisualStyleBackColor = true;
+            this.checkboxInvertCol.CheckedChanged += new System.EventHandler(this.checkboxInvertCol_CheckedChanged);
             // 
             // frmOrder
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(727, 390);
+            this.Controls.Add(this.checkboxInvertCol);
             this.Controls.Add(this.checkboxUseMpn);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.textboxProjects);
@@ -432,7 +446,6 @@
             this.MainMenuStrip = this.menuStrip1;
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "frmOrder";
-            this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Order";
             this.Load += new System.EventHandler(this.frmOrder_Load);
@@ -483,5 +496,6 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.CheckBox checkboxUseMpn;
         private System.Windows.Forms.ToolStripMenuItem copySPNToolStripMenuItem;
+        private System.Windows.Forms.CheckBox checkboxInvertCol;
     }
 }

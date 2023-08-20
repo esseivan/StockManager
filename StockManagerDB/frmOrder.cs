@@ -76,51 +76,51 @@ namespace StockManagerDB
         private void ListViewSetColumns()
         {
             // Setup columns
-            olvcMPN.AspectGetter = delegate(object x)
+            olvcMPN.AspectGetter = delegate (object x)
             {
                 return ((Material)x).MPN;
             };
-            olvcQuantity.AspectGetter = delegate(object x)
+            olvcQuantity.AspectGetter = delegate (object x)
             {
                 return ((Material)x).Quantity;
             };
-            olvcMAN.AspectGetter = delegate(object x)
+            olvcMAN.AspectGetter = delegate (object x)
             {
                 return ((Material)x).PartLink?.Manufacturer;
             };
-            olvcDesc.AspectGetter = delegate(object x)
+            olvcDesc.AspectGetter = delegate (object x)
             {
                 return ((Material)x).PartLink?.Description;
             };
-            olvcCat.AspectGetter = delegate(object x)
+            olvcCat.AspectGetter = delegate (object x)
             {
                 return ((Material)x).PartLink?.Category;
             };
-            olvcLocation.AspectGetter = delegate(object x)
+            olvcLocation.AspectGetter = delegate (object x)
             {
                 return ((Material)x).PartLink?.Location;
             };
-            olvcStock.AspectGetter = delegate(object x)
+            olvcStock.AspectGetter = delegate (object x)
             {
                 return ((Material)x).PartLink?.Stock;
             };
-            olvcLowStock.AspectGetter = delegate(object x)
+            olvcLowStock.AspectGetter = delegate (object x)
             {
                 return ((Material)x).PartLink?.LowStock;
             };
-            olvcPrice.AspectGetter = delegate(object x)
+            olvcPrice.AspectGetter = delegate (object x)
             {
                 return ((Material)x).PartLink?.Price;
             };
-            olvcSupplier.AspectGetter = delegate(object x)
+            olvcSupplier.AspectGetter = delegate (object x)
             {
                 return ((Material)x).PartLink?.Supplier;
             };
-            olvcSPN.AspectGetter = delegate(object x)
+            olvcSPN.AspectGetter = delegate (object x)
             {
                 return ((Material)x).PartLink?.SPN;
             };
-            olvcTotalPrice.AspectGetter = delegate(object x)
+            olvcTotalPrice.AspectGetter = delegate (object x)
             {
                 return ((Material)x).PartLink?.Price * ((Material)x).Quantity;
             };
@@ -182,12 +182,27 @@ namespace StockManagerDB
             }
 
             bool useMpn = checkboxUseMpn.Checked;
-            string bulkText = string.Join(
-                "\n",
-                filteredParts.Select(
-                    (m) => $"{m.QuantityStr}, {(useMpn ? m.MPN : (m.PartLink?.SPN ?? "Undefined"))}"
-                )
-            );
+            bool invertCol = checkboxInvertCol.Checked;
+
+            string bulkText;
+            if (!invertCol)
+            {
+                bulkText = string.Join(
+                    "\n",
+                    filteredParts.Select(
+                        (m) => $"{m.QuantityStr}, {(useMpn ? m.MPN : (m.PartLink?.SPN ?? "Undefined"))}"
+                    )
+                );
+            }
+            else
+            {
+                bulkText = string.Join(
+                    "\n",
+                    filteredParts.Select(
+                        (m) => $"{(useMpn ? m.MPN : (m.PartLink?.SPN ?? "Undefined"))}, {m.QuantityStr}"
+                    )
+                );
+            }
 
             textBulkAdd.Text = bulkText;
         }
@@ -277,20 +292,21 @@ namespace StockManagerDB
             }
 
             // Remove all 0 quantity materials
-            for (int i = 0; i < PartsToOrder.Count; i++)
-            {
-                if (PartsToOrder.ElementAt(i).Value.Quantity == 0)
-                {
-                    PartsToOrder.Remove(PartsToOrder.ElementAt(i).Key);
-                    i--;
-                }
-            }
+            //for (int i = 0; i < PartsToOrder.Count; i++)
+            //{
+            //    if (PartsToOrder.ElementAt(i).Value.Quantity == 0)
+            //    {
+            //        PartsToOrder.Remove(PartsToOrder.ElementAt(i).Key);
+            //        i--;
+            //    }
+            //}
         }
 
-        private void PartsHaveChanged()
+        private void PartsHaveChanged(bool recalculate = true)
         {
             Cursor = Cursors.WaitCursor;
-            RecalculatePartToOrder();
+            if (recalculate)
+                RecalculatePartToOrder();
             listviewMaterials.DataSource = PartsToOrder.Values.ToList();
             UpdateProjectList();
             UpdateBulkAddText();
@@ -304,7 +320,7 @@ namespace StockManagerDB
             cbbSuppliers.Items.Add("All");
             cbbSuppliers.Items.AddRange(suppliers.Where((x) => !string.IsNullOrEmpty(x)).ToArray());
             if (cbbSuppliers.Items.Count > 0)
-                cbbSuppliers.SelectedIndex = 1;
+                cbbSuppliers.SelectedIndex = 0;
             init = false;
 
             UpdateBulkAddText();
@@ -592,7 +608,7 @@ namespace StockManagerDB
 
             item.QuantityStr = newValue;
 
-            PartsHaveChanged();
+            PartsHaveChanged(false);
         }
 
         private void UpdateInfos()
@@ -629,7 +645,7 @@ namespace StockManagerDB
             UpdateMoreInfos();
         }
 
-        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        private void checkboxUseMPN_CheckedChanged(object sender, EventArgs e)
         {
             UpdateBulkAddText();
         }
@@ -643,6 +659,11 @@ namespace StockManagerDB
             }
 
             part.CopySPNToClipboard();
+        }
+
+        private void checkboxInvertCol_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateBulkAddText();
         }
 
         private void refreshToolStripMenuItem1_Click(object sender, EventArgs e)

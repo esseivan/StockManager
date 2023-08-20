@@ -86,23 +86,23 @@
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.btnImportDigikeyList = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
-            this.numMult = new System.Windows.Forms.NumericUpDown();
             this.statusTimeoutTimer = new System.Windows.Forms.Timer(this.components);
             this.tooltip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.txtboxTotalPrice = new System.Windows.Forms.TextBox();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.copyMPNToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.copySPNToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openSupplierUrlToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.label2 = new System.Windows.Forms.Label();
-            this.txtboxTotalPrice = new System.Windows.Forms.TextBox();
+            this.numMult = new StockManagerDB.Libraries.NumericUpDownFix();
             this.statusStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.listviewMaterials)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numMult)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numMult)).BeginInit();
             this.SuspendLayout();
             // 
             // statusStrip1
@@ -662,9 +662,9 @@
             this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox3.Controls.Add(this.numMult);
             this.groupBox3.Controls.Add(this.btnImportDigikeyList);
             this.groupBox3.Controls.Add(this.label1);
-            this.groupBox3.Controls.Add(this.numMult);
             this.groupBox3.Controls.Add(this.btnMatAdd);
             this.groupBox3.Controls.Add(this.btnMatDel);
             this.groupBox3.Controls.Add(this.listviewMaterials);
@@ -697,32 +697,21 @@
             this.label1.Text = "Multiplier";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // numMult
-            // 
-            this.numMult.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.numMult.Location = new System.Drawing.Point(745, 19);
-            this.numMult.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.numMult.Name = "numMult";
-            this.numMult.Size = new System.Drawing.Size(78, 20);
-            this.numMult.TabIndex = 11;
-            this.tooltip1.SetToolTip(this.numMult, "Global multiplier for the BOM (Total Quantity, Available, Total Price).\r\nNo actio" +
-        "n will use this multiplier.");
-            this.numMult.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.numMult.ValueChanged += new System.EventHandler(this.numMult_ValueChanged);
-            // 
             // statusTimeoutTimer
             // 
             this.statusTimeoutTimer.Enabled = true;
             this.statusTimeoutTimer.Interval = 2500;
             this.statusTimeoutTimer.Tick += new System.EventHandler(this.statusTimeoutTimer_Tick);
+            // 
+            // txtboxTotalPrice
+            // 
+            this.txtboxTotalPrice.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.txtboxTotalPrice.Location = new System.Drawing.Point(406, 437);
+            this.txtboxTotalPrice.Name = "txtboxTotalPrice";
+            this.txtboxTotalPrice.ReadOnly = true;
+            this.txtboxTotalPrice.Size = new System.Drawing.Size(100, 20);
+            this.txtboxTotalPrice.TabIndex = 15;
+            this.tooltip1.SetToolTip(this.txtboxTotalPrice, "Total price for a single unit of this project");
             // 
             // contextMenuStrip1
             // 
@@ -764,15 +753,24 @@
             this.label2.TabIndex = 14;
             this.label2.Text = "Total price for the project (only checked parts) :";
             // 
-            // txtboxTotalPrice
+            // numMult
             // 
-            this.txtboxTotalPrice.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.txtboxTotalPrice.Location = new System.Drawing.Point(406, 437);
-            this.txtboxTotalPrice.Name = "txtboxTotalPrice";
-            this.txtboxTotalPrice.ReadOnly = true;
-            this.txtboxTotalPrice.Size = new System.Drawing.Size(100, 20);
-            this.txtboxTotalPrice.TabIndex = 15;
-            this.tooltip1.SetToolTip(this.txtboxTotalPrice, "Total price for a single unit of this project");
+            this.numMult.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.numMult.Location = new System.Drawing.Point(745, 19);
+            this.numMult.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numMult.Name = "numMult";
+            this.numMult.Size = new System.Drawing.Size(78, 20);
+            this.numMult.TabIndex = 11;
+            this.numMult.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numMult.ValueChanged += new System.EventHandler(this.numMult_ValueChanged);
             // 
             // frmProjects
             // 
@@ -800,8 +798,8 @@
             this.groupBox1.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.numMult)).EndInit();
             this.contextMenuStrip1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.numMult)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -845,7 +843,6 @@
         private System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem resizeColumnsToolStripMenuItem;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.NumericUpDown numMult;
         private BrightIdeasSoftware.OLVColumn olvcTotalQuantity;
         private BrightIdeasSoftware.OLVColumn olvcTotalPrice;
         private BrightIdeasSoftware.OLVColumn olvcAvailable;
@@ -873,5 +870,6 @@
         private System.Windows.Forms.ToolStripMenuItem copySPNToolStripMenuItem;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox txtboxTotalPrice;
+        private Libraries.NumericUpDownFix numMult;
     }
 }
