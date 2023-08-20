@@ -176,6 +176,9 @@
     <Compile Include="frmActionProject.Designer.cs">
       <DependentUpon>frmActionProject.cs</DependentUpon>
     </Compile>
+    <Compile Include="Libraries\NumericUpDownFix.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Libraries\CsvPartImport.cs" />
     <Compile Include="Libraries\DataExportClass.cs" />
     <Compile Include="Libraries\DataHolderHistorySingleton.cs" />

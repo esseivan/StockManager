@@ -1515,7 +1515,6 @@ namespace StockManagerDB
         }
 
         #endregion
-
     }
 
     public class PartEditEventArgs : EventArgs
