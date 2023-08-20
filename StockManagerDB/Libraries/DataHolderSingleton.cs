@@ -28,6 +28,12 @@ namespace StockManagerDB
         public Dictionary<string, Project> Projects { get; private set; }
 
         /// <summary>
+        /// List in order form
+        /// </summary>
+        public Dictionary<string, ProjectOrderInfos> OrderList { get; set; } =
+            new Dictionary<string, ProjectOrderInfos>();
+
+        /// <summary>
         /// The instance of the singleton
         /// </summary>
         private static DataHolderSingleton _instance = null;
@@ -247,6 +253,7 @@ namespace StockManagerDB
                         )
                 );
             ;
+            OrderList = data?.GetOrders() ?? new Dictionary<string, ProjectOrderInfos>();
         }
 
         /// <summary>
@@ -258,7 +265,7 @@ namespace StockManagerDB
             {
                 SettingsManager.SaveTo(
                     Filepath,
-                    new DataExportClass(Parts, Projects),
+                    new DataExportClass(Parts, Projects, OrderList),
                     backup: SettingsManager.BackupMode.datetimeFormatAppdata,
                     indent: true,
                     internalFileName: "data.txt"
@@ -287,6 +294,7 @@ namespace StockManagerDB
             // Save(); no longer save on exit.
             Parts = null;
             Projects = null;
+            OrderList = null;
             _instance = null;
         }
 

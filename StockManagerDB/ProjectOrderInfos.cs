@@ -9,5 +9,14 @@ namespace StockManagerDB
         public bool exactOrder { get; set; } = false;
         public Dictionary<string, Material> materials { get; set; } =
             new Dictionary<string, Material>();
+
+
+        public class CompareName : IComparer<ProjectOrderInfos>
+        {
+            public int Compare(ProjectOrderInfos x, ProjectOrderInfos y)
+            {
+                return x.name.CompareTo(y.name);
+            }
+        }
     }
 }
