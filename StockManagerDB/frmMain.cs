@@ -18,6 +18,7 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using dhs = StockManagerDB.DataHolderSingleton;
+using log = StockManagerDB.LoggerClass;
 
 namespace StockManagerDB
 {
@@ -79,7 +80,7 @@ namespace StockManagerDB
         /// <summary>
         /// Update CheckListView when checkItemChanged
         /// </summary>
-        private bool UpdateOnCheck
+        private bool ShouldUpdateCheckedListview
         {
             get { return _updateOnCheck; }
             set
@@ -87,7 +88,7 @@ namespace StockManagerDB
                 _updateOnCheck = value;
                 if (_updateOnCheck)
                 {
-                    UpdateCheckedListview();
+                    UpdateCheckedListviewContent();
                 }
             }
         }
@@ -333,12 +334,13 @@ namespace StockManagerDB
 
         #endregion
 
-        private readonly bool starting = true;
+        #region Static to export
 
-        public frmMain()
+        /// <summary>
+        /// Return either cmd line arguments or Click once arguments. Click once have priority
+        /// </summary>
+        private static string[] GetCmdlineArgs()
         {
-            InitializeComponent();
-
             string[] cmdLineArgs = Environment.GetCommandLineArgs().Skip(1).ToArray(); // Skip executable path
             string[] clickOnceArgs =
                 AppDomain.CurrentDomain.SetupInformation.ActivationArguments?.ActivationData
@@ -352,20 +354,89 @@ namespace StockManagerDB
 
             string[] args = clickOnceArgs.Length > 0 ? clickOnceArgs : cmdLineArgs;
 
+            return args;
+        }
+
+#warning Test this stuff...
+        /// <summary>
+        /// Return true if the string starts and ends with quotes "..."
+        /// </summary>
+        /// <param name="text">Trimmed string</param>
+        private static bool IsStringQuoted(string text)
+        {
+            // Detect exact match, only in non-regex mode
+            Regex regexDetectExact = new Regex("^[\"][^\"]{1,}[\"]$");
+            Match result = regexDetectExact.Match(text);
+
+            return result.Success;
+        }
+
+        /// <summary>
+        /// Remove start and end quote of substring (+ trim)
+        /// </summary>
+        private static string UnquoteString(string text)
+        {
+            if (text == null)
+            {
+                return null;
+            }
+
+            text = text.Trim();
+            string t = text.Substring(1, text.Length - 2);
+
+            return t;
+        }
+
+        /// <summary>
+        /// Return the corresponding string for and exact matching filtering.
+        /// </summary>
+        /// <param name="baseText">Quoted text</param>
+        /// <param name="isPrefix">Set to true if the match must start with the string</param>
+        private static string GetRegexStringForExactFiltering(string baseText, bool isPrefix)
+        {
+            // Remove quotes
+            string t = Regex.Escape(UnquoteString(baseText));
+
+            Regex regexStr;
+            if (isPrefix)
+                regexStr = new Regex($"^{t}(($)|( ))");
+            else
+                regexStr = new Regex($"((^)|( )){t}(($)|( ))");
+
+            return regexStr.ToString();
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Indicate initialisation in progress. Do process controls events during this
+        /// </summary>
+        private readonly bool initInProgress = true;
+
+        public frmMain()
+        {
+            InitializeComponent();
+
+            string[] args = GetCmdlineArgs();
+
+            // Set production endpoints for API
             ApiClientSettings.SetProductionMode();
 
-            LoggerClass.Init();
-            LoggerClass.Write("Application started...", Logger.LogLevels.Info);
-            LoggerClass.Write(DateTime.Now.ToString("yyyy.MM.dd HH:mm:ss"), Logger.LogLevels.Info);
-            LoggerClass.Write($"Arguments : {string.Join(" ", args)}", Logger.LogLevels.Info);
+            // Logger config
+            log.Init();
+            log.Write("Application started...", Logger.LogLevels.Info);
+            log.Write(DateTime.Now.ToString("yyyy.MM.dd HH:mm:ss"), Logger.LogLevels.Info);
+            log.Write($"Arguments : {string.Join(" ", args)}", Logger.LogLevels.Info);
+
+            // API settings
             SettingsManager.MyPublisherName = "ESN";
             SettingsManager.MyAppName = "StockManager";
-            ApiClientSettings.SetFilePath("ESN", "StockManager");
+            ApiClientSettings.SetFilePath(SettingsManager.MyPublisherName, SettingsManager.MyAppName);
             ApiClientSettings.GetInstance();
 
-            // Load app settings
-            string settingsPath = SettingsManager.GetDefaultSettingFilePath(false);
-            LoggerClass.Write($"Loading settings from {settingsPath}...");
+            // App settings
+            string settingsPath = SettingsManager.GetDefaultSettingFilePath(false); // Get recommended path
+            log.Write($"Loading settings from {settingsPath}...");
             AppSettings.SetDefaultAppSettings(this); // Set the default settings
             if (!AppSettings.Load())
             {
@@ -374,7 +445,7 @@ namespace StockManagerDB
             ApplySettings();
 
             // Setup listviews
-            ListViewSetColumns();
+            InitialiseListviewsAndColumns();
             listviewParts.DefaultRenderer = filterHighlightRenderer;
             listviewParts.AllowCheckWithSpace = false;
 
@@ -382,7 +453,7 @@ namespace StockManagerDB
             cbboxFilterType.SelectedIndex = AppSettings.Settings.LastMatchKindUsed;
 
             // Set number label
-            UpdateNumberLabel();
+            UpdateNumberOfPartsLabel();
             SetStatus("Idle...");
 
             // Get open arguments
@@ -392,17 +463,17 @@ namespace StockManagerDB
                 if (file.StartsWith("file:///"))
                     file = file.Remove(0, 8);
 
-                // Open file
+                // Open requested file
                 SetWorkingStatus();
                 bool result = OpenFile(file);
                 SetSuccessStatus(result);
             }
             else
             {
-                LoggerClass.Write($"Openning most recent file...", Logger.LogLevels.Info);
-                // Open most recent
+                // Open most recent file
                 if (AppSettings.Settings.OpenRecentOnLaunch)
                 {
+                    log.Write($"Openning most recent file...", Logger.LogLevels.Info);
                     if (AppSettings.Settings.RecentFiles.Count > 0)
                     {
                         SetWorkingStatus();
@@ -412,13 +483,14 @@ namespace StockManagerDB
                 }
             }
 
-            starting = false;
+            // Indicate starting process done
+            initInProgress = false;
         }
 
         #region Settings
 
         /// <summary>
-        /// Apply the settings to the app
+        /// Apply the settings to the application
         /// </summary>
         public void ApplySettings()
         {
@@ -449,6 +521,8 @@ namespace StockManagerDB
         #endregion
 
         #region Listviews and display
+
+        #region Form Search, Advanced Filtering
 
         /// <summary>
         /// Clear all filtering for the parts
@@ -550,12 +624,18 @@ namespace StockManagerDB
             olv.AdditionalFilter = allFilters;
         }
 
+        #endregion
+
+        /// <summary>
+        /// Indicate that some parts have changed. A listview update is required
+        /// </summary>
         private void PartsHaveChanged()
         {
             // Save changes and update listview
             dhs.Instance.InvokeOnPartListModified(EventArgs.Empty);
+            // Save changes to file
             data.Save();
-            UpdateListviews();
+            UpdateListviewContent();
 
             // Update history if open
             historyForm?.UpdateList();
@@ -575,7 +655,7 @@ namespace StockManagerDB
         /// <summary>
         /// Update the label at the bottom that displays the number of parts
         /// </summary>
-        private void UpdateNumberLabel()
+        private void UpdateNumberOfPartsLabel()
         {
             if (!IsFileLoaded)
             {
@@ -592,14 +672,14 @@ namespace StockManagerDB
         /// Update the listviews contents
         /// </summary>
         /// <param name="resizeColumns">Resize the columns of the main listview</param>
-        private void UpdateListviews(bool resizeColumns = false)
+        private void UpdateListviewContent(bool resizeColumns = false)
         {
-            LoggerClass.Write($"Updating part listview..", Logger.LogLevels.Trace);
+            log.Write($"Updating part listview..", Logger.LogLevels.Trace);
 
             // If not file loaded, set the listviews as empty
             if (!IsFileLoaded)
             {
-                LoggerClass.Write($"No file loaded. Aborting...", Logger.LogLevels.Trace);
+                log.Write($"No file loaded. Aborting...", Logger.LogLevels.Trace);
                 listviewParts.DataSource = new List<Part>();
                 listviewChecked.DataSource = new List<Part>();
                 btnPartAdd.Enabled = btnPartDup.Enabled = false;
@@ -621,7 +701,7 @@ namespace StockManagerDB
             // Resize columns if requested
             if (resizeColumns)
             {
-                LoggerClass.Write($"Resizing columns...", Logger.LogLevels.Trace);
+                log.Write($"Resizing columns...", Logger.LogLevels.Trace);
                 listviewParts.AutoResizeColumns();
             }
 
@@ -636,6 +716,7 @@ namespace StockManagerDB
 
             try
             {
+#warning Todo : Find another way for this, maybe check DPI, maybe check vertical line scroll value ?
                 const int factor = 23; // Looks like the perfect error<->correction factor is 23
                 // Maybe depends of the machine ?
 
@@ -645,30 +726,29 @@ namespace StockManagerDB
             }
             catch (Exception ex)
             {
-                LoggerClass.Write("Unable to scroll to last position : ", Logger.LogLevels.Error);
-                LoggerClass.Write(ex.Message, Logger.LogLevels.Error);
+                log.Write("Unable to scroll to last position : ", Logger.LogLevels.Error);
+                log.Write(ex.Message, Logger.LogLevels.Error);
             }
 
             // Update the number label
-            UpdateNumberLabel();
+            UpdateNumberOfPartsLabel();
             // Update the checked listview
-            UpdateCheckedListview();
+            UpdateCheckedListviewContent();
             // Set orderForm suppliers
             orderForm.SetSuppliers(Parts.Select((x) => x.Value.Supplier).Distinct());
 
-            LoggerClass.Write($"Updating part listview finished", Logger.LogLevels.Trace);
+            log.Write($"Updating part listview finished", Logger.LogLevels.Trace);
         }
 
         /// <summary>
-        /// Update the checked listview
+        /// Update the checked listview content
         /// </summary>
-        private void UpdateCheckedListview()
+        private void UpdateCheckedListviewContent()
         {
             // Wether to update the checkedlistview or not.
             // Usefull to disable when using the CheckAll and UnCheckAll actions
             // Otherwise, it will be called a lot of times...
-
-            if (!UpdateOnCheck) // No updated required
+            if (!ShouldUpdateCheckedListview)
                 return;
 
             // Set the content to only the checked parts
@@ -680,88 +760,87 @@ namespace StockManagerDB
         /// <summary>
         /// Initialisation of the listviews
         /// </summary>
-        /// <param name="listview"></param>
-        private void ListViewSetColumns()
+        private void InitialiseListviewsAndColumns()
         {
             // Setup columns
-            olvcMPN.AspectGetter = delegate(object x)
+            olvcMPN.AspectGetter = delegate (object x)
             {
                 return ((Part)x).MPN;
             };
-            olvcMAN.AspectGetter = delegate(object x)
+            olvcMAN.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Manufacturer;
             };
-            olvcDesc.AspectGetter = delegate(object x)
+            olvcDesc.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Description;
             };
-            olvcCat.AspectGetter = delegate(object x)
+            olvcCat.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Category;
             };
-            olvcLocation.AspectGetter = delegate(object x)
+            olvcLocation.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Location;
             };
-            olvcStock.AspectGetter = delegate(object x)
+            olvcStock.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Stock;
             };
-            olvcLowStock.AspectGetter = delegate(object x)
+            olvcLowStock.AspectGetter = delegate (object x)
             {
                 return ((Part)x).LowStock;
             };
-            olvcPrice.AspectGetter = delegate(object x)
+            olvcPrice.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Price;
             };
-            olvcSupplier.AspectGetter = delegate(object x)
+            olvcSupplier.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Supplier;
             };
-            olvcSPN.AspectGetter = delegate(object x)
+            olvcSPN.AspectGetter = delegate (object x)
             {
                 return ((Part)x).SPN;
             };
 
-            olvcMPN2.AspectGetter = delegate(object x)
+            olvcMPN2.AspectGetter = delegate (object x)
             {
                 return ((Part)x).MPN;
             };
-            olvcMAN2.AspectGetter = delegate(object x)
+            olvcMAN2.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Manufacturer;
             };
-            olvcDesc2.AspectGetter = delegate(object x)
+            olvcDesc2.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Description;
             };
-            olvcCat2.AspectGetter = delegate(object x)
+            olvcCat2.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Category;
             };
-            olvcLocation2.AspectGetter = delegate(object x)
+            olvcLocation2.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Location;
             };
-            olvcStock2.AspectGetter = delegate(object x)
+            olvcStock2.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Stock;
             };
-            olvcLowStock2.AspectGetter = delegate(object x)
+            olvcLowStock2.AspectGetter = delegate (object x)
             {
                 return ((Part)x).LowStock;
             };
-            olvcPrice2.AspectGetter = delegate(object x)
+            olvcPrice2.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Price;
             };
-            olvcSupplier2.AspectGetter = delegate(object x)
+            olvcSupplier2.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Supplier;
             };
-            olvcSPN2.AspectGetter = delegate(object x)
+            olvcSPN2.AspectGetter = delegate (object x)
             {
                 return ((Part)x).SPN;
             };
@@ -791,27 +870,6 @@ namespace StockManagerDB
 
         #region TextFiltering
 
-        private bool IsExactFilterString(string text)
-        {
-            // Detect exact match, only in non-regex mode
-            Regex regexDetectExact = new Regex("^[\"][^\"]{1,}[\"]$");
-            Match result = regexDetectExact.Match(text);
-
-            return result.Success;
-        }
-
-        private string GetExactFilterRegexString(string baseText, bool isPrefix)
-        {
-            string t = Regex.Escape(baseText.Substring(1, baseText.Length - 2));
-            Regex regexStr;
-            if (isPrefix)
-                regexStr = new Regex($"^{t}(($)|( ))");
-            else
-                regexStr = new Regex($"((^)|( )){t}(($)|( ))");
-
-            return regexStr.ToString();
-        }
-
         /// <summary>
         /// Filter a text in the main part listview
         /// </summary>
@@ -819,6 +877,7 @@ namespace StockManagerDB
         /// <param name="matchKind">Type of filter</param>
         public void Filter(string txt, int matchKind)
         {
+#warning Continue here...
             ObjectListView olv = listviewParts;
 
             var filters = GetFilters(txt, matchKind, olv);
@@ -848,9 +907,9 @@ namespace StockManagerDB
                     switch (matchKind)
                     {
                         case 0: // Anywhere
-                            if (IsExactFilterString(textEntry))
+                            if (IsStringQuoted(textEntry))
                             {
-                                string regexStr = GetExactFilterRegexString(textEntry, false);
+                                string regexStr = GetRegexStringForExactFiltering(textEntry, false);
                                 filters.Add(TextMatchFilter.Regex(olv, regexStr));
                             }
                             else
@@ -860,9 +919,9 @@ namespace StockManagerDB
                             break;
 
                         case 1: // At the start
-                            if (IsExactFilterString(textEntry))
+                            if (IsStringQuoted(textEntry))
                             {
-                                string regexStr = GetExactFilterRegexString(textEntry, true);
+                                string regexStr = GetRegexStringForExactFiltering(textEntry, true);
                                 filters.Add(TextMatchFilter.Regex(olv, regexStr));
                             }
                             else
@@ -892,7 +951,7 @@ namespace StockManagerDB
         private void txtboxFilter_TextChanged(object sender, EventArgs e)
         {
             Filter(txtboxFilter.Text, this.cbboxFilterType.SelectedIndex);
-            UpdateNumberLabel();
+            UpdateNumberOfPartsLabel();
         }
 
         /// <summary>
@@ -902,10 +961,10 @@ namespace StockManagerDB
         /// <param name="e"></param>
         private void cbboxFilterType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (starting)
+            if (initInProgress)
                 return;
             Filter(txtboxFilter.Text, this.cbboxFilterType.SelectedIndex);
-            UpdateNumberLabel();
+            UpdateNumberOfPartsLabel();
             // Save last type used
             AppSettings.Settings.LastMatchKindUsed = cbboxFilterType.SelectedIndex;
         }
@@ -942,7 +1001,7 @@ namespace StockManagerDB
             // If "onlyAffectCheckedParts" is checked, get checked parts. Otherwise all parts
             if (AppSettings.Settings.ProcessActionOnCheckedOnly)
             {
-                LoggerClass.Write(
+                log.Write(
                     $"Action executing on checked parts only...",
                     Logger.LogLevels.Debug
                 );
@@ -959,7 +1018,7 @@ namespace StockManagerDB
             bool state = listviewParts.IsChecked(listviewParts.SelectedObjects[0]);
             state = !state;
 
-            UpdateOnCheck = false;
+            ShouldUpdateCheckedListview = false;
             if (state)
             {
                 listviewParts.CheckObjects(listviewParts.SelectedObjects);
@@ -968,7 +1027,7 @@ namespace StockManagerDB
             {
                 listviewParts.UncheckObjects(listviewParts.SelectedObjects);
             }
-            UpdateOnCheck = true;
+            ShouldUpdateCheckedListview = true;
         }
 
         #endregion
@@ -980,12 +1039,12 @@ namespace StockManagerDB
         /// </summary>
         private bool ImportPartsFromExcel()
         {
-            LoggerClass.Write($"Importing Parts Excel file...", Logger.LogLevels.Debug);
+            log.Write($"Importing Parts Excel file...", Logger.LogLevels.Debug);
 
             // A file must be loaded prior to importing.
             if (!IsFileLoaded)
             {
-                LoggerClass.Write(
+                log.Write(
                     "Unable to load Excel file when no Data file is loaded",
                     Logger.LogLevels.Debug
                 );
@@ -1004,7 +1063,7 @@ namespace StockManagerDB
             {
                 return false;
             }
-            LoggerClass.Write(
+            log.Write(
                 $"File selected for Excel import : {ofd.FileName}",
                 Logger.LogLevels.Debug
             );
@@ -1042,13 +1101,13 @@ namespace StockManagerDB
 
             if ((null == importedItems) || (0 == importedItems.Count))
             {
-                LoggerClass.Write("No part found in that file");
+                log.Write("No part found in that file");
                 Cursor = Cursors.Default;
                 return false;
             }
 
             // Confirmation
-            LoggerClass.Write(
+            log.Write(
                 $"{importedItems.Count} part(s) found in that file",
                 Logger.LogLevels.Debug
             );
@@ -1066,14 +1125,14 @@ namespace StockManagerDB
             }
 
             string note = $"Imported Excel ";
-            LoggerClass.Write($"Import confirmed. Processing...", Logger.LogLevels.Debug);
+            log.Write($"Import confirmed. Processing...", Logger.LogLevels.Debug);
             // Add the parts to the list
             Cursor = Cursors.WaitCursor;
             foreach (Part item in importedItems)
             {
                 if (Parts.ContainsKey(item.MPN))
                 {
-                    LoggerClass.Write(
+                    log.Write(
                         $"Duplicate part found : MPN={item.MPN}. Skipping this part...",
                         Logger.LogLevels.Warn
                     );
@@ -1083,7 +1142,7 @@ namespace StockManagerDB
                 this.data.AddPart(item, note);
             }
             Cursor = Cursors.Default;
-            LoggerClass.Write($"Import finished", Logger.LogLevels.Debug);
+            log.Write($"Import finished", Logger.LogLevels.Debug);
             PartsHaveChanged();
 
             return true;
@@ -1094,12 +1153,12 @@ namespace StockManagerDB
         /// </summary>
         private bool ImportOrderFromExcel()
         {
-            LoggerClass.Write($"Importing Order Excel file...", Logger.LogLevels.Debug);
+            log.Write($"Importing Order Excel file...", Logger.LogLevels.Debug);
 
             // A file must be loaded prior to importing.
             if (!IsFileLoaded)
             {
-                LoggerClass.Write(
+                log.Write(
                     "Unable to load Excel file when no Data file is loaded",
                     Logger.LogLevels.Debug
                 );
@@ -1118,7 +1177,7 @@ namespace StockManagerDB
             {
                 return false;
             }
-            LoggerClass.Write(
+            log.Write(
                 $"File selected for Excel import : {ofd.FileName}",
                 Logger.LogLevels.Debug
             );
@@ -1157,13 +1216,13 @@ namespace StockManagerDB
 
             if ((null == importedItems) || (0 == importedItems.Count))
             {
-                LoggerClass.Write("No part found in that file");
+                log.Write("No part found in that file");
                 Cursor = Cursors.Default;
                 return false;
             }
 
             // Confirmation
-            LoggerClass.Write(
+            log.Write(
                 $"{importedItems.Count} part(s) found in that file",
                 Logger.LogLevels.Debug
             );
@@ -1181,7 +1240,7 @@ namespace StockManagerDB
             }
 
             string note = $"Imported Excel Order ";
-            LoggerClass.Write($"Import confirmed. Processing...", Logger.LogLevels.Debug);
+            log.Write($"Import confirmed. Processing...", Logger.LogLevels.Debug);
             // Add the parts to the list
             Cursor = Cursors.WaitCursor;
 
@@ -1191,7 +1250,7 @@ namespace StockManagerDB
             this.ApplyOrder(processingList, -1, "Order process from import ");
 
             Cursor = Cursors.Default;
-            LoggerClass.Write($"Import finished", Logger.LogLevels.Debug);
+            log.Write($"Import finished", Logger.LogLevels.Debug);
             PartsHaveChanged();
 
             return true;
@@ -1202,7 +1261,7 @@ namespace StockManagerDB
         /// </summary>
         private bool CreateNewFile()
         {
-            LoggerClass.Write($"Creating new data file", Logger.LogLevels.Debug);
+            log.Write($"Creating new data file", Logger.LogLevels.Debug);
             SaveFileDialog fsd = new SaveFileDialog()
             {
                 Filter = "StockManager Data|*.smd|All files|*.*",
@@ -1211,11 +1270,11 @@ namespace StockManagerDB
             {
                 return false;
             }
-            LoggerClass.Write($"Filepath selected is : {fsd.FileName}", Logger.LogLevels.Debug);
+            log.Write($"Filepath selected is : {fsd.FileName}", Logger.LogLevels.Debug);
             // Never overwrite files. Ask the user to manually delete the file...
             if (File.Exists(fsd.FileName))
             {
-                LoggerClass.Write($"This file already exists. Aborting...", Logger.LogLevels.Debug);
+                log.Write($"This file already exists. Aborting...", Logger.LogLevels.Debug);
                 MessageBox.Show(
                     "This file already exists.\nPlease select another one or manually delete that file...",
                     "Error",
@@ -1225,7 +1284,7 @@ namespace StockManagerDB
                 return false;
             }
 
-            LoggerClass.Write($"Creating data file at that path", Logger.LogLevels.Debug);
+            log.Write($"Creating data file at that path", Logger.LogLevels.Debug);
             // Closing current file
             if (!string.IsNullOrEmpty(filepath))
             {
@@ -1238,8 +1297,8 @@ namespace StockManagerDB
             data.Save(); // Then save
             SetTitle();
             // Update listviews content + resize columns
-            UpdateListviews(true);
-            LoggerClass.Write($"Creation finished", Logger.LogLevels.Debug);
+            UpdateListviewContent(true);
+            log.Write($"Creation finished", Logger.LogLevels.Debug);
 
             return true;
         }
@@ -1249,7 +1308,7 @@ namespace StockManagerDB
         /// </summary>
         private bool OpenFile()
         {
-            LoggerClass.Write($"Openning data file...", Logger.LogLevels.Debug);
+            log.Write($"Openning data file...", Logger.LogLevels.Debug);
             OpenFileDialog ofd = new OpenFileDialog()
             {
                 Filter = "StockManager Data|*.smd|All files|*.*",
@@ -1259,7 +1318,7 @@ namespace StockManagerDB
             {
                 return false;
             }
-            LoggerClass.Write($"File selected : {ofd.FileName}", Logger.LogLevels.Debug);
+            log.Write($"File selected : {ofd.FileName}", Logger.LogLevels.Debug);
 
             return OpenFile(ofd.FileName);
         }
@@ -1289,21 +1348,21 @@ namespace StockManagerDB
             // Save path
             filepath = file;
             // Load the file
-            LoggerClass.Write($"Openning file '{filepath}'", Logger.LogLevels.Debug);
+            log.Write($"Openning file '{filepath}'", Logger.LogLevels.Debug);
             try
             {
                 dhs.LoadNew(filepath);
             }
             catch (Exception)
             {
-                LoggerClass.Write($"Openning failed...", Logger.LogLevels.Error);
+                log.Write($"Openning failed...", Logger.LogLevels.Error);
                 filepath = null;
                 return false;
             }
             SetTitle();
             // Update listviews content + resize columns
-            UpdateListviews(true);
-            LoggerClass.Write(
+            UpdateListviewContent(true);
+            log.Write(
                 $"Open finished. {Parts.Count} part(s) found",
                 Logger.LogLevels.Debug
             );
@@ -1319,7 +1378,7 @@ namespace StockManagerDB
         /// </summary>
         private bool CloseFile()
         {
-            LoggerClass.Write($"Closing file : {filepath}", Logger.LogLevels.Debug);
+            log.Write($"Closing file : {filepath}", Logger.LogLevels.Debug);
             _searchForm?.Close();
             _projectForm?.Close();
             _historyForm?.Close();
@@ -1329,7 +1388,7 @@ namespace StockManagerDB
             data.Close();
             filepath = null;
             SetTitle();
-            UpdateListviews();
+            UpdateListviewContent();
             return true;
         }
         #endregion
@@ -1341,7 +1400,7 @@ namespace StockManagerDB
         /// </summary>
         private void AddEmptyPart()
         {
-            LoggerClass.Write($"Creating a new empty part...", Logger.LogLevels.Debug);
+            log.Write($"Creating a new empty part...", Logger.LogLevels.Debug);
             // Ask the user for the MPN
             Dialog.ShowDialogResult result = Dialog.ShowDialog(
                 "Enter the MPN (Manufacturer Product Number) for the part...",
@@ -1352,18 +1411,18 @@ namespace StockManagerDB
 
             if (result.DialogResult != Dialog.DialogResult.OK)
             {
-                LoggerClass.Write($"Operation cancelled. Aborting...", Logger.LogLevels.Debug);
+                log.Write($"Operation cancelled. Aborting...", Logger.LogLevels.Debug);
                 return;
             }
 
-            LoggerClass.Write(
+            log.Write(
                 $"Adding a new part with MPN={result.UserInput}...",
                 Logger.LogLevels.Debug
             );
 
             if (Parts.ContainsKey(result.UserInput))
             {
-                LoggerClass.Write(
+                log.Write(
                     $"Unable to add the new part. The specified MPN is already present...",
                     Logger.LogLevels.Error
                 );
@@ -1385,7 +1444,7 @@ namespace StockManagerDB
             // Add to list
             data.AddPart(pc);
             PartsHaveChanged();
-            LoggerClass.Write($"Part added", Logger.LogLevels.Debug);
+            log.Write($"Part added", Logger.LogLevels.Debug);
         }
 
         /// <summary>
@@ -1393,13 +1452,13 @@ namespace StockManagerDB
         /// </summary>
         private void DeleteCheckedParts()
         {
-            LoggerClass.Write($"Deletion of checked parts...", Logger.LogLevels.Debug);
+            log.Write($"Deletion of checked parts...", Logger.LogLevels.Debug);
             var checkedParts = GetCheckedParts();
 
             // If none checked, abort
             if (0 == checkedParts.Count)
             {
-                LoggerClass.Write($"No parts checked. Aborting...", Logger.LogLevels.Debug);
+                log.Write($"No parts checked. Aborting...", Logger.LogLevels.Debug);
                 return;
             }
 
@@ -1413,17 +1472,17 @@ namespace StockManagerDB
                 ) != DialogResult.Yes
             )
             {
-                LoggerClass.Write($"Confirmation denied", Logger.LogLevels.Debug);
+                log.Write($"Confirmation denied", Logger.LogLevels.Debug);
                 return;
             }
 
-            LoggerClass.Write(
+            log.Write(
                 $"Deletion of {checkedParts.Count} part(s)...",
                 Logger.LogLevels.Debug
             );
             // Remove them from the list
             checkedParts.ForEach((part) => data.DeletePart(part));
-            LoggerClass.Write($"Deletion finished", Logger.LogLevels.Debug);
+            log.Write($"Deletion finished", Logger.LogLevels.Debug);
             PartsHaveChanged();
         }
 
@@ -1432,11 +1491,11 @@ namespace StockManagerDB
         /// </summary>
         private void DuplicateSelectedPart()
         {
-            LoggerClass.Write($"Duplicating selected part...", Logger.LogLevels.Debug);
+            log.Write($"Duplicating selected part...", Logger.LogLevels.Debug);
             // Get selected part
             if (!(listviewParts.SelectedObject is Part pc))
             {
-                LoggerClass.Write($"No selected part. Aborting...", Logger.LogLevels.Debug);
+                log.Write($"No selected part. Aborting...", Logger.LogLevels.Debug);
                 return;
             }
 
@@ -1451,15 +1510,15 @@ namespace StockManagerDB
 
             if (result.DialogResult != Dialog.DialogResult.OK)
             {
-                LoggerClass.Write($"Operation cancelled. Aborting...", Logger.LogLevels.Debug);
+                log.Write($"Operation cancelled. Aborting...", Logger.LogLevels.Debug);
                 return;
             }
 
-            LoggerClass.Write($"Duplicating the part...", Logger.LogLevels.Debug);
+            log.Write($"Duplicating the part...", Logger.LogLevels.Debug);
 
             if (Parts.ContainsKey(result.UserInput))
             {
-                LoggerClass.Write(
+                log.Write(
                     $"Unable to duplicate the part. The specified MPN is already present...",
                     Logger.LogLevels.Error
                 );
@@ -1479,7 +1538,7 @@ namespace StockManagerDB
             // Add to the list
             data.AddPart(pc);
             PartsHaveChanged();
-            LoggerClass.Write($"Cloning finished", Logger.LogLevels.Debug);
+            log.Write($"Cloning finished", Logger.LogLevels.Debug);
         }
 
         /// <summary>
@@ -1547,7 +1606,7 @@ namespace StockManagerDB
                 if (material.PartLink == null)
                 {
                     // Create the part
-                    LoggerClass.Write(
+                    log.Write(
                         $"Part MPN='{material.MPN}' not available in present list. Creating new part..."
                     );
                     Part p = new Part()
@@ -1596,7 +1655,7 @@ namespace StockManagerDB
             string note = ""
         )
         {
-            LoggerClass.Write(
+            log.Write(
                 $"Cell with MPN={part.MPN} edited : Parameter={editedParameter}, Newvalue={newValue}",
                 Logger.LogLevels.Debug
             );
@@ -1611,14 +1670,14 @@ namespace StockManagerDB
             )
             {
                 // No changes
-                LoggerClass.Write("No change detected. Aborting...");
+                log.Write("No change detected. Aborting...");
                 return;
             }
 
             // Verify that the new MPN doesn't already exists
             if ((editedParameter == Part.Parameter.MPN) && Parts.ContainsKey(newValue))
             {
-                LoggerClass.Write(
+                log.Write(
                     "Unable to edit MPN value. Another part already have this MPN value.",
                     Logger.LogLevels.Error
                 );
@@ -1647,7 +1706,7 @@ namespace StockManagerDB
         {
             if (!IsFileLoaded)
             {
-                LoggerClass.Write(
+                log.Write(
                     "Unable to process action. No file is loaded.",
                     Logger.LogLevels.Debug
                 );
@@ -1660,12 +1719,12 @@ namespace StockManagerDB
                 return false;
             }
 
-            LoggerClass.Write($"Making automated order...", Logger.LogLevels.Debug);
+            log.Write($"Making automated order...", Logger.LogLevels.Debug);
             List<Part> parts = GetPartForProcess();
             // Select parts with current stock lower than lowStock limit
             IEnumerable<Part> selected = parts.Where((part) => (part.Stock < part.LowStock));
 
-            LoggerClass.Write(
+            log.Write(
                 $"{selected.Count()} part(s) found for automatic order",
                 Logger.LogLevels.Debug
             );
@@ -1712,7 +1771,7 @@ namespace StockManagerDB
         {
             if (!IsFileLoaded)
             {
-                LoggerClass.Write(
+                log.Write(
                     "Unable to process action. No file is loaded.",
                     Logger.LogLevels.Debug
                 );
@@ -1725,10 +1784,10 @@ namespace StockManagerDB
                 return false;
             }
 
-            LoggerClass.Write($"Adding to order...", Logger.LogLevels.Debug);
+            log.Write($"Adding to order...", Logger.LogLevels.Debug);
             List<Part> parts = GetPartForProcess();
 
-            LoggerClass.Write(
+            log.Write(
                 $"{parts.Count()} part(s) to be added to order form...",
                 Logger.LogLevels.Debug
             );
@@ -1751,7 +1810,7 @@ namespace StockManagerDB
         {
             if (!IsFileLoaded)
             {
-                LoggerClass.Write(
+                log.Write(
                     "Unable to process action. No file is loaded.",
                     Logger.LogLevels.Debug
                 );
@@ -1764,10 +1823,10 @@ namespace StockManagerDB
                 return false;
             }
 
-            LoggerClass.Write($"Adding parts to order...", Logger.LogLevels.Debug);
+            log.Write($"Adding parts to order...", Logger.LogLevels.Debug);
             List<Part> parts = GetPartForProcess();
 
-            LoggerClass.Write(
+            log.Write(
                 $"{parts.Count} part(s) found to add to project",
                 Logger.LogLevels.Debug
             );
@@ -1805,7 +1864,7 @@ namespace StockManagerDB
         /// </summary>
         private int ActionDigikeyProcessParts(List<CsvPartImport> records)
         {
-            LoggerClass.Write($"{records.Count} part(s) found to process...");
+            log.Write($"{records.Count} part(s) found to process...");
 
             string note = $"Digikey Order ";
             int processedParts = 0;
@@ -1813,7 +1872,7 @@ namespace StockManagerDB
             {
                 if (item == null)
                 {
-                    LoggerClass.Write(
+                    log.Write(
                         "Null row found... Should not happen",
                         Logger.LogLevels.Error
                     );
@@ -1828,7 +1887,7 @@ namespace StockManagerDB
                 // Try converting quantity
                 if (!float.TryParse(item.Quantity, out float quantity))
                 {
-                    LoggerClass.Write(
+                    log.Write(
                         $"Unable to parse quantity : '{item.Quantity}'",
                         Logger.LogLevels.Error
                     );
@@ -1838,7 +1897,7 @@ namespace StockManagerDB
                 processedParts++;
                 if (!Parts.ContainsKey(item.MPN))
                 {
-                    LoggerClass.Write(
+                    log.Write(
                         $"Part '{item.MPN}' not available in present list. Creating new part..."
                     );
                     Part p = new Part()
@@ -1856,7 +1915,7 @@ namespace StockManagerDB
                 {
                     // Process edit
                     Part part = Parts[item.MPN];
-                    LoggerClass.Write(
+                    log.Write(
                         $"Changing stock of '{part.MPN}' from {part.Stock} to {part.Stock + quantity}"
                     );
                     data.EditPart(
@@ -1876,7 +1935,7 @@ namespace StockManagerDB
         /// </summary>
         private int ActionDigikeyListProcessParts(List<CsvPartImport> records)
         {
-            LoggerClass.Write($"{records.Count} part(s) found to process...");
+            log.Write($"{records.Count} part(s) found to process...");
 
             string note = $"Digikey List Import ";
             int processedParts = 0;
@@ -1884,7 +1943,7 @@ namespace StockManagerDB
             {
                 if (item == null)
                 {
-                    LoggerClass.Write(
+                    log.Write(
                         "Null row found... Should not happen",
                         Logger.LogLevels.Error
                     );
@@ -1902,7 +1961,7 @@ namespace StockManagerDB
                 processedParts++;
                 if (!Parts.ContainsKey(item.MPN))
                 {
-                    LoggerClass.Write(
+                    log.Write(
                         $"Part '{item.MPN}' not available in present list. Creating new part..."
                     );
                     Part p = new Part()
@@ -1920,7 +1979,7 @@ namespace StockManagerDB
                 {
                     // Process edit
                     Part part = Parts[item.MPN];
-                    LoggerClass.Write(
+                    log.Write(
                         $"Changing stock of '{part.MPN}' from {part.Stock} to {part.Stock + quantity}"
                     );
                     data.EditPart(
@@ -1939,7 +1998,7 @@ namespace StockManagerDB
         {
             if (!IsFileLoaded)
             {
-                LoggerClass.Write(
+                log.Write(
                     "Unable to process action. No file is loaded.",
                     Logger.LogLevels.Debug
                 );
@@ -1962,7 +2021,7 @@ namespace StockManagerDB
                 return -1;
             }
 
-            LoggerClass.Write($"Loading Digikey order...", Logger.LogLevels.Debug);
+            log.Write($"Loading Digikey order...", Logger.LogLevels.Debug);
 
             string file = ofd.FileName;
             int processedParts = 0;
@@ -2020,7 +2079,7 @@ namespace StockManagerDB
         {
             if (!IsFileLoaded)
             {
-                LoggerClass.Write(
+                log.Write(
                     "Unable to process action. No file is loaded.",
                     Logger.LogLevels.Debug
                 );
@@ -2035,7 +2094,7 @@ namespace StockManagerDB
 
             string content = Clipboard.GetText();
 
-            LoggerClass.Write($"Loading Digikey order from clipboard...", Logger.LogLevels.Debug);
+            log.Write($"Loading Digikey order from clipboard...", Logger.LogLevels.Debug);
 
             try
             {
@@ -2073,7 +2132,7 @@ namespace StockManagerDB
             }
             catch (Exception)
             {
-                LoggerClass.Write("Unable to load ordre from clipboard...", Logger.LogLevels.Error);
+                log.Write("Unable to load ordre from clipboard...", Logger.LogLevels.Error);
                 MessageBox.Show(
                     "Unable to import order content from clipboard...",
                     "Error",
@@ -2088,7 +2147,7 @@ namespace StockManagerDB
         {
             if (!IsFileLoaded)
             {
-                LoggerClass.Write(
+                log.Write(
                     "Unable to process action. No file is loaded.",
                     Logger.LogLevels.Debug
                 );
@@ -2111,7 +2170,7 @@ namespace StockManagerDB
                 return -1;
             }
 
-            LoggerClass.Write($"Loading Digikey list...", Logger.LogLevels.Debug);
+            log.Write($"Loading Digikey list...", Logger.LogLevels.Debug);
 
             string file = ofd.FileName;
             int processedParts = 0;
@@ -2175,7 +2234,7 @@ namespace StockManagerDB
         {
             if (!IsFileLoaded)
             {
-                LoggerClass.Write(
+                log.Write(
                     "Unable to process action. No file is loaded.",
                     Logger.LogLevels.Debug
                 );
@@ -2200,7 +2259,7 @@ namespace StockManagerDB
 
             if (File.Exists(fsd.FileName))
             {
-                LoggerClass.Write(
+                log.Write(
                     $"Unable to export... File already exists",
                     Logger.LogLevels.Debug
                 );
@@ -2213,10 +2272,10 @@ namespace StockManagerDB
                 return false;
             }
 
-            LoggerClass.Write($"Exporting parts...", Logger.LogLevels.Debug);
+            log.Write($"Exporting parts...", Logger.LogLevels.Debug);
             List<Part> parts = GetPartForProcess();
 
-            LoggerClass.Write($"{parts.Count} part(s) found for export", Logger.LogLevels.Debug);
+            log.Write($"{parts.Count} part(s) found for export", Logger.LogLevels.Debug);
 
             Dictionary<string, Part> exportParts = new Dictionary<string, Part>();
             parts.ForEach((p) => exportParts.Add(p.MPN, p));
@@ -2237,7 +2296,7 @@ namespace StockManagerDB
         {
             if (!IsFileLoaded)
             {
-                LoggerClass.Write(
+                log.Write(
                     "Unable to process action. No file is loaded.",
                     Logger.LogLevels.Debug
                 );
@@ -2260,13 +2319,13 @@ namespace StockManagerDB
                 return false;
             }
 
-            LoggerClass.Write($"Importing parts...", Logger.LogLevels.Debug);
+            log.Write($"Importing parts...", Logger.LogLevels.Debug);
 
             SettingsManager.LoadFrom(ofd.FileName, out DataExportClass dec, zipFile: true);
 
             if ((dec == null) || (dec.Parts == null) || (dec.Parts.Count == 0))
             {
-                LoggerClass.Write("No data found...");
+                log.Write("No data found...");
                 MessageBox.Show(
                     "No data found in this file...",
                     "Warning",
@@ -2276,7 +2335,7 @@ namespace StockManagerDB
                 return false;
             }
 
-            LoggerClass.Write($"{dec.Parts.Count} part(s) found to import...");
+            log.Write($"{dec.Parts.Count} part(s) found to import...");
 
             // Confirmation
             if (
@@ -2298,7 +2357,7 @@ namespace StockManagerDB
                 }
                 else
                 {
-                    LoggerClass.Write($"Part MPN='{part.MPN}' already present... Skipped");
+                    log.Write($"Part MPN='{part.MPN}' already present... Skipped");
                 }
             }
 
@@ -2352,8 +2411,8 @@ namespace StockManagerDB
             // Save settings
             AppSettings.Save();
 
-            LoggerClass.Write("Closing... Stopping logger", Logger.LogLevels.Info);
-            LoggerClass.logger.Dispose();
+            log.Write("Closing... Stopping logger", Logger.LogLevels.Info);
+            log.logger.Dispose();
         }
 
         private void importFromExcelToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2386,25 +2445,25 @@ namespace StockManagerDB
 
         private void listviewParts_ItemChecked(object sender, ItemCheckedEventArgs e)
         {
-            UpdateCheckedListview();
+            UpdateCheckedListviewContent();
         }
 
         private void checkAllInViewToolStripMenuItem_Click(object sender, EventArgs e)
         {
             // Check all in view
-            UpdateOnCheck = false;
+            ShouldUpdateCheckedListview = false;
             listviewParts.CheckObjects(listviewParts.FilteredObjects);
             listviewParts.Focus();
-            UpdateOnCheck = true;
+            ShouldUpdateCheckedListview = true;
         }
 
         private void uncheckAllInViewToolStripMenuItem_Click(object sender, EventArgs e)
         {
             // Uncheck all in view
-            UpdateOnCheck = false;
+            ShouldUpdateCheckedListview = false;
             listviewParts.UncheckObjects(listviewParts.FilteredObjects);
             listviewParts.Focus();
-            UpdateOnCheck = true;
+            ShouldUpdateCheckedListview = true;
         }
 
         private void closeDatabaseToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2525,10 +2584,10 @@ namespace StockManagerDB
 
         private void projectsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            LoggerClass.Write($"Openning project window...", Logger.LogLevels.Debug);
+            log.Write($"Openning project window...", Logger.LogLevels.Debug);
             if (!IsFileLoaded)
             {
-                LoggerClass.Write(
+                log.Write(
                     "Unable to open projects, no file loaded...",
                     Logger.LogLevels.Error
                 );
@@ -2540,10 +2599,10 @@ namespace StockManagerDB
 
         private void openHistoryToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            LoggerClass.Write($"Openning history window...", Logger.LogLevels.Debug);
+            log.Write($"Openning history window...", Logger.LogLevels.Debug);
             if (!IsFileLoaded)
             {
-                LoggerClass.Write(
+                log.Write(
                     "Unable to open history, no file loaded...",
                     Logger.LogLevels.Error
                 );
@@ -2680,7 +2739,7 @@ namespace StockManagerDB
 
         private void seeLogsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            string logPath = LoggerClass.logger.FileOutputPath;
+            string logPath = log.logger.FileOutputPath;
             if (File.Exists(logPath))
             {
                 Process.Start(Path.GetDirectoryName(logPath));
@@ -2697,7 +2756,7 @@ namespace StockManagerDB
             }
             catch (Exception ex)
             {
-                LoggerClass.Write(
+                log.Write(
                     $"Unable to get API Access : {ex.Message}",
                     Logger.LogLevels.Error
                 );
@@ -2898,7 +2957,7 @@ namespace StockManagerDB
 
             if (selectedParts.Count == 0)
             {
-                LoggerClass.Write($"[DigikeyUpdate] No valid parts selected...");
+                log.Write($"[DigikeyUpdate] No valid parts selected...");
                 return;
             }
 
@@ -2915,7 +2974,7 @@ namespace StockManagerDB
             {
                 return;
             }
-            LoggerClass.Write($"[DigikeyUpdate] Processing {selectedParts.Count} part(s)");
+            log.Write($"[DigikeyUpdate] Processing {selectedParts.Count} part(s)");
 
             SetWorkingStatus();
             Cursor = Cursors.WaitCursor;
@@ -2923,7 +2982,7 @@ namespace StockManagerDB
             for (int i = 0; i < selectedParts.Count; i++)
             {
                 Part part = selectedParts[i];
-                LoggerClass.Write($"[DigikeyUpdate] Processing MPN '{part.MPN}'...");
+                log.Write($"[DigikeyUpdate] Processing MPN '{part.MPN}'...");
 
                 DigikeyPart received;
                 try
@@ -2931,7 +2990,7 @@ namespace StockManagerDB
                     var read = await ps.ProductDetails_Essentials(part.MPN);
                     if (string.IsNullOrEmpty(read))
                     {
-                        LoggerClass.Write(
+                        log.Write(
                             $"[DigikeyUpdate] No data found for this MPN...",
                             Logger.LogLevels.Error
                         );
@@ -2942,7 +3001,7 @@ namespace StockManagerDB
                 catch (Exception)
                 {
                     Cursor = Cursors.Default;
-                    LoggerClass.Write(
+                    log.Write(
                         $"[DigikeyUpdate] Unable to retrieve data...",
                         Logger.LogLevels.Error
                     );
@@ -2951,7 +3010,7 @@ namespace StockManagerDB
 
                 if (received == null)
                 {
-                    LoggerClass.Write(
+                    log.Write(
                         $"[DigikeyUpdate] Unable to convert data...",
                         Logger.LogLevels.Error
                     );
@@ -2961,20 +3020,20 @@ namespace StockManagerDB
                 // Verify that the MPN is exactly the same
                 if (!part.MPN.Equals(received.ManufacturerPartNumber))
                 {
-                    LoggerClass.Write(
+                    log.Write(
                         $"[DigikeyUpdate] Unable to validate MPN '{part.MPN}' expected, '{received.ManufacturerPartNumber}' received",
                         Logger.LogLevels.Info
                     );
                     continue;
                 }
 
-                LoggerClass.Write(
+                log.Write(
                     $"[DigikeyUpdate] Updating MPN '{received.ManufacturerPartNumber}'...",
                     Logger.LogLevels.Info
                 );
                 // Update part
                 Part oldPart = part.CloneForHistory();
-                LoggerClass.Write(
+                log.Write(
                     $"[DigikeyUpdate] OLD :\t{oldPart.ToLongString()}",
                     Logger.LogLevels.Debug
                 );
@@ -2983,7 +3042,7 @@ namespace StockManagerDB
                 part.SPN = received.DigiKeyPartNumber;
                 part.Price = received.UnitPrice;
                 part.Description = received.DetailedDescription;
-                LoggerClass.Write(
+                log.Write(
                     $"[DigikeyUpdate] NEW :\t{part.ToLongString()}",
                     Logger.LogLevels.Debug
                 );
@@ -3004,7 +3063,7 @@ namespace StockManagerDB
 
         private void onlyAffectCheckedPartsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (starting)
+            if (initInProgress)
             {
                 return;
             }

@@ -144,12 +144,20 @@ namespace StockManagerDB
             set { UpdateSettings(value); }
         }
 
+        /// <summary>
+        /// Set the default app settings. Used when doing a reset.
+        /// </summary>
+        /// <param name="frmMain">The form to get the font</param>
+        /// <returns>The created setting class</returns>
         public static AppSettings SetDefaultAppSettings(Form frmMain)
         {
             _defaultSettings = new AppSettings(frmMain);
             return _defaultSettings;
         }
 
+        /// <summary>
+        /// Try to load the settings. Return true if successfully loaded
+        /// </summary>
         public static bool Load()
         {
             SettingsManager.LoadFromDefault(out AppSettings loadedSettings, zipFile: false);
