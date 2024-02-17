@@ -6,7 +6,9 @@ using DigikeyApiWrapper;
 using ESNLib.Controls;
 using ESNLib.Tools;
 using ESNLib.Tools.WinForms;
+using StockManagerDB.Properties;
 using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
@@ -15,6 +17,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using dhs = StockManagerDB.DataHolderSingleton;
@@ -554,7 +557,7 @@ namespace StockManagerDB
             int matchKind = e.filterType;
             ObjectListView olv = listviewParts;
 
-            List<TextMatchFilter> filters = GetFilters(txt, matchKind, olv);
+            List<TextMatchFilter> filters = GetFilters(txt, (FilterMatchKind)matchKind, olv);
 
             // Apply the filter to the selected column
             filterHighlightRenderer.FilterInColumn = null;
@@ -629,7 +632,7 @@ namespace StockManagerDB
         /// <summary>
         /// Indicate that some parts have changed. A listview update is required
         /// </summary>
-        private void PartsHaveChanged()
+        private void NotifyPartsHaveChanged()
         {
             // Save changes and update listview
             dhs.Instance.InvokeOnPartListModified(EventArgs.Empty);
@@ -875,9 +878,8 @@ namespace StockManagerDB
         /// </summary>
         /// <param name="txt">Text to filter</param>
         /// <param name="matchKind">Type of filter</param>
-        public void Filter(string txt, int matchKind)
+        public void Filter(string txt, FilterMatchKind matchKind)
         {
-#warning Continue here...
             ObjectListView olv = listviewParts;
 
             var filters = GetFilters(txt, matchKind, olv);
@@ -886,27 +888,52 @@ namespace StockManagerDB
                 (filters == null)
                     ? null
                     : new CompositeAllFilter(filters.Cast<IModelFilter>().ToList());
+
+            // Filter will change the number of parts displayed
+            UpdateNumberOfPartsLabel();
+        }
+
+        /// <summary>
+        /// What kind of filtering is selected
+        /// </summary>
+        public enum FilterMatchKind
+        {
+            /// <summary>
+            /// Search for anywhere in the text
+            /// </summary>
+            Anywhere = 0,
+            /// <summary>
+            /// Search at the beginning of the text
+            /// </summary>
+            Begninning = 1,
+            /// <summary>
+            /// Interpret the filter as a regex
+            /// </summary>
+            Regex = 2,
         }
 
         /// <summary>
         /// Filter a text in the main part listview
         /// </summary>
         /// <param name="txt">Text to filter</param>
-        /// <param name="matchKind">Type of filter</param>
-        public List<TextMatchFilter> GetFilters(string txt, int matchKind, ObjectListView olv)
+        /// <param name="matchKind">Type of filtering</param>
+        public List<TextMatchFilter> GetFilters(string txt, FilterMatchKind matchKind, ObjectListView olv)
         {
+            // List of generated filters for the listview
             List<TextMatchFilter> filters = new List<TextMatchFilter>();
 
             if (!string.IsNullOrEmpty(txt))
             {
-                // Separate with spaces
+                // Separate the filter with spaces
                 string[] allTxt = txt.Split(' ').Where((x) => !string.IsNullOrEmpty(x)).ToArray();
                 // Process each entry
+
+#warning TODO: the foreach loop should be inside the switch imo
                 foreach (string textEntry in allTxt)
                 {
                     switch (matchKind)
                     {
-                        case 0: // Anywhere
+                        case FilterMatchKind.Anywhere:
                             if (IsStringQuoted(textEntry))
                             {
                                 string regexStr = GetRegexStringForExactFiltering(textEntry, false);
@@ -918,7 +945,7 @@ namespace StockManagerDB
                             }
                             break;
 
-                        case 1: // At the start
+                        case FilterMatchKind.Begninning:
                             if (IsStringQuoted(textEntry))
                             {
                                 string regexStr = GetRegexStringForExactFiltering(textEntry, true);
@@ -930,7 +957,7 @@ namespace StockManagerDB
                             }
                             break;
 
-                        case 2: // As a regex string
+                        case FilterMatchKind.Regex:
                             filters.Add(TextMatchFilter.Regex(olv, textEntry));
                             break;
 
@@ -946,25 +973,21 @@ namespace StockManagerDB
         /// <summary>
         /// Called when the filter text is changed
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void txtboxFilter_TextChanged(object sender, EventArgs e)
         {
-            Filter(txtboxFilter.Text, this.cbboxFilterType.SelectedIndex);
-            UpdateNumberOfPartsLabel();
+            Filter(txtboxFilter.Text, (FilterMatchKind)this.cbboxFilterType.SelectedIndex);
         }
 
         /// <summary>
         /// Called when the filter type is changed
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void cbboxFilterType_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (initInProgress)
                 return;
-            Filter(txtboxFilter.Text, this.cbboxFilterType.SelectedIndex);
-            UpdateNumberOfPartsLabel();
+
+            Filter(txtboxFilter.Text, (FilterMatchKind)this.cbboxFilterType.SelectedIndex);
+
             // Save last type used
             AppSettings.Settings.LastMatchKindUsed = cbboxFilterType.SelectedIndex;
         }
@@ -977,7 +1000,6 @@ namespace StockManagerDB
         /// <summary>
         /// Get the checked parts of the main listview. Note that they are also affected by filters.
         /// </summary>
-        /// <returns></returns>
         private List<Part> GetCheckedParts()
         {
             return listviewParts.CheckedObjectsEnumerable.Cast<Part>().ToList();
@@ -986,38 +1008,35 @@ namespace StockManagerDB
         /// <summary>
         /// Get all parts
         /// </summary>
-        /// <returns></returns>
-        private List<Part> GetAll()
+        private List<Part> GetAllParts()
         {
             return Parts.Values.ToList();
         }
 
         /// <summary>
-        /// Return parts that will be processed in the next action
+        /// Return parts that will be processed in the next action (according to Action only for checked parts Checkbox)
         /// </summary>
-        /// <returns></returns>
-        private List<Part> GetPartForProcess()
+        private List<Part> GetValidPartsForActions()
         {
             // If "onlyAffectCheckedParts" is checked, get checked parts. Otherwise all parts
             if (AppSettings.Settings.ProcessActionOnCheckedOnly)
             {
-                log.Write(
-                    $"Action executing on checked parts only...",
-                    Logger.LogLevels.Debug
-                );
+                log.Write($"Action executing on checked parts only...");
                 return GetCheckedParts();
             }
-            return GetAll();
+
+            return GetAllParts();
         }
 
         /// <summary>
-        /// 'hack' to check selected rows but call the CheckedChanged event only once
+        /// Toggle the checked status for the selected part
         /// </summary>
-        private void ToggleCheckSelection()
+        private void ToggleCheckedForSelectedPart()
         {
             bool state = listviewParts.IsChecked(listviewParts.SelectedObjects[0]);
             state = !state;
 
+            // 'hack' to check selected rows but call the CheckedChanged event only once
             ShouldUpdateCheckedListview = false;
             if (state)
             {
@@ -1034,22 +1053,63 @@ namespace StockManagerDB
 
         #region File management
 
+#warning Continue here...
+
+        /// <summary>
+        /// Import the specified file into a list of <typeparamref name="T"/>
+        /// </summary>
+        /// <typeparam name="T">Class for each row</typeparam>
+        /// <param name="filename">File path</param>
+        /// <param name="currentLinks">Current header to <typeparamref name="T"/> Properties (as string)</param>
+        /// <returns>List of imported objects, or null if failed/canceled</returns>
+        private static List<T> ImportExcelFileAs<T>(string filename, ref Dictionary<string, string> currentLinks) where T : new()
+        {
+
+            // Read file
+            string data = ExcelWrapperV2.ReadSheetCSV(filename);
+
+            // Ask the user the link between the header and the Part property
+            CsvImportAs<T> importer = new CsvImportAs<T>();
+            var links = importer.AskUserHeadersLinks(data, currentLinks);
+
+            if (links == null) // User cancelled
+            {
+                return null;
+            }
+
+            // Convert to <string,string> in order to save to the settings
+            Dictionary<string, string> converted = new Dictionary<string, string>();
+            foreach (var item in links)
+            {
+                if (item.Value == null)
+                    continue;
+                converted.Add(item.Key, item.Value.Name);
+            }
+            currentLinks = converted;
+            AppSettings.Save();
+
+            // Actually import
+            List<T> importedItems = importer.ImportData(
+                data,
+                currentLinks
+            );
+
+            return importedItems;
+        }
+
         /// <summary>
         /// Import parts from excel file into the database
         /// </summary>
-        private bool ImportPartsFromExcel()
+        private bool ImportPartsFromAnyExcel()
         {
-            log.Write($"Importing Parts Excel file...", Logger.LogLevels.Debug);
+            log.Write($"Importing Parts Excel file...");
 
             // A file must be loaded prior to importing.
             if (!IsFileLoaded)
             {
-                log.Write(
-                    "Unable to load Excel file when no Data file is loaded",
-                    Logger.LogLevels.Debug
-                );
+                log.Write("Unable to load Excel file when no Data file is loaded");
                 MessageBox.Show(
-                    "No file loaded ! Open or create a new one",
+                    "No file loaded ! Open one or create a new one",
                     "Error",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error
@@ -1058,59 +1118,28 @@ namespace StockManagerDB
             }
 
             // Ask to open the excel file
-            OpenFileDialog ofd = new OpenFileDialog() { Filter = "All files|*.*", };
+            OpenFileDialog ofd = new OpenFileDialog() { Filter = "All files|*.*", }; // TODO No filter yet, maybe one day ?
             if (ofd.ShowDialog() != DialogResult.OK)
             {
                 return false;
             }
-            log.Write(
-                $"File selected for Excel import : {ofd.FileName}",
-                Logger.LogLevels.Debug
-            );
+            log.Write($"File selected for Excel import : {ofd.FileName}");
 
-            // Extract the parts. This is a hardcoded way
+            // Import the file
             Cursor = Cursors.WaitCursor;
-
-            // Read file
-            string data = ExcelWrapperV2.ReadSheetCSV(ofd.FileName);
-
-            CsvImportAs<Part> importer = new CsvImportAs<Part>();
-            var links = importer.AskUserHeadersLinks(data, AppSettings.Settings.lastCsvPartsLinks);
-
-            if (links == null) // User cancelled
-            {
-                Cursor = Cursors.Default;
-                return false;
-            }
-
-            // Save to settings : Convert to string,string
-            Dictionary<string, string> converted = new Dictionary<string, string>();
-            foreach (var item in links)
-            {
-                if (item.Value == null)
-                    continue;
-                converted.Add(item.Key, item.Value.Name);
-            }
-            AppSettings.Settings.lastCsvPartsLinks = converted;
-            AppSettings.Save();
-
-            List<Part> importedItems = importer.ImportData(
-                data,
-                AppSettings.Settings.lastCsvPartsLinks
-            );
+            Dictionary<string, string> currentLinks = AppSettings.Settings.lastCsvPartsLinks;
+            List<Part> importedItems = ImportExcelFileAs<Part>(ofd.FileName, ref currentLinks);
+            AppSettings.Settings.lastCsvPartsLinks = currentLinks;
+            Cursor = Cursors.Default;
 
             if ((null == importedItems) || (0 == importedItems.Count))
             {
                 log.Write("No part found in that file");
-                Cursor = Cursors.Default;
                 return false;
             }
 
-            // Confirmation
-            log.Write(
-                $"{importedItems.Count} part(s) found in that file",
-                Logger.LogLevels.Debug
-            );
+            log.Write($"{importedItems.Count} part(s) found in that file");
+
             if (
                 MessageBox.Show(
                     $"Please confirm the additions of '{importedItems.Count}' parts to the current stock. This cannot be undone\nContinue ?",
@@ -1120,12 +1149,11 @@ namespace StockManagerDB
                 ) != DialogResult.Yes
             )
             {
-                Cursor = Cursors.Default;
                 return false;
             }
 
-            string note = $"Imported Excel ";
-            log.Write($"Import confirmed. Processing...", Logger.LogLevels.Debug);
+            string note = "Imported Excel ";
+            log.Write("Import confirmed. Processing...");
             // Add the parts to the list
             Cursor = Cursors.WaitCursor;
             foreach (Part item in importedItems)
@@ -1136,32 +1164,31 @@ namespace StockManagerDB
                         $"Duplicate part found : MPN={item.MPN}. Skipping this part...",
                         Logger.LogLevels.Warn
                     );
-                    continue;
                 }
-
-                this.data.AddPart(item, note);
+                else
+                {
+                    this.data.AddPart(item, note);
+                }
             }
             Cursor = Cursors.Default;
-            log.Write($"Import finished", Logger.LogLevels.Debug);
-            PartsHaveChanged();
+            log.Write($"Import finished");
+
+            NotifyPartsHaveChanged();
 
             return true;
         }
 
         /// <summary>
-        /// Import parts from excel file into the database
+        /// Apply the order from excel file into the database
         /// </summary>
-        private bool ImportOrderFromExcel()
+        private bool ApplyOrderFromExcel()
         {
-            log.Write($"Importing Order Excel file...", Logger.LogLevels.Debug);
+            log.Write($"Importing Order Excel file...");
 
             // A file must be loaded prior to importing.
             if (!IsFileLoaded)
             {
-                log.Write(
-                    "Unable to load Excel file when no Data file is loaded",
-                    Logger.LogLevels.Debug
-                );
+                log.Write("Unable to load Excel file when no Data file is loaded");
                 MessageBox.Show(
                     "No file loaded ! Open or create a new one",
                     "Error",
@@ -1172,60 +1199,28 @@ namespace StockManagerDB
             }
 
             // Ask to open the excel file
-            OpenFileDialog ofd = new OpenFileDialog() { Filter = "All files|*.*", };
+            OpenFileDialog ofd = new OpenFileDialog() { Filter = "All files|*.*", }; // TODO
             if (ofd.ShowDialog() != DialogResult.OK)
             {
                 return false;
             }
-            log.Write(
-                $"File selected for Excel import : {ofd.FileName}",
-                Logger.LogLevels.Debug
-            );
+            log.Write($"File selected for Excel import : {ofd.FileName}");
 
-            // Extract the parts. This is a hardcoded way
+            // Import the file
             Cursor = Cursors.WaitCursor;
-
-            // Read file
-            string data = ExcelWrapperV2.ReadSheetCSV(ofd.FileName);
-
-            CsvImportAs<OrderMaterial> importer = new CsvImportAs<OrderMaterial>();
-            var links = importer.AskUserHeadersLinks(data, AppSettings.Settings.lastCsvOrderLinks);
-
-            if (links == null) // User cancelled
-            {
-                Cursor = Cursors.Default;
-                return false;
-            }
-
-            // Save to settings : Convert to string,string
-            Dictionary<string, string> converted = new Dictionary<string, string>();
-            foreach (var item in links)
-            {
-                if (item.Value == null)
-                    continue;
-                converted.Add(item.Key, item.Value.Name);
-            }
-            AppSettings.Settings.lastCsvOrderLinks = converted;
-            AppSettings.Save();
-
-            List<OrderMaterial> importedItems = importer.ImportData(
-                data,
-                AppSettings.Settings.lastCsvOrderLinks
-            );
+            Dictionary<string, string> currentLinks = AppSettings.Settings.lastCsvOrderLinks;
+            List<OrderMaterial> importedItems = ImportExcelFileAs<OrderMaterial>(ofd.FileName, ref currentLinks);
+            AppSettings.Settings.lastCsvPartsLinks = currentLinks;
             Cursor = Cursors.Default;
 
             if ((null == importedItems) || (0 == importedItems.Count))
             {
                 log.Write("No part found in that file");
-                Cursor = Cursors.Default;
                 return false;
             }
 
             // Confirmation
-            log.Write(
-                $"{importedItems.Count} part(s) found in that file",
-                Logger.LogLevels.Debug
-            );
+            log.Write($"{importedItems.Count} part(s) found in that file");
             if (
                 MessageBox.Show(
                     $"Please confirm the process of '{importedItems.Count}' items from the order to the current stock. This cannot be undone\nContinue ?",
@@ -1235,23 +1230,18 @@ namespace StockManagerDB
                 ) != DialogResult.Yes
             )
             {
-                Cursor = Cursors.Default;
                 return false;
             }
 
-            string note = $"Imported Excel Order ";
-            log.Write($"Import confirmed. Processing...", Logger.LogLevels.Debug);
+            log.Write($"Import confirmed. Processing...");
             // Add the parts to the list
             Cursor = Cursors.WaitCursor;
-
             List<Material> processingList = importedItems.Select((x) => new Material(x)).ToList();
-
-            // -1 to add the elements
-            this.ApplyOrder(processingList, -1, "Order process from import ");
-
+            this.ApplyOrder(processingList, -1, "Order process from import "); // multiplier -1 to add the elements (because positive removes them)
             Cursor = Cursors.Default;
-            log.Write($"Import finished", Logger.LogLevels.Debug);
-            PartsHaveChanged();
+
+            log.Write($"Import finished");
+            NotifyPartsHaveChanged();
 
             return true;
         }
@@ -1261,7 +1251,7 @@ namespace StockManagerDB
         /// </summary>
         private bool CreateNewFile()
         {
-            log.Write($"Creating new data file", Logger.LogLevels.Debug);
+            log.Write($"Creating new data file");
             SaveFileDialog fsd = new SaveFileDialog()
             {
                 Filter = "StockManager Data|*.smd|All files|*.*",
@@ -1270,11 +1260,11 @@ namespace StockManagerDB
             {
                 return false;
             }
-            log.Write($"Filepath selected is : {fsd.FileName}", Logger.LogLevels.Debug);
+            log.Write($"Filepath selected is : {fsd.FileName}");
             // Never overwrite files. Ask the user to manually delete the file...
             if (File.Exists(fsd.FileName))
             {
-                log.Write($"This file already exists. Aborting...", Logger.LogLevels.Debug);
+                log.Write($"This file already exists. Aborting...");
                 MessageBox.Show(
                     "This file already exists.\nPlease select another one or manually delete that file...",
                     "Error",
@@ -1284,7 +1274,7 @@ namespace StockManagerDB
                 return false;
             }
 
-            log.Write($"Creating data file at that path", Logger.LogLevels.Debug);
+            log.Write($"Creating data file at that path");
             // Closing current file
             if (!string.IsNullOrEmpty(filepath))
             {
@@ -1298,7 +1288,7 @@ namespace StockManagerDB
             SetTitle();
             // Update listviews content + resize columns
             UpdateListviewContent(true);
-            log.Write($"Creation finished", Logger.LogLevels.Debug);
+            log.Write($"Creation finished");
 
             return true;
         }
@@ -1308,7 +1298,7 @@ namespace StockManagerDB
         /// </summary>
         private bool OpenFile()
         {
-            log.Write($"Openning data file...", Logger.LogLevels.Debug);
+            log.Write($"Openning data file...");
             OpenFileDialog ofd = new OpenFileDialog()
             {
                 Filter = "StockManager Data|*.smd|All files|*.*",
@@ -1318,7 +1308,7 @@ namespace StockManagerDB
             {
                 return false;
             }
-            log.Write($"File selected : {ofd.FileName}", Logger.LogLevels.Debug);
+            log.Write($"File selected : {ofd.FileName}");
 
             return OpenFile(ofd.FileName);
         }
@@ -1348,7 +1338,7 @@ namespace StockManagerDB
             // Save path
             filepath = file;
             // Load the file
-            log.Write($"Openning file '{filepath}'", Logger.LogLevels.Debug);
+            log.Write($"Openning file '{filepath}'");
             try
             {
                 dhs.LoadNew(filepath);
@@ -1378,7 +1368,7 @@ namespace StockManagerDB
         /// </summary>
         private bool CloseFile()
         {
-            log.Write($"Closing file : {filepath}", Logger.LogLevels.Debug);
+            log.Write($"Closing file : {filepath}");
             _searchForm?.Close();
             _projectForm?.Close();
             _historyForm?.Close();
@@ -1400,7 +1390,7 @@ namespace StockManagerDB
         /// </summary>
         private void AddEmptyPart()
         {
-            log.Write($"Creating a new empty part...", Logger.LogLevels.Debug);
+            log.Write($"Creating a new empty part...");
             // Ask the user for the MPN
             Dialog.ShowDialogResult result = Dialog.ShowDialog(
                 "Enter the MPN (Manufacturer Product Number) for the part...",
@@ -1411,7 +1401,7 @@ namespace StockManagerDB
 
             if (result.DialogResult != Dialog.DialogResult.OK)
             {
-                log.Write($"Operation cancelled. Aborting...", Logger.LogLevels.Debug);
+                log.Write($"Operation cancelled. Aborting...");
                 return;
             }
 
@@ -1443,8 +1433,8 @@ namespace StockManagerDB
 
             // Add to list
             data.AddPart(pc);
-            PartsHaveChanged();
-            log.Write($"Part added", Logger.LogLevels.Debug);
+            NotifyPartsHaveChanged();
+            log.Write($"Part added");
         }
 
         /// <summary>
@@ -1452,13 +1442,13 @@ namespace StockManagerDB
         /// </summary>
         private void DeleteCheckedParts()
         {
-            log.Write($"Deletion of checked parts...", Logger.LogLevels.Debug);
+            log.Write($"Deletion of checked parts...");
             var checkedParts = GetCheckedParts();
 
             // If none checked, abort
             if (0 == checkedParts.Count)
             {
-                log.Write($"No parts checked. Aborting...", Logger.LogLevels.Debug);
+                log.Write($"No parts checked. Aborting...");
                 return;
             }
 
@@ -1472,7 +1462,7 @@ namespace StockManagerDB
                 ) != DialogResult.Yes
             )
             {
-                log.Write($"Confirmation denied", Logger.LogLevels.Debug);
+                log.Write($"Confirmation denied");
                 return;
             }
 
@@ -1482,8 +1472,8 @@ namespace StockManagerDB
             );
             // Remove them from the list
             checkedParts.ForEach((part) => data.DeletePart(part));
-            log.Write($"Deletion finished", Logger.LogLevels.Debug);
-            PartsHaveChanged();
+            log.Write($"Deletion finished");
+            NotifyPartsHaveChanged();
         }
 
         /// <summary>
@@ -1491,11 +1481,11 @@ namespace StockManagerDB
         /// </summary>
         private void DuplicateSelectedPart()
         {
-            log.Write($"Duplicating selected part...", Logger.LogLevels.Debug);
+            log.Write($"Duplicating selected part...");
             // Get selected part
             if (!(listviewParts.SelectedObject is Part pc))
             {
-                log.Write($"No selected part. Aborting...", Logger.LogLevels.Debug);
+                log.Write($"No selected part. Aborting...");
                 return;
             }
 
@@ -1510,11 +1500,11 @@ namespace StockManagerDB
 
             if (result.DialogResult != Dialog.DialogResult.OK)
             {
-                log.Write($"Operation cancelled. Aborting...", Logger.LogLevels.Debug);
+                log.Write($"Operation cancelled. Aborting...");
                 return;
             }
 
-            log.Write($"Duplicating the part...", Logger.LogLevels.Debug);
+            log.Write($"Duplicating the part...");
 
             if (Parts.ContainsKey(result.UserInput))
             {
@@ -1537,8 +1527,8 @@ namespace StockManagerDB
 
             // Add to the list
             data.AddPart(pc);
-            PartsHaveChanged();
-            log.Write($"Cloning finished", Logger.LogLevels.Debug);
+            NotifyPartsHaveChanged();
+            log.Write($"Cloning finished");
         }
 
         /// <summary>
@@ -1692,7 +1682,7 @@ namespace StockManagerDB
 
             data.EditPart(part, editedParameter, newValue, note);
 
-            PartsHaveChanged();
+            NotifyPartsHaveChanged();
         }
 
         #endregion
@@ -1719,8 +1709,8 @@ namespace StockManagerDB
                 return false;
             }
 
-            log.Write($"Making automated order...", Logger.LogLevels.Debug);
-            List<Part> parts = GetPartForProcess();
+            log.Write($"Making automated order...");
+            List<Part> parts = GetValidPartsForActions();
             // Select parts with current stock lower than lowStock limit
             IEnumerable<Part> selected = parts.Where((part) => (part.Stock < part.LowStock));
 
@@ -1784,8 +1774,8 @@ namespace StockManagerDB
                 return false;
             }
 
-            log.Write($"Adding to order...", Logger.LogLevels.Debug);
-            List<Part> parts = GetPartForProcess();
+            log.Write($"Adding to order...");
+            List<Part> parts = GetValidPartsForActions();
 
             log.Write(
                 $"{parts.Count()} part(s) to be added to order form...",
@@ -1823,8 +1813,8 @@ namespace StockManagerDB
                 return false;
             }
 
-            log.Write($"Adding parts to order...", Logger.LogLevels.Debug);
-            List<Part> parts = GetPartForProcess();
+            log.Write($"Adding parts to order...");
+            List<Part> parts = GetValidPartsForActions();
 
             log.Write(
                 $"{parts.Count} part(s) found to add to project",
@@ -2021,7 +2011,7 @@ namespace StockManagerDB
                 return -1;
             }
 
-            log.Write($"Loading Digikey order...", Logger.LogLevels.Debug);
+            log.Write($"Loading Digikey order...");
 
             string file = ofd.FileName;
             int processedParts = 0;
@@ -2071,7 +2061,7 @@ namespace StockManagerDB
             }
 
             // Ask update of part list
-            PartsHaveChanged();
+            NotifyPartsHaveChanged();
             return processedParts;
         }
 
@@ -2094,7 +2084,7 @@ namespace StockManagerDB
 
             string content = Clipboard.GetText();
 
-            log.Write($"Loading Digikey order from clipboard...", Logger.LogLevels.Debug);
+            log.Write($"Loading Digikey order from clipboard...");
 
             try
             {
@@ -2126,7 +2116,7 @@ namespace StockManagerDB
                 int processedParts = ActionDigikeyProcessParts(records);
 
                 // Ask update of part list
-                PartsHaveChanged();
+                NotifyPartsHaveChanged();
 
                 return processedParts;
             }
@@ -2170,7 +2160,7 @@ namespace StockManagerDB
                 return -1;
             }
 
-            log.Write($"Loading Digikey list...", Logger.LogLevels.Debug);
+            log.Write($"Loading Digikey list...");
 
             string file = ofd.FileName;
             int processedParts = 0;
@@ -2226,7 +2216,7 @@ namespace StockManagerDB
             }
 
             // Ask update of part list
-            PartsHaveChanged();
+            NotifyPartsHaveChanged();
             return processedParts;
         }
 
@@ -2272,10 +2262,10 @@ namespace StockManagerDB
                 return false;
             }
 
-            log.Write($"Exporting parts...", Logger.LogLevels.Debug);
-            List<Part> parts = GetPartForProcess();
+            log.Write($"Exporting parts...");
+            List<Part> parts = GetValidPartsForActions();
 
-            log.Write($"{parts.Count} part(s) found for export", Logger.LogLevels.Debug);
+            log.Write($"{parts.Count} part(s) found for export");
 
             Dictionary<string, Part> exportParts = new Dictionary<string, Part>();
             parts.ForEach((p) => exportParts.Add(p.MPN, p));
@@ -2319,7 +2309,7 @@ namespace StockManagerDB
                 return false;
             }
 
-            log.Write($"Importing parts...", Logger.LogLevels.Debug);
+            log.Write($"Importing parts...");
 
             SettingsManager.LoadFrom(ofd.FileName, out DataExportClass dec, zipFile: true);
 
@@ -2361,7 +2351,7 @@ namespace StockManagerDB
                 }
             }
 
-            PartsHaveChanged();
+            NotifyPartsHaveChanged();
             SetStatus($"{partCounter}/{dec.Parts.Count} part(s) imported !", Color.Blue);
             MessageBox.Show(
                 $"{partCounter}/{dec.Parts.Count} part(s) imported !",
@@ -2418,7 +2408,7 @@ namespace StockManagerDB
         private void importFromExcelToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SetWorkingStatus();
-            bool result = ImportPartsFromExcel();
+            bool result = ImportPartsFromAnyExcel();
             SetSuccessStatus(result);
         }
 
@@ -2584,7 +2574,7 @@ namespace StockManagerDB
 
         private void projectsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            log.Write($"Openning project window...", Logger.LogLevels.Debug);
+            log.Write($"Openning project window...");
             if (!IsFileLoaded)
             {
                 log.Write(
@@ -2599,7 +2589,7 @@ namespace StockManagerDB
 
         private void openHistoryToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            log.Write($"Openning history window...", Logger.LogLevels.Debug);
+            log.Write($"Openning history window...");
             if (!IsFileLoaded)
             {
                 log.Write(
@@ -2647,7 +2637,7 @@ namespace StockManagerDB
             // 'hack' to check selected rows but call the CheckedChanged event only once
             if (e.KeyCode == Keys.Space)
             {
-                ToggleCheckSelection();
+                ToggleCheckedForSelectedPart();
             }
         }
 
@@ -2938,7 +2928,7 @@ namespace StockManagerDB
             // Using Digikey API, update this part.
             // Ask confirmation because overwrites will be made...
 
-            List<Part> selectedParts = GetPartForProcess();
+            List<Part> selectedParts = GetValidPartsForActions();
 
             // For safety, only update part with no supplier or Digikey as a supplier
             selectedParts = selectedParts
@@ -3051,7 +3041,7 @@ namespace StockManagerDB
                 data.DigikeyUpdatePart(part, oldPart);
             }
 
-            PartsHaveChanged();
+            NotifyPartsHaveChanged();
             Cursor = Cursors.Default;
             SetSuccessStatus(true);
         }
@@ -3101,14 +3091,14 @@ namespace StockManagerDB
         private void importPartsFromExcelToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SetWorkingStatus();
-            bool result = ImportPartsFromExcel();
+            bool result = ImportPartsFromAnyExcel();
             SetSuccessStatus(result);
         }
 
         private void importOrderFromExcelToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SetWorkingStatus();
-            bool result = ImportOrderFromExcel();
+            bool result = ApplyOrderFromExcel();
             SetSuccessStatus(result);
         }
 
