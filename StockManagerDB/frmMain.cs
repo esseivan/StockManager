@@ -1,13 +1,4 @@
-﻿using ApiClient;
-using ApiClient.Models;
-using BrightIdeasSoftware;
-using CsvHelper;
-using DigikeyApiWrapper;
-using ESNLib.Controls;
-using ESNLib.Tools;
-using ESNLib.Tools.WinForms;
-using StockManagerDB.Properties;
-using System;
+﻿using System;
 using System.CodeDom;
 using System.Collections.Generic;
 using System.Data;
@@ -20,6 +11,15 @@ using System.Reflection;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using ApiClient;
+using ApiClient.Models;
+using BrightIdeasSoftware;
+using CsvHelper;
+using DigikeyApiWrapper;
+using ESNLib.Controls;
+using ESNLib.Tools;
+using ESNLib.Tools.WinForms;
+using StockManagerDB.Properties;
 using dhs = StockManagerDB.DataHolderSingleton;
 using log = StockManagerDB.LoggerClass;
 
@@ -55,8 +55,8 @@ namespace StockManagerDB
                     AppSettings.Settings.RecentFiles.Insert(0, _filepath);
                     if (AppSettings.Settings.RecentFiles.Count > 5)
                     {
-                        AppSettings.Settings.RecentFiles = AppSettings.Settings.RecentFiles
-                            .Take(5)
+                        AppSettings.Settings.RecentFiles = AppSettings
+                            .Settings.RecentFiles.Take(5)
                             .ToList();
                     }
                     AppSettings.Save();
@@ -434,7 +434,10 @@ namespace StockManagerDB
             // API settings
             SettingsManager.MyPublisherName = "ESN";
             SettingsManager.MyAppName = "StockManager";
-            ApiClientSettings.SetFilePath(SettingsManager.MyPublisherName, SettingsManager.MyAppName);
+            ApiClientSettings.SetFilePath(
+                SettingsManager.MyPublisherName,
+                SettingsManager.MyAppName
+            );
             ApiClientSettings.GetInstance();
 
             // App settings
@@ -766,84 +769,84 @@ namespace StockManagerDB
         private void InitialiseListviewsAndColumns()
         {
             // Setup columns
-            olvcMPN.AspectGetter = delegate (object x)
+            olvcMPN.AspectGetter = delegate(object x)
             {
                 return ((Part)x).MPN;
             };
-            olvcMAN.AspectGetter = delegate (object x)
+            olvcMAN.AspectGetter = delegate(object x)
             {
                 return ((Part)x).Manufacturer;
             };
-            olvcDesc.AspectGetter = delegate (object x)
+            olvcDesc.AspectGetter = delegate(object x)
             {
                 return ((Part)x).Description;
             };
-            olvcCat.AspectGetter = delegate (object x)
+            olvcCat.AspectGetter = delegate(object x)
             {
                 return ((Part)x).Category;
             };
-            olvcLocation.AspectGetter = delegate (object x)
+            olvcLocation.AspectGetter = delegate(object x)
             {
                 return ((Part)x).Location;
             };
-            olvcStock.AspectGetter = delegate (object x)
+            olvcStock.AspectGetter = delegate(object x)
             {
                 return ((Part)x).Stock;
             };
-            olvcLowStock.AspectGetter = delegate (object x)
+            olvcLowStock.AspectGetter = delegate(object x)
             {
                 return ((Part)x).LowStock;
             };
-            olvcPrice.AspectGetter = delegate (object x)
+            olvcPrice.AspectGetter = delegate(object x)
             {
                 return ((Part)x).Price;
             };
-            olvcSupplier.AspectGetter = delegate (object x)
+            olvcSupplier.AspectGetter = delegate(object x)
             {
                 return ((Part)x).Supplier;
             };
-            olvcSPN.AspectGetter = delegate (object x)
+            olvcSPN.AspectGetter = delegate(object x)
             {
                 return ((Part)x).SPN;
             };
 
-            olvcMPN2.AspectGetter = delegate (object x)
+            olvcMPN2.AspectGetter = delegate(object x)
             {
                 return ((Part)x).MPN;
             };
-            olvcMAN2.AspectGetter = delegate (object x)
+            olvcMAN2.AspectGetter = delegate(object x)
             {
                 return ((Part)x).Manufacturer;
             };
-            olvcDesc2.AspectGetter = delegate (object x)
+            olvcDesc2.AspectGetter = delegate(object x)
             {
                 return ((Part)x).Description;
             };
-            olvcCat2.AspectGetter = delegate (object x)
+            olvcCat2.AspectGetter = delegate(object x)
             {
                 return ((Part)x).Category;
             };
-            olvcLocation2.AspectGetter = delegate (object x)
+            olvcLocation2.AspectGetter = delegate(object x)
             {
                 return ((Part)x).Location;
             };
-            olvcStock2.AspectGetter = delegate (object x)
+            olvcStock2.AspectGetter = delegate(object x)
             {
                 return ((Part)x).Stock;
             };
-            olvcLowStock2.AspectGetter = delegate (object x)
+            olvcLowStock2.AspectGetter = delegate(object x)
             {
                 return ((Part)x).LowStock;
             };
-            olvcPrice2.AspectGetter = delegate (object x)
+            olvcPrice2.AspectGetter = delegate(object x)
             {
                 return ((Part)x).Price;
             };
-            olvcSupplier2.AspectGetter = delegate (object x)
+            olvcSupplier2.AspectGetter = delegate(object x)
             {
                 return ((Part)x).Supplier;
             };
-            olvcSPN2.AspectGetter = delegate (object x)
+            olvcSPN2.AspectGetter = delegate(object x)
             {
                 return ((Part)x).SPN;
             };
@@ -902,10 +905,12 @@ namespace StockManagerDB
             /// Search for anywhere in the text
             /// </summary>
             Anywhere = 0,
+
             /// <summary>
             /// Search at the beginning of the text
             /// </summary>
             Begninning = 1,
+
             /// <summary>
             /// Interpret the filter as a regex
             /// </summary>
@@ -917,7 +922,11 @@ namespace StockManagerDB
         /// </summary>
         /// <param name="txt">Text to filter</param>
         /// <param name="matchKind">Type of filtering</param>
-        public List<TextMatchFilter> GetFilters(string txt, FilterMatchKind matchKind, ObjectListView olv)
+        public List<TextMatchFilter> GetFilters(
+            string txt,
+            FilterMatchKind matchKind,
+            ObjectListView olv
+        )
         {
             // List of generated filters for the listview
             List<TextMatchFilter> filters = new List<TextMatchFilter>();
@@ -1053,8 +1062,6 @@ namespace StockManagerDB
 
         #region File management
 
-#warning Continue here...
-
         /// <summary>
         /// Import the specified file into a list of <typeparamref name="T"/>
         /// </summary>
@@ -1062,9 +1069,12 @@ namespace StockManagerDB
         /// <param name="filename">File path</param>
         /// <param name="currentLinks">Current header to <typeparamref name="T"/> Properties (as string)</param>
         /// <returns>List of imported objects, or null if failed/canceled</returns>
-        private static List<T> ImportExcelFileAs<T>(string filename, ref Dictionary<string, string> currentLinks) where T : new()
+        private static List<T> ImportExcelFileAsGeneric<T>(
+            string filename,
+            ref Dictionary<string, string> currentLinks
+        )
+            where T : new()
         {
-
             // Read file
             string data = ExcelWrapperV2.ReadSheetCSV(filename);
 
@@ -1089,10 +1099,7 @@ namespace StockManagerDB
             AppSettings.Save();
 
             // Actually import
-            List<T> importedItems = importer.ImportData(
-                data,
-                currentLinks
-            );
+            List<T> importedItems = importer.ImportData(data, currentLinks);
 
             return importedItems;
         }
@@ -1128,10 +1135,14 @@ namespace StockManagerDB
             // Import the file
             Cursor = Cursors.WaitCursor;
             Dictionary<string, string> currentLinks = AppSettings.Settings.lastCsvPartsLinks;
-            List<Part> importedItems = ImportExcelFileAs<Part>(ofd.FileName, ref currentLinks);
+            List<Part> importedItems = ImportExcelFileAsGeneric<Part>(
+                ofd.FileName,
+                ref currentLinks
+            );
             AppSettings.Settings.lastCsvPartsLinks = currentLinks;
             Cursor = Cursors.Default;
 
+            // Nothing imported
             if ((null == importedItems) || (0 == importedItems.Count))
             {
                 log.Write("No part found in that file");
@@ -1140,24 +1151,23 @@ namespace StockManagerDB
 
             log.Write($"{importedItems.Count} part(s) found in that file");
 
-            if (
-                MessageBox.Show(
-                    $"Please confirm the additions of '{importedItems.Count}' parts to the current stock. This cannot be undone\nContinue ?",
-                    "Warning",
-                    MessageBoxButtons.YesNoCancel,
-                    MessageBoxIcon.Warning
-                ) != DialogResult.Yes
-            )
+            var res = MessageBox.Show(
+                $"Please confirm the additions of '{importedItems.Count}' parts to the current stock. This cannot be undone\nContinue ?",
+                "Warning",
+                MessageBoxButtons.YesNoCancel,
+                MessageBoxIcon.Warning
+            );
+            if (res != DialogResult.Yes)
             {
                 return false;
             }
 
-            string note = "Imported Excel ";
-            log.Write("Import confirmed. Processing...");
+            log.Write("Import confirmed by user. Processing...");
             // Add the parts to the list
             Cursor = Cursors.WaitCursor;
             foreach (Part item in importedItems)
             {
+                // Part already present. Do nothing...
                 if (Parts.ContainsKey(item.MPN))
                 {
                     log.Write(
@@ -1167,12 +1177,12 @@ namespace StockManagerDB
                 }
                 else
                 {
-                    this.data.AddPart(item, note);
+                    this.data.AddPart(item, note: "Imported Excel ");
                 }
             }
             Cursor = Cursors.Default;
-            log.Write($"Import finished");
 
+            log.Write($"Import finished");
             NotifyPartsHaveChanged();
 
             return true;
@@ -1209,10 +1219,14 @@ namespace StockManagerDB
             // Import the file
             Cursor = Cursors.WaitCursor;
             Dictionary<string, string> currentLinks = AppSettings.Settings.lastCsvOrderLinks;
-            List<OrderMaterial> importedItems = ImportExcelFileAs<OrderMaterial>(ofd.FileName, ref currentLinks);
+            List<OrderMaterial> importedItems = ImportExcelFileAsGeneric<OrderMaterial>(
+                ofd.FileName,
+                ref currentLinks
+            );
             AppSettings.Settings.lastCsvPartsLinks = currentLinks;
             Cursor = Cursors.Default;
 
+            // Nothing imported
             if ((null == importedItems) || (0 == importedItems.Count))
             {
                 log.Write("No part found in that file");
@@ -1221,22 +1235,21 @@ namespace StockManagerDB
 
             // Confirmation
             log.Write($"{importedItems.Count} part(s) found in that file");
-            if (
-                MessageBox.Show(
-                    $"Please confirm the process of '{importedItems.Count}' items from the order to the current stock. This cannot be undone\nContinue ?",
-                    "Warning",
-                    MessageBoxButtons.YesNoCancel,
-                    MessageBoxIcon.Warning
-                ) != DialogResult.Yes
-            )
+            var res = MessageBox.Show(
+                $"Please confirm the process of '{importedItems.Count}' items from the order to the current stock. This cannot be undone\nContinue ?",
+                "Warning",
+                MessageBoxButtons.YesNoCancel,
+                MessageBoxIcon.Warning
+            );
+            if (res != DialogResult.Yes)
             {
                 return false;
             }
 
-            log.Write($"Import confirmed. Processing...");
+            log.Write($"Import confirmed by user. Processing...");
             // Add the parts to the list
             Cursor = Cursors.WaitCursor;
-            List<Material> processingList = importedItems.Select((x) => new Material(x)).ToList();
+            List<Material> processingList = importedItems.Select((x) => new Material(x)).ToList(); // Convert the list to material class
             this.ApplyOrder(processingList, -1, "Order process from import "); // multiplier -1 to add the elements (because positive removes them)
             Cursor = Cursors.Default;
 
@@ -1247,9 +1260,9 @@ namespace StockManagerDB
         }
 
         /// <summary>
-        /// Create a new file with a template part
+        /// Create a new save file
         /// </summary>
-        private bool CreateNewFile()
+        private bool CreateNewSaveFile()
         {
             log.Write($"Creating new data file");
             SaveFileDialog fsd = new SaveFileDialog()
@@ -1274,13 +1287,13 @@ namespace StockManagerDB
                 return false;
             }
 
-            log.Write($"Creating data file at that path");
+            log.Write($"Creating data file at the selected path");
             // Closing current file
             if (!string.IsNullOrEmpty(filepath))
             {
                 CloseFile();
             }
-            // Save path
+            // Save selectced path
             filepath = fsd.FileName;
             // Create new empty file (with template part)
             dhs.LoadNew(filepath);
@@ -1288,13 +1301,13 @@ namespace StockManagerDB
             SetTitle();
             // Update listviews content + resize columns
             UpdateListviewContent(true);
-            log.Write($"Creation finished");
+            log.Write($"File creation finished");
 
             return true;
         }
 
         /// <summary>
-        /// Open the specified file
+        /// Open a file that the user will choose
         /// </summary>
         private bool OpenFile()
         {
@@ -1306,6 +1319,7 @@ namespace StockManagerDB
 
             if (ofd.ShowDialog() != DialogResult.OK)
             {
+                log.Write($"Cancelled by user...");
                 return false;
             }
             log.Write($"File selected : {ofd.FileName}");
@@ -1320,6 +1334,7 @@ namespace StockManagerDB
         {
             if (string.IsNullOrEmpty(file) || (!File.Exists(file)))
             {
+                log.Write($"Could not find file '{file}'...", Logger.LogLevels.Error);
                 MessageBox.Show(
                     $"Error\nFile '{file}' not found...",
                     "Error",
@@ -1338,7 +1353,7 @@ namespace StockManagerDB
             // Save path
             filepath = file;
             // Load the file
-            log.Write($"Openning file '{filepath}'");
+            log.Write($"Openning file '{filepath}'...");
             try
             {
                 dhs.LoadNew(filepath);
@@ -1349,16 +1364,14 @@ namespace StockManagerDB
                 filepath = null;
                 return false;
             }
+
+#warning Continue here...
             SetTitle();
             // Update listviews content + resize columns
             UpdateListviewContent(true);
-            log.Write(
-                $"Open finished. {Parts.Count} part(s) found",
-                Logger.LogLevels.Debug
-            );
+            log.Write($"Open finished. {Parts.Count} part(s) found", Logger.LogLevels.Debug);
 
             UpdateRecentFileList();
-
 
             return true;
         }
@@ -1405,10 +1418,7 @@ namespace StockManagerDB
                 return;
             }
 
-            log.Write(
-                $"Adding a new part with MPN={result.UserInput}...",
-                Logger.LogLevels.Debug
-            );
+            log.Write($"Adding a new part with MPN={result.UserInput}...", Logger.LogLevels.Debug);
 
             if (Parts.ContainsKey(result.UserInput))
             {
@@ -1466,10 +1476,7 @@ namespace StockManagerDB
                 return;
             }
 
-            log.Write(
-                $"Deletion of {checkedParts.Count} part(s)...",
-                Logger.LogLevels.Debug
-            );
+            log.Write($"Deletion of {checkedParts.Count} part(s)...", Logger.LogLevels.Debug);
             // Remove them from the list
             checkedParts.ForEach((part) => data.DeletePart(part));
             log.Write($"Deletion finished");
@@ -1696,10 +1703,7 @@ namespace StockManagerDB
         {
             if (!IsFileLoaded)
             {
-                log.Write(
-                    "Unable to process action. No file is loaded.",
-                    Logger.LogLevels.Debug
-                );
+                log.Write("Unable to process action. No file is loaded.", Logger.LogLevels.Debug);
                 MessageBox.Show(
                     "No file loaded ! Open or create a new one",
                     "Error",
@@ -1719,7 +1723,8 @@ namespace StockManagerDB
                 Logger.LogLevels.Debug
             );
 
-            string message = $"Confirm the process of ordering {parts.Count()} part(s) according to current stock\nContinue ?";
+            string message =
+                $"Confirm the process of ordering {parts.Count()} part(s) according to current stock\nContinue ?";
             if (!AskUserConfirmation(message, "Confirmation"))
             {
                 return false;
@@ -1761,10 +1766,7 @@ namespace StockManagerDB
         {
             if (!IsFileLoaded)
             {
-                log.Write(
-                    "Unable to process action. No file is loaded.",
-                    Logger.LogLevels.Debug
-                );
+                log.Write("Unable to process action. No file is loaded.", Logger.LogLevels.Debug);
                 MessageBox.Show(
                     "No file loaded ! Open or create a new one",
                     "Error",
@@ -1782,7 +1784,8 @@ namespace StockManagerDB
                 Logger.LogLevels.Debug
             );
 
-            string message = $"Confirm the process of adding {parts.Count()} part(s) to the order form (with 0 quantity)\nContinue ?";
+            string message =
+                $"Confirm the process of adding {parts.Count()} part(s) to the order form (with 0 quantity)\nContinue ?";
             if (!AskUserConfirmation(message, "Confirmation"))
             {
                 return false;
@@ -1800,10 +1803,7 @@ namespace StockManagerDB
         {
             if (!IsFileLoaded)
             {
-                log.Write(
-                    "Unable to process action. No file is loaded.",
-                    Logger.LogLevels.Debug
-                );
+                log.Write("Unable to process action. No file is loaded.", Logger.LogLevels.Debug);
                 MessageBox.Show(
                     "No file loaded ! Open or create a new one",
                     "Error",
@@ -1816,10 +1816,7 @@ namespace StockManagerDB
             log.Write($"Adding parts to order...");
             List<Part> parts = GetValidPartsForActions();
 
-            log.Write(
-                $"{parts.Count} part(s) found to add to project",
-                Logger.LogLevels.Debug
-            );
+            log.Write($"{parts.Count} part(s) found to add to project", Logger.LogLevels.Debug);
 
             // TODO : show form to add to projects
 
@@ -1831,14 +1828,26 @@ namespace StockManagerDB
             ProjectVersion pv = actionProjectForm.GetSelectedProjectVersion();
             string name = actionProjectForm.GetSelectedProjectName();
 
-            string message = $"Confirm the process of adding {parts.Count()} part(s) to the selected project (with 0 quantity) : '{name}'\nContinue ?";
+            string message =
+                $"Confirm the process of adding {parts.Count()} part(s) to the selected project (with 0 quantity) : '{name}'\nContinue ?";
             if (!AskUserConfirmation(message, "Confirmation"))
             {
                 return false;
             }
 
             // Generate material list
-            List<Material> materials = parts.Select((x) => new Material() { MPN = x.MPN, Quantity = 0, Note = "_add_action" }).ToList(); ;
+            List<Material> materials = parts
+                .Select(
+                    (x) =>
+                        new Material()
+                        {
+                            MPN = x.MPN,
+                            Quantity = 0,
+                            Note = "_add_action"
+                        }
+                )
+                .ToList();
+            ;
 
             // Actually add to project
             pv.BOM.AddRange(materials);
@@ -1862,10 +1871,7 @@ namespace StockManagerDB
             {
                 if (item == null)
                 {
-                    log.Write(
-                        "Null row found... Should not happen",
-                        Logger.LogLevels.Error
-                    );
+                    log.Write("Null row found... Should not happen", Logger.LogLevels.Error);
                     continue;
                 }
 
@@ -1933,10 +1939,7 @@ namespace StockManagerDB
             {
                 if (item == null)
                 {
-                    log.Write(
-                        "Null row found... Should not happen",
-                        Logger.LogLevels.Error
-                    );
+                    log.Write("Null row found... Should not happen", Logger.LogLevels.Error);
                     continue;
                 }
 
@@ -1988,10 +1991,7 @@ namespace StockManagerDB
         {
             if (!IsFileLoaded)
             {
-                log.Write(
-                    "Unable to process action. No file is loaded.",
-                    Logger.LogLevels.Debug
-                );
+                log.Write("Unable to process action. No file is loaded.", Logger.LogLevels.Debug);
                 MessageBox.Show(
                     "No file loaded ! Open or create a new one",
                     "Error",
@@ -2069,10 +2069,7 @@ namespace StockManagerDB
         {
             if (!IsFileLoaded)
             {
-                log.Write(
-                    "Unable to process action. No file is loaded.",
-                    Logger.LogLevels.Debug
-                );
+                log.Write("Unable to process action. No file is loaded.", Logger.LogLevels.Debug);
                 MessageBox.Show(
                     "No file loaded ! Open or create a new one",
                     "Error",
@@ -2137,10 +2134,7 @@ namespace StockManagerDB
         {
             if (!IsFileLoaded)
             {
-                log.Write(
-                    "Unable to process action. No file is loaded.",
-                    Logger.LogLevels.Debug
-                );
+                log.Write("Unable to process action. No file is loaded.", Logger.LogLevels.Debug);
                 MessageBox.Show(
                     "No file loaded ! Open or create a new one",
                     "Error",
@@ -2224,10 +2218,7 @@ namespace StockManagerDB
         {
             if (!IsFileLoaded)
             {
-                log.Write(
-                    "Unable to process action. No file is loaded.",
-                    Logger.LogLevels.Debug
-                );
+                log.Write("Unable to process action. No file is loaded.", Logger.LogLevels.Debug);
                 MessageBox.Show(
                     "No file loaded ! Open or create a new one",
                     "Error",
@@ -2249,10 +2240,7 @@ namespace StockManagerDB
 
             if (File.Exists(fsd.FileName))
             {
-                log.Write(
-                    $"Unable to export... File already exists",
-                    Logger.LogLevels.Debug
-                );
+                log.Write($"Unable to export... File already exists", Logger.LogLevels.Debug);
                 MessageBox.Show(
                     "Unable to export parts. The selected file already exists...",
                     "Error",
@@ -2286,10 +2274,7 @@ namespace StockManagerDB
         {
             if (!IsFileLoaded)
             {
-                log.Write(
-                    "Unable to process action. No file is loaded.",
-                    Logger.LogLevels.Debug
-                );
+                log.Write("Unable to process action. No file is loaded.", Logger.LogLevels.Debug);
                 MessageBox.Show(
                     "No file loaded ! Open or create a new one",
                     "Error",
@@ -2422,7 +2407,7 @@ namespace StockManagerDB
         private void newDatabaseToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SetWorkingStatus();
-            bool result = CreateNewFile();
+            bool result = CreateNewSaveFile();
             SetSuccessStatus(result);
         }
 
@@ -2577,10 +2562,7 @@ namespace StockManagerDB
             log.Write($"Openning project window...");
             if (!IsFileLoaded)
             {
-                log.Write(
-                    "Unable to open projects, no file loaded...",
-                    Logger.LogLevels.Error
-                );
+                log.Write("Unable to open projects, no file loaded...", Logger.LogLevels.Error);
                 return;
             }
 
@@ -2592,10 +2574,7 @@ namespace StockManagerDB
             log.Write($"Openning history window...");
             if (!IsFileLoaded)
             {
-                log.Write(
-                    "Unable to open history, no file loaded...",
-                    Logger.LogLevels.Error
-                );
+                log.Write("Unable to open history, no file loaded...", Logger.LogLevels.Error);
                 return;
             }
 
@@ -2746,10 +2725,7 @@ namespace StockManagerDB
             }
             catch (Exception ex)
             {
-                log.Write(
-                    $"Unable to get API Access : {ex.Message}",
-                    Logger.LogLevels.Error
-                );
+                log.Write($"Unable to get API Access : {ex.Message}", Logger.LogLevels.Error);
             }
         }
 
@@ -3000,10 +2976,7 @@ namespace StockManagerDB
 
                 if (received == null)
                 {
-                    log.Write(
-                        $"[DigikeyUpdate] Unable to convert data...",
-                        Logger.LogLevels.Error
-                    );
+                    log.Write($"[DigikeyUpdate] Unable to convert data...", Logger.LogLevels.Error);
                     continue;
                 }
 
@@ -3032,10 +3005,7 @@ namespace StockManagerDB
                 part.SPN = received.DigiKeyPartNumber;
                 part.Price = received.UnitPrice;
                 part.Description = received.DetailedDescription;
-                log.Write(
-                    $"[DigikeyUpdate] NEW :\t{part.ToLongString()}",
-                    Logger.LogLevels.Debug
-                );
+                log.Write($"[DigikeyUpdate] NEW :\t{part.ToLongString()}", Logger.LogLevels.Debug);
 
                 // Add to history
                 data.DigikeyUpdatePart(part, oldPart);
