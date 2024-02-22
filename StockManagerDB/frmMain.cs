@@ -650,7 +650,7 @@ namespace StockManagerDB
         /// <summary>
         /// Set the title of the form
         /// </summary>
-        private void SetTitle()
+        private void UpdateFormTitle()
         {
             if (IsFileLoaded)
                 this.Text = $"Stock Manager - {Path.GetFileName(filepath)}";
@@ -769,84 +769,84 @@ namespace StockManagerDB
         private void InitialiseListviewsAndColumns()
         {
             // Setup columns
-            olvcMPN.AspectGetter = delegate(object x)
+            olvcMPN.AspectGetter = delegate (object x)
             {
                 return ((Part)x).MPN;
             };
-            olvcMAN.AspectGetter = delegate(object x)
+            olvcMAN.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Manufacturer;
             };
-            olvcDesc.AspectGetter = delegate(object x)
+            olvcDesc.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Description;
             };
-            olvcCat.AspectGetter = delegate(object x)
+            olvcCat.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Category;
             };
-            olvcLocation.AspectGetter = delegate(object x)
+            olvcLocation.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Location;
             };
-            olvcStock.AspectGetter = delegate(object x)
+            olvcStock.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Stock;
             };
-            olvcLowStock.AspectGetter = delegate(object x)
+            olvcLowStock.AspectGetter = delegate (object x)
             {
                 return ((Part)x).LowStock;
             };
-            olvcPrice.AspectGetter = delegate(object x)
+            olvcPrice.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Price;
             };
-            olvcSupplier.AspectGetter = delegate(object x)
+            olvcSupplier.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Supplier;
             };
-            olvcSPN.AspectGetter = delegate(object x)
+            olvcSPN.AspectGetter = delegate (object x)
             {
                 return ((Part)x).SPN;
             };
 
-            olvcMPN2.AspectGetter = delegate(object x)
+            olvcMPN2.AspectGetter = delegate (object x)
             {
                 return ((Part)x).MPN;
             };
-            olvcMAN2.AspectGetter = delegate(object x)
+            olvcMAN2.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Manufacturer;
             };
-            olvcDesc2.AspectGetter = delegate(object x)
+            olvcDesc2.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Description;
             };
-            olvcCat2.AspectGetter = delegate(object x)
+            olvcCat2.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Category;
             };
-            olvcLocation2.AspectGetter = delegate(object x)
+            olvcLocation2.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Location;
             };
-            olvcStock2.AspectGetter = delegate(object x)
+            olvcStock2.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Stock;
             };
-            olvcLowStock2.AspectGetter = delegate(object x)
+            olvcLowStock2.AspectGetter = delegate (object x)
             {
                 return ((Part)x).LowStock;
             };
-            olvcPrice2.AspectGetter = delegate(object x)
+            olvcPrice2.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Price;
             };
-            olvcSupplier2.AspectGetter = delegate(object x)
+            olvcSupplier2.AspectGetter = delegate (object x)
             {
                 return ((Part)x).Supplier;
             };
-            olvcSPN2.AspectGetter = delegate(object x)
+            olvcSPN2.AspectGetter = delegate (object x)
             {
                 return ((Part)x).SPN;
             };
@@ -1298,9 +1298,9 @@ namespace StockManagerDB
             // Create new empty file (with template part)
             dhs.LoadNew(filepath);
             data.Save(); // Then save
-            SetTitle();
+            UpdateFormTitle();
             // Update listviews content + resize columns
-            UpdateListviewContent(true);
+            UpdateListviewContent(resizeColumns: true);
             log.Write($"File creation finished");
 
             return true;
@@ -1365,17 +1365,17 @@ namespace StockManagerDB
                 return false;
             }
 
-#warning Continue here...
-            SetTitle();
+            UpdateFormTitle();
             // Update listviews content + resize columns
-            UpdateListviewContent(true);
-            log.Write($"Open finished. {Parts.Count} part(s) found", Logger.LogLevels.Debug);
+            UpdateListviewContent(resizeColumns: true);
+            log.Write($"Open finished. {Parts.Count} part(s) found");
 
             UpdateRecentFileList();
 
             return true;
         }
 
+#warning Continue here...
         /// <summary>
         /// Close the currently open file
         /// </summary>
@@ -1390,7 +1390,7 @@ namespace StockManagerDB
             _optionsForm?.Close();
             data.Close();
             filepath = null;
-            SetTitle();
+            UpdateFormTitle();
             UpdateListviewContent();
             return true;
         }
