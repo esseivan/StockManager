@@ -1381,7 +1381,7 @@ namespace StockManagerDB
         /// </summary>
         private bool CloseFile()
         {
-            log.Write($"Closing file : {filepath}");
+            log.Write($"Closing file : '{filepath}'", Logger.LogLevels.Info);
             _searchForm?.Close();
             _projectForm?.Close();
             _historyForm?.Close();
@@ -1399,9 +1399,9 @@ namespace StockManagerDB
         #region PartManagement
 
         /// <summary>
-        /// Create a new empty part
+        /// Create a new empty part to the part list
         /// </summary>
-        private void AddEmptyPart()
+        private bool CreateNewEmptyPart()
         {
             log.Write($"Creating a new empty part...");
             // Ask the user for the MPN
@@ -1409,16 +1409,17 @@ namespace StockManagerDB
                 "Enter the MPN (Manufacturer Product Number) for the part...",
                 Title: "Enter input",
                 Input: true,
+                Btn1: Dialog.ButtonType.OK,
                 Btn2: Dialog.ButtonType.Cancel
             );
 
             if (result.DialogResult != Dialog.DialogResult.OK)
             {
-                log.Write($"Operation cancelled. Aborting...");
-                return;
+                log.Write($"Operation cancelled by user. Aborting...");
+                return false;
             }
 
-            log.Write($"Adding a new part with MPN={result.UserInput}...", Logger.LogLevels.Debug);
+            log.Write($"Creating a new part with MPN='{result.UserInput}' ...");
 
             if (Parts.ContainsKey(result.UserInput))
             {
@@ -1432,25 +1433,27 @@ namespace StockManagerDB
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error
                 );
-                return;
+                return false;
             }
 
             // Create empty part with the specified MPN
             Part pc = new Part() { MPN = result.UserInput, };
-            // Apply filter
+            // Apply filter to display the newly created part
             cbboxFilterType.SelectedIndex = 0;
             txtboxFilter.Text = $"\"{pc.MPN}\"";
 
-            // Add to list
+            // Add to the list
             data.AddPart(pc);
             NotifyPartsHaveChanged();
-            log.Write($"Part added");
+            log.Write($"Part created successfully");
+
+            return true;
         }
 
         /// <summary>
         /// Delete the checked parts
         /// </summary>
-        private void DeleteCheckedParts()
+        private bool DeleteCheckedParts()
         {
             log.Write($"Deletion of checked parts...");
             var checkedParts = GetCheckedParts();
@@ -1459,21 +1462,23 @@ namespace StockManagerDB
             if (0 == checkedParts.Count)
             {
                 log.Write($"No parts checked. Aborting...");
-                return;
+                return false;
             }
 
             // Ask confirmation
-            if (
-                MessageBox.Show(
+            var res = MessageBox.Show(
+
+
                     $"Please confirm the deletion of '{checkedParts.Count}' parts. This cannot be undone !\nContinue ?",
                     "Warning",
                     MessageBoxButtons.YesNoCancel,
                     MessageBoxIcon.Warning
-                ) != DialogResult.Yes
+                );
+            if (res != DialogResult.Yes
             )
             {
                 log.Write($"Confirmation denied");
-                return;
+                return false;
             }
 
             log.Write($"Deletion of {checkedParts.Count} part(s)...", Logger.LogLevels.Debug);
@@ -1481,6 +1486,8 @@ namespace StockManagerDB
             checkedParts.ForEach((part) => data.DeletePart(part));
             log.Write($"Deletion finished");
             NotifyPartsHaveChanged();
+
+            return true;
         }
 
         /// <summary>
@@ -2633,7 +2640,7 @@ namespace StockManagerDB
 
         private void btnPartAdd_Click(object sender, EventArgs e)
         {
-            AddEmptyPart();
+            _ = CreateNewEmptyPart();
             listviewParts.Focus();
         }
 
