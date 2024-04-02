@@ -336,7 +336,7 @@ namespace StockManagerDB
         /// Add parts to order to the list according to lowstock and stock parameters
         /// </summary>
         /// <param name="parts">List of parts to order if necessary</param>
-        public bool AddPartsToOrder(IEnumerable<Part> parts)
+        public bool AddPartsToOrderList(IEnumerable<Part> parts)
         {
             if (ProjectsToOrder.ContainsKey(LowStockOrderProjectName))
             {

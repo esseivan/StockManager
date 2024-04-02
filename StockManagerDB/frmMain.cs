@@ -1250,7 +1250,7 @@ namespace StockManagerDB
 			List<Material> processingList = importedItems.Select((x) => new Material(
 				x)).ToList(); // Convert the list to material class
 			this.ApplyInputOfMaterials(processingList, 1,
-							"Order process from import "); // multiplier -1 to add the elements (because positive removes them)
+									   "Order process from import "); // multiplier -1 to add the elements (because positive removes them)
 			Cursor = Cursors.Default;
 
 			log.Write($"Import finished");
@@ -1603,8 +1603,9 @@ namespace StockManagerDB
 		/// <param name="materials">List of materials</param>
 		/// <param name="multiplier">Multiplier for this list</param>
 		/// <param name="note">Optionnal note for history</param>
-		public bool ApplyInputOfMaterials(IEnumerable<Material> materials, int multiplier,
-							   string note)
+		public bool ApplyInputOfMaterials(IEnumerable<Material> materials,
+										  int multiplier,
+										  string note)
 		{
 			log.Write("Applying input...");
 			if (materials == null || materials.Count() == 0)
@@ -1652,8 +1653,9 @@ namespace StockManagerDB
 		/// <param name="materials">List of materials</param>
 		/// <param name="multiplier">Multiplier for this list</param>
 		/// <param name="note">Optionnal note for history</param>
-		public bool ApplyOutputOfMaterials(IEnumerable<Material> materials, int multiplier,
-							   string note)
+		public bool ApplyOutputOfMaterials(IEnumerable<Material> materials,
+										   int multiplier,
+										   string note)
 		{
 			return ApplyInputOfMaterials(materials, -multiplier, note);
 		}
@@ -1673,7 +1675,8 @@ namespace StockManagerDB
 			string note = ""
 		)
 		{
-			log.Write($"Cell with MPN={part.MPN} edited : Parameter={editedParameter}, Newvalue={newValue}");
+			log.Write(
+				$"Cell with MPN={part.MPN} edited : Parameter={editedParameter}, Newvalue={newValue}");
 			if (editedParameter == Part.Parameter.UNDEFINED)
 			{
 				log.Write("Unable to edit parameter 'UNDEFINED'...");
@@ -1682,7 +1685,7 @@ namespace StockManagerDB
 
 			// Verify that an actual change is made
 			if (part.Parameters.ContainsKey(editedParameter)
-				&& (part.Parameters[editedParameter]?.Equals(newValue) ?? false))
+					&& (part.Parameters[editedParameter]?.Equals(newValue) ?? false))
 			{
 				// No changes
 				log.Write("No change detected...");
@@ -1712,11 +1715,10 @@ namespace StockManagerDB
 		#endregion
 		#region Actions
 
-#warning Continue here...
 		/// <summary>
 		/// Make order for parts with 'stock' lower than 'lowStock'
 		/// </summary>
-		private bool ActionMakeOrder()
+		private bool ActionMakeLowStockOrder()
 		{
 			if (!IsFileLoaded)
 			{
@@ -1737,10 +1739,7 @@ namespace StockManagerDB
 			IEnumerable<Part> selected = parts.Where((part) => (part.Stock <
 																part.LowStock));
 
-			log.Write(
-				$"{selected.Count()} part(s) found for automatic order",
-				Logger.LogLevels.Debug
-			);
+			log.Write($"{selected.Count()} part(s) found for automatic order");
 
 			string message =
 				$"Confirm the process of ordering {parts.Count()} part(s) according to current stock\nContinue ?";
@@ -1749,8 +1748,8 @@ namespace StockManagerDB
 				return false;
 			}
 
-			orderForm.AddPartsToOrder(selected);
-			// update order form
+			orderForm.AddPartsToOrderList(selected);
+			// Update order form
 			orderForm.SetSuppliers(Parts.Select((x) => x.Value.Supplier).Distinct());
 			ShowForm(orderForm);
 
@@ -1760,8 +1759,8 @@ namespace StockManagerDB
 		/// <summary>
 		/// Ask the user if he wants to continue. Include YesNoCancel buttons
 		/// </summary>
-		/// <param name="message"></param>
-		/// <param name="title"></param>
+		/// <param name="message">Message</param>
+		/// <param name="title">Title</param>
 		/// <returns>True if yes clicked</returns>
 		private bool AskUserConfirmation(string message, string title)
 		{
@@ -1777,6 +1776,7 @@ namespace StockManagerDB
 			return result.DialogResult == Dialog.DialogResult.Yes;
 		}
 
+#warning Continue here...
 		/// <summary>
 		/// Add empty parts to the order form. This is so the user will then input the quantities
 		/// </summary>
@@ -2432,7 +2432,7 @@ namespace StockManagerDB
 		private void makeOrderToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			SetWorkingStatus();
-			bool result = ActionMakeOrder();
+			bool result = ActionMakeLowStockOrder();
 			SetSuccessStatus(result);
 		}
 
@@ -3085,7 +3085,6 @@ namespace StockManagerDB
 		}
 
 		#endregion
-
 
 		/// <summary>
 		/// Custom event made to be called before determining the bounds
