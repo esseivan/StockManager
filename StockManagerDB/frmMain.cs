@@ -880,6 +880,51 @@ namespace StockManagerDB
 			};
 		}
 
+		private void CellEditBoxModifications(object sender, CellEditEventArgs e)
+		{
+			if (e.Column.Index == 0)
+			{
+				return;
+			}
+
+			e.ListViewItem.Focused = true;
+
+			// Float edit, apply decimal places
+			if (e.Control is FloatCellEditor num)
+			{
+				num.DecimalPlaces = AppSettings.Settings.EditCellDecimalPlaces;
+			}
+
+			// Ensure edit box in view, scroll horizontally if required
+			Rectangle columnBounds = listviewParts.CalculateColumnVisibleBounds(
+										 listviewParts.Bounds,
+										 e.Column
+									 );
+			int maxX = listviewParts.Width - 21; // Scroll bar + edges : 21 offset
+			int leftSide = columnBounds.X;
+			int rightSide = leftSide + columnBounds.Width;
+
+			int dx = 0;
+			if (leftSide < 0)
+			{
+				// Scroll left
+				dx = leftSide;
+			}
+			else if (rightSide > maxX)
+			{
+				// Scroll right
+				dx = rightSide - maxX;
+			}
+			if (dx != 0)
+			{
+				Console.WriteLine($"scroll dx={dx}");
+				listviewParts.PauseAnimations(true);
+				listviewParts.LowLevelScroll(dx, 0);
+				listviewParts.Invalidate();
+				listviewParts.PauseAnimations(false);
+			}
+		}
+
 		#region TextFiltering
 
 		/// <summary>
@@ -1009,62 +1054,6 @@ namespace StockManagerDB
 		}
 
 		#endregion
-		#endregion
-
-		#region ListView management
-
-		/// <summary>
-		/// Get the checked parts of the main listview. Note that they are also affected by filters.
-		/// </summary>
-		private List<Part> GetCheckedParts()
-		{
-			return listviewParts.CheckedObjectsEnumerable.Cast<Part>().ToList();
-		}
-
-		/// <summary>
-		/// Get all parts
-		/// </summary>
-		private List<Part> GetAllParts()
-		{
-			return Parts.Values.ToList();
-		}
-
-		/// <summary>
-		/// Return parts that will be processed in the next action (according to Action only for checked parts Checkbox)
-		/// </summary>
-		private List<Part> GetValidPartsForActions()
-		{
-			// If "onlyAffectCheckedParts" is checked, get checked parts. Otherwise all parts
-			if (AppSettings.Settings.ProcessActionOnCheckedOnly)
-			{
-				log.Write($"Action executing on checked parts only...");
-				return GetCheckedParts();
-			}
-
-			return GetAllParts();
-		}
-
-		/// <summary>
-		/// Toggle the checked status for the selected part
-		/// </summary>
-		private void ToggleCheckedForSelectedPart()
-		{
-			bool state = listviewParts.IsChecked(listviewParts.SelectedObjects[0]);
-			state = !state;
-
-			// 'hack' to check selected rows but call the CheckedChanged event only once
-			ShouldUpdateCheckedListview = false;
-			if (state)
-			{
-				listviewParts.CheckObjects(listviewParts.SelectedObjects);
-			}
-			else
-			{
-				listviewParts.UncheckObjects(listviewParts.SelectedObjects);
-			}
-			ShouldUpdateCheckedListview = true;
-		}
-
 		#endregion
 
 		#region File management
@@ -1260,7 +1249,7 @@ namespace StockManagerDB
 			Cursor = Cursors.WaitCursor;
 			List<Material> processingList = importedItems.Select((x) => new Material(
 				x)).ToList(); // Convert the list to material class
-			this.ApplyOrder(processingList, -1,
+			this.ApplyInputOfMaterials(processingList, 1,
 							"Order process from import "); // multiplier -1 to add the elements (because positive removes them)
 			Cursor = Cursors.Default;
 
@@ -1386,7 +1375,6 @@ namespace StockManagerDB
 			return true;
 		}
 
-#warning Continue here...
 		/// <summary>
 		/// Close the currently open file
 		/// </summary>
@@ -1408,6 +1396,58 @@ namespace StockManagerDB
 		#endregion
 
 		#region PartManagement
+
+		/// <summary>
+		/// Toggle the checked status for the selected part
+		/// </summary>
+		private void ToggleCheckedForSelectedPart()
+		{
+			bool state = listviewParts.IsChecked(listviewParts.SelectedObjects[0]);
+			state = !state;
+
+			// 'hack' to check selected rows but call the CheckedChanged event only once
+			ShouldUpdateCheckedListview = false;
+			if (state)
+			{
+				listviewParts.CheckObjects(listviewParts.SelectedObjects);
+			}
+			else
+			{
+				listviewParts.UncheckObjects(listviewParts.SelectedObjects);
+			}
+			ShouldUpdateCheckedListview = true;
+		}
+
+		/// <summary>
+		/// Get all parts
+		/// </summary>
+		private List<Part> GetAllParts()
+		{
+			return Parts.Values.ToList();
+		}
+
+		/// <summary>
+		/// Get the checked parts of the main listview. Note that they are also affected by filters.
+		/// </summary>
+		private List<Part> GetCheckedParts()
+		{
+			return listviewParts.CheckedObjectsEnumerable.Cast<Part>().ToList();
+		}
+
+		/// <summary>
+		/// Return parts that will be processed in the next action (according to Action only for checked parts Checkbox)
+		/// </summary>
+		private List<Part> GetValidPartsForActions()
+		{
+			// If "onlyAffectCheckedParts" is checked, get checked parts. Otherwise all parts
+			if (AppSettings.Settings.ProcessActionOnCheckedOnly)
+			{
+				log.Write($"Action executing on checked parts only...");
+				return GetCheckedParts();
+			}
+
+			return GetAllParts();
+		}
 
 		/// <summary>
 		/// Create a new empty part to the part list
@@ -1557,71 +1597,26 @@ namespace StockManagerDB
 			log.Write($"Cloning finished");
 		}
 
-#warning Continue here...
-
 		/// <summary>
-		/// Custom event made to be called before determining the bounds
+		/// Process an input of materials from an external source
 		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		private void listviewParts_CellEditRequested(object sender, CellEditEventArgs e)
-		{
-			if (e.Column.Index == 0)
-			{
-				return;
-			}
-
-			if (e.Control is FloatCellEditor num)
-			{
-				num.DecimalPlaces = AppSettings.Settings.EditCellDecimalPlaces;
-			}
-
-			e.ListViewItem.Focused = true;
-			Rectangle columnBounds = listviewParts.CalculateColumnVisibleBounds(
-										 listviewParts.Bounds,
-										 e.Column
-									 );
-			int maxX = listviewParts.Width - 21; // Scroll bar + edges : 21 offset
-			int rightSide = columnBounds.X + columnBounds.Width;
-			int leftSide = columnBounds.X;
-
-			int dx = 0;
-			if (leftSide < 0)
-			{
-				// Scroll left
-				dx = leftSide;
-			}
-			else if (rightSide > maxX)
-			{
-				// Scroll right
-				dx = rightSide - maxX;
-			}
-
-			if (dx != 0)
-			{
-				Console.WriteLine($"scroll dx={dx}");
-				listviewParts.PauseAnimations(true);
-				listviewParts.LowLevelScroll(dx, 0);
-				listviewParts.Invalidate();
-				listviewParts.PauseAnimations(false);
-			}
-		}
-
-		/// <summary>
-		/// Process an order of materials
-		/// </summary>
-		public bool ApplyOrder(IEnumerable<Material> materials, int multiplier,
+		/// <param name="materials">List of materials</param>
+		/// <param name="multiplier">Multiplier for this list</param>
+		/// <param name="note">Optionnal note for history</param>
+		public bool ApplyInputOfMaterials(IEnumerable<Material> materials, int multiplier,
 							   string note)
 		{
+			log.Write("Applying input...");
 			if (materials == null || materials.Count() == 0)
 			{
+				log.Write("No materials in list...");
 				return false;
 			}
 
-			// Process project : remove quantity from parts
+			// If processing an output, give negative multiplier
 			foreach (Material material in materials)
 			{
-				// Get partlink
+				// Get corresponding part
 				if (material.PartLink == null)
 				{
 					// Create the part
@@ -1635,62 +1630,63 @@ namespace StockManagerDB
 						Stock = material.Quantity,
 					};
 					data.AddPart(p, note);
-					continue;
 				}
-
-				// Apply edit
-				ApplyEdit(
-					material.PartLink,
-					Part.Parameter.Stock,
-					(material.PartLink.Stock - (material.Quantity * multiplier)).ToString(),
-					note
-				);
+				else
+				{
+					// Apply edit
+					ApplyEdit(
+						material.PartLink,
+						Part.Parameter.Stock,
+						(material.PartLink.Stock + (material.Quantity * multiplier)).ToString(),
+						note
+					);
+				}
 			}
 
 			return true;
 		}
 
 		/// <summary>
-		/// Called when a cell is edited
+		/// Process an output of materials from an external source
 		/// </summary>
-		private void ApplyEdit(CellEditEventArgs e)
+		/// <param name="materials">List of materials</param>
+		/// <param name="multiplier">Multiplier for this list</param>
+		/// <param name="note">Optionnal note for history</param>
+		public bool ApplyOutputOfMaterials(IEnumerable<Material> materials, int multiplier,
+							   string note)
 		{
-			// Get the unedited part version
-			Part part = e.RowObject as Part;
-			// Get the edited parameter and value
-			Part.Parameter editedParameter = (Part.Parameter)(e.Column.Index);
-			string newValue = e.NewValue.ToString();
-
-			ApplyEdit(part, editedParameter, newValue);
+			return ApplyInputOfMaterials(materials, -multiplier, note);
 		}
 
 		/// <summary>
-		/// Called when a cell is edited
+		/// Edit a property of the specified part
 		/// </summary>
-		private void ApplyEdit(
+		/// <param name="part">Part to be modified</param>
+		/// <param name="editedParameter">Parameter to modify</param>
+		/// <param name="newValue">New value for that parameter</param>
+		/// <param name="note">Optional note for history</param>
+		/// <exception cref="InvalidOperationException">When parameter is set to UNDEFINED</exception>
+		private bool ApplyEdit(
 			Part part,
 			Part.Parameter editedParameter,
 			string newValue,
 			string note = ""
 		)
 		{
-			log.Write(
-				$"Cell with MPN={part.MPN} edited : Parameter={editedParameter}, Newvalue={newValue}",
-				Logger.LogLevels.Debug
-			);
+			log.Write($"Cell with MPN={part.MPN} edited : Parameter={editedParameter}, Newvalue={newValue}");
 			if (editedParameter == Part.Parameter.UNDEFINED)
 			{
-				throw new InvalidOperationException("Unable to edit 'undefined'");
+				log.Write("Unable to edit parameter 'UNDEFINED'...");
+				return false;
 			}
+
 			// Verify that an actual change is made
-			if (
-				(part.Parameters.ContainsKey(editedParameter))
-				&& (part.Parameters[editedParameter]?.Equals(newValue) ?? false)
-			)
+			if (part.Parameters.ContainsKey(editedParameter)
+				&& (part.Parameters[editedParameter]?.Equals(newValue) ?? false))
 			{
 				// No changes
-				log.Write("No change detected. Aborting...");
-				return;
+				log.Write("No change detected...");
+				return true;
 			}
 
 			// Verify that the new MPN doesn't already exists
@@ -1706,18 +1702,17 @@ namespace StockManagerDB
 					MessageBoxButtons.OK,
 					MessageBoxIcon.Error
 				);
-				return;
+				return false;
 			}
 
 			data.EditPart(part, editedParameter, newValue, note);
-
 			NotifyPartsHaveChanged();
 		}
 
 		#endregion
-
 		#region Actions
 
+#warning Continue here...
 		/// <summary>
 		/// Make order for parts with 'stock' lower than 'lowStock'
 		/// </summary>
@@ -2498,7 +2493,7 @@ namespace StockManagerDB
 			Cursor.Current = Cursors.WaitCursor;
 
 			string note = $"Project processed '{e.projectName}'";
-			ApplyOrder(e.materials, e.numberOfTimes, note);
+			ApplyOutputOfMaterials(e.materials, e.numberOfTimes, note);
 
 			Cursor.Current = Cursors.Default;
 		}
@@ -2734,7 +2729,13 @@ namespace StockManagerDB
 
 		private void listviewParts_CellEditFinished(object sender, CellEditEventArgs e)
 		{
-			ApplyEdit(e);
+			// Get the unedited part version
+			Part part = e.RowObject as Part;
+			// Get the edited parameter and value
+			Part.Parameter editedParameter = (Part.Parameter)(e.Column.Index);
+			string newValue = e.NewValue.ToString();
+
+			ApplyEdit(part, editedParameter, newValue);
 		}
 
 		private void seeBackupsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -3084,6 +3085,17 @@ namespace StockManagerDB
 		}
 
 		#endregion
+
+
+		/// <summary>
+		/// Custom event made to be called before determining the bounds
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void listviewParts_CellEditRequested(object sender, CellEditEventArgs e)
+		{
+			CellEditBoxModifications(sender, e);
+		}
 
 		private void importListFromDigikeyToolStripMenuItem_Click(object sender,
 																  EventArgs e)
