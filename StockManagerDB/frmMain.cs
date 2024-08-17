@@ -1710,6 +1710,7 @@ namespace StockManagerDB
 
 			data.EditPart(part, editedParameter, newValue, note);
 			NotifyPartsHaveChanged();
+			return true;
 		}
 
 		#endregion
