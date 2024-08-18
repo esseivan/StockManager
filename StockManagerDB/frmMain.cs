@@ -81,6 +81,11 @@ namespace StockManagerDB
 		private bool IsFileLoaded => (null != data);
 		
 		/// <summary>
+		/// Recent file menu item list
+		/// </summary>
+		private Dictionary<int, ToolStripMenuItem> RecentFileMenuItems = null;
+		
+		/// <summary>
 		/// Update CheckListView when checkItemChanged
 		/// </summary>
 		private bool ShouldUpdateCheckedListview
@@ -1922,8 +1927,8 @@ namespace StockManagerDB
 			OpenFileDialog ofd = new OpenFileDialog()
 			{
 				//Filter = "Excel xlsx (*.xlsx, *.csv)|*.xlsx;*.csv|All files (*.*)|*.*",
-                Filter = "CSV (*.csv)|*.csv|All files (*.*)|*.*",
-            };
+				Filter = "CSV (*.csv)|*.csv|All files (*.*)|*.*",
+			};
 			if (ofd.ShowDialog() != DialogResult.OK)
 			{
 				return false;
@@ -1941,10 +1946,10 @@ namespace StockManagerDB
 					using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
 					{
 						var records = new List<CsvPartImport>();
-                        // Read header line
-                        csv.Read();
+						// Read header line
+						csv.Read();
 						csv.ReadHeader();
-
+						
 						while (csv.Read()) // Read entries
 						{
 							// Get entry
@@ -1960,10 +1965,10 @@ namespace StockManagerDB
 								record.SPN = csv.GetField("Part Number");
 								record.Description = csv.GetField("Description");
 							}
-
+							
 							records.Add(record);
 						}
-
+						
 						// Process entries
 						processedCount = ActionDigikeyProcessParts(records);
 					}
@@ -1985,12 +1990,12 @@ namespace StockManagerDB
 			NotifyPartsHaveChanged();
 			return true;
 		}
-
-        /// <summary>
-        /// Process a list of part modification. This function is used to process a order file.
-        /// </summary>
-        /// <returns>Number of processed entries</returns>
-        private int ActionDigikeyProcessParts(List<CsvPartImport> records)
+		
+		/// <summary>
+		/// Process a list of part modification. This function is used to process a order file.
+		/// </summary>
+		/// <returns>Number of processed entries</returns>
+		private int ActionDigikeyProcessParts(List<CsvPartImport> records)
 		{
 			log.Write($"{records.Count} part(s) found to process...");
 			
@@ -2042,7 +2047,8 @@ namespace StockManagerDB
 				{
 					// Process edit
 					Part part = Parts[item.MPN];
-					log.Write($"Changing stock of '{part.MPN}' from {part.Stock} to {part.Stock + quantity}");
+					log.Write(
+					    $"Changing stock of '{part.MPN}' from {part.Stock} to {part.Stock + quantity}");
 					data.EditPart(
 					    part,
 					    Part.Parameter.Stock,
@@ -2054,104 +2060,104 @@ namespace StockManagerDB
 			
 			return count;
 		}
-
+		
 		/// <summary>
 		/// Process a csv list to add them to the part list, without changing any quantity
 		/// </summary>
 		/// <returns></returns>
-        private bool ActionImportDigikeyList(out int processedCount)
-        {
+		private bool ActionImportDigikeyList(out int processedCount)
+		{
 			processedCount = 0;
-
-            if (!IsFileLoaded)
-            {
-                log.Write("Unable to process action. No file is loaded.",
-                          Logger.LogLevels.Debug);
-                MessageBox.Show(
-                    "No file loaded ! Open or create a new one",
-                    "Error",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error
-                );
-                return false;
-            }
-
-            // Ask to open the excel file
-            OpenFileDialog ofd = new OpenFileDialog()
-            {
-                //Filter = "Excel xlsx (*.xlsx, *.csv)|*.xlsx;*.csv|All files (*.*)|*.*",
-                Filter = "CSV (*.csv)|*.csv|All files (*.*)|*.*",
-            };
-            if (ofd.ShowDialog() != DialogResult.OK)
-            {
-                return false;
-            }
-
-            log.Write($"Loading Digikey list...");
-
-            string file = ofd.FileName;
-            string extension = Path.GetExtension(file);
-            if (extension.Equals(".csv", StringComparison.InvariantCultureIgnoreCase))
-            {
-                // Read lines
-                using (var reader = new StreamReader(file))
-                {
-                    // Skip first 2 lines
-                    _ = reader.ReadLine();
-                    _ = reader.ReadLine();
-
-                    using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
-                    {
-                        var records = new List<CsvPartImport>();
-                        // Read header line
-                        csv.Read();
-                        csv.ReadHeader();
-
-                        while (csv.Read())
-                        {
-                            // Get entry
-                            var record = new CsvPartImport
-                            {
-                                MPN = csv.GetField("Manufacturer Part Number"),
-                                Quantity = "0", // For this import, we set the quantity as 0
-                            };
-                            // Read the rest only if required
-                            if (!Parts.ContainsKey(record.MPN))
-                            {
-                                // Cerating new part. Gathering more informations on part
-                                record.SPN = csv.GetField("Digi-Key Part Number 1");
-                                record.Description = csv.GetField("Description");
-                            }
-
-                            records.Add(record);
-                        }
-
-                        // Process entries
-                        processedCount = ActionDigikeyListProcessParts(records);
-                    }
-                }
-            }
-            else if (extension.Equals(".xlsx", StringComparison.InvariantCultureIgnoreCase))
-            {
-                // Not yet implemented
-                MessageBox.Show(
-                    ".xlsx files are not yet supported. Please use .csv",
-                    "Error",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error
-                );
-                return false;
-            }
-
-            // Ask update of part list
-            NotifyPartsHaveChanged();
-            return true;
-        }
-
-        /// <summary>
-        /// Process the list of selected part from the list. Parts already present will have their current stock updated
-        /// </summary>
-        private int ActionDigikeyListProcessParts(List<CsvPartImport> records)
+			
+			if (!IsFileLoaded)
+			{
+				log.Write("Unable to process action. No file is loaded.",
+				          Logger.LogLevels.Debug);
+				MessageBox.Show(
+				    "No file loaded ! Open or create a new one",
+				    "Error",
+				    MessageBoxButtons.OK,
+				    MessageBoxIcon.Error
+				);
+				return false;
+			}
+			
+			// Ask to open the excel file
+			OpenFileDialog ofd = new OpenFileDialog()
+			{
+				//Filter = "Excel xlsx (*.xlsx, *.csv)|*.xlsx;*.csv|All files (*.*)|*.*",
+				Filter = "CSV (*.csv)|*.csv|All files (*.*)|*.*",
+			};
+			if (ofd.ShowDialog() != DialogResult.OK)
+			{
+				return false;
+			}
+			
+			log.Write($"Loading Digikey list...");
+			
+			string file = ofd.FileName;
+			string extension = Path.GetExtension(file);
+			if (extension.Equals(".csv", StringComparison.InvariantCultureIgnoreCase))
+			{
+				// Read lines
+				using (var reader = new StreamReader(file))
+				{
+					// Skip first 2 lines
+					_ = reader.ReadLine();
+					_ = reader.ReadLine();
+					
+					using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+					{
+						var records = new List<CsvPartImport>();
+						// Read header line
+						csv.Read();
+						csv.ReadHeader();
+						
+						while (csv.Read())
+						{
+							// Get entry
+							var record = new CsvPartImport
+							{
+								MPN = csv.GetField("Manufacturer Part Number"),
+								Quantity = "0", // For this import, we set the quantity as 0
+							};
+							// Read the rest only if required
+							if (!Parts.ContainsKey(record.MPN))
+							{
+								// Cerating new part. Gathering more informations on part
+								record.SPN = csv.GetField("Digi-Key Part Number 1");
+								record.Description = csv.GetField("Description");
+							}
+							
+							records.Add(record);
+						}
+						
+						// Process entries
+						processedCount = ActionDigikeyListProcessParts(records);
+					}
+				}
+			}
+			else if (extension.Equals(".xlsx", StringComparison.InvariantCultureIgnoreCase))
+			{
+				// Not yet implemented
+				MessageBox.Show(
+				    ".xlsx files are not yet supported. Please use .csv",
+				    "Error",
+				    MessageBoxButtons.OK,
+				    MessageBoxIcon.Error
+				);
+				return false;
+			}
+			
+			// Ask update of part list
+			NotifyPartsHaveChanged();
+			return true;
+		}
+		
+		/// <summary>
+		/// Process the list of selected part from the list. Parts already present will have their current stock updated
+		/// </summary>
+		private int ActionDigikeyListProcessParts(List<CsvPartImport> records)
 		{
 			log.Write($"{records.Count} part(s) found to process...");
 			
@@ -2210,6 +2216,10 @@ namespace StockManagerDB
 			return processedParts;
 		}
 		
+		/// <summary>
+		/// TODO : refactor this function
+		/// </summary>
+		/// <returns></returns>
 		private int ActionImportClipboardDigikeyOrder()
 		{
 			if (!IsFileLoaded)
@@ -2276,6 +2286,10 @@ namespace StockManagerDB
 			}
 		}
 		
+		/// <summary>
+		/// Export parts to a new file
+		/// </summary>
+		/// <returns>Success if true</returns>
 		public bool ActionExportParts()
 		{
 			if (!IsFileLoaded)
@@ -2305,7 +2319,7 @@ namespace StockManagerDB
 			{
 				log.Write($"Unable to export... File already exists", Logger.LogLevels.Debug);
 				MessageBox.Show(
-				    "Unable to export parts. The selected file already exists...",
+				    "Unable to export parts. The selected file already exists...\nNo overwrite will be made, please manually delete the file if you want to overwrite it.",
 				    "Error",
 				    MessageBoxButtons.OK,
 				    MessageBoxIcon.Error
@@ -2320,8 +2334,9 @@ namespace StockManagerDB
 			
 			Dictionary<string, Part> exportParts = new Dictionary<string, Part>();
 			parts.ForEach((p) => exportParts.Add(p.MPN, p));
-			DataExportClass dec = new DataExportClass(exportParts, null, null);
 			
+			// Export the parts
+			DataExportClass dec = new DataExportClass(exportParts, null, null);
 			SettingsManager.SaveTo(
 			    fsd.FileName,
 			    dec,
@@ -2333,6 +2348,10 @@ namespace StockManagerDB
 			return true;
 		}
 		
+		/// <summary>
+		/// Import a ".smd" file
+		/// </summary>
+		/// <returns>Success if true</returns>
 		public bool ActionImportParts()
 		{
 			if (!IsFileLoaded)
@@ -2360,7 +2379,24 @@ namespace StockManagerDB
 			
 			log.Write($"Importing parts...");
 			
-			SettingsManager.LoadFrom(ofd.FileName, out DataExportClass dec, zipFile: true);
+			// Load file
+			DataExportClass dec = null;
+			try
+			{
+				SettingsManager.LoadFrom(ofd.FileName, out dec, zipFile: true);
+			}
+			catch (Exception ex)
+			{
+				log.Write($"Unable to load specified file '{ofd.FileName}' : {ex.Message}",
+				          Logger.LogLevels.Debug);
+				MessageBox.Show(
+				    $"Unable to load specified file '{ofd.FileName}' : {ex.Message}",
+				    "Error",
+				    MessageBoxButtons.OK,
+				    MessageBoxIcon.Error
+				);
+				return false;
+			}
 			
 			if ((dec == null) || (dec.Parts == null) || (dec.Parts.Count == 0))
 			{
@@ -2377,21 +2413,21 @@ namespace StockManagerDB
 			log.Write($"{dec.Parts.Count} part(s) found to import...");
 			
 			// Confirmation
-			if (
-			    MessageBox.Show(
-			        $"Please confirm the additions of '{dec.Parts.Count}' parts to the current databse. This cannot be undone\nContinue ?",
-			        "Warning",
-			        MessageBoxButtons.YesNoCancel,
-			        MessageBoxIcon.Warning
-			    ) != DialogResult.Yes
-			)
+			if (MessageBox.Show(
+			            $"Please confirm the additions of '{dec.Parts.Count}' parts to the current databse. This cannot be undone\nContinue ?",
+			            "Warning",
+			            MessageBoxButtons.YesNoCancel,
+			            MessageBoxIcon.Warning
+			        ) != DialogResult.Yes)
 			{
 				return false;
 			}
 			
+			// Add to loaded file
 			int partCounter = 0;
 			foreach (Part part in dec.Parts)
 			{
+				// Try add part, already existing one will be skipped
 				if (data.AddPart(part))
 				{
 					partCounter++;
@@ -2416,16 +2452,23 @@ namespace StockManagerDB
 		
 		#endregion
 		
-		#region Misc Events
-		
+		/// <summary>
+		/// Set status of the app. Displayed at the bottom and automatically hides after a timeout
+		/// </summary>
+		/// <param name="status">Text</param>
 		private void SetStatus(string status)
 		{
 			SetStatus(status, SystemColors.ControlText);
 		}
 		
-		private void SetStatus(string status, Color color)
+		/// <summary>
+		/// Set status of the app. Displayed at the bottom and automatically hides after a timeout
+		/// </summary>
+		/// <param name="status">Text</param>
+		/// <param name="foregroundColor">Foreground color</param>
+		private void SetStatus(string status, Color foregroundColor)
 		{
-			labelStatus.ForeColor = color;
+			labelStatus.ForeColor = foregroundColor;
 			labelStatus.Text = status;
 			
 			// Restart timer
@@ -2433,20 +2476,53 @@ namespace StockManagerDB
 			statusTimeoutTimer.Start();
 		}
 		
+		/// <summary>
+		/// Indicate that the app is working
+		/// </summary>
 		private void SetWorkingStatus()
 		{
 			SetStatus("Working...");
 			labelStatus.Invalidate();
 		}
 		
-		private void SetSuccessStatus(bool result)
+		/// <summary>
+		/// Indicate either a success or a failure
+		/// </summary>
+		/// <param name="state">success (true) or failure (false)</param>
+		private void SetSuccessStatus(bool state)
 		{
 			SetStatus(
-			    result ? "Success !" : "Failed",
-			    result ? SystemColors.ControlText : Color.Red
+			    state ? "Success !" : "Failed",
+			    state ? SystemColors.ControlText : Color.Red
 			);
 		}
 		
+		/// <summary>
+		/// Display a form
+		/// </summary>
+		/// <param name="frm">Form to display</param>
+		private void ShowForm(Form frm)
+		{
+			// Open projects form
+			frm.StartPosition = FormStartPosition.CenterParent;
+			frm.Show();
+			//frm.SetDesktopLocation(DesktopLocation.X + 20, DesktopLocation.Y + 20);
+			frm.BringToFront();
+		}
+		
+		/// <summary>
+		/// Display a form and block main form
+		/// </summary>
+		/// <param name="frm">Form to display</param>
+		private DialogResult ShowFormDialog(Form frm)
+		{
+			frm.StartPosition = FormStartPosition.CenterParent;
+			return frm.ShowDialog();
+		}
+		
+		#region Misc Events
+		
+		// Form closing
 		private void Form1_FormClosing(object sender, FormClosingEventArgs e)
 		{
 			// Save settings
@@ -2456,6 +2532,7 @@ namespace StockManagerDB
 			log.logger.Dispose();
 		}
 		
+		// Menu item click
 		private void importFromExcelToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			SetWorkingStatus();
@@ -2463,6 +2540,7 @@ namespace StockManagerDB
 			SetSuccessStatus(result);
 		}
 		
+		// Menu item click
 		private void makeOrderToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			SetWorkingStatus();
@@ -2470,6 +2548,7 @@ namespace StockManagerDB
 			SetSuccessStatus(result);
 		}
 		
+		// Menu item click
 		private void newDatabaseToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			SetWorkingStatus();
@@ -2477,6 +2556,7 @@ namespace StockManagerDB
 			SetSuccessStatus(result);
 		}
 		
+		// Menu item click
 		private void openDatabaseToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			SetWorkingStatus();
@@ -2484,11 +2564,13 @@ namespace StockManagerDB
 			SetSuccessStatus(result);
 		}
 		
+		// Entry checked in listview
 		private void listviewParts_ItemChecked(object sender, ItemCheckedEventArgs e)
 		{
 			UpdateCheckedListviewContent();
 		}
 		
+		// Menu item click
 		private void checkAllInViewToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			// Check all in view
@@ -2498,6 +2580,7 @@ namespace StockManagerDB
 			ShouldUpdateCheckedListview = true;
 		}
 		
+		// Menu item click
 		private void uncheckAllInViewToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			// Uncheck all in view
@@ -2507,6 +2590,7 @@ namespace StockManagerDB
 			ShouldUpdateCheckedListview = true;
 		}
 		
+		// Menu item click
 		private void closeDatabaseToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			SetWorkingStatus();
@@ -2514,11 +2598,13 @@ namespace StockManagerDB
 			SetSuccessStatus(result);
 		}
 		
+		// Menu item click
 		private void quitToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			this.Close();
 		}
 		
+		// Request from project form
 		private void FrmProjects_OnProjectProcessRequested(
 		    object sender,
 		    ProjectProcessRequestedEventArgs e
@@ -2532,6 +2618,7 @@ namespace StockManagerDB
 			Cursor.Current = Cursors.Default;
 		}
 		
+		// Request from project form
 		private void FrmProjects_OnProjectOrder(object sender,
 		                                        ProjectOrderRequestedEventArgs e)
 		{
@@ -2560,6 +2647,7 @@ namespace StockManagerDB
 			ShowForm(orderForm);
 		}
 		
+		// Request from project form
 		private void FrmProjects_OnPartEditRequested(object sender, PartEditEventArgs e)
 		{
 			string note = $"Edit from project form ";
@@ -2580,6 +2668,7 @@ namespace StockManagerDB
 			}
 		}
 		
+		// Menu item click
 		private void importOrderFromDigikeyToolStripMenuItem_Click(object sender,
 		                                                           EventArgs e)
 		{
@@ -2594,6 +2683,7 @@ namespace StockManagerDB
 			);
 		}
 		
+		// Menu item click
 		private void importOrderFromDigikeyFromClipboardToolStripMenuItem_Click(
 		    object sender,
 		    EventArgs e
@@ -2610,22 +2700,7 @@ namespace StockManagerDB
 			);
 		}
 		
-		private void ShowForm(Form frm)
-		{
-			// Open projects form
-			frm.StartPosition = FormStartPosition.CenterParent;
-			frm.Show();
-			//frm.SetDesktopLocation(DesktopLocation.X + 20, DesktopLocation.Y + 20);
-			frm.BringToFront();
-		}
-		
-		private DialogResult ShowFormDialog(Form frm)
-		{
-			// Open projects form
-			frm.StartPosition = FormStartPosition.CenterParent;
-			return frm.ShowDialog();
-		}
-		
+		// Menu item click
 		private void projectsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			log.Write($"Openning project window...");
@@ -2638,6 +2713,7 @@ namespace StockManagerDB
 			ShowForm(projectForm);
 		}
 		
+		// Menu item click
 		private void openHistoryToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			log.Write($"Openning history window...");
@@ -2651,6 +2727,7 @@ namespace StockManagerDB
 			ShowForm(historyForm);
 		}
 		
+		// Child form closed
 		private void FrmProjects_FormClosed(object sender, FormClosedEventArgs e)
 		{
 			// When the project form is closed, bring to fron the main form
@@ -2658,6 +2735,7 @@ namespace StockManagerDB
 			_projectForm = null;
 		}
 		
+		// Child form closed
 		private void _historyForm_FormClosed(object sender, FormClosedEventArgs e)
 		{
 			// When the history form is closed, bring to fron the main form
@@ -2665,6 +2743,7 @@ namespace StockManagerDB
 			_historyForm = null;
 		}
 		
+		// Child form closing
 		private void _orderForm_FormClosing(object sender, FormClosingEventArgs e)
 		{
 			// When the order form is closing, bring to fron the main form
@@ -2672,6 +2751,7 @@ namespace StockManagerDB
 			_orderForm = null;
 		}
 		
+		// Child form closed
 		private void _searchForm_FormClosed(object sender, FormClosedEventArgs e)
 		{
 			// When the history form is closed, bring to fron the main form
@@ -2680,6 +2760,7 @@ namespace StockManagerDB
 			ClearAdvancedFiltering();
 		}
 		
+		// Listview keystroke
 		private void listviewParts_KeyDown(object sender, KeyEventArgs e)
 		{
 			// 'hack' to check selected rows but call the CheckedChanged event only once
@@ -2689,6 +2770,7 @@ namespace StockManagerDB
 			}
 		}
 		
+		// Listview right click on cell
 		private void listviewParts_CellRightClick(object sender,
 		                                          CellRightClickEventArgs e)
 		{
@@ -2701,30 +2783,35 @@ namespace StockManagerDB
 			contextMenuStrip1.Show(Cursor.Position);
 		}
 		
+		// Button click
 		private void btnPartAdd_Click(object sender, EventArgs e)
 		{
 			_ = CreateNewEmptyPart();
 			listviewParts.Focus();
 		}
 		
+		// Button click
 		private void btnPartDup_Click(object sender, EventArgs e)
 		{
 			DuplicateSelectedPart();
 			listviewParts.Focus();
 		}
 		
+		// Button click
 		private void btnCheckedPartDel_Click(object sender, EventArgs e)
 		{
 			DeleteCheckedParts();
 			listviewParts.Focus();
 		}
 		
+		// Menu item click
 		private void resizeColumnsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			listviewParts.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
 			listviewChecked.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
 		}
 		
+		// Timer timeout
 		private void statusTimeoutTimer_Tick(object sender, EventArgs e)
 		{
 			statusTimeoutTimer.Stop();
@@ -2732,6 +2819,7 @@ namespace StockManagerDB
 			labelStatus.Text = string.Empty;
 		}
 		
+		// Menu item click
 		private void saveToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			if (IsFileLoaded)
@@ -2742,17 +2830,20 @@ namespace StockManagerDB
 			AppSettings.Save();
 		}
 		
+		// Menu item click
 		private void exportPartsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			// Export the parts
 			ActionExportParts();
 		}
 		
+		// Menu item click
 		private void importPartsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			ActionImportParts();
 		}
 		
+		// Menu item click
 		private void advancedSearchToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			if (!IsFileLoaded)
@@ -2763,6 +2854,7 @@ namespace StockManagerDB
 			ShowForm(searchForm);
 		}
 		
+		// Listview cell edited
 		private void listviewParts_CellEditFinished(object sender, CellEditEventArgs e)
 		{
 			// Get the unedited part version
@@ -2774,6 +2866,7 @@ namespace StockManagerDB
 			ApplyEdit(part, editedParameter, newValue);
 		}
 		
+		// Menu item click
 		private void seeBackupsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			string backupPath = SettingsManager.GetDefaultBackupPath();
@@ -2784,6 +2877,7 @@ namespace StockManagerDB
 			Process.Start(backupPath);
 		}
 		
+		// Menu item click
 		private void seeLogsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			string logPath = log.logger.FileOutputPath;
@@ -2793,6 +2887,7 @@ namespace StockManagerDB
 			}
 		}
 		
+		// Form displayed
 		private void frmMain_Shown(object sender, EventArgs e)
 		{
 			UpdateRecentFileList();
@@ -2807,6 +2902,7 @@ namespace StockManagerDB
 			}
 		}
 		
+		// Menu item click
 		private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			MessageBox.Show(
@@ -2817,12 +2913,14 @@ namespace StockManagerDB
 			);
 		}
 		
+		// Menu item click
 		private void optionsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			optionsForm.ReferenceNewSettings = AppSettings.Settings;
 			ShowForm(optionsForm);
 		}
 		
+		// Child form closed
 		private void _optionsForm_FormClosed(object sender, FormClosedEventArgs e)
 		{
 			this.BringToFront();
@@ -2836,46 +2934,14 @@ namespace StockManagerDB
 			_optionsForm = null;
 		}
 		
-		private Dictionary<int, ToolStripMenuItem> pairs = null;
-		
-		private void UpdateRecentFileList()
-		{
-			if (pairs == null)
-			{
-				pairs = new Dictionary<int, ToolStripMenuItem>()
-				{
-					{ 0, toolStripMenuItem2 },
-					{ 1, toolStripMenuItem3 },
-					{ 2, toolStripMenuItem4 },
-					{ 3, toolStripMenuItem5 },
-					{ 4, toolStripMenuItem6 },
-				};
-			}
-			
-			// Populate recent files
-			int count = AppSettings.Settings.RecentFiles.Count;
-			for (int i = 0; i < pairs.Count; i++)
-			{
-				pairs[i].Click -= toolStripMenuItemRecentFile_Click;
-				if (i < count)
-				{
-					pairs[i].Visible = true;
-					pairs[i].Text = AppSettings.Settings.RecentFiles[i];
-					pairs[i].Click += toolStripMenuItemRecentFile_Click;
-				}
-				else
-				{
-					pairs[i].Visible = false;
-				}
-			}
-		}
-		
+		// Recent file menu item drop down opening
 		private void openRecentToolStripMenuItem_DropDownOpening(object sender,
 		                                                         EventArgs e)
 		{
 			UpdateRecentFileList();
 		}
 		
+		// Recent Menu item click
 		private void toolStripMenuItemRecentFile_Click(object sender, EventArgs e)
 		{
 			// Open recent file
@@ -2887,16 +2953,19 @@ namespace StockManagerDB
 			SetSuccessStatus(result);
 		}
 		
+		// Menu item click
 		private void sourceCodeGithubToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Process.Start("https://github.com/esseivan/StockManager");
 		}
 		
+		// Menu item click
 		private void openOrderToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			ShowForm(orderForm);
 		}
 		
+		// Menu item click
 		private void seeInExplorerToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			if (!IsFileLoaded)
@@ -2908,6 +2977,7 @@ namespace StockManagerDB
 			Process.Start(dir);
 		}
 		
+		// Menu item click
 		private void openSupplierUrlToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			// Get the selected part
@@ -2920,6 +2990,7 @@ namespace StockManagerDB
 			SetStatus("Web page openned...");
 		}
 		
+		// Menu item click
 		private void copyMPNToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			// Get the selected part
@@ -2932,6 +3003,133 @@ namespace StockManagerDB
 			SetStatus("Copied to clipboard...");
 		}
 		
+		// Menu item click
+		private void updateFromDigikeyToolStripMenuItem_Click(object sender,
+		                                                      EventArgs e)
+		{
+			ActionUpdateParts();
+		}
+		
+		// Menu item click
+		private void onlyAffectCheckedPartsToolStripMenuItem_Click(object sender,
+		                                                           EventArgs e)
+		{
+			if (initInProgress)
+			{
+				return;
+			}
+			
+			AppSettings.Settings.ProcessActionOnCheckedOnly =
+			    onlyAffectCheckedPartsToolStripMenuItem.Checked;
+			AppSettings.Save();
+		}
+		
+		// Menu item click
+		private void addToProjectToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			AddSelectionToProject();
+		}
+		
+		// Custom event made to be called before determining the bounds.
+		// The library is edited in order to call this event.
+		// It is not present in the original library
+		private void listviewParts_CellEditRequested(object sender, CellEditEventArgs e)
+		{
+			CellEditBoxModifications(sender, e);
+		}
+		
+		// Menu item click
+		private void importListFromDigikeyToolStripMenuItem_Click(object sender,
+		                                                          EventArgs e)
+		{
+			SetWorkingStatus();
+			bool success = ActionImportDigikeyList(out int count);
+			SetSuccessStatus(success);
+			MessageBox.Show(
+			    $"Successfully updated {count} part(s).",
+			    "Success",
+			    MessageBoxButtons.OK,
+			    MessageBoxIcon.Information
+			);
+		}
+		
+		// Menu item click
+		private void addPartsToOrderToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			ActionAddPartsToOrderList();
+		}
+		
+		// Menu item click
+		private void importPartsFromExcelToolStripMenuItem_Click(object sender,
+		                                                         EventArgs e)
+		{
+			SetWorkingStatus();
+			bool result = ImportPartsFromAnyExcel();
+			SetSuccessStatus(result);
+		}
+		
+		// Menu item click
+		private void importOrderFromExcelToolStripMenuItem_Click(object sender,
+		                                                         EventArgs e)
+		{
+			SetWorkingStatus();
+			bool result = ApplyOrderFromExcel();
+			SetSuccessStatus(result);
+		}
+		
+		// Menu item click
+		private void copySPNToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			// Get the selected part
+			if (!(listviewParts.SelectedObject is Part part))
+			{
+				return;
+			}
+			
+			part.CopySPNToClipboard();
+			SetStatus("Copied to clipboard...");
+		}
+		
+		#endregion
+		
+		/// <summary>
+		/// Update recent file list
+		/// </summary>
+		private void UpdateRecentFileList()
+		{
+			if (RecentFileMenuItems == null)
+			{
+				RecentFileMenuItems = new Dictionary<int, ToolStripMenuItem>()
+				{
+					{ 0, toolStripMenuItem2 },
+					{ 1, toolStripMenuItem3 },
+					{ 2, toolStripMenuItem4 },
+					{ 3, toolStripMenuItem5 },
+					{ 4, toolStripMenuItem6 },
+				};
+			}
+			
+			// Populate recent files
+			int count = AppSettings.Settings.RecentFiles.Count;
+			for (int i = 0; i < RecentFileMenuItems.Count; i++)
+			{
+				RecentFileMenuItems[i].Click -= toolStripMenuItemRecentFile_Click;
+				if (i < count)
+				{
+					RecentFileMenuItems[i].Visible = true;
+					RecentFileMenuItems[i].Text = AppSettings.Settings.RecentFiles[i];
+					RecentFileMenuItems[i].Click += toolStripMenuItemRecentFile_Click;
+				}
+				else
+				{
+					RecentFileMenuItems[i].Visible = false;
+				}
+			}
+		}
+		
+		/// <summary>
+		/// Get authorization to Digikey API
+		/// </summary>
 		private async void GetApiAccess()
 		{
 			if (!AppSettings.Settings.IsDigikeyAPIEnabled)
@@ -2942,8 +3140,7 @@ namespace StockManagerDB
 			var client = new ApiClientWrapper();
 			var result = await client.GetAccess();
 			
-			if (result.Success) { }
-			else
+			if (!result.Success) // No access
 			{
 				if (!MiscTools.HasAdminPrivileges())
 				{
@@ -2976,13 +3173,15 @@ namespace StockManagerDB
 			}
 		}
 		
+		/// <summary>
+		/// Update the parts using Digikey API
+		/// </summary>
 		private async void ActionUpdateParts()
 		{
 			if (!AppSettings.Settings.IsDigikeyAPIEnabled)
 			{
 				return;
 			}
-			// Using Digikey API, update this part.
 			// Ask confirmation because overwrites will be made...
 			
 			List<Part> selectedParts = GetValidPartsForActions();
@@ -3004,7 +3203,7 @@ namespace StockManagerDB
 			                
 			if (selectedParts.Count == 0)
 			{
-				log.Write($"[DigikeyUpdate] No valid parts selected...");
+				log.Write("[DigikeyUpdate] No valid parts selected...");
 				return;
 			}
 			
@@ -3096,89 +3295,6 @@ namespace StockManagerDB
 			NotifyPartsHaveChanged();
 			Cursor = Cursors.Default;
 			SetSuccessStatus(true);
-		}
-		
-		private void updateFromDigikeyToolStripMenuItem_Click(object sender,
-		                                                      EventArgs e)
-		{
-			ActionUpdateParts();
-		}
-		
-		private void onlyAffectCheckedPartsToolStripMenuItem_Click(object sender,
-		                                                           EventArgs e)
-		{
-			if (initInProgress)
-			{
-				return;
-			}
-			
-			AppSettings.Settings.ProcessActionOnCheckedOnly =
-			    onlyAffectCheckedPartsToolStripMenuItem.Checked;
-			AppSettings.Save();
-		}
-		
-		private void addToProjectToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			AddSelectionToProject();
-		}
-		
-		#endregion
-		
-		/// <summary>
-		/// Custom event made to be called before determining the bounds
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		private void listviewParts_CellEditRequested(object sender, CellEditEventArgs e)
-		{
-			CellEditBoxModifications(sender, e);
-		}
-		
-		private void importListFromDigikeyToolStripMenuItem_Click(object sender,
-		                                                          EventArgs e)
-		{
-			SetWorkingStatus();
-			int result = ActionImportDigikeyList();
-			SetSuccessStatus(result > 0);
-			MessageBox.Show(
-			    $"Successfully updated {result} part(s).",
-			    "Success",
-			    MessageBoxButtons.OK,
-			    MessageBoxIcon.Information
-			);
-		}
-		
-		private void addPartsToOrderToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			ActionAddPartsToOrderList();
-		}
-		
-		private void importPartsFromExcelToolStripMenuItem_Click(object sender,
-		                                                         EventArgs e)
-		{
-			SetWorkingStatus();
-			bool result = ImportPartsFromAnyExcel();
-			SetSuccessStatus(result);
-		}
-		
-		private void importOrderFromExcelToolStripMenuItem_Click(object sender,
-		                                                         EventArgs e)
-		{
-			SetWorkingStatus();
-			bool result = ApplyOrderFromExcel();
-			SetSuccessStatus(result);
-		}
-		
-		private void copySPNToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			// Get the selected part
-			if (!(listviewParts.SelectedObject is Part part))
-			{
-				return;
-			}
-			
-			part.CopySPNToClipboard();
-			SetStatus("Copied to clipboard...");
 		}
 	}
 }
