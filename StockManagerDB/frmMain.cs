@@ -1897,19 +1897,111 @@ namespace StockManagerDB
 		}
 		
 		/// <summary>
-		/// Process the list of selected part. Parts already present will have their current stock updated
+		/// Process a digikey csv order file to apply part stock update
 		/// </summary>
-		private int ActionDigikeyProcessParts(List<CsvPartImport> records)
+		/// <param name="processedCount">Number of processed entries</param>
+		/// <returns>Succes if true</returns>
+		private bool ActionImportDigikeyOrder(out int processedCount)
+		{
+			processedCount = 0;
+			
+			if (!IsFileLoaded)
+			{
+				log.Write("Unable to process action. No file is loaded.",
+				          Logger.LogLevels.Debug);
+				MessageBox.Show(
+				    "No file loaded ! Open or create a new one",
+				    "Error",
+				    MessageBoxButtons.OK,
+				    MessageBoxIcon.Error
+				);
+				return false;
+			}
+			
+			// Ask to open the excel file
+			OpenFileDialog ofd = new OpenFileDialog()
+			{
+				//Filter = "Excel xlsx (*.xlsx, *.csv)|*.xlsx;*.csv|All files (*.*)|*.*",
+                Filter = "CSV (*.csv)|*.csv|All files (*.*)|*.*",
+            };
+			if (ofd.ShowDialog() != DialogResult.OK)
+			{
+				return false;
+			}
+			
+			log.Write($"Loading Digikey order...");
+			
+			string file = ofd.FileName;
+			string extension = Path.GetExtension(file);
+			if (extension.Equals(".csv", StringComparison.InvariantCultureIgnoreCase))
+			{
+				// Read lines
+				using (var reader = new StreamReader(file))
+				{
+					using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+					{
+						var records = new List<CsvPartImport>();
+                        // Read header line
+                        csv.Read();
+						csv.ReadHeader();
+
+						while (csv.Read()) // Read entries
+						{
+							// Get entry
+							var record = new CsvPartImport
+							{
+								MPN = csv.GetField("Manufacturer Part Number"),
+								Quantity = csv.GetField("Quantity"),
+							};
+							// Read the rest only if required
+							if (!Parts.ContainsKey(record.MPN))
+							{
+								// Cerating new part. Gathering more informations on part
+								record.SPN = csv.GetField("Part Number");
+								record.Description = csv.GetField("Description");
+							}
+
+							records.Add(record);
+						}
+
+						// Process entries
+						processedCount = ActionDigikeyProcessParts(records);
+					}
+				}
+			}
+			else if (extension.Equals(".xlsx", StringComparison.InvariantCultureIgnoreCase))
+			{
+				// Not yet implemented
+				MessageBox.Show(
+				    ".xlsx files are not yet supported. Please use .csv",
+				    "Error",
+				    MessageBoxButtons.OK,
+				    MessageBoxIcon.Error
+				);
+				return false;
+			}
+			
+			// Ask update of part list
+			NotifyPartsHaveChanged();
+			return true;
+		}
+
+        /// <summary>
+        /// Process a list of part modification. This function is used to process a order file.
+        /// </summary>
+        /// <returns>Number of processed entries</returns>
+        private int ActionDigikeyProcessParts(List<CsvPartImport> records)
 		{
 			log.Write($"{records.Count} part(s) found to process...");
 			
 			string note = $"Digikey Order ";
-			int processedParts = 0;
+			int count = 0;
 			foreach (CsvPartImport item in records)
 			{
 				if (item == null)
 				{
-					log.Write("Null row found... Should not happen", Logger.LogLevels.Error);
+					// Should not happen
+					log.Write("Null row found...", Logger.LogLevels.Error);
 					continue;
 				}
 				
@@ -1928,9 +2020,10 @@ namespace StockManagerDB
 					continue;
 				}
 				
-				processedParts++;
+				count++;
 				if (!Parts.ContainsKey(item.MPN))
 				{
+					// New part
 					log.Write(
 					    $"Part '{item.MPN}' not available in present list. Creating new part..."
 					);
@@ -1949,25 +2042,116 @@ namespace StockManagerDB
 				{
 					// Process edit
 					Part part = Parts[item.MPN];
-					log.Write(
-					    $"Changing stock of '{part.MPN}' from {part.Stock} to {part.Stock + quantity}"
-					);
+					log.Write($"Changing stock of '{part.MPN}' from {part.Stock} to {part.Stock + quantity}");
 					data.EditPart(
 					    part,
 					    Part.Parameter.Stock,
-					    (part.Stock + quantity).ToString(),
+					    (part.Stock + quantity).ToString(), // Add edit stock to current stock
 					    note
 					);
 				}
 			}
 			
-			return processedParts;
+			return count;
 		}
-		
+
 		/// <summary>
-		/// Process the list of selected part from the list. Parts already present will have their current stock updated
+		/// Process a csv list to add them to the part list, without changing any quantity
 		/// </summary>
-		private int ActionDigikeyListProcessParts(List<CsvPartImport> records)
+		/// <returns></returns>
+        private bool ActionImportDigikeyList(out int processedCount)
+        {
+			processedCount = 0;
+
+            if (!IsFileLoaded)
+            {
+                log.Write("Unable to process action. No file is loaded.",
+                          Logger.LogLevels.Debug);
+                MessageBox.Show(
+                    "No file loaded ! Open or create a new one",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+                return false;
+            }
+
+            // Ask to open the excel file
+            OpenFileDialog ofd = new OpenFileDialog()
+            {
+                //Filter = "Excel xlsx (*.xlsx, *.csv)|*.xlsx;*.csv|All files (*.*)|*.*",
+                Filter = "CSV (*.csv)|*.csv|All files (*.*)|*.*",
+            };
+            if (ofd.ShowDialog() != DialogResult.OK)
+            {
+                return false;
+            }
+
+            log.Write($"Loading Digikey list...");
+
+            string file = ofd.FileName;
+            string extension = Path.GetExtension(file);
+            if (extension.Equals(".csv", StringComparison.InvariantCultureIgnoreCase))
+            {
+                // Read lines
+                using (var reader = new StreamReader(file))
+                {
+                    // Skip first 2 lines
+                    _ = reader.ReadLine();
+                    _ = reader.ReadLine();
+
+                    using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+                    {
+                        var records = new List<CsvPartImport>();
+                        // Read header line
+                        csv.Read();
+                        csv.ReadHeader();
+
+                        while (csv.Read())
+                        {
+                            // Get entry
+                            var record = new CsvPartImport
+                            {
+                                MPN = csv.GetField("Manufacturer Part Number"),
+                                Quantity = "0", // For this import, we set the quantity as 0
+                            };
+                            // Read the rest only if required
+                            if (!Parts.ContainsKey(record.MPN))
+                            {
+                                // Cerating new part. Gathering more informations on part
+                                record.SPN = csv.GetField("Digi-Key Part Number 1");
+                                record.Description = csv.GetField("Description");
+                            }
+
+                            records.Add(record);
+                        }
+
+                        // Process entries
+                        processedCount = ActionDigikeyListProcessParts(records);
+                    }
+                }
+            }
+            else if (extension.Equals(".xlsx", StringComparison.InvariantCultureIgnoreCase))
+            {
+                // Not yet implemented
+                MessageBox.Show(
+                    ".xlsx files are not yet supported. Please use .csv",
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+                return false;
+            }
+
+            // Ask update of part list
+            NotifyPartsHaveChanged();
+            return true;
+        }
+
+        /// <summary>
+        /// Process the list of selected part from the list. Parts already present will have their current stock updated
+        /// </summary>
+        private int ActionDigikeyListProcessParts(List<CsvPartImport> records)
 		{
 			log.Write($"{records.Count} part(s) found to process...");
 			
@@ -2023,87 +2207,6 @@ namespace StockManagerDB
 				}
 			}
 			
-			return processedParts;
-		}
-		
-		private int ActionImportDigikeyOrder()
-		{
-			if (!IsFileLoaded)
-			{
-				log.Write("Unable to process action. No file is loaded.",
-				          Logger.LogLevels.Debug);
-				MessageBox.Show(
-				    "No file loaded ! Open or create a new one",
-				    "Error",
-				    MessageBoxButtons.OK,
-				    MessageBoxIcon.Error
-				);
-				return -1;
-			}
-			
-			// Ask to open the excel file
-			OpenFileDialog ofd = new OpenFileDialog()
-			{
-				Filter = "Excel xlsx (*.xlsx, *.csv)|*.xlsx;*.csv|All files (*.*)|*.*",
-			};
-			if (ofd.ShowDialog() != DialogResult.OK)
-			{
-				return -1;
-			}
-			
-			log.Write($"Loading Digikey order...");
-			
-			string file = ofd.FileName;
-			int processedParts = 0;
-			if (Path.GetExtension(file).Equals(".csv",
-			                                   StringComparison.InvariantCultureIgnoreCase))
-			{
-				// Read lines
-				using (var reader = new StreamReader(file))
-					using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
-					{
-						var records = new List<CsvPartImport>();
-						csv.Read();
-						csv.ReadHeader();
-						
-						while (csv.Read())
-						{
-							var record = new CsvPartImport
-							{
-								MPN = csv.GetField("Manufacturer Part Number"),
-								Quantity = csv.GetField("Quantity"),
-							};
-							// Read the rest only if required
-							if (!Parts.ContainsKey(record.MPN))
-							{
-								// Cerating new part. Gathering more informations on part
-								record.SPN = csv.GetField("Part Number");
-								record.Description = csv.GetField("Description");
-							}
-							
-							records.Add(record);
-						}
-						
-						processedParts = ActionDigikeyProcessParts(records);
-					}
-			}
-			else if (
-			    Path.GetExtension(file).Equals(".xlsx",
-			                                   StringComparison.InvariantCultureIgnoreCase)
-			)
-			{
-				// unimplemented
-				MessageBox.Show(
-				    ".xlsx files are not yet supported. Please use .csv",
-				    "Error",
-				    MessageBoxButtons.OK,
-				    MessageBoxIcon.Error
-				);
-				return -1;
-			}
-			
-			// Ask update of part list
-			NotifyPartsHaveChanged();
 			return processedParts;
 		}
 		
@@ -2171,93 +2274,6 @@ namespace StockManagerDB
 				);
 				return -1;
 			}
-		}
-		
-		private int ActionImportDigikeyList()
-		{
-			if (!IsFileLoaded)
-			{
-				log.Write("Unable to process action. No file is loaded.",
-				          Logger.LogLevels.Debug);
-				MessageBox.Show(
-				    "No file loaded ! Open or create a new one",
-				    "Error",
-				    MessageBoxButtons.OK,
-				    MessageBoxIcon.Error
-				);
-				return -1;
-			}
-			
-			// Ask to open the excel file
-			OpenFileDialog ofd = new OpenFileDialog()
-			{
-				Filter = "Excel xlsx (*.xlsx, *.csv)|*.xlsx;*.csv|All files (*.*)|*.*",
-			};
-			if (ofd.ShowDialog() != DialogResult.OK)
-			{
-				return -1;
-			}
-			
-			log.Write($"Loading Digikey list...");
-			
-			string file = ofd.FileName;
-			int processedParts = 0;
-			if (Path.GetExtension(file).Equals(".csv",
-			                                   StringComparison.InvariantCultureIgnoreCase))
-			{
-				// Read lines
-				using (var reader = new StreamReader(file))
-				{
-					// Skip first 2 lines
-					_ = reader.ReadLine();
-					_ = reader.ReadLine();
-					
-					using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
-					{
-						var records = new List<CsvPartImport>();
-						csv.Read();
-						csv.ReadHeader();
-						
-						while (csv.Read())
-						{
-							var record = new CsvPartImport
-							{
-								MPN = csv.GetField("Manufacturer Part Number"),
-								Quantity = "0", /*csv.GetField("Requested Quantity 1"),*/ // For this import, we set the quantity as 0
-							};
-							// Read the rest only if required
-							if (!Parts.ContainsKey(record.MPN))
-							{
-								// Cerating new part. Gathering more informations on part
-								record.SPN = csv.GetField("Digi-Key Part Number 1");
-								record.Description = csv.GetField("Description");
-							}
-							
-							records.Add(record);
-						}
-						
-						processedParts = ActionDigikeyListProcessParts(records);
-					}
-				}
-			}
-			else if (
-			    Path.GetExtension(file).Equals(".xlsx",
-			                                   StringComparison.InvariantCultureIgnoreCase)
-			)
-			{
-				// unimplemented
-				MessageBox.Show(
-				    ".xlsx files are not yet supported. Please use .csv",
-				    "Error",
-				    MessageBoxButtons.OK,
-				    MessageBoxIcon.Error
-				);
-				return -1;
-			}
-			
-			// Ask update of part list
-			NotifyPartsHaveChanged();
-			return processedParts;
 		}
 		
 		public bool ActionExportParts()
@@ -2568,10 +2584,10 @@ namespace StockManagerDB
 		                                                           EventArgs e)
 		{
 			SetWorkingStatus();
-			int result = ActionImportDigikeyOrder();
-			SetSuccessStatus(result > 0);
+			bool success = ActionImportDigikeyOrder(out int count);
+			SetSuccessStatus(success);
 			MessageBox.Show(
-			    $"Successfully updated {result} part(s).",
+			    $"Successfully updated {count} part(s).",
 			    "Success",
 			    MessageBoxButtons.OK,
 			    MessageBoxIcon.Information

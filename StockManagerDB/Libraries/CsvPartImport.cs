@@ -1,5 +1,8 @@
 ﻿namespace StockManagerDB
 {
+    /// <summary>
+    /// Part to be imported
+    /// </summary>
     public class CsvPartImport
     {
         public string MPN { get; set; }
