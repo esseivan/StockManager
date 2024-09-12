@@ -711,7 +711,6 @@ namespace StockManagerDB
 			{
 				log.Write($"No file loaded. Aborting...", Logger.LogLevels.Trace);
 				listviewParts.DataSource = new List<Part>();
-				listviewChecked.DataSource = new List<Part>();
 				btnPartAdd.Enabled = btnPartDup.Enabled = false;
 				return;
 			}
@@ -782,11 +781,6 @@ namespace StockManagerDB
 			{
 				return;
 			}
-			
-			// Set the content to only the checked parts
-			listviewChecked.DataSource = GetCheckedParts();
-			
-			btnCheckedPartDel.Enabled = (listviewChecked.Items.Count != 0);
 		}
 		
 		/// <summary>
@@ -836,47 +830,6 @@ namespace StockManagerDB
 				return ((Part)x).SPN;
 			};
 			
-			olvcMPN2.AspectGetter = delegate (object x)
-			{
-				return ((Part)x).MPN;
-			};
-			olvcMAN2.AspectGetter = delegate (object x)
-			{
-				return ((Part)x).Manufacturer;
-			};
-			olvcDesc2.AspectGetter = delegate (object x)
-			{
-				return ((Part)x).Description;
-			};
-			olvcCat2.AspectGetter = delegate (object x)
-			{
-				return ((Part)x).Category;
-			};
-			olvcLocation2.AspectGetter = delegate (object x)
-			{
-				return ((Part)x).Location;
-			};
-			olvcStock2.AspectGetter = delegate (object x)
-			{
-				return ((Part)x).Stock;
-			};
-			olvcLowStock2.AspectGetter = delegate (object x)
-			{
-				return ((Part)x).LowStock;
-			};
-			olvcPrice2.AspectGetter = delegate (object x)
-			{
-				return ((Part)x).Price;
-			};
-			olvcSupplier2.AspectGetter = delegate (object x)
-			{
-				return ((Part)x).Supplier;
-			};
-			olvcSPN2.AspectGetter = delegate (object x)
-			{
-				return ((Part)x).SPN;
-			};
-			
 			// Make the decoration
 			RowBorderDecoration rbd = new RowBorderDecoration
 			{
@@ -887,13 +840,6 @@ namespace StockManagerDB
 			
 			// Put the decoration onto the hot item
 			listviewParts.HotItemStyle = new HotItemStyle
-			{
-				BackColor = Color.Azure,
-				Decoration = rbd
-			};
-			
-			// Put the decoration onto the hot item
-			listviewChecked.HotItemStyle = new HotItemStyle
 			{
 				BackColor = Color.Azure,
 				Decoration = rbd
@@ -1449,7 +1395,7 @@ namespace StockManagerDB
 		{
 			return Parts.Values.ToList();
 		}
-		
+
 		/// <summary>
 		/// Get the checked parts of the main listview. Note that they are also affected by filters.
 		/// </summary>
@@ -1457,7 +1403,15 @@ namespace StockManagerDB
 		{
 			return listviewParts.CheckedObjectsEnumerable.Cast<Part>().ToList();
 		}
-		
+
+		/// <summary>
+		/// Get the checked parts of the main listview. Note that they are also affected by filters.
+		/// </summary>
+		private List<Part> GetSelectedParts()
+		{
+			return listviewParts.SelectedObjects.Cast<Part>().ToList();
+		}
+
 		/// <summary>
 		/// Return parts that will be processed in the next action (according to Action only for checked parts Checkbox)
 		/// </summary>
@@ -1526,23 +1480,23 @@ namespace StockManagerDB
 		}
 		
 		/// <summary>
-		/// Delete the checked parts
+		/// Delete the selected parts
 		/// </summary>
-		private bool DeleteCheckedParts()
+		private bool DeleteSelectedParts()
 		{
-			log.Write($"Deletion of checked parts...");
-			var checkedParts = GetCheckedParts();
+			log.Write($"Deletion of selected parts...");
+			var selectedParts = GetSelectedParts();
 			
 			// If none checked, abort
-			if (0 == checkedParts.Count)
+			if (0 == selectedParts.Count)
 			{
-				log.Write($"No parts checked. Aborting...");
+				log.Write($"No parts selected. Aborting...");
 				return false;
 			}
 			
 			// Ask confirmation
 			var res = MessageBox.Show(
-			              $"Please confirm the deletion of '{checkedParts.Count}' parts. This cannot be undone !\nContinue ?",
+			              $"Please confirm the deletion of '{selectedParts.Count}' parts. This cannot be undone !\nContinue ?",
 			              "Warning",
 			              MessageBoxButtons.YesNoCancel,
 			              MessageBoxIcon.Warning
@@ -1554,11 +1508,11 @@ namespace StockManagerDB
 				return false;
 			}
 			
-			log.Write($"Deletion of {checkedParts.Count} part(s)...",
+			log.Write($"Deletion of {selectedParts.Count} part(s)...",
 			          Logger.LogLevels.Debug);
 			          
 			// Remove them from the list
-			checkedParts.ForEach((part) => data.DeletePart(part));
+			selectedParts.ForEach((part) => data.DeletePart(part));
 			log.Write($"Deletion finished");
 			NotifyPartsHaveChanged();
 			
@@ -2798,9 +2752,9 @@ namespace StockManagerDB
 		}
 		
 		// Button click
-		private void btnCheckedPartDel_Click(object sender, EventArgs e)
+		private void btnPartDel_Click(object sender, EventArgs e)
 		{
-			DeleteCheckedParts();
+			DeleteSelectedParts();
 			listviewParts.Focus();
 		}
 		
@@ -2808,7 +2762,6 @@ namespace StockManagerDB
 		private void resizeColumnsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			listviewParts.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
-			listviewChecked.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
 		}
 		
 		// Timer timeout
@@ -3295,6 +3248,104 @@ namespace StockManagerDB
 			NotifyPartsHaveChanged();
 			Cursor = Cursors.Default;
 			SetSuccessStatus(true);
+		}
+
+		enum StockAdjustModes
+		{
+			UNDEFINED,
+			ADD,
+			REMOVE,
+			SET,
+			ROUNDDOWN
+		}
+
+		private void AdjustStock(StockAdjustModes mode, float modification)
+		{
+			List<Part> selectedParts = GetSelectedParts();
+			int count = selectedParts.Count;
+
+			if (count != 1)
+			{
+				throw new InvalidOperationException("Unable to adjust stock when multiple parts are selected");
+			}
+
+			Part part = selectedParts.First();
+
+			switch (mode)
+			{
+				case StockAdjustModes.ADD:
+					part.Stock += modification;
+					break;
+				case StockAdjustModes.REMOVE:
+					part.Stock -= modification;
+					break;
+				case StockAdjustModes.SET:
+					part.Stock = modification;
+					break;
+				case StockAdjustModes.ROUNDDOWN:
+					part.Stock = (int)Math.Floor(part.Stock);
+					break;
+			case StockAdjustModes.UNDEFINED:
+			default:
+					break;
+			}
+
+			NotifyPartsHaveChanged();
+			txtboxPartCurrentStock.Text = part.Stock.ToString();
+		}
+
+		private void listviewParts_SelectionChanged(object sender, EventArgs e)
+		{
+			// Called when the selection is changed
+			List<Part> selectedParts = GetSelectedParts();
+			// If 1 part selected, show infos
+			int count = selectedParts.Count;
+
+			bool visible = count == 1;
+			panelPartInfos.Visible = visible;
+
+			if (visible)
+			{
+				Part part = selectedParts.First();
+
+				numboxStockAdjust.DecimalPlaces = AppSettings.Settings.EditCellDecimalPlaces;
+				txtboxPartCurrentStock.Text = part.Stock.ToString();
+			}
+
+		}
+
+
+		private void btnStockRemove_Click(object sender, EventArgs e)
+		{
+			AdjustStock(StockAdjustModes.REMOVE, (float)numboxStockAdjust.Value);
+		}
+
+		private void btnStockAdd_Click(object sender, EventArgs e)
+		{
+			AdjustStock(StockAdjustModes.ADD, (float)numboxStockAdjust.Value);
+		}
+
+		private void btnStockSet_Click(object sender, EventArgs e)
+		{
+			AdjustStock(StockAdjustModes.SET, (float)numboxStockAdjust.Value);
+		}
+
+		private void btnStockRoundDown_Click(object sender, EventArgs e)
+		{
+			AdjustStock(StockAdjustModes.ROUNDDOWN, (float)numboxStockAdjust.Value);
+		}
+
+		private void btnStockOrder_Click(object sender, EventArgs e)
+		{
+			List<Part> selectedParts = GetSelectedParts();
+			int count = selectedParts.Count;
+
+			if (count != 1)
+			{
+				throw new InvalidOperationException("Unable to adjust stock when multiple parts are selected");
+			}
+
+			orderForm.AddPartsToOrderList(selectedParts);
 		}
 	}
 }
