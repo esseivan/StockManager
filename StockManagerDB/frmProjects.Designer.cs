@@ -136,7 +136,7 @@
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Padding = new System.Windows.Forms.Padding(8, 2, 0, 2);
-            this.menuStrip1.Size = new System.Drawing.Size(1990, 40);
+            this.menuStrip1.Size = new System.Drawing.Size(1990, 42);
             this.menuStrip1.TabIndex = 2;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -148,7 +148,7 @@
             this.toolStripSeparator1,
             this.quitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(71, 36);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(71, 38);
             this.fileToolStripMenuItem.Text = "File";
             // 
             // importProjectsToolStripMenuItem
@@ -193,7 +193,7 @@
             this.toolStripSeparator4,
             this.combineMultipleProjectsToolStripMenuItem});
             this.actionsToolStripMenuItem.Name = "actionsToolStripMenuItem";
-            this.actionsToolStripMenuItem.Size = new System.Drawing.Size(112, 36);
+            this.actionsToolStripMenuItem.Size = new System.Drawing.Size(112, 38);
             this.actionsToolStripMenuItem.Text = "Actions";
             // 
             // actionsOnCheckedPartsOnlyToolStripMenuItem
@@ -233,7 +233,7 @@
             // 
             this.processProjectToolStripMenuItem.Name = "processProjectToolStripMenuItem";
             this.processProjectToolStripMenuItem.Size = new System.Drawing.Size(471, 44);
-            this.processProjectToolStripMenuItem.Text = "Deduct BOM from part list";
+            this.processProjectToolStripMenuItem.Text = "Build project";
             this.processProjectToolStripMenuItem.ToolTipText = "Remove the BOM from the current stock.\r\nYou will be asked for a multiplier.";
             this.processProjectToolStripMenuItem.Click += new System.EventHandler(this.processProjectToolStripMenuItem_Click);
             // 
@@ -259,7 +259,7 @@
             this.checkAllToolStripMenuItem,
             this.uncheckAllToolStripMenuItem});
             this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
-            this.viewToolStripMenuItem.Size = new System.Drawing.Size(85, 36);
+            this.viewToolStripMenuItem.Size = new System.Drawing.Size(85, 38);
             this.viewToolStripMenuItem.Text = "View";
             // 
             // resizeColumnsToolStripMenuItem
