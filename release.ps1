@@ -35,11 +35,19 @@ if (Test-Path $outDir) {
     Remove-Item -Path $outDir -Recurse
 }
 
+# Manually delete /bin and /obj directories. Check that directories exist first.
+if (Test-Path "$projDir/bin") {
+    Remove-Item -Path "$projDir/bin" -Recurse
+}
+if (Test-Path "$projDir/obj") {
+    Remove-Item -Path "$projDir/obj" -Recurse
+}
+
 # Publish the application.
 Push-Location $projDir
 try {
     Write-Output "Restoring:"
-    dotnet restore -r win-x64
+    dotnet restore -r win
     Write-Output "Publishing:"
     $msBuildVerbosityArg = "/v:m"
     if ($env:CI) {
