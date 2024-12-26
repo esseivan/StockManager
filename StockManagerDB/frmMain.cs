@@ -380,22 +380,6 @@ namespace StockManagerDB
         }
 
         /// <summary>
-        /// Remove start and end quote of substring (+ trim)
-        /// </summary>
-        private static string UnquoteString(string text)
-        {
-            if (text == null)
-            {
-                return null;
-            }
-
-            text = text.Trim();
-            string t = text.Substring(1, text.Length - 2);
-
-            return t;
-        }
-
-        /// <summary>
         /// Return the corresponding string for and exact matching filtering.
         /// </summary>
         /// <param name="baseText">Quoted text</param>
@@ -403,16 +387,16 @@ namespace StockManagerDB
         private static string GetRegexStringForExactFiltering(string baseText, bool isPrefix)
         {
             // Remove quotes
-            string t = Regex.Escape(UnquoteString(baseText));
+            string t = Regex.Escape(baseText);
 
             Regex regexStr;
             if (isPrefix)
             {
-                regexStr = new Regex($"^{t}(($)|( ))");
+                regexStr = new Regex($"^{t}");
             }
             else
             {
-                regexStr = new Regex($"((^)|( )){t}(($)|( ))");
+                regexStr = new Regex($"((^)|( )){t}");
             }
 
             return regexStr.ToString();
@@ -941,48 +925,66 @@ namespace StockManagerDB
             // List of generated filters for the listview
             List<TextMatchFilter> filters = new List<TextMatchFilter>();
 
+            bool isPrefix = matchKind == FilterMatchKind.Begninning;
+
             if (!string.IsNullOrEmpty(txt))
             {
-                // Separate the filter with spaces
-                string[] allTxt = txt.Split(' ').Where((x) => !string.IsNullOrEmpty(x)).ToArray();
-                // Process each entry
+                string[] space_separated_text;
+                List<string> text_exact_list = new List<string>();
 
-#warning TODO: the foreach loop should be inside the switch imo
-                foreach (string textEntry in allTxt)
+                Regex regex_quotes = new Regex("\"(([^\"]|\\\\\")+(?<!\\\\))\"");
+                if (regex_quotes.IsMatch(txt) && matchKind != FilterMatchKind.Regex) // Regex use all the txt input as is
                 {
-                    switch (matchKind)
+                    var matches = regex_quotes.Matches(txt);
+
+                    // Exact matching found. Add them and remove them from the input
+                    foreach (Match match in matches)
                     {
-                        case FilterMatchKind.Anywhere:
-                            if (IsStringQuoted(textEntry))
-                            {
-                                string regexStr = GetRegexStringForExactFiltering(textEntry, false);
-                                filters.Add(TextMatchFilter.Regex(olv, regexStr));
-                            }
-                            else
-                            {
-                                filters.Add(TextMatchFilter.Contains(olv, textEntry));
-                            }
-                            break;
-
-                        case FilterMatchKind.Begninning:
-                            if (IsStringQuoted(textEntry))
-                            {
-                                string regexStr = GetRegexStringForExactFiltering(textEntry, true);
-                                filters.Add(TextMatchFilter.Regex(olv, regexStr));
-                            }
-                            else
-                            {
-                                filters.Add(TextMatchFilter.Prefix(olv, textEntry));
-                            }
-                            break;
-
-                        case FilterMatchKind.Regex:
-                            filters.Add(TextMatchFilter.Regex(olv, textEntry));
-                            break;
-
-                        default:
-                            break;
+                        // Only select group #1
+                        Capture group = match.Groups[1];
+                        string regexStr = group.Value;
+                        regexStr = regexStr.Replace("\\\"", "\"");
+                        regexStr = GetRegexStringForExactFiltering(regexStr, isPrefix);
+                        text_exact_list.Add(regexStr);
                     }
+
+                    txt = regex_quotes.Replace(txt, "");
+                }
+                space_separated_text = txt.Split(' ')
+                    .Where((x) => !string.IsNullOrEmpty(x))
+                    .ToArray();
+
+                switch (matchKind)
+                {
+                    case FilterMatchKind.Anywhere:
+                        foreach (string item in text_exact_list)
+                        {
+                            filters.Add(TextMatchFilter.Regex(olv, item));
+                        }
+                        foreach (string textEntry in space_separated_text)
+                        {
+                            filters.Add(TextMatchFilter.Contains(olv, textEntry));
+                        }
+                        break;
+
+                    case FilterMatchKind.Begninning:
+                        foreach (string item in text_exact_list)
+                        {
+                            filters.Add(TextMatchFilter.Regex(olv, item));
+                        }
+                        foreach (string textEntry in space_separated_text)
+                        {
+                            filters.Add(TextMatchFilter.Prefix(olv, textEntry));
+                        }
+                        break;
+
+                    case FilterMatchKind.Regex:
+                        // Set it as is
+                        filters.Add(TextMatchFilter.Regex(olv, txt));
+                        break;
+
+                    default:
+                        break;
                 }
             }
 
