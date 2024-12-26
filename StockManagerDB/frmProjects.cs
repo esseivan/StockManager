@@ -1,8 +1,4 @@
-﻿using BrightIdeasSoftware;
-using CsvHelper;
-using ESNLib.Controls;
-using ESNLib.Tools;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
@@ -11,6 +7,10 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using BrightIdeasSoftware;
+using CsvHelper;
+using ESNLib.Controls;
+using ESNLib.Tools;
 using dhs = StockManagerDB.DataHolderSingleton;
 
 namespace StockManagerDB
@@ -28,6 +28,30 @@ namespace StockManagerDB
         public event EventHandler<PartEditEventArgs> OnPartEditRequested;
         public event EventHandler<ProjectProcessRequestedEventArgs> OnProjectProcessRequested;
         public event EventHandler<ProjectOrderRequestedEventArgs> OnProjectOrder;
+
+        private frmCombineProjects _combineForm = null;
+
+        /// <summary>
+        /// The form that displays projects
+        /// </summary>
+        private frmCombineProjects combineForm
+        {
+            get
+            {
+                if (_combineForm == null)
+                {
+                    _combineForm = new frmCombineProjects();
+                    _combineForm.FormClosed += _combineForm_FormClosed;
+                    _combineForm.ProjectCombined += _combineForm_ProjectCombined;
+                }
+                return _combineForm;
+            }
+            set
+            {
+                _combineForm?.Close();
+                _combineForm = value;
+            }
+        }
 
         public void ApplySettings()
         {
@@ -50,6 +74,8 @@ namespace StockManagerDB
             dhs.OnProjectsListModified += Dhs_OnListModified;
 
             UpdateProjectList();
+
+            listviewMaterials.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
             SetStatus("Idle...");
         }
 
@@ -165,14 +191,14 @@ namespace StockManagerDB
             {
                 BorderPen = new Pen(Color.FromArgb(128, Color.DeepSkyBlue), 2),
                 BoundsPadding = new Size(1, 1),
-                CornerRounding = 4.0f
+                CornerRounding = 4.0f,
             };
 
             // Put the decoration onto the hot item
             listviewMaterials.HotItemStyle = new HotItemStyle
             {
                 BackColor = Color.Azure,
-                Decoration = rbd
+                Decoration = rbd,
             };
         }
 
@@ -189,7 +215,7 @@ namespace StockManagerDB
                 StringFormat fmt = new StringFormat(StringFormatFlags.NoWrap)
                 {
                     LineAlignment = StringAlignment.Center,
-                    Trimming = StringTrimming.EllipsisCharacter
+                    Trimming = StringTrimming.EllipsisCharacter,
                 };
                 switch (this.Column.TextAlign)
                 {
@@ -382,7 +408,7 @@ namespace StockManagerDB
             {
                 MPN = result.UserInput,
                 Quantity = 0,
-                Reference = ""
+                Reference = "",
             };
 
             AddMaterial(newMaterial);
@@ -725,7 +751,7 @@ namespace StockManagerDB
             }
 
             Project p = data.Projects[currentName].Clone() as Project;
-            p.Name = newName;
+            p.RenameProject(newName);
             data.Projects.Add(p.Name, p);
 
             ProjectsHaveChanged();
@@ -739,6 +765,25 @@ namespace StockManagerDB
             string project = GetSelectedProjectName();
             if (project == null)
             {
+                return;
+            }
+            LoggerClass.Write($"Deletion of project {project}...");
+
+            // Ask confirmation
+            Dialog.DialogConfig dc = new Dialog.DialogConfig()
+            {
+                Message =
+                    $"Warning, this action cannot be undone !\nPlease confirm the deletion of the project :\n{project}\nDo you really want to delete it ?",
+                Title = "Warning",
+                Icon = Dialog.DialogIcon.Warning,
+                Button1 = Dialog.ButtonType.Custom1,
+                Button2 = Dialog.ButtonType.Cancel,
+                CustomButton1Text = "DELETE",
+            };
+            Dialog.ShowDialogResult result = Dialog.ShowDialog(dc);
+            if (result.DialogResult != Dialog.DialogResult.Custom1)
+            {
+                LoggerClass.Write("Deletion cancelled by user...");
                 return;
             }
 
@@ -817,17 +862,17 @@ namespace StockManagerDB
                 throw new InvalidOperationException("Version not found in the project...");
             }
 
-            LoggerClass.Write($"Deletion of {project} v{version} requested...");
+            LoggerClass.Write($"Deletion of {project} version {version} requested...");
             // Ask confirmation
             Dialog.DialogConfig dc = new Dialog.DialogConfig()
             {
                 Message =
-                    $"Warning, this action cannot be undone !\nPlease confirm the deletion of the version :\n{project} - v{version}\nDo you really want to delete it ?",
+                    $"Warning, this action cannot be undone !\nPlease confirm the deletion of the version :\n{project} - {version}\nDo you really want to delete it ?",
                 Title = "Warning",
                 Icon = Dialog.DialogIcon.Warning,
                 Button1 = Dialog.ButtonType.Custom1,
                 Button2 = Dialog.ButtonType.Cancel,
-                CustomButton1Text = "DELETE"
+                CustomButton1Text = "DELETE",
             };
             Dialog.ShowDialogResult result = Dialog.ShowDialog(dc);
             if (result.DialogResult != Dialog.DialogResult.Custom1)
@@ -1083,11 +1128,26 @@ namespace StockManagerDB
             // Ask save path
             SaveFileDialog fsd = new SaveFileDialog()
             {
-                Filter = "StockManager Data|*.smd|All files|*.*",
+                Filter = "StockManager Data|*.smd|Text file, Json|*.txt, *.json|All files|*.*",
             };
             if (fsd.ShowDialog() != DialogResult.OK)
             {
                 return false;
+            }
+
+            var selectedFilter = fsd.FilterIndex;
+
+            bool zipFile;
+            switch (selectedFilter)
+            {
+                case 2: // .txt
+                    zipFile = false;
+                    break;
+
+                default:
+                case 1: // .smd
+                    zipFile = true;
+                    break;
             }
 
             if (File.Exists(fsd.FileName))
@@ -1120,7 +1180,7 @@ namespace StockManagerDB
                 dec,
                 backup: SettingsManager.BackupMode.None,
                 indent: true,
-                zipFile: true
+                zipFile: zipFile
             );
 
             return true;
@@ -1512,6 +1572,23 @@ namespace StockManagerDB
 
             part.CopySPNToClipboard();
             SetStatus("Copied to clipboard...");
+        }
+
+        private void _combineForm_ProjectCombined(object sender, EventArgs e)
+        {
+            ProjectsHaveChanged();
+        }
+
+        private void _combineForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _combineForm = null;
+            this.BringToFront();
+        }
+
+        private void combineMultipleProjectsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            combineForm.Show();
+            combineForm.BringToFront();
         }
 
         #endregion

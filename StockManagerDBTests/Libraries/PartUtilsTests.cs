@@ -1,11 +1,11 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using StockManagerDB;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using StockManagerDB;
 using dhs = StockManagerDB.DataHolderSingleton;
 
 namespace StockManagerDB.Tests
@@ -82,7 +82,7 @@ namespace StockManagerDB.Tests
                 Stock = 20,
                 LowStock = 10,
             };
-            Material m = new Material() { MPN = "p1", Quantity = 15, };
+            Material m = new Material() { MPN = "p1", Quantity = 15 };
             d.Parts.Add(p.MPN, p);
 
             Assert.AreEqual(1, d.Parts.Count);
@@ -127,7 +127,7 @@ namespace StockManagerDB.Tests
                 Stock = 20,
                 LowStock = 0,
             };
-            Material m = new Material() { MPN = "p1", Quantity = 15, };
+            Material m = new Material() { MPN = "p1", Quantity = 15 };
             d.Parts.Add(p.MPN, p);
 
             Assert.AreEqual(1, d.Parts.Count);
@@ -172,7 +172,7 @@ namespace StockManagerDB.Tests
                 Stock = 10,
                 LowStock = 0,
             };
-            Material m = new Material() { MPN = "p1", Quantity = 15, };
+            Material m = new Material() { MPN = "p1", Quantity = 15 };
             d.Parts.Add(p.MPN, p);
 
             Assert.AreEqual(1, d.Parts.Count);
@@ -217,7 +217,7 @@ namespace StockManagerDB.Tests
                 Stock = 10,
                 LowStock = 20,
             };
-            Material m = new Material() { MPN = "p1", Quantity = 15, };
+            Material m = new Material() { MPN = "p1", Quantity = 15 };
             d.Parts.Add(p.MPN, p);
 
             Assert.AreEqual(1, d.Parts.Count);

@@ -1,12 +1,12 @@
-﻿using ESNLib.Tools;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using StockManagerDB;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ESNLib.Tools;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using StockManagerDB;
 using dhs = StockManagerDB.DataHolderSingleton;
 
 namespace StockManagerDB.Tests

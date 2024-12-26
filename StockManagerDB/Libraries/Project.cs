@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using CsvHelper.Configuration.Attributes;
 
 namespace StockManagerDB
 {
@@ -26,6 +27,16 @@ namespace StockManagerDB
         public SortedDictionary<string, ProjectVersion> Versions { get; set; } =
             new SortedDictionary<string, ProjectVersion>(new CompareVersion());
 
+        public void RenameProject(string new_name)
+        {
+            this.Name = new_name;
+
+            foreach (var version in Versions.Values)
+            {
+                version.Project = this.Name;
+            }
+        }
+
         public object Clone()
         {
             Project newProject = new Project { Name = Name };
@@ -50,10 +61,15 @@ namespace StockManagerDB
         {
             public int Compare(string x, string y)
             {
-                Version vx = Version.Parse(x);
-                Version vy = Version.Parse(y);
-                // Sort in descending order (most recent at the top)
-                return vy.CompareTo(vx);
+                if (Version.TryParse(x, out Version vx) && Version.TryParse(y, out Version vy))
+                {
+                    // Sort in descending order (most recent at the top)
+                    return vy.CompareTo(vx);
+                }
+                else
+                {
+                    return x.CompareTo(y);
+                }
             }
         }
     }
