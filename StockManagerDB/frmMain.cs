@@ -3337,6 +3337,7 @@ namespace StockManagerDB
                     string text = $"{pair.Key} - ({string.Join(", ", pair.Value)})";
                     listView1.Items.Add(text);
                 }
+                listView1.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
             }
         }
 

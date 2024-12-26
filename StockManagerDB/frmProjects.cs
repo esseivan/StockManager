@@ -74,6 +74,8 @@ namespace StockManagerDB
             dhs.OnProjectsListModified += Dhs_OnListModified;
 
             UpdateProjectList();
+
+            listviewMaterials.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
             SetStatus("Idle...");
         }
 
@@ -860,12 +862,12 @@ namespace StockManagerDB
                 throw new InvalidOperationException("Version not found in the project...");
             }
 
-            LoggerClass.Write($"Deletion of {project} v{version} requested...");
+            LoggerClass.Write($"Deletion of {project} version {version} requested...");
             // Ask confirmation
             Dialog.DialogConfig dc = new Dialog.DialogConfig()
             {
                 Message =
-                    $"Warning, this action cannot be undone !\nPlease confirm the deletion of the version :\n{project} - v{version}\nDo you really want to delete it ?",
+                    $"Warning, this action cannot be undone !\nPlease confirm the deletion of the version :\n{project} - {version}\nDo you really want to delete it ?",
                 Title = "Warning",
                 Icon = Dialog.DialogIcon.Warning,
                 Button1 = Dialog.ButtonType.Custom1,

@@ -115,6 +115,7 @@
             this.btnStockSet = new System.Windows.Forms.Button();
             this.label6 = new System.Windows.Forms.Label();
             this.listView1 = new System.Windows.Forms.ListView();
+            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.label1 = new System.Windows.Forms.Label();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.labelCount = new System.Windows.Forms.ToolStripStatusLabel();
@@ -647,7 +648,7 @@
             this.splitContainer1.Panel2.Padding = new System.Windows.Forms.Padding(6);
             this.splitContainer1.Panel2MinSize = 125;
             this.splitContainer1.Size = new System.Drawing.Size(1732, 896);
-            this.splitContainer1.SplitterDistance = 503;
+            this.splitContainer1.SplitterDistance = 491;
             this.splitContainer1.SplitterWidth = 8;
             this.splitContainer1.TabIndex = 40;
             // 
@@ -758,7 +759,7 @@
             this.listviewParts.ShowCommandMenuOnRightClick = true;
             this.listviewParts.ShowGroups = false;
             this.listviewParts.ShowImagesOnSubItems = true;
-            this.listviewParts.Size = new System.Drawing.Size(1708, 395);
+            this.listviewParts.Size = new System.Drawing.Size(1708, 383);
             this.listviewParts.SortGroupItemsByPrimaryColumn = false;
             this.listviewParts.TabIndex = 6;
             this.listviewParts.TintSortColumn = true;
@@ -867,9 +868,8 @@
             // 
             // groupBox2
             // 
-            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.groupBox2.Controls.Add(this.numboxStockOrder);
             this.groupBox2.Controls.Add(this.btnStockOrder);
             this.groupBox2.Location = new System.Drawing.Point(12, 223);
@@ -908,8 +908,6 @@
             // 
             // groupBox1
             // 
-            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.label5);
             this.groupBox1.Controls.Add(this.btnStockAdd);
@@ -1034,17 +1032,26 @@
             // 
             // listView1
             // 
+            this.listView1.Alignment = System.Windows.Forms.ListViewAlignment.Left;
             this.listView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader1});
+            this.listView1.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
             this.listView1.HideSelection = false;
+            this.listView1.LabelWrap = false;
             this.listView1.Location = new System.Drawing.Point(606, 56);
             this.listView1.Margin = new System.Windows.Forms.Padding(6);
             this.listView1.Name = "listView1";
             this.listView1.Size = new System.Drawing.Size(1094, 291);
             this.listView1.TabIndex = 15;
             this.listView1.UseCompatibleStateImageBehavior = false;
-            this.listView1.View = System.Windows.Forms.View.List;
+            this.listView1.View = System.Windows.Forms.View.Details;
+            // 
+            // columnHeader1
+            // 
+            this.columnHeader1.Width = 50;
             // 
             // label1
             // 
@@ -1255,6 +1262,7 @@
 		private Libraries.NumericUpDownFix numboxStockOrder;
 		private System.Windows.Forms.GroupBox groupBox1;
 		private System.Windows.Forms.GroupBox groupBox2;
-	}
+        private System.Windows.Forms.ColumnHeader columnHeader1;
+    }
 }
 
