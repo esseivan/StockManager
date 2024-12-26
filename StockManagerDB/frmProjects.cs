@@ -29,6 +29,30 @@ namespace StockManagerDB
         public event EventHandler<ProjectProcessRequestedEventArgs> OnProjectProcessRequested;
         public event EventHandler<ProjectOrderRequestedEventArgs> OnProjectOrder;
 
+        private frmCombineProjects _combineForm = null;
+
+        /// <summary>
+        /// The form that displays projects
+        /// </summary>
+        private frmCombineProjects combineForm
+        {
+            get
+            {
+                if (_combineForm == null)
+                {
+                    _combineForm = new frmCombineProjects();
+                    _combineForm.FormClosing += _combineForm_FormClosing;
+                    _combineForm.ProjectCombined += _combineForm_ProjectCombined;
+                }
+                return _combineForm;
+            }
+            set
+            {
+                _combineForm?.Close();
+                _combineForm = value;
+            }
+        }
+
         public void ApplySettings()
         {
             this.Font = AppSettings.Settings.AppFont;
@@ -1546,6 +1570,19 @@ namespace StockManagerDB
 
             part.CopySPNToClipboard();
             SetStatus("Copied to clipboard...");
+        }
+
+        private void _combineForm_ProjectCombined(object sender, EventArgs e)
+        {
+            ProjectsHaveChanged();
+        }
+
+        private void _combineForm_FormClosing(object sender, FormClosingEventArgs e) { }
+
+        private void combineMultipleProjectsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            combineForm.Show();
+            combineForm.BringToFront();
         }
 
         #endregion

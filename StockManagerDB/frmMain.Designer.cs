@@ -647,7 +647,7 @@
             this.splitContainer1.Panel2.Padding = new System.Windows.Forms.Padding(6);
             this.splitContainer1.Panel2MinSize = 125;
             this.splitContainer1.Size = new System.Drawing.Size(1732, 896);
-            this.splitContainer1.SplitterDistance = 507;
+            this.splitContainer1.SplitterDistance = 503;
             this.splitContainer1.SplitterWidth = 8;
             this.splitContainer1.TabIndex = 40;
             // 
@@ -758,7 +758,7 @@
             this.listviewParts.ShowCommandMenuOnRightClick = true;
             this.listviewParts.ShowGroups = false;
             this.listviewParts.ShowImagesOnSubItems = true;
-            this.listviewParts.Size = new System.Drawing.Size(1708, 399);
+            this.listviewParts.Size = new System.Drawing.Size(1708, 395);
             this.listviewParts.SortGroupItemsByPrimaryColumn = false;
             this.listviewParts.TabIndex = 6;
             this.listviewParts.TintSortColumn = true;

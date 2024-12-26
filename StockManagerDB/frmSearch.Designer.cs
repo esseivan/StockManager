@@ -49,9 +49,10 @@
             // 
             // txtboxFilter
             // 
-            this.txtboxFilter.Location = new System.Drawing.Point(80, 12);
+            this.txtboxFilter.Location = new System.Drawing.Point(160, 23);
+            this.txtboxFilter.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.txtboxFilter.Name = "txtboxFilter";
-            this.txtboxFilter.Size = new System.Drawing.Size(162, 20);
+            this.txtboxFilter.Size = new System.Drawing.Size(320, 31);
             this.txtboxFilter.TabIndex = 1;
             this.txtboxFilter.TextChanged += new System.EventHandler(this.txtboxFilter_TextChanged);
             // 
@@ -68,10 +69,11 @@
             listViewItem2,
             listViewItem3,
             listViewItem4});
-            this.listviewType.Location = new System.Drawing.Point(80, 38);
+            this.listviewType.Location = new System.Drawing.Point(160, 73);
+            this.listviewType.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.listviewType.MultiSelect = false;
             this.listviewType.Name = "listviewType";
-            this.listviewType.Size = new System.Drawing.Size(162, 400);
+            this.listviewType.Size = new System.Drawing.Size(320, 766);
             this.listviewType.TabIndex = 2;
             this.listviewType.UseCompatibleStateImageBehavior = false;
             this.listviewType.View = System.Windows.Forms.View.Details;
@@ -83,27 +85,30 @@
             // 
             // label1
             // 
-            this.label1.Location = new System.Drawing.Point(12, 12);
+            this.label1.Location = new System.Drawing.Point(24, 23);
+            this.label1.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(62, 20);
+            this.label1.Size = new System.Drawing.Size(124, 38);
             this.label1.TabIndex = 4;
             this.label1.Text = "Search for :";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // label2
             // 
-            this.label2.Location = new System.Drawing.Point(12, 38);
+            this.label2.Location = new System.Drawing.Point(24, 73);
+            this.label2.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(62, 20);
+            this.label2.Size = new System.Drawing.Size(124, 38);
             this.label2.TabIndex = 5;
             this.label2.Text = "Search in :";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // label3
             // 
-            this.label3.Location = new System.Drawing.Point(348, 11);
+            this.label3.Location = new System.Drawing.Point(696, 21);
+            this.label3.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(106, 20);
+            this.label3.Size = new System.Drawing.Size(212, 38);
             this.label3.TabIndex = 6;
             this.label3.Text = "Filter categories :";
             this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -117,10 +122,11 @@
             this.colDummy1});
             this.listviewCategories.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
             this.listviewCategories.HideSelection = false;
-            this.listviewCategories.Location = new System.Drawing.Point(459, 64);
+            this.listviewCategories.Location = new System.Drawing.Point(918, 123);
+            this.listviewCategories.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.listviewCategories.MultiSelect = false;
             this.listviewCategories.Name = "listviewCategories";
-            this.listviewCategories.Size = new System.Drawing.Size(178, 374);
+            this.listviewCategories.Size = new System.Drawing.Size(352, 716);
             this.listviewCategories.TabIndex = 2;
             this.listviewCategories.UseCompatibleStateImageBehavior = false;
             this.listviewCategories.View = System.Windows.Forms.View.Details;
@@ -135,10 +141,10 @@
             this.txtboxCategory.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtboxCategory.Location = new System.Drawing.Point(459, 11);
-            this.txtboxCategory.Margin = new System.Windows.Forms.Padding(2);
+            this.txtboxCategory.Location = new System.Drawing.Point(918, 21);
+            this.txtboxCategory.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.txtboxCategory.Name = "txtboxCategory";
-            this.txtboxCategory.Size = new System.Drawing.Size(178, 20);
+            this.txtboxCategory.Size = new System.Drawing.Size(352, 31);
             this.txtboxCategory.TabIndex = 7;
             this.txtboxCategory.TextChanged += new System.EventHandler(this.txtboxCategory_TextChanged);
             // 
@@ -150,17 +156,19 @@
             "Any text",
             "Prefix",
             "Regex"});
-            this.cbboxFilterType.Location = new System.Drawing.Point(248, 11);
+            this.cbboxFilterType.Location = new System.Drawing.Point(496, 21);
+            this.cbboxFilterType.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.cbboxFilterType.Name = "cbboxFilterType";
-            this.cbboxFilterType.Size = new System.Drawing.Size(94, 21);
+            this.cbboxFilterType.Size = new System.Drawing.Size(184, 33);
             this.cbboxFilterType.TabIndex = 8;
             this.cbboxFilterType.SelectedIndexChanged += new System.EventHandler(this.cbboxFilterType_SelectedIndexChanged);
             // 
             // btnClearCat
             // 
-            this.btnClearCat.Location = new System.Drawing.Point(459, 35);
+            this.btnClearCat.Location = new System.Drawing.Point(918, 67);
+            this.btnClearCat.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.btnClearCat.Name = "btnClearCat";
-            this.btnClearCat.Size = new System.Drawing.Size(178, 23);
+            this.btnClearCat.Size = new System.Drawing.Size(356, 44);
             this.btnClearCat.TabIndex = 9;
             this.btnClearCat.Text = "All";
             this.btnClearCat.UseVisualStyleBackColor = true;
@@ -169,17 +177,18 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(249, 44);
+            this.label4.Location = new System.Drawing.Point(498, 85);
+            this.label4.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(97, 26);
+            this.label4.Size = new System.Drawing.Size(194, 50);
             this.label4.TabIndex = 10;
             this.label4.Text = "\"UNDEFINED\"\r\nsearch everywhere";
             // 
             // frmSearch
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(649, 450);
+            this.ClientSize = new System.Drawing.Size(1298, 865);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.btnClearCat);
             this.Controls.Add(this.cbboxFilterType);
@@ -191,8 +200,9 @@
             this.Controls.Add(this.listviewType);
             this.Controls.Add(this.txtboxFilter);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.Name = "frmSearch";
-            this.Text = "frmSearch";
+            this.Text = "Advanced Search";
             this.ResumeLayout(false);
             this.PerformLayout();
 

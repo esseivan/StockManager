@@ -179,6 +179,12 @@
     <Compile Include="frmActionProject.Designer.cs">
       <DependentUpon>frmActionProject.cs</DependentUpon>
     </Compile>
+    <Compile Include="frmCombineProjects.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmCombineProjects.Designer.cs">
+      <DependentUpon>frmCombineProjects.cs</DependentUpon>
+    </Compile>
     <Compile Include="Libraries\NumericUpDownFix.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -238,11 +244,15 @@
     <EmbeddedResource Include="frmActionProject.resx">
       <DependentUpon>frmActionProject.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="frmCombineProjects.resx">
+      <DependentUpon>frmCombineProjects.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmHistory.resx">
       <DependentUpon>frmHistory.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmMain.resx">
       <DependentUpon>frmMain.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="frmOptions.resx">
       <DependentUpon>frmOptions.cs</DependentUpon>
