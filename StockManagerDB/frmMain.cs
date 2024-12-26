@@ -886,6 +886,10 @@ namespace StockManagerDB
                     ? null
                     : new CompositeAllFilter(filters.Cast<IModelFilter>().ToList());
 
+            // After filter, try to select the first occurence
+            if (listviewParts.Items.Count > 0)
+                listviewParts.SelectedIndex = 0;
+
             // Filter will change the number of parts displayed
             UpdateNumberOfPartsLabel();
         }
@@ -3384,6 +3388,13 @@ namespace StockManagerDB
             }
 
             orderForm.AddCustomPartsToOrder(selectedParts);
+        }
+
+        private void standardSearchToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            searchForm.Close();
+            txtboxFilter.Focus();
+            txtboxFilter.SelectAll();
         }
     }
 }
