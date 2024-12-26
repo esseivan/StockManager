@@ -21,20 +21,7 @@ namespace StockManagerDB
         public string Version
         {
             get => _version;
-            set
-            {
-                _version = value;
-                // Version is now any string
-                //if (System.Version.TryParse(value, out _))
-                //{
-                //    _version = value;
-                //}
-                //else
-                //{
-                //    LoggerClass.Write($"Invalid version : '{value}'");
-                //    _version = new Version(1, 0, 0).ToString();
-                //}
-            }
+            set { _version = value; }
         }
 
         [JsonIgnore]

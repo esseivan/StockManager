@@ -105,7 +105,7 @@ namespace StockManagerDB
                         : null
                 ),
                 filterType = cbboxFilterType.SelectedIndex,
-                filterIn = Enum.Parse(enumType, listviewType.SelectedItems[0].Text)
+                filterIn = Enum.Parse(enumType, listviewType.SelectedItems[0].Text),
             };
 
             OnFilterSet?.Invoke(this, args);

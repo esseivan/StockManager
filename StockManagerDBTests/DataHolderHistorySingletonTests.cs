@@ -1,11 +1,11 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using StockManagerDB;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using StockManagerDB;
 using dhs = StockManagerDB.DataHolderSingleton;
 using dhsh = StockManagerDB.DataHolderHistorySingleton;
 

@@ -1,8 +1,4 @@
-﻿using BrightIdeasSoftware;
-using CsvHelper;
-using ESNLib.Controls;
-using ESNLib.Tools;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
@@ -11,6 +7,10 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using BrightIdeasSoftware;
+using CsvHelper;
+using ESNLib.Controls;
+using ESNLib.Tools;
 using dhs = StockManagerDB.DataHolderSingleton;
 
 namespace StockManagerDB
@@ -165,14 +165,14 @@ namespace StockManagerDB
             {
                 BorderPen = new Pen(Color.FromArgb(128, Color.DeepSkyBlue), 2),
                 BoundsPadding = new Size(1, 1),
-                CornerRounding = 4.0f
+                CornerRounding = 4.0f,
             };
 
             // Put the decoration onto the hot item
             listviewMaterials.HotItemStyle = new HotItemStyle
             {
                 BackColor = Color.Azure,
-                Decoration = rbd
+                Decoration = rbd,
             };
         }
 
@@ -189,7 +189,7 @@ namespace StockManagerDB
                 StringFormat fmt = new StringFormat(StringFormatFlags.NoWrap)
                 {
                     LineAlignment = StringAlignment.Center,
-                    Trimming = StringTrimming.EllipsisCharacter
+                    Trimming = StringTrimming.EllipsisCharacter,
                 };
                 switch (this.Column.TextAlign)
                 {
@@ -382,7 +382,7 @@ namespace StockManagerDB
             {
                 MPN = result.UserInput,
                 Quantity = 0,
-                Reference = ""
+                Reference = "",
             };
 
             AddMaterial(newMaterial);
@@ -752,7 +752,7 @@ namespace StockManagerDB
                 Icon = Dialog.DialogIcon.Warning,
                 Button1 = Dialog.ButtonType.Custom1,
                 Button2 = Dialog.ButtonType.Cancel,
-                CustomButton1Text = "DELETE"
+                CustomButton1Text = "DELETE",
             };
             Dialog.ShowDialogResult result = Dialog.ShowDialog(dc);
             if (result.DialogResult != Dialog.DialogResult.Custom1)
@@ -846,7 +846,7 @@ namespace StockManagerDB
                 Icon = Dialog.DialogIcon.Warning,
                 Button1 = Dialog.ButtonType.Custom1,
                 Button2 = Dialog.ButtonType.Cancel,
-                CustomButton1Text = "DELETE"
+                CustomButton1Text = "DELETE",
             };
             Dialog.ShowDialogResult result = Dialog.ShowDialog(dc);
             if (result.DialogResult != Dialog.DialogResult.Custom1)
@@ -1123,7 +1123,6 @@ namespace StockManagerDB
                     zipFile = true;
                     break;
             }
-
 
             if (File.Exists(fsd.FileName))
             {

@@ -15,7 +15,10 @@ namespace StockManagerDB
     {
         private dhs data => dhs.Instance;
 
-        public ProjectVersion SelectedProjectVersion { get => GetSelectedProjectVersion(); }
+        public ProjectVersion SelectedProjectVersion
+        {
+            get => GetSelectedProjectVersion();
+        }
 
         public void ApplySettings()
         {
@@ -103,7 +106,6 @@ namespace StockManagerDB
 
         private void comboboxProjects_SelectedIndexChanged(object sender, EventArgs e)
         {
-
             UpdateVersionList();
         }
 
