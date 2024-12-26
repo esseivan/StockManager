@@ -469,9 +469,11 @@ namespace StockManagerDB
 			InitialiseListviewsAndColumns();
 			listviewParts.DefaultRenderer = filterHighlightRenderer;
 			listviewParts.AllowCheckWithSpace = false;
-			
-			// Set default filter type
-			cbboxFilterType.SelectedIndex = AppSettings.Settings.LastMatchKindUsed;
+
+			panelPartInfos.Visible = false;
+
+            // Set default filter type
+            cbboxFilterType.SelectedIndex = AppSettings.Settings.LastMatchKindUsed;
 			
 			// Set number label
 			UpdateNumberOfPartsLabel();
@@ -3310,7 +3312,36 @@ namespace StockManagerDB
 
 				numboxStockAdjust.DecimalPlaces = AppSettings.Settings.EditCellDecimalPlaces;
 				txtboxPartCurrentStock.Text = part.Stock.ToString();
-			}
+				label1.Text = $"Selected part '{part.MPN}'";
+
+				// Update 'used in project' listview
+				listView1.Items.Clear();
+
+				// Get project lists
+				List<ProjectVersion> versions = new List<ProjectVersion>();
+				foreach (Project p in data.Projects.Values) {
+					versions.AddRange(p.Versions.Values);
+				}
+
+				// Search all versions matching this part
+				IEnumerable<ProjectVersion> valid = versions.Where((x) => x.HasMaterial(part.MPN));
+				Dictionary<string, List<string>> projects = new Dictionary<string, List<string>>();
+				//List<string> projects = new List<string>();
+
+				foreach (ProjectVersion v in valid)
+				{
+					if (!projects.ContainsKey(v.Project))
+					{
+						projects.Add(v.Project, new List<string>());
+                    }
+					projects[v.Project].Add(v.Version);
+				}
+
+				foreach (KeyValuePair<string, List<string>> pair in projects) {
+					string text = $"{pair.Key} - ({string.Join(", ", pair.Value)})";
+					listView1.Items.Add(text);
+				}
+            }
 
 		}
 
@@ -3345,7 +3376,7 @@ namespace StockManagerDB
 				throw new InvalidOperationException("Unable to adjust stock when multiple parts are selected");
 			}
 
-			orderForm.AddPartsToOrderList(selectedParts);
+			orderForm.AddCustomPartsToOrder(selectedParts);
 		}
 	}
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json.Serialization;
 
 namespace StockManagerDB
@@ -41,6 +42,20 @@ namespace StockManagerDB
         /// List of material
         /// </summary>
         public List<Material> BOM { get; set; } = new List<Material>();
+
+        public bool HasMaterial(string MPN)
+        {
+            if (string.IsNullOrEmpty(MPN))
+                return false;
+
+            if (BOM.Count == 0)
+                return false;
+
+            if (BOM.Select((x) => x.MPN).Contains(MPN))
+                return true;
+
+            return false;
+        }
 
         public object Clone()
         {
