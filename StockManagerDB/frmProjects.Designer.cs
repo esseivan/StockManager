@@ -45,6 +45,7 @@
             this.orderMissingForTheSelectedProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.processProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.removeFromOrderFormToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.combineMultipleProjectsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.resizeColumnsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -96,7 +97,6 @@
             this.copySPNToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openSupplierUrlToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.label2 = new System.Windows.Forms.Label();
-            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.statusStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.listviewMaterials)).BeginInit();
@@ -136,7 +136,7 @@
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Padding = new System.Windows.Forms.Padding(8, 2, 0, 2);
-            this.menuStrip1.Size = new System.Drawing.Size(1990, 42);
+            this.menuStrip1.Size = new System.Drawing.Size(1990, 40);
             this.menuStrip1.TabIndex = 2;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -148,7 +148,7 @@
             this.toolStripSeparator1,
             this.quitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(71, 38);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(71, 36);
             this.fileToolStripMenuItem.Text = "File";
             // 
             // importProjectsToolStripMenuItem
@@ -193,7 +193,7 @@
             this.toolStripSeparator4,
             this.combineMultipleProjectsToolStripMenuItem});
             this.actionsToolStripMenuItem.Name = "actionsToolStripMenuItem";
-            this.actionsToolStripMenuItem.Size = new System.Drawing.Size(112, 38);
+            this.actionsToolStripMenuItem.Size = new System.Drawing.Size(112, 36);
             this.actionsToolStripMenuItem.Text = "Actions";
             // 
             // actionsOnCheckedPartsOnlyToolStripMenuItem
@@ -244,6 +244,11 @@
             this.removeFromOrderFormToolStripMenuItem.Text = "Remove from order form";
             this.removeFromOrderFormToolStripMenuItem.Click += new System.EventHandler(this.removeFromOrderFormToolStripMenuItem_Click);
             // 
+            // toolStripSeparator4
+            // 
+            this.toolStripSeparator4.Name = "toolStripSeparator4";
+            this.toolStripSeparator4.Size = new System.Drawing.Size(468, 6);
+            // 
             // combineMultipleProjectsToolStripMenuItem
             // 
             this.combineMultipleProjectsToolStripMenuItem.Name = "combineMultipleProjectsToolStripMenuItem";
@@ -259,7 +264,7 @@
             this.checkAllToolStripMenuItem,
             this.uncheckAllToolStripMenuItem});
             this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
-            this.viewToolStripMenuItem.Size = new System.Drawing.Size(85, 38);
+            this.viewToolStripMenuItem.Size = new System.Drawing.Size(85, 36);
             this.viewToolStripMenuItem.Text = "View";
             // 
             // resizeColumnsToolStripMenuItem
@@ -710,6 +715,11 @@
             this.numMult.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.numMult.Location = new System.Drawing.Point(1490, 37);
             this.numMult.Margin = new System.Windows.Forms.Padding(6);
+            this.numMult.Maximum = new decimal(new int[] {
+            9999999,
+            0,
+            0,
+            0});
             this.numMult.Minimum = new decimal(new int[] {
             1,
             0,
@@ -806,11 +816,6 @@
             this.label2.Size = new System.Drawing.Size(464, 25);
             this.label2.TabIndex = 14;
             this.label2.Text = "Total price for the project (only checked parts) :";
-            // 
-            // toolStripSeparator4
-            // 
-            this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(468, 6);
             // 
             // frmProjects
             // 
