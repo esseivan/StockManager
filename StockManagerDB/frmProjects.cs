@@ -741,6 +741,25 @@ namespace StockManagerDB
             {
                 return;
             }
+            LoggerClass.Write($"Deletion of project {project}...");
+
+            // Ask confirmation
+            Dialog.DialogConfig dc = new Dialog.DialogConfig()
+            {
+                Message =
+                    $"Warning, this action cannot be undone !\nPlease confirm the deletion of the project :\n{project}\nDo you really want to delete it ?",
+                Title = "Warning",
+                Icon = Dialog.DialogIcon.Warning,
+                Button1 = Dialog.ButtonType.Custom1,
+                Button2 = Dialog.ButtonType.Cancel,
+                CustomButton1Text = "DELETE"
+            };
+            Dialog.ShowDialogResult result = Dialog.ShowDialog(dc);
+            if (result.DialogResult != Dialog.DialogResult.Custom1)
+            {
+                LoggerClass.Write("Deletion cancelled by user...");
+                return;
+            }
 
             data.Projects.Remove(project);
 
