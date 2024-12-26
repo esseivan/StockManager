@@ -305,7 +305,7 @@ namespace StockManagerDB
         /// </summary>
         public void CopySPNToClipboard()
         {
-            if(string.IsNullOrEmpty(SPN))
+            if (string.IsNullOrEmpty(SPN))
             {
                 return;
             }

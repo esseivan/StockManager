@@ -10,7 +10,6 @@ namespace StockManagerDB
         public Dictionary<string, Material> materials { get; set; } =
             new Dictionary<string, Material>();
 
-
         public class CompareName : IComparer<ProjectOrderInfos>
         {
             public int Compare(ProjectOrderInfos x, ProjectOrderInfos y)

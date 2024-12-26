@@ -10,7 +10,11 @@ namespace StockManagerDB
     {
         public DataExportClass() { }
 
-        public DataExportClass(Dictionary<string, Part> parts, Dictionary<string, Project> projects, Dictionary<string, ProjectOrderInfos> orders)
+        public DataExportClass(
+            Dictionary<string, Part> parts,
+            Dictionary<string, Project> projects,
+            Dictionary<string, ProjectOrderInfos> orders
+        )
         {
             if (parts != null)
             {
@@ -62,7 +66,9 @@ namespace StockManagerDB
                 return null;
             }
 
-            return new Dictionary<string, ProjectOrderInfos>(Orders.ToDictionary(p => p.name, p => p));
+            return new Dictionary<string, ProjectOrderInfos>(
+                Orders.ToDictionary(p => p.name, p => p)
+            );
         }
     }
 }

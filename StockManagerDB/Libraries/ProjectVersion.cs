@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json.Serialization;
 
 namespace StockManagerDB
@@ -20,18 +21,7 @@ namespace StockManagerDB
         public string Version
         {
             get => _version;
-            set
-            {
-                if (System.Version.TryParse(value, out _))
-                {
-                    _version = value;
-                }
-                else
-                {
-                    LoggerClass.Write($"Invalid version : '{value}'");
-                    _version = new Version(1, 0, 0).ToString();
-                }
-            }
+            set { _version = value; }
         }
 
         [JsonIgnore]
@@ -41,6 +31,20 @@ namespace StockManagerDB
         /// List of material
         /// </summary>
         public List<Material> BOM { get; set; } = new List<Material>();
+
+        public bool HasMaterial(string MPN)
+        {
+            if (string.IsNullOrEmpty(MPN))
+                return false;
+
+            if (BOM.Count == 0)
+                return false;
+
+            if (BOM.Select((x) => x.MPN).Contains(MPN))
+                return true;
+
+            return false;
+        }
 
         public object Clone()
         {

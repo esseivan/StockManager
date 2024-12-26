@@ -1,8 +1,8 @@
-﻿using BrightIdeasSoftware;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using BrightIdeasSoftware;
 using dhsh = StockManagerDB.DataHolderHistorySingleton;
 
 namespace StockManagerDB
@@ -113,14 +113,14 @@ namespace StockManagerDB
             {
                 BorderPen = new Pen(Color.FromArgb(128, Color.DeepSkyBlue), 2),
                 BoundsPadding = new Size(1, 1),
-                CornerRounding = 4.0f
+                CornerRounding = 4.0f,
             };
 
             // Put the decoration onto the hot item
             listviewParts.HotItemStyle = new HotItemStyle
             {
                 BackColor = Color.Azure,
-                Decoration = rbd
+                Decoration = rbd,
             };
         }
 

@@ -1,5 +1,4 @@
-﻿using BrightIdeasSoftware;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -8,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using BrightIdeasSoftware;
 using static StockManagerDB.frmProjects;
 
 namespace StockManagerDB
@@ -82,51 +82,51 @@ namespace StockManagerDB
         private void ListViewSetColumns()
         {
             // Setup columns
-            olvcMPN.AspectGetter = delegate (object x)
+            olvcMPN.AspectGetter = delegate(object x)
             {
                 return ((Material)x).MPN;
             };
-            olvcQuantity.AspectGetter = delegate (object x)
+            olvcQuantity.AspectGetter = delegate(object x)
             {
                 return ((Material)x).Quantity;
             };
-            olvcMAN.AspectGetter = delegate (object x)
+            olvcMAN.AspectGetter = delegate(object x)
             {
                 return ((Material)x).PartLink?.Manufacturer;
             };
-            olvcDesc.AspectGetter = delegate (object x)
+            olvcDesc.AspectGetter = delegate(object x)
             {
                 return ((Material)x).PartLink?.Description;
             };
-            olvcCat.AspectGetter = delegate (object x)
+            olvcCat.AspectGetter = delegate(object x)
             {
                 return ((Material)x).PartLink?.Category;
             };
-            olvcLocation.AspectGetter = delegate (object x)
+            olvcLocation.AspectGetter = delegate(object x)
             {
                 return ((Material)x).PartLink?.Location;
             };
-            olvcStock.AspectGetter = delegate (object x)
+            olvcStock.AspectGetter = delegate(object x)
             {
                 return ((Material)x).PartLink?.Stock;
             };
-            olvcLowStock.AspectGetter = delegate (object x)
+            olvcLowStock.AspectGetter = delegate(object x)
             {
                 return ((Material)x).PartLink?.LowStock;
             };
-            olvcPrice.AspectGetter = delegate (object x)
+            olvcPrice.AspectGetter = delegate(object x)
             {
                 return ((Material)x).PartLink?.Price;
             };
-            olvcSupplier.AspectGetter = delegate (object x)
+            olvcSupplier.AspectGetter = delegate(object x)
             {
                 return ((Material)x).PartLink?.Supplier;
             };
-            olvcSPN.AspectGetter = delegate (object x)
+            olvcSPN.AspectGetter = delegate(object x)
             {
                 return ((Material)x).PartLink?.SPN;
             };
-            olvcTotalPrice.AspectGetter = delegate (object x)
+            olvcTotalPrice.AspectGetter = delegate(object x)
             {
                 return ((Material)x).PartLink?.Price * ((Material)x).Quantity;
             };
@@ -136,14 +136,14 @@ namespace StockManagerDB
             {
                 BorderPen = new Pen(Color.FromArgb(128, Color.DeepSkyBlue), 2),
                 BoundsPadding = new Size(1, 1),
-                CornerRounding = 4.0f
+                CornerRounding = 4.0f,
             };
 
             // Put the decoration onto the hot item
             listviewMaterials.HotItemStyle = new HotItemStyle
             {
                 BackColor = Color.Azure,
-                Decoration = rbd
+                Decoration = rbd,
             };
         }
 
@@ -196,7 +196,8 @@ namespace StockManagerDB
                 bulkText = string.Join(
                     "\n",
                     filteredParts.Select(
-                        (m) => $"{m.QuantityStr}, {(useMpn ? m.MPN : (m.PartLink?.SPN ?? "Undefined"))}"
+                        (m) =>
+                            $"{m.QuantityStr}, {(useMpn ? m.MPN : (m.PartLink?.SPN ?? "Undefined"))}"
                     )
                 );
             }
@@ -205,7 +206,8 @@ namespace StockManagerDB
                 bulkText = string.Join(
                     "\n",
                     filteredParts.Select(
-                        (m) => $"{(useMpn ? m.MPN : (m.PartLink?.SPN ?? "Undefined"))}, {m.QuantityStr}"
+                        (m) =>
+                            $"{(useMpn ? m.MPN : (m.PartLink?.SPN ?? "Undefined"))}, {m.QuantityStr}"
                     )
                 );
             }
@@ -229,9 +231,7 @@ namespace StockManagerDB
             List<ProjectOrderInfos> IgnoredMaterial = new List<ProjectOrderInfos>();
 
             // Add all materials to a list
-            foreach (
-                KeyValuePair<string, ProjectOrderInfos> item in ProjectsToOrder
-            )
+            foreach (KeyValuePair<string, ProjectOrderInfos> item in ProjectsToOrder)
             {
                 ProjectOrderInfos poc = item.Value;
 
@@ -259,7 +259,7 @@ namespace StockManagerDB
                     {
                         PartsToOrder.Add(
                             m.MPN,
-                            new Material() { MPN = m.MPN, Quantity = m.Quantity * poc.n, }
+                            new Material() { MPN = m.MPN, Quantity = m.Quantity * poc.n }
                         );
                     }
                 }
@@ -291,7 +291,7 @@ namespace StockManagerDB
                     {
                         PartsToOrder.Add(
                             m.MPN,
-                            new Material() { MPN = m.MPN, Quantity = m.Quantity * poc.n, }
+                            new Material() { MPN = m.MPN, Quantity = m.Quantity * poc.n }
                         );
                     }
                 }
@@ -355,7 +355,7 @@ namespace StockManagerDB
                     continue; // No order to do for this part
                 }
 
-                mList.Add(new Material() { MPN = part.MPN, Quantity = qty, });
+                mList.Add(new Material() { MPN = part.MPN, Quantity = qty });
             }
 
             // Add to projects
@@ -430,7 +430,7 @@ namespace StockManagerDB
                     }
                     else
                     {
-                        materials[m.MPN] = new Material() { MPN = m.MPN, Quantity = m.Quantity, };
+                        materials[m.MPN] = new Material() { MPN = m.MPN, Quantity = m.Quantity };
                     }
                 }
 
@@ -459,8 +459,11 @@ namespace StockManagerDB
             }
             else
             {
-                ProjectsToOrder[CustomPartsProjectName] = poc =
-                    new ProjectOrderInfos() { name = CustomPartsProjectName, n = 1, };
+                ProjectsToOrder[CustomPartsProjectName] = poc = new ProjectOrderInfos()
+                {
+                    name = CustomPartsProjectName,
+                    n = 1,
+                };
             }
 
             // Merge parts. If part not present, add with 0 as the quantity
@@ -468,7 +471,7 @@ namespace StockManagerDB
             {
                 if (!poc.materials.ContainsKey(p.MPN))
                 {
-                    poc.materials.Add(p.MPN, new Material() { MPN = p.MPN, Quantity = 0, });
+                    poc.materials.Add(p.MPN, new Material() { MPN = p.MPN, Quantity = 0 });
                 }
             }
 
