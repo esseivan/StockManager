@@ -1102,12 +1102,28 @@ namespace StockManagerDB
             // Ask save path
             SaveFileDialog fsd = new SaveFileDialog()
             {
-                Filter = "StockManager Data|*.smd|All files|*.*",
+                Filter = "StockManager Data|*.smd|Text file, Json|*.txt, *.json|All files|*.*",
             };
             if (fsd.ShowDialog() != DialogResult.OK)
             {
                 return false;
             }
+
+            var selectedFilter = fsd.FilterIndex;
+
+            bool zipFile;
+            switch (selectedFilter)
+            {
+                case 2: // .txt
+                    zipFile = false;
+                    break;
+
+                default:
+                case 1: // .smd
+                    zipFile = true;
+                    break;
+            }
+
 
             if (File.Exists(fsd.FileName))
             {
@@ -1139,7 +1155,7 @@ namespace StockManagerDB
                 dec,
                 backup: SettingsManager.BackupMode.None,
                 indent: true,
-                zipFile: true
+                zipFile: zipFile
             );
 
             return true;

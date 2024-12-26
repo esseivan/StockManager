@@ -883,7 +883,7 @@
             // 
             // numboxStockOrder
             // 
-            this.numboxStockOrder.Location = new System.Drawing.Point(18, 42);
+            this.numboxStockOrder.Location = new System.Drawing.Point(260, 42);
             this.numboxStockOrder.Margin = new System.Windows.Forms.Padding(6);
             this.numboxStockOrder.Maximum = new decimal(new int[] {
             9999999,
@@ -897,7 +897,7 @@
             // btnStockOrder
             // 
             this.btnStockOrder.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.btnStockOrder.Location = new System.Drawing.Point(224, 37);
+            this.btnStockOrder.Location = new System.Drawing.Point(466, 34);
             this.btnStockOrder.Margin = new System.Windows.Forms.Padding(6);
             this.btnStockOrder.Name = "btnStockOrder";
             this.btnStockOrder.Size = new System.Drawing.Size(102, 44);

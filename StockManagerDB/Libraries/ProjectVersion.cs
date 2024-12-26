@@ -23,15 +23,17 @@ namespace StockManagerDB
             get => _version;
             set
             {
-                if (System.Version.TryParse(value, out _))
-                {
-                    _version = value;
-                }
-                else
-                {
-                    LoggerClass.Write($"Invalid version : '{value}'");
-                    _version = new Version(1, 0, 0).ToString();
-                }
+                _version = value;
+                // Version is now any string
+                //if (System.Version.TryParse(value, out _))
+                //{
+                //    _version = value;
+                //}
+                //else
+                //{
+                //    LoggerClass.Write($"Invalid version : '{value}'");
+                //    _version = new Version(1, 0, 0).ToString();
+                //}
             }
         }
 
