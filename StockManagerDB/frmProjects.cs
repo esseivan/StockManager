@@ -41,7 +41,7 @@ namespace StockManagerDB
                 if (_combineForm == null)
                 {
                     _combineForm = new frmCombineProjects();
-                    _combineForm.FormClosing += _combineForm_FormClosing;
+                    _combineForm.FormClosed += _combineForm_FormClosed;
                     _combineForm.ProjectCombined += _combineForm_ProjectCombined;
                 }
                 return _combineForm;
@@ -751,7 +751,7 @@ namespace StockManagerDB
             }
 
             Project p = data.Projects[currentName].Clone() as Project;
-            p.Name = newName;
+            p.RenameProject(newName);
             data.Projects.Add(p.Name, p);
 
             ProjectsHaveChanged();
@@ -1579,7 +1579,11 @@ namespace StockManagerDB
             ProjectsHaveChanged();
         }
 
-        private void _combineForm_FormClosing(object sender, FormClosingEventArgs e) { }
+        private void _combineForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _combineForm = null;
+            this.BringToFront();
+        }
 
         private void combineMultipleProjectsToolStripMenuItem_Click(object sender, EventArgs e)
         {

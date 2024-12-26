@@ -258,7 +258,7 @@ namespace StockManagerDB
                     if (_actionProjectForm == null)
                     {
                         _actionProjectForm = new frmActionProject();
-                        _actionProjectForm.FormClosed += _searchForm_FormClosed;
+                        _actionProjectForm.FormClosed += _actionProjectForm_FormClosed;
                     }
                 }
                 else
@@ -2716,6 +2716,14 @@ namespace StockManagerDB
             this.BringToFront();
             _searchForm = null;
             ClearAdvancedFiltering();
+        }
+
+        // Child form closed
+        private void _actionProjectForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            // When the history form is closed, bring to fron the main form
+            this.BringToFront();
+            _actionProjectForm = null;
         }
 
         // Listview keystroke
