@@ -2260,12 +2260,12 @@ namespace StockManagerDB
 				);
 				return false;
 			}
-			
-			// Ask save path
-			SaveFileDialog fsd = new SaveFileDialog()
-			{
-				Filter = "StockManager Data|*.smd|All files|*.*",
-			};
+
+            // Ask save path
+            SaveFileDialog fsd = new SaveFileDialog()
+            {
+                Filter = "StockManager Data|*.smd|Text file, Json|*.txt, *.json|All files|*.*",
+            };
 			if (fsd.ShowDialog() != DialogResult.OK)
 			{
 				return false;
@@ -2282,8 +2282,23 @@ namespace StockManagerDB
 				);
 				return false;
 			}
-			
-			log.Write($"Exporting parts...");
+
+            var selectedFilter = fsd.FilterIndex;
+
+            bool zipFile;
+            switch (selectedFilter)
+            {
+                case 2: // .txt
+                    zipFile = false;
+                    break;
+
+                default:
+                case 1: // .smd
+                    zipFile = true;
+                    break;
+            }
+
+            log.Write($"Exporting parts...");
 			List<Part> parts = GetValidPartsForActions();
 			
 			log.Write($"{parts.Count} part(s) found for export");
@@ -2298,8 +2313,8 @@ namespace StockManagerDB
 			    dec,
 			    backup: SettingsManager.BackupMode.None,
 			    indent: true,
-			    zipFile: true
-			);
+			    zipFile: zipFile
+            );
 			
 			return true;
 		}
