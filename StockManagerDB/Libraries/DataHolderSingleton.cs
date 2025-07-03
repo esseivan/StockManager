@@ -221,6 +221,8 @@ namespace StockManagerDB
                 case Part.Parameter.Price:
                 case Part.Parameter.Supplier:
                 case Part.Parameter.SPN:
+                case Part.Parameter.Substitute:
+                case Part.Parameter.Obsolete:
                     newPart.Parameters[param] = value;
                     break;
 

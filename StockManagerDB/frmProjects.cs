@@ -116,6 +116,10 @@ namespace StockManagerDB
             {
                 return ((Material)x).MPN;
             };
+            olvcObsolete.AspectGetter = delegate(object x)
+            {
+                return ((Material)x).PartLink?.Obsolete ?? false;
+            };
             olvcQuantity.AspectGetter = delegate(object x)
             {
                 return ((Material)x).Quantity;
@@ -185,6 +189,10 @@ namespace StockManagerDB
                 return isAvailable ? "Yes" : "No";
             };
             olvcAvailable.Renderer = new AvailableCellRenderer();
+            olvcSubstitutes.AspectGetter = delegate(object x)
+            {
+                return ((Material)x).PartLink?.Substitutes;
+            };
 
             // Make the decoration
             RowBorderDecoration rbd = new RowBorderDecoration
@@ -268,6 +276,11 @@ namespace StockManagerDB
             {
                 comboboxVersions.SelectedIndex = 0;
             }
+            else
+            {
+                listviewMaterials.DataSource = null;
+                listviewMaterials.DataSource = new List<Material>();
+            }
         }
 
         /// <summary>
@@ -279,6 +292,7 @@ namespace StockManagerDB
             if (selectedProjectVersion == null)
             {
                 listviewMaterials.DataSource = null;
+                listviewMaterials.DataSource = new List<Material>();
                 return;
             }
 
@@ -1589,6 +1603,23 @@ namespace StockManagerDB
         {
             combineForm.Show();
             combineForm.BringToFront();
+        }
+
+        private void listviewMaterials_SelectionChanged(object sender, EventArgs e)
+        {
+            var selItems = listviewMaterials.SelectedObjects.Cast<Material>().ToList();
+            int count = selItems.Count;
+
+            bool visible = count == 1;
+            string substitutes;
+            if (visible)
+            {
+                substitutes = selItems.First().PartLink?.Substitutes ?? "";
+                visible = !string.IsNullOrWhiteSpace(substitutes);
+
+                txtboxSubstitutes.Text = substitutes;
+                label3.Visible = txtboxSubstitutes.Visible = visible;
+            }
         }
 
         #endregion
