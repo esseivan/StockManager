@@ -90,6 +90,7 @@
             this.numMult = new StockManagerDB.Libraries.NumericUpDownFix();
             this.txtboxSubstitutes = new System.Windows.Forms.TextBox();
             this.btnImportDigikeyList = new System.Windows.Forms.Button();
+            this.label3 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.statusTimeoutTimer = new System.Windows.Forms.Timer(this.components);
             this.tooltip1 = new System.Windows.Forms.ToolTip(this.components);
@@ -99,7 +100,7 @@
             this.copySPNToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openSupplierUrlToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.label2 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
+            this.olvcSubstitutes = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.statusStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.listviewMaterials)).BeginInit();
@@ -317,6 +318,7 @@
             this.listviewMaterials.AllColumns.Add(this.olvcMAN);
             this.listviewMaterials.AllColumns.Add(this.olvcSupplier);
             this.listviewMaterials.AllColumns.Add(this.olvcSPN);
+            this.listviewMaterials.AllColumns.Add(this.olvcSubstitutes);
             this.listviewMaterials.AllowCheckWithSpace = true;
             this.listviewMaterials.AllowColumnReorder = true;
             this.listviewMaterials.AlternateRowBackColor = System.Drawing.Color.LightBlue;
@@ -344,7 +346,8 @@
             this.olvcCat,
             this.olvcMAN,
             this.olvcSupplier,
-            this.olvcSPN});
+            this.olvcSPN,
+            this.olvcSubstitutes});
             this.listviewMaterials.Cursor = System.Windows.Forms.Cursors.Default;
             this.listviewMaterials.DataSource = null;
             this.listviewMaterials.EmptyListMsg = "(Empty)";
@@ -733,7 +736,6 @@
             // 
             // txtboxSubstitutes
             // 
-            this.txtboxSubstitutes.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.txtboxSubstitutes.Location = new System.Drawing.Point(247, 22);
             this.txtboxSubstitutes.Name = "txtboxSubstitutes";
             this.txtboxSubstitutes.ReadOnly = true;
@@ -750,6 +752,15 @@
             this.tooltip1.SetToolTip(this.btnImportDigikeyList, "Import a BOM List from Digikey into this selected version\'s BOM");
             this.btnImportDigikeyList.UseVisualStyleBackColor = true;
             this.btnImportDigikeyList.Click += new System.EventHandler(this.btnImportDigikeyList_Click);
+            // 
+            // label3
+            // 
+            this.label3.Location = new System.Drawing.Point(172, 19);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(69, 23);
+            this.label3.TabIndex = 12;
+            this.label3.Text = "Substitutes";
+            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // label1
             // 
@@ -818,14 +829,11 @@
             this.label2.TabIndex = 14;
             this.label2.Text = "Total price for the project (only checked parts) :";
             // 
-            // label3
+            // olvcSubstitutes
             // 
-            this.label3.Location = new System.Drawing.Point(172, 19);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(69, 23);
-            this.label3.TabIndex = 12;
-            this.label3.Text = "Substitutes";
-            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.olvcSubstitutes.MinimumWidth = 22;
+            this.olvcSubstitutes.Text = "Substitutes";
+            this.olvcSubstitutes.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // frmProjects
             // 
@@ -932,5 +940,6 @@
         private BrightIdeasSoftware.OLVColumn olvcObsolete;
         private System.Windows.Forms.TextBox txtboxSubstitutes;
         private System.Windows.Forms.Label label3;
+        private BrightIdeasSoftware.OLVColumn olvcSubstitutes;
     }
 }

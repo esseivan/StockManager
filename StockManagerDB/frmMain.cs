@@ -2606,6 +2606,25 @@ namespace StockManagerDB
             // Remove all 0 quantities
             materials = materials.Where((x) => x.Quantity > 0).ToList();
 
+            // Check for obsoletes + message
+            var obsoletes = materials.Where((x) => x.PartLink?.Obsolete == true).ToList();
+            if (obsoletes.Count > 0)
+            {
+                Dialog.DialogConfig dc = new Dialog.DialogConfig()
+                {
+                    Message =
+                        $"({obsoletes.Count}) obsolete parts found : {string.Join(",", obsoletes.Select((x) => x.MPN))}.\nContinue adding to the order list ?",
+                    Title = "Warning ! Obsolete parts",
+                    Button1 = Dialog.ButtonType.Continue,
+                    Button2 = Dialog.ButtonType.Cancel,
+                    Icon = Dialog.DialogIcon.Warning,
+                };
+                if (Dialog.ShowDialog(dc).DialogResult != Dialog.DialogResult.Continue)
+                {
+                    return;
+                }
+            }
+
             orderForm.AddProjectToOrder(
                 e.projectName,
                 e.numberOfTimes,

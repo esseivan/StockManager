@@ -189,6 +189,10 @@ namespace StockManagerDB
                 return isAvailable ? "Yes" : "No";
             };
             olvcAvailable.Renderer = new AvailableCellRenderer();
+            olvcSubstitutes.AspectGetter = delegate(object x)
+            {
+                return ((Material)x).PartLink?.Substitutes;
+            };
 
             // Make the decoration
             RowBorderDecoration rbd = new RowBorderDecoration
