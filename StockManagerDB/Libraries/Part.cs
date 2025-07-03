@@ -130,6 +130,34 @@ namespace StockManagerDB
         }
 
         /// <summary>
+        /// CSV of substitutes parts
+        /// </summary>
+        public string Substitutes
+        {
+            get =>
+                Parameters.TryGetValue(Parameter.Substitute, out string value)
+                    ? value
+                    : string.Empty;
+            set => Parameters[Parameter.Substitute] = value;
+        }
+
+        /// <summary>
+        /// Obsolete part. Cannot be automatically ordered
+        /// </summary>
+        [JsonIgnore]
+        public bool Obsolete
+        {
+            get => bool.TryParse(ObsoleteStr, out bool valueBool) ? valueBool : false;
+            set => Parameters[Parameter.Obsolete] = value.ToString();
+        }
+        public string ObsoleteStr
+        {
+            get =>
+                Parameters.TryGetValue(Parameter.Obsolete, out string value) ? value : string.Empty;
+            set => Parameters[Parameter.Obsolete] = value;
+        }
+
+        /// <summary>
         /// This part version is valid from this date
         /// </summary>
         [JsonInclude]
@@ -180,6 +208,8 @@ namespace StockManagerDB
             Price,
             Supplier,
             SPN,
+            Substitute,
+            Obsolete,
         }
 
         public Part() { }

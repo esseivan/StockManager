@@ -806,6 +806,14 @@ namespace StockManagerDB
             {
                 return ((Part)x).SPN;
             };
+            olvcSubstitute.AspectGetter = delegate(object x)
+            {
+                return ((Part)x).Substitutes;
+            };
+            olvcObsolete.AspectGetter = delegate(object x)
+            {
+                return ((Part)x).Obsolete;
+            };
 
             // Make the decoration
             RowBorderDecoration rbd = new RowBorderDecoration
@@ -3395,6 +3403,11 @@ namespace StockManagerDB
             searchForm.Close();
             txtboxFilter.Focus();
             txtboxFilter.SelectAll();
+        }
+
+        private void listviewParts_SubItemChecking(object sender, SubItemCheckingEventArgs e)
+        {
+            log.Write(e.ToString());
         }
     }
 }
