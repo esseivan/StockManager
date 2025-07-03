@@ -54,6 +54,7 @@
             this.uncheckAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.listviewMaterials = new BrightIdeasSoftware.FastDataListView();
             this.olvcSelect = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
+            this.olvcObsolete = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcMPN = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcQuantity = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
             this.olvcReference = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
@@ -87,6 +88,7 @@
             this.btnVerRen = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.numMult = new StockManagerDB.Libraries.NumericUpDownFix();
+            this.txtboxSubstitutes = new System.Windows.Forms.TextBox();
             this.btnImportDigikeyList = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.statusTimeoutTimer = new System.Windows.Forms.Timer(this.components);
@@ -97,6 +99,7 @@
             this.copySPNToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openSupplierUrlToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.label2 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
             this.statusStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.listviewMaterials)).BeginInit();
@@ -297,6 +300,7 @@
             // listviewMaterials
             // 
             this.listviewMaterials.AllColumns.Add(this.olvcSelect);
+            this.listviewMaterials.AllColumns.Add(this.olvcObsolete);
             this.listviewMaterials.AllColumns.Add(this.olvcMPN);
             this.listviewMaterials.AllColumns.Add(this.olvcQuantity);
             this.listviewMaterials.AllColumns.Add(this.olvcReference);
@@ -324,6 +328,7 @@
             this.listviewMaterials.CheckBoxes = true;
             this.listviewMaterials.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.olvcSelect,
+            this.olvcObsolete,
             this.olvcMPN,
             this.olvcQuantity,
             this.olvcReference,
@@ -347,7 +352,7 @@
             this.listviewMaterials.GridLines = true;
             this.listviewMaterials.HideSelection = false;
             this.listviewMaterials.Location = new System.Drawing.Point(5, 47);
-            this.listviewMaterials.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.listviewMaterials.Margin = new System.Windows.Forms.Padding(2);
             this.listviewMaterials.Name = "listviewMaterials";
             this.listviewMaterials.SelectColumnsOnRightClickBehaviour = BrightIdeasSoftware.ObjectListView.ColumnSelectBehaviour.Submenu;
             this.listviewMaterials.ShowCommandMenuOnRightClick = true;
@@ -368,6 +373,7 @@
             this.listviewMaterials.VirtualMode = true;
             this.listviewMaterials.CellEditFinished += new BrightIdeasSoftware.CellEditEventHandler(this.listviewComponents_CellEditFinished);
             this.listviewMaterials.CellRightClick += new System.EventHandler<BrightIdeasSoftware.CellRightClickEventArgs>(this.listviewMaterials_CellRightClick);
+            this.listviewMaterials.SelectionChanged += new System.EventHandler(this.listviewMaterials_SelectionChanged);
             this.listviewMaterials.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.listviewMaterials_ItemChecked);
             // 
             // olvcSelect
@@ -375,6 +381,13 @@
             this.olvcSelect.IsEditable = false;
             this.olvcSelect.Text = "";
             this.olvcSelect.Width = 30;
+            // 
+            // olvcObsolete
+            // 
+            this.olvcObsolete.CheckBoxes = true;
+            this.olvcObsolete.MinimumWidth = 22;
+            this.olvcObsolete.Text = "Obsolete";
+            this.olvcObsolete.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // olvcMPN
             // 
@@ -679,7 +692,9 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox3.Controls.Add(this.numMult);
+            this.groupBox3.Controls.Add(this.txtboxSubstitutes);
             this.groupBox3.Controls.Add(this.btnImportDigikeyList);
+            this.groupBox3.Controls.Add(this.label3);
             this.groupBox3.Controls.Add(this.label1);
             this.groupBox3.Controls.Add(this.btnMatAdd);
             this.groupBox3.Controls.Add(this.btnMatDel);
@@ -715,6 +730,15 @@
             0,
             0});
             this.numMult.ValueChanged += new System.EventHandler(this.numMult_ValueChanged);
+            // 
+            // txtboxSubstitutes
+            // 
+            this.txtboxSubstitutes.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.txtboxSubstitutes.Location = new System.Drawing.Point(247, 22);
+            this.txtboxSubstitutes.Name = "txtboxSubstitutes";
+            this.txtboxSubstitutes.ReadOnly = true;
+            this.txtboxSubstitutes.Size = new System.Drawing.Size(165, 20);
+            this.txtboxSubstitutes.TabIndex = 15;
             // 
             // btnImportDigikeyList
             // 
@@ -794,6 +818,15 @@
             this.label2.TabIndex = 14;
             this.label2.Text = "Total price for the project (only checked parts) :";
             // 
+            // label3
+            // 
+            this.label3.Location = new System.Drawing.Point(172, 19);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(69, 23);
+            this.label3.TabIndex = 12;
+            this.label3.Text = "Substitutes";
+            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
             // frmProjects
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -820,6 +853,7 @@
             this.groupBox1.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numMult)).EndInit();
             this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -895,5 +929,8 @@
         private Libraries.NumericUpDownFix numMult;
         private System.Windows.Forms.ToolStripMenuItem combineMultipleProjectsToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
+        private BrightIdeasSoftware.OLVColumn olvcObsolete;
+        private System.Windows.Forms.TextBox txtboxSubstitutes;
+        private System.Windows.Forms.Label label3;
     }
 }
