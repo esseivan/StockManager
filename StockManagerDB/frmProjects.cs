@@ -276,6 +276,11 @@ namespace StockManagerDB
             {
                 comboboxVersions.SelectedIndex = 0;
             }
+            else
+            {
+                listviewMaterials.DataSource = null;
+                listviewMaterials.DataSource = new List<Material>();
+            }
         }
 
         /// <summary>
@@ -287,6 +292,7 @@ namespace StockManagerDB
             if (selectedProjectVersion == null)
             {
                 listviewMaterials.DataSource = null;
+                listviewMaterials.DataSource = new List<Material>();
                 return;
             }
 
